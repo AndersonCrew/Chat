@@ -46,22 +46,20 @@ public abstract class BaseSingleStatusActivity extends BaseActivity {
 
     protected void init() {
         setContentView(R.layout.activity_base_single_status);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        ivStatus = (ImageView) findViewById(R.id.ivStatus);
-        ivMore = (ImageView) findViewById(R.id.more_menu);
-        ivCall = (ImageView) findViewById(R.id.call_menu);
-        ivSearch = (ImageView) findViewById(R.id.search_menu);
-        mSearchView = (SearchView) findViewById(R.id.searchView);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ivStatus = findViewById(R.id.ivStatus);
+        ivMore = findViewById(R.id.more_menu);
+        ivCall = findViewById(R.id.call_menu);
+        ivSearch = findViewById(R.id.search_menu);
+        mSearchView = findViewById(R.id.searchView);
         mSearchView.setImeOptions(mSearchView.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
-        //
-        // mSearchView.setMaxWidth( Integer.MAX_VALUE );
         mSearchView.setIconified(true);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        toolbar_title = (TextView) findViewById(R.id.toolbar_title);
-        toolbar_status = (TextView) findViewById(R.id.toolbar_status);
+        fab = findViewById(R.id.fab);
+        toolbar_title = findViewById(R.id.toolbar_title);
+        toolbar_status = findViewById(R.id.toolbar_status);
         fab.setVisibility(View.GONE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +68,7 @@ public abstract class BaseSingleStatusActivity extends BaseActivity {
                         .setAction("Action", null).show();
             }
         });
-        btnGroup = (RelativeLayout) findViewById(R.id.btnGroup);
+        btnGroup = findViewById(R.id.btnGroup);
         btnGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,25 +131,10 @@ public abstract class BaseSingleStatusActivity extends BaseActivity {
         }
         return null;
     }
-    public void hideIvStt() {
-        ivStatus.setVisibility(View.GONE);
-    }
 
     public void showIvStt(int id) {
         ivStatus.setVisibility(View.VISIBLE);
         ivStatus.setImageResource(id);
-    }
-
-    public void setUPToolBar(String title, String status) {
-        if (TextUtils.isEmpty(title)) {
-            toolbar_title.setText(mContext.getResources().getString(R.string.unknown));
-            toolbar_title.setTextColor(ContextCompat.getColor(mContext, R.color.gray));
-            toolbar_status.setText("");
-        } else {
-            toolbar_title.setText(title);
-            toolbar_title.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-            toolbar_status.setText(status);
-        }
     }
 
     protected void hideCall() {
@@ -159,7 +142,6 @@ public abstract class BaseSingleStatusActivity extends BaseActivity {
             ivCall.setVisibility(View.GONE);
         }
     }
-
 
     protected abstract void addFragment(Bundle bundle);
 
@@ -171,24 +153,6 @@ public abstract class BaseSingleStatusActivity extends BaseActivity {
                 return false;
         }
         return false;
-    }
-
-    public void showSave() {
-        ivCall.setVisibility(View.GONE);
-        ivMore.setImageResource(R.drawable.add_check);
-    }
-
-    public void HiddenTitle() {
-        toolbar_title.setVisibility(View.GONE);
-        toolbar_status.setVisibility(View.GONE);
-    }
-
-    public void HideStatus() {
-        toolbar_status.setVisibility(View.GONE);
-    }
-
-    public void HideBtnMore() {
-        ivMore.setVisibility(View.GONE);
     }
 
     public void setTitle(String title) {

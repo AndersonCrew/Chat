@@ -121,10 +121,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     public static ArrayList<String> mSelectedImage = new ArrayList<>();
     private OnGetStatusCallback mGetStatusCallbackCompany, mGetStatusCallbackFavorite;
 
-    public void setGetStatusCallbackCompany(OnGetStatusCallback mGetStatusCallback) {
-        this.mGetStatusCallbackCompany = mGetStatusCallback;
-    }
-
     public void setGetStatusCallbackFavorite(OnGetStatusCallback mGetStatusCallback) {
         this.mGetStatusCallbackFavorite = mGetStatusCallback;
     }
@@ -148,12 +144,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
 
         active = true;
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-      /*  tabAdapter = new TabPagerAdapter(getSupportFragmentManager(), Statics.MAIN_ACTIVITY_TAB_COUNT, this);
-        mViewPager.setAdapter(tabAdapter);
-        mViewPager.setOffscreenPageLimit(3);
-        tabLayout.setupWithViewPager(mViewPager);
-        setupTab();
-        setupViewPager();*/
         // Load client data after login
         if (!CrewChatApplication.isLoggedIn) {
             Log.d(TAG, "loadStaticLocalData");
@@ -164,17 +154,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         }
 
         checkVersion();
-    }
-
-    public boolean checkPermissionsWandR() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-
-        return true;
     }
 
     public void setPermissionsReadExternalStorage() {
@@ -230,7 +209,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             }, 1500);
         } else {
             Intent intent = new Intent(this, LoginActivity.class);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
@@ -247,42 +225,35 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     }
 
     void handleSendContact(Intent intent) {
-        imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
-            // Update UI to reflect image being shared
-            //GetFile(imageUri);
-            //  fab.performClick();
+
 
         }
     }
 
     void handleSendVideo(Intent intent) {
-        imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
             //  fab.performClick();
         }
     }
 
     void handleSendAudio(Intent intent) {
-        imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
             //fab.performClick();
         }
     }
 
     void handleSendFile(Intent intent) {
-        imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         Log.d("ssssimageUri", imageUri.toString());
         mSelectedImage.clear();
         if (imageUri != null) {
             if (mSelectedImage != null) {
                 mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
             }
-            //   fab.performClick();
-       /*   Intent myIntent = new Intent(this, ShareActivity.class);
-            //   myIntent.putExtra("key", value); //Optional parameters
-            this.startActivity(myIntent);*/
-
         }
     }
 
@@ -293,7 +264,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             // Update UI to reflect multiple images being shared
             for (Uri path : imageUris) {
                 // Do something with the URI
-                //   GetFile(path);
                 if (mSelectedImage != null) {
                     mSelectedImage.add(Utils.getPathFromURI(path, getApplicationContext()));
                 }
@@ -303,7 +273,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         }
     }
     //--->Check version
-
     private void checkVersion() {
         HttpRequest.getInstance().checkVersionUpdate(new BaseHTTPCallBackWithString() {
             @Override
@@ -335,16 +304,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         @Override
         public void run() {
             try {
-//              URL txtUrl = new URL(Constants.ROOT_URL_ANDROID + Constants.VERSION + Constants.APP_NAME + "_new.txt");
-                //   URL txtUrl = new URL(Constants.ROOT_URL_ANDROID + Constants.VERSION + Constants.APP_NAME + ".txt");
-                //   HttpURLConnection urlConnection = (HttpURLConnection) txtUrl.openConnection();
-
-               /* InputStream inputStream = urlConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String serverVersion = bufferedReader.readLine();
-                inputStream.close();
-                Util.printLogs("serverVersion: " + serverVersion);*/
                 String appVersion = BuildConfig.VERSION_NAME;
                 if (compareVersionNames(appVersion, version) == -1) {
                     mActivityHandler2.sendEmptyMessage(Constant.ACTIVITY_HANDLER_START_UPDATE);
@@ -382,7 +341,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            // startApplication();
                         }
                     });
                     AlertDialog dialog = builder.create();
@@ -444,7 +402,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                 inputStream = urlConnection.getInputStream();
                 bufferedInputStream = new BufferedInputStream(inputStream);
 
-                //  String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/" + mApkFileName + "_new.apk";
                 String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/" + mApkFileName + ".apk";
                 fileOutputStream = new FileOutputStream(filePath);
 
@@ -504,7 +461,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             super.onPostExecute(aVoid);
 
             MainActivity activity = mWeakActivity.get();
-
             if (activity != null) {
                 String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/" + mApkFileName + ".apk";
 
@@ -519,9 +475,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                         activity.startActivity(intent);
                     }
                 } else {
-                /*    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
-                    activity.startActivity(intent);*/
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -537,18 +490,12 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     }
 
     private boolean checkPermissions() {
-        // android.permission.INTERNET
-        // android.permission.WRITE_EXTERNAL_STORAGE
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             return false;
         } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
+        } else return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED;
 
-        return true;
     }
 
     private void setPermissions() {
@@ -567,15 +514,8 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     @Override
     protected void onResume() {
         super.onResume();
-        if (new Prefs().getIntValue("PAGE", 0) == TAB_COMPANY) {
-            // EventBus.getDefault().post(new NotifyAdapterOgr());
-        }
         mViewPager.setCurrentItem(new Prefs().getIntValue("PAGE", 0));
         Log.d(TAG, "mViewPager:" + mViewPager.getCurrentItem());
-//        if(mViewPager.getCurrentItem()==0){
-//            showPAB();
-//        }
-
     }
 
     @Override
@@ -600,16 +540,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         tabLayout.getTabAt(1).setIcon(R.drawable.tabbar_group_ic);
         tabLayout.getTabAt(2).setIcon(R.drawable.nav_favorite_ic);
         tabLayout.getTabAt(3).setIcon(R.drawable.nav_mnu_hol_ic);
-
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (CurrentChatListFragment.fragment != null) {
-//                    CurrentChatListFragment.fragment.searchAction(0);
-//                }
-//            }
-//        });
-
     }
 
     @Override
@@ -632,19 +562,8 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
 
     private int currentPage;
 
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    }
-
-    public void showMenuSearch(OnClickCallback callback) {
-        if (menuItemSearch != null) {
-            menuItemSearch.setVisible(true);
-            searchView.setVisibility(View.VISIBLE);
-        }
     }
 
     public void hideMenuSearch() {
@@ -677,38 +596,24 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     // 탭을 직접 선택 했을 경우 이벤트 처리
     public static int CURRENT_TAB = 0;
 
-
     @Override
     public void onPageSelected(final int position) {
-
         if (position != TAB_CHAT) {
             if (CurrentChatListFragment.fragment != null)
                 CurrentChatListFragment.fragment.justHide();
         }
 
-
         MainActivity.CURRENT_TAB = position;
         currentPage = position;
         new Prefs().putIntValue("PAGE", position);
-
-//        if (position == TAB_CHAT) {
-//            if (CurrentChatListFragment.fragment != null) {
-//                CurrentChatListFragment.fragment.updateStatus();
-//            }
-//        }
-
         if (position == TAB_CHAT || position == TAB_FAVORITE) {
             showPAB();
-            //  searchView.setIconified(true);
             hideSearchView();
             hideMenuSearch();
             showIcon();
             if (position == TAB_FAVORITE) {
-//                Log.d(TAG,"BaseFavoriteFragment.CURRENT_TAB:"+BaseFavoriteFragment.CURRENT_TAB);
                 if (BaseFavoriteFragment.CURRENT_TAB == 0) {
                     hidePAB();
-                } else {
-
                 }
             }
         } else if (position == TAB_COMPANY) {
@@ -740,7 +645,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                                 for (final StatusItemDto sItem : status.getItems()) {
 
                                     if (sItem.getUserID().equals(u.getUserID())) {
-//                                    Log.d(TAG, "updateStatus 3");
                                         Log.d(TAG, "updateStatus 3:" + u.getName() + " # " + u.getDBId() + " # " + sItem.getUserID() + " # " + sItem.getStatus());
                                         AllUserDBHelper.updateStatus(u.getDBId(), sItem.getStatus());
 
@@ -784,7 +688,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                                         @Override
                                         public void run() {
                                             // 나 이외의 사용자 상태값을 바꾼다.
-//                                        Log.d(TAG, "updateStatus 4");
                                             AllUserDBHelper.updateStatus(u.getDBId(), Statics.USER_LOGOUT);
                                         }
                                     }).start();
@@ -816,7 +719,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-
                                 // If list user is #null then update user status string
                                 if (users == null) {
                                     ArrayList<TreeUserDTOTemp> tempUsers = AllUserDBHelper.getUser();
@@ -850,7 +752,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                                 }
 
                                 msgObj.setData(b);
-//                            Log.d(TAG,"mHandler 2");
                                 mHandler.sendMessage(msgObj);
 
                             }

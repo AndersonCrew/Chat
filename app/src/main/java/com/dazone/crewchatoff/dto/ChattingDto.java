@@ -83,9 +83,9 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
 
     private boolean hasSent = true;
     private boolean cbChoose = false;
-    int status = 0;
-    int positionUploadImage;
-    int temp=0;
+    private int status = 0;
+    private int positionUploadImage;
+    private int temp=0;
 
     public int getTemp() {
         return temp;
@@ -479,6 +479,4 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     public void setHasSent(boolean hasSent) {
         this.hasSent = hasSent;
     }
-
-
 }

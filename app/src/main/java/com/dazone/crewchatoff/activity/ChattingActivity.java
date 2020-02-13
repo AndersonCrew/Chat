@@ -35,8 +35,6 @@ import android.widget.Toast;
 
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
-import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.activity.base.BaseSingleStatusActivity;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
@@ -110,6 +108,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     public static Uri videoPath = null;
     private ChattingDto mDto = null;
     public static ChattingActivity instance = null;
+    int IV_STATUS = -1;
 
     public void removeUserList(int userId) {
         if (userNos != null) {
@@ -151,7 +150,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         if (treeUserDTOTempArrayList == null)
             treeUserDTOTempArrayList = new ArrayList<>();
 
-
         /** ADD OnClick Menu */
         ivCall.setOnClickListener(this);
         ivMore.setOnClickListener(this);
@@ -164,17 +162,14 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         registerReceiver(imageBroadcastReceiver, imageIntentFilter);
 
         receiveData();
-
         // if network is connected, sync all chat rom message and store in local database then display it on chat view
         if (Utils.isNetworkAvailable()) {
             getChatRoomInfo();
         }
 
         // Set local database for current room, may be launch on new thread
-
         if (mDto != null) {
             roomTitle = mDto.getRoomTitle();
-//            userNos = mDto.getUserNos();
             userNos = Constant.removeDuplicatePosition(mDto.getUserNos());
             boolean isExistMe = false;
 
@@ -193,24 +188,20 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
             if (isOne) { // Get user status
                 int userId = 0;
-
                 try {
                     userId = (userNos.get(0) != myId) ? userNos.get(0) : userNos.get(1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 String userStatus = AllUserDBHelper.getAUserStatus(userId);
                 if (userStatus != null && userStatus.length() > 0) {
                     subTitle = userStatus;
                 }
-
             } else { // set default title
                 int roomSize = 0;
                 if (mDto.getUserNos() != null) {
                     roomSize = userNos.size();
                 }
-
                 subTitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, String.valueOf(roomSize));
                 Log.d(TAG, "onCreate:" + roomSize);
             }
@@ -224,12 +215,9 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         }
         Log.d(TAG, "finish onCreate");
     }
-
     /**
      * RECEIVE DATA FROM INTENT
      */
-    int IV_STATUS = -1;
-
     private void receiveData() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -316,7 +304,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             }
         });
     }
-
     /**
      * Setup TITLE ROOM
      */
@@ -325,7 +312,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         setTitle(title);
         roomTitle = title;
     }
-
 
     private void setupTitleRoom(ArrayList<Integer> userNos, String roomTitle, String status) {
         if (mDto != null) {
@@ -402,53 +388,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
     @Override
     protected void addFragment(Bundle bundle) {
-        /*Bundle bundle1 = getIntent().getExtras();
-        if (bundle1 != null) {
-            dto = (TreeUserDTO) bundle1.getSerializable(Statics.TREE_USER_PC);
-            chattingDto = (ChattingDto) bundle1.getSerializable(Statics.CHATTING_DTO);
-        }
-        if (dto != null) {
-            //Utils.printLogs(new Gson().toJson(dto));
-            //setUPToolBar(dto.getAllName(), "Working");
-        } else {
-            String name = "";
-
-            if (chattingDto != null) {
-                if (chattingDto.getListTreeUser() != null && chattingDto.getListTreeUser().size() > 0) {
-                    for (TreeUserDTOTemp treeUserDTOTemp : chattingDto.getListTreeUser()) {
-                        name += treeUserDTOTemp.getName() + ",";
-                    }
-                } else {
-                    if (chattingDto.getUserNos() != null && chattingDto.getUserNos().size() > 0) {
-                        for (int id : chattingDto.getUserNos()) {
-                            if (UserDBHelper.getUser().Id != id) {
-                                TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(treeUserDTOTempArrayList, id);
-                                if (treeUserDTOTemp != null)
-                                    name += treeUserDTOTemp.getName() + ",";
-                            }
-                        }
-                    } else {
-                        TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(treeUserDTOTempArrayList, chattingDto.getWriterUserNo());
-                        if (treeUserDTOTemp != null)
-                            name += treeUserDTOTemp.getName() + ",";
-                    }
-                }
-            }
-
-            if (!TextUtils.isEmpty(name)) {
-                setUPToolBar(name.substring(0, name.length() - 1), "Working");
-            } else {
-                setUPToolBar("", "Working");
-            }
-        }*/
-
-        //if (bundle == null) {
-        /** Setup FRAGMENT*/
-        //fragment = new ChattingFragment().newInstance(roomNo,userNos);
-
-        /** ADD FRAGMENT TO ACTIVITY */
-        //Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
-        //}
     }
 
     private String getGroupTitleName(ArrayList<Integer> userNos) {
@@ -914,8 +853,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         ChattingFragment.instance.sendFileWithQty(integerList, 0);
                 }
             }
-
-
         }
     };
 
@@ -1130,7 +1067,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
 
     }
-
     /*
      * Show search view to search content in a chat
      * */
