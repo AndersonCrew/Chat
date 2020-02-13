@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4391dd</color>
+    <color name="colorPrimaryDark">#C51162</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#4391dd</color>
+    <color name="disable_text_color">#8e8e8e</color>
+    <color name="time_color_current_chat">#777777</color>
+    <color name="divide_color">#b6b6b6</color>
+    <color name="secondary_text_color">#76000000</color>
+    <color name="text_view_time_bg">#BDBDBD</color>
+    <color name="chat_list_bg_color">#d6ebff</color>
+    <color name="input_text_color">#868686</color>
+    <color name="badge_bg_color">#ff8400</color>
+    <color name="fab_bg_color">#277bcd</color>
+    <color name="tree_user_position_color">#777777</color>
+    <color name="white">#FFFFFF</color>
+    <color name="shadow">#cc222222</color>
+    <color name="black_70_color">#73000000</color>
+    <color name="light_black">#CC000000</color>
+    <color name="tabs_color"> #81D4FA </color>
+    <color name="tabs_title_color"> #FFFFFF </color>
+    <color name="headerbar_title_color"> #FFFFFF </color>
+    <color name="headerbar_selected_tab_color"> #34b4e3 </color>
+    <color name="note_title">#eeeeee</color>
+    <color name="note_background">#cecece</color>
+    <color name="view_attach">#AA808080</color>
+    <color name="view_detail">#e5e5e5</color>
+    <color name="transparent">#00000000</color>
+    <color name="gray_light">#DFDFDF</color>
+    <color name="background_tab_pressed">#6633B5E5</color>
+
+    <!-- COMMON -->
+    <color name="gray_pressed">#b4dfdfdf</color>
+    <color name="white_pressed">#b4ffffff</color>
+    <color name="text_unread">#4d93ce</color>
+    <color name="gray">#acacac</color>
+    <color name="black">#000000</color>
+    <color name="colorLink">#277bcd</color>
+
+    <!-- PROFILE -->
+    <color name="profile_label">#5d5d5d</color>
+    <color name="profile_content">#000000</color>
+
+    <!-- setting notification -->
+    <color name="notification_item_background">#eeeeee</color>
+    <color name="notification_heading_background">#dfdfdf</color>
+    <color name="notification_heading_text_color">#8e8e8e</color>
+    <color name="notification_toggle_activated">#2579c8</color>
+    <color name="notification_toggle_inactivated">#a6a6a6</color>
+    <color name="notification_divider">#d3d3d3</color>
+    <!-- custom actionBar color -->
+    <color name="actionbar_background">#4391dd</color>
+    <color name="title_text_color">#656565</color>
+    <color name="mdtp_accent_color">#009688</color>
+    <color name="mdtp_accent_color_dark">#00796b</color>
+
+    <!-- Login screen color -->
+    <color name="app_base_color">#4282bf</color>
+
+    <color name="status_bar_background">#4391bf</color>
+    <color name="login_main_background">#4282bf</color>
+    <color name="login_button_login_background">#37a3e4</color>
+    <color name="login_button_login_background_new">#3f95e9</color>
+    <color name="login_button_signup_background">#277bcd</color>
+    <color name="login_button_signup_background_new">#3374b3</color>
+    <color name="dot_light_screen">#bfbfbf</color>
+    <!-- Color -->
+
+
+    <color name="invited_color">#b7d3eb</color>
+    <color name="ccc_color">#c4c4c4</color>
+    <color name="title_auto_login">#277bcd</color>
+    <color name="btn_auto_login">#277bcd</color>
+    <color name="button_login">#3f95e9</color>
+    <color name="share_border_color">#c4c4c4</color>
+    <array name="array_dot_active">
+        <item>@color/white</item>
+        <item>@color/white</item>
+        <item>@color/white</item>
+        <item>@color/white</item>
+        <item>@color/white</item>
+        <item>@color/white</item>
+    </array>
+
+    <array name="array_dot_inactive">
+        <item>@color/dot_light_screen</item>
+        <item>@color/dot_light_screen</item>
+        <item>@color/dot_light_screen</item>
+        <item>@color/dot_light_screen</item>
+        <item>@color/dot_light_screen</item>
+        <item>@color/dot_light_screen</item>
+    </array>
+
+</resources>

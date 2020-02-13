@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/notification_item_background"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_single_title" />
+
+    <TextView
+
+        style="@style/setting_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/notification_heading_background"
+        android:paddingLeft="@dimen/padding_normal"
+        android:paddingRight="@dimen/padding_normal"
+        android:text="@string/settings_chat_method"
+        android:textColor="@color/notification_heading_text_color" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_normal"
+        android:paddingRight="@dimen/padding_normal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padding_22"
+            android:paddingTop="@dimen/padding_22"
+            android:text="@string/enter_auto"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/sw_enter_auto"
+            style="@style/setting_switch_compat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/padding_normal"
+            android:checked="true" />
+    </RelativeLayout>
+
+    <TextView
+
+        style="@style/setting_heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/notification_heading_background"
+        android:paddingLeft="@dimen/padding_normal"
+        android:paddingRight="@dimen/padding_normal"
+        android:text="@string/settings_screen_method"
+        android:textColor="@color/notification_heading_text_color" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/btn_rotation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/padding_22"
+            android:paddingLeft="@dimen/margin_normal"
+
+            android:paddingTop="@dimen/padding_22"
+            android:text="@string/screen_setting"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_screen_rotation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="@dimen/margin_large"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingBottom="@dimen/padding_22"
+            android:paddingLeft="@dimen/margin_normal"
+            android:paddingTop="@dimen/padding_22"
+            android:text="@string/screen_setting"
+            android:textSize="@dimen/text_size_normal" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/notification_heading_background" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_normal"
+        android:paddingRight="@dimen/padding_normal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:gravity="center"
+            android:paddingBottom="@dimen/padding_22"
+            android:paddingTop="@dimen/padding_22"
+            android:text="@string/enter_v_duty"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/sw_enter_v_duty"
+            style="@style/setting_switch_compat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/padding_normal"
+            android:checked="true" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/notification_heading_background" />
+</LinearLayout>

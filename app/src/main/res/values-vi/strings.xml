@@ -1,0 +1,291 @@
+<resources>
+    <string name="app_name">CrewChat</string>
+    <string name="unknown">Unknown</string>
+    <!-- Back Exit app -->
+    <string name="press_again_to_exit_message">Nếu click nút back thêm lần nữa, ứng dụng sẽ được đóng.</string>
+
+    <string name="permission_denied">Permission Denied</string>
+
+
+    <!-- PROFILE -->
+    <string name="profile_label_name">Name</string>
+    <string name="profile_label_sex">Sex</string>
+    <string name="profile_label_entrance_date">Ngày vào công ty</string>
+    <string name="profile_label_birthday">Ngày sinh</string>
+    <string name="profile_label_belong">Belong To Department</string>
+
+    <string name="aaaa">text example</string>
+
+    <string name="navigation_drawer_open">Mở navigation</string>
+    <string name="navigation_drawer_close">Bật navigation</string>
+
+    <string name="action_settings">Cài đặt</string>
+    <string name="action_search">Tìm kiếm</string>
+    <string name="action_status">Trạng thái</string>
+
+    <string name="action_working">Làm việc</string>
+    <string name="action_away">Vắng mặt</string>
+    <string name="action_resting">Offline</string>
+    <string name="action_work_outside">Làm việc ngoài</string>
+    <string name="action_in_a_call">Điện thoại</string>
+    <string name="action_meeting">Họp</string>
+
+    <string name="loading_title">Đang load...</string>
+    <string name="loading_content">Vui lòng chờ chút.</string>
+    <string name="string_ok">OK</string>
+    <string name="no_connection_error">Không có liên kết internet</string>
+    <string name="no_wifi_error">Vui lòng bật wifi hoặc 3G để tiếp tục sử dụng</string>
+    <string name="turn_wifi_on">Bật Wifi</string>
+    <string name="string_cancel">Hủy</string>
+
+    <string name="string_server_site">ID Tổ chức(Công ty)</string>
+
+    <!-- Login screen -->
+    <string name="login_username">ID người dùng</string>
+    <string name="login_password">Mật khẩu</string>
+    <string name="login_login">Đăng nhập</string>
+    <string name="copy_right_string">CopyRight © 2016 Dazone Tech., INC.</string>
+    <string name="no_network_error">Không thể kết nối với server.</string>
+    <string name="string_wrong_server_site">Không thể kết nối với server.</string>
+    <string name="login_empty_input">Không được để trống</string>
+    <string name="string_error_code_2">사용자 아이디 맞지 않습니다</string>
+    <string name="string_error_code_3">비밀번호가 맞지 않습니다</string>
+    <string name="string_error_code_4">Unavailable account</string>
+    <string name="string_error_code_5">Access Deny</string>
+    <string name="string_error_code_9">Lỗi không xác định</string>
+    <string name="string_error_code_default">Lỗi server</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="chat_hint">Enter text</string>
+    <string name="send">Gửi</string>
+
+    <string name="string_take_photo">Camera</string>
+    <string name="string_get_from_gallery">Album</string>
+    <string name="imv_desc">Giải thích ảnh</string>
+
+    //register 28/12/2015 update version
+    <string name="wating_app_download">Đang tải file, vui lòng chờ một chút.</string>
+    <string name="string_update_content_new">Tồn tại phiên bản mới. Bạn có muốn cập nhật phiên bản mới?</string>
+
+    <string name="today">Hôm nay</string>
+    <string name="yesterday">Hôm qua</string>
+
+    <string name="please_wait">Vui lòng chờ một chút....</string>
+    <string name="yes">Đồng ý</string>
+    <string name="no">Hủy</string>
+
+    <string name="group_list">Nhóm chat</string>
+    <string name="add_user">Thêm người</string>
+    <string name="remove_user">Rời khỏi nhóm</string>
+    <string name="can_not_chat">Không thể chat</string>
+
+    <string name="download_file_error">Không tồn tại file trên server.</string>
+    <string name="notice_download">Bạn có muốn tải xuống file này?</string>
+
+    <string name="image">Ảnh</string>
+    <string name="video">Video</string>
+    <string name="camera">Camera</string>
+    <string name="video_record">Quay phim</string>
+    <string name="done">Xác nhận</string>
+    <string name="images_tab">Ảnh</string>
+    <string name="videos_tab">Videos</string>
+    <string name="max_limit_file">Giới hạn</string>
+    <string name="please_wait_text">Vui lòng chờ một chút.</string>
+    <string name="refreshing">Làm mới</string>
+    <string name="file_size_exeeded">Độ lớn file vượt quá mức cho phép.</string>
+    <string name="mb"> MB</string>
+    <string name="please_select_file">Vui lòng chọn file.</string>
+    <string name="file">File</string>
+    <string name="files">File</string>
+    <string name="no_media_file_available">Không có file media</string>
+
+    <string name="pre_file_name">DaZone_</string>
+    <string name="notification_file">Đã nhận file....</string>
+    <string name="notification_add_user">Đã thêm mới tài khoản vào nhóm.</string>
+
+    <string name="error_server">Phát sinh lỗi, không thể rời khỏi nhóm.</string>
+
+    <string name="description_back_space">Trở lại</string>
+    <string name="description_cell">Cell</string>
+    <string name="emoji_no_recent">Các icon gần đây không sử dụng</string>
+
+    <!-- notification settings -->
+    <string name="settings_notification">Cài đặt thông báo</string>
+    <string name="settings_notification_time">Thời gian thông báo</string>
+    <string name="settings_notification_sound">Đổ chuông</string>
+    <string name="settings_notification_vibrate">Chế độ rung</string>
+    <string name="settings_notification_new_mail">Cài đặt thông báo</string>
+    <string name="settings_notification_method">Thông báo</string>
+    <string name="settings_notification_disable_when_using_pc_version">Khi chat bằng PC hiển thị thông báo</string>
+
+    <string name="settings_general">Cấu hình chung</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="my_profile">Thông tin của tôi</string>
+
+    <!-- Profile page -->
+    <string name="login_password_change">Đổi mật khẩu</string>
+    <string name="personal_id">PERSONAL ID</string>
+    <string name="email">Hộp thư</string>
+    <string name="company_name">COMPANY NAME</string>
+    <string name="phone_number">Số di động</string>
+    <string name="send_file">Gửi file</string>
+    <string name="chat_setting">Cấu hình chat</string>
+    <string name="close">Đóng</string>
+    <string name="contact">Liên hệ</string>
+    <string name="logout_confirm">Bạn có chắc chắn?</string>
+    <string name="logout_confirm_title">Xác nhận đăng xuất</string>
+    <!-- Attach Latest MSG-->
+    <string name="attach_image">Hình ảnh</string>
+    <string name="attach_file">Tập tin</string><![CDATA[
+
+    !-- room menu context -->
+    ]]>
+    <string name="room_name">Đổi tên phòng chat</string>
+    <string name="room_open">Mở phòng trò chuyện</string>
+    <string name="room_favorite">Thêm yêu thích</string>
+    <string name="alarm_on">Bật thông báo</string>
+    <string name="alarm_off">Tắt thông báo</string>
+    <string name="room_left">Rời phòng trò chuyện</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="room_rename">Đổi tên nhóm</string>
+    <string name="warning_change_title">Please change room title string !</string>
+    <string name="room_rename_note">Vui lòng nhập tên phòng chat muốn thay đổi.</string>
+    <!-- Menu context -->
+    <string name="chatting">Trò chuyện</string>
+    <string name="favorite_add">Thêm vào yêu thích</string>
+    <string name="room_remove_favorite">Hủy yêu thích</string>
+    <string name="favorite_remove_failed">Hủy yêu thích thất bại</string>
+    <string name="view_profile">Thông tin người dùng</string>
+
+    <string name="organization_expand_all">Xem tất cả bộ phận</string>
+    <string name="organization_collapse_all">Rút gọn các bộ phận</string>
+    <string name="organization_group_chat">Chat nhóm</string>
+    <string name="organization_add_favorite">Thêm vào yêu thích</string>
+
+    <!-- Add room to favorites message  -->
+    <string name="favorite_add_success">It has been added</string>
+    <!-- ROOM USER INFORMATION -->
+    <string name="room_user_info_heading">Thông tin người dùng</string>
+
+    <!-- Login activity -->
+
+    <!-- Signup activity -->
+    <string name="sign_up_suggest">Bạn chưa có ID tổ chức(công ty)?</string>
+    <string name="enter_your_email">Địa chỉ mail</string>
+    <string name="register">Tạo tổ chức mới</string>
+    <string name="signup_note">Chúng tôi sẽ gửi link để bạn có thể tạo cho mình một tổ chức(công ty) mới trên CrewCloud.</string>
+    <string name="note_heading">Vui lòng nhập địa chỉ mail</string>
+
+    <string name="title_sign_up_screen">Tạo tổ chức(công ty) mới</string>
+    <string name="choose_group">Choose Groups</string>
+    <string name="room_info_participant_count">%1$s participants</string>
+
+    <string name="confirm">Xác nhận</string>
+    <string name="cancel">Hủy</string>
+    <string name="group_name">Tên nhóm</string>
+
+    <string name="confirm_add_favorite">Xác nhận</string>
+    <string name="group_name_add_favorite">Thêm nhóm yêu thích</string>
+
+    <!-- Menu context string -->
+    <string name="open">Mở</string>
+    <string name="download">Tải xuống</string>
+    <string name="share">Chia sẻ</string>
+    <string name="registered_users">Thêm người trò chuyện</string>
+    <string name="modifying_group">Đổi tên nhóm</string>
+    <string name="delete_group">Xóa nhóm</string>
+
+    <string name="remove_from_favorite">Xóa khỏi danh sách yêu thích</string>
+    <string name="open_chat_room">Mở phòng chat</string>
+    <!-- Favorite tab -->
+    <string name="favorite_group_delete_warning">Bạn chắc rằng muốn xóa nhóm này. Tất cả người dùng trong nhóm sẽ di chuyển đến thùng rác</string>
+
+    <!-- -->
+    <string name="msg_select_item">Vui lòng chọn ít nhất 1 nhóm !</string>
+    <string name="about_crewchat">Thông tin CrewChat</string>
+
+    <string name="crewchat_version">Phiên bản CrewChat</string>
+    <string name="user_version">Phiên bản người dùng</string>
+    <string name="lastest_version">Phiên bản mới nhất</string>
+    <string name="invited">đã thêm</string>
+    <string name="gotogroup">vào phòng chat.</string>
+    <string name="has_left">đã rời phòng chat.</string>
+    <string name="can_not_send_this_file">Can not send file</string>
+    <string name="cancel_invite">đã hủy mời</string>
+    <string name="cancel_invite_2">khỏi phòng chat.</string>
+    <string name="iv_file_box">Hình ảnh</string>
+    <string name="no_data">Không có dữ liệu</string>
+    <string name="attach_file_box">Đính kèm tập tin</string>
+    <string name="copy">Copy</string>
+    <string name="relay">Chuyển tiếp</string>
+    <string name="to_me">To me</string>
+    <string name="tab_1">Người dùng</string>
+    <string name="tab_2">Chatting</string>
+
+    <string name="roomname">Room Name</string>
+    <string name="type">Type</string>
+    <string name="create_new_room">Create a new room</string>
+
+
+    <string name="thank_for_install">Cảm ơn bạn dã cài đặt CrewChat, một
+ trong những module của CrewCloud.
+</string>
+    <string name="crew_chat_is_a">\"CrewChat\" là phần mềm cho doanh nghiệp là\ngiải pháp dùng cho công việc với mục đích\nchia sẻ thông tin, truyền tải thông điệp\ngiữa cá nhân hoặc bộ phận dựa trên sơ đồ tổ chức.</string>
+    <string name="select_a_contact">Thông qua sơ đồ tổ chức để lựa chọn đối tượng\ntrò chuyện( Bộ phận, cá nhân).</string>
+    <string name="personal_office">Hỗ trợ tự động thông tin \"vắng mặt\"\nvăn phòng từng cá nhân.</string>
+    <string name="the_same_room">Hỗ trợ trò chuyện liên tiếp theo dòng thời gian.</string>
+    <string name="various_multimedia">Hỗ trợ upload, download dữ liệu nhiều chủng loại.</string>
+    <string name="has_document">Hỗ trợ chức năng quản lý văn bản của file đã được upload.</string>
+    <string name="the_convertsation">Hỗ trợ EXPORT nội dung hội thoại.</string>
+    <string name="it_is_used">Dùng báo cáo, chỉ thị và hỗ trợ công việc ngay tại thời điểm hiện tại.</string>
+    <string name="document_management">Quản lý văn bản,quản lý tài liệu trên server.</string>
+    <string name="employees_are_at">Có thể biết được trạng thái vắng mặt ở văn phòng của nhân viên.</string>
+    <string name="the_crew_chat_is_the_one">CrewChat là một trong những phần mềm\ngiải pháp thông minh cho doanh nghiệp của
+  CrewCloud</string>
+    <string name="if_you_want_to_see">Theo đó cần có ID của tổ chức (Công ty) và ID của nhân viên để cấu thành sơ đồ tổ chức\nNếu chưa có ID tổ chức (Công ty) vui lòng click phía dưới để tạo</string>
+    <string name="create_a_new_group">Tạo tổ chức (công ty) mới</string>
+    <string name="skip">Bỏ qua</string>
+    <string name="welcome_to_crewchat">Chào mừng đến với CrewChat</string>
+    <string name="click_to_start_chat">Click vào đây để bắt đầu chat</string>
+    <string name="insert_fail">Insert fail</string>
+    <string name="tv_type">Type</string>
+    <string name="tv_size">Size</string>
+    <string name="dimensions">Dimensions</string>
+    <string name="change_pass">Change</string>
+    <string name="create_chat_room">Create chat room</string>
+    <string name="old_pass">Old Password</string>
+    <string name="new_pass">New Password</string>
+    <string name="confirm_pass">Confirm Password</string>
+    <string name="change_password">Change Password</string>
+    <string name="can_not_check_permission">Can not check permission</string>
+    <string name="logged">Hiện tại đang được đăng nhập trên server CrewCloud.\nBạn có muốn đăng nhập bằng tài khoản trên?</string>
+    <string name="autoLogin">Tự động đăng nhập</string>
+    <string name="undefined">Chưa xem</string>
+    <string name="speak_now">Speak Now</string>
+    <string name="press_hold">Press and hold to send a voice clip</string>
+    <string name="recording">Recording</string>
+    <string name="touch_to_record">Touch to record</string>
+    <string name="read_msg">Đã đọc</string>
+    <string name="unread_msg">Chưa đọc</string>
+    <string name="enter_auto">Nhấn để gửi</string>
+    <string name="settings_crew_chat">Cài đặt CrewChat</string>
+    <string name="automatic">Tự động xoay</string>
+    <string name="portrait">Theo Chiều Đứng</string>
+    <string name="landscape">Theo chiều Ngang</string>
+    <string name="settings_screen_method">Cài đặt màn hình</string>
+    <string name="screen_setting">Xoay màn hình</string>
+    <string name="settings_chat_method">Cài đặt Nhắn tin</string>
+    <string name="scr_rotation">Xoay màn hình</string>
+    <string name="friend_tab">Friends</string>
+    <string name="chat_list">Chats</string>
+    <string name="title_activity_share">ShareActivity</string>
+    <string name="standard_text">Standard</string>
+    <string name="hight_text">High</string>
+    <string name="original_text">Original</string>
+    <string name="string_update_content">Tồn tại phiên bản mới. Bạn có muốn cập nhật phiên bản mới?</string>
+    <string name="mailActivity_message_download_apk">설치 파일을 다운로드 중입니다.\n잠시만 기다려주세요.</string>
+    <string name="settings_notification_time_2">* Khi cài đặt xong chỉ nhận đươc thông báo trong khoảng thời gian này.</string>
+    <string name="settings_notification_time_value">Thời gian nhận thông báo</string>
+    <string name="company_phone">Số điện thoại công ty</string>
+    <string name="enter_v_duty">Hiển thị cấp bậc</string>
+</resources>

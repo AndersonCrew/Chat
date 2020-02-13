@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_menu_l">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/intro_margin_l_r"
+        android:layout_marginRight="@dimen/intro_margin_l_r"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/text_intro_page"
+            android:layout_marginBottom="50dp"
+            android:gravity="center"
+            android:text="@string/the_crew_chat_is_the_one" />
+
+        <TextView
+            style="@style/text_intro_page"
+            android:layout_marginBottom="50dp"
+            android:gravity="center"
+            android:text="@string/if_you_want_to_see" />
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/tvNewGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="@string/create_a_new_group"
+                android:textColor="@color/white" />
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/chat_list_bg_color"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    tools:context="com.dazone.crewchatoff.fragment.RenameRoomFragment">
+
+    <TextView
+        android:id="@+id/tv_old_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="@string/room_rename_note"
+        android:textColor="@color/secondary_text_color" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_white_gray_border_radius"
+            android:inputType="text"
+            android:maxLength="50"
+            android:paddingBottom="10dp"
+            android:textColorHighlight="@color/mdtp_accent_color"
+            android:paddingLeft="10dp"
+            android:paddingRight="32dp"
+            android:paddingTop="10dp"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:textColor="#000" />
+
+        <Button
+            android:id="@+id/btn_clear"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/search_ic_clear"
+            android:visibility="visible" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_remain_character_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:padding="10dp"
+        android:textColor="@color/secondary_text_color" />
+
+</LinearLayout>

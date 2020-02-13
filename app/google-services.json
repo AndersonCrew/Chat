@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "360611512660",
+    "firebase_url": "https://striking-figure-123005.firebaseio.com",
+    "project_id": "striking-figure-123005",
+    "storage_bucket": "striking-figure-123005.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360611512660:android:123942aa04ad8e60",
+        "android_client_info": {
+          "package_name": "com.crewcloud.apps.crewchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "360611512660-19rmqsettgobcrrli0pkgtrnaacu8ove.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.crewcloud.apps.crewchat",
+            "certificate_hash": "0e19133e983df6595f08abf6a1f9b82f65bc8ae0"
+          }
+        },
+        {
+          "client_id": "360611512660-4cf98jvsgkr3io58dpa06lo83uds3v84.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7v00BNp_bUsqOIH1gYiZ1ZOEh6QC6NBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "360611512660-4cf98jvsgkr3io58dpa06lo83uds3v84.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

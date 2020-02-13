@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_22"
+        android:text="@string/scr_rotation"
+        android:textSize="@dimen/text_size_15_17" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_3dp"
+        android:background="@color/colorLink" />
+
+    <RadioGroup
+        android:id="@+id/radios"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="right"
+        android:inputType="text"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rd_automatic"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableRight="@android:drawable/btn_radio"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/automatic"
+            android:buttonTint="@color/colorLink"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_15_17" />
+
+        <RadioButton
+            android:id="@+id/rd_portrait"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableRight="@android:drawable/btn_radio"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/portrait"
+            android:buttonTint="@color/colorLink"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_15_17" />
+
+        <RadioButton
+            android:id="@+id/rd_landscape"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorLink"
+            android:button="@null"
+            android:drawableRight="@android:drawable/btn_radio"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/landscape"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_15_17" />
+    </RadioGroup>
+</LinearLayout>

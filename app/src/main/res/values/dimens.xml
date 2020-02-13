@@ -1,0 +1,123 @@
+<resources>
+
+    //text size
+
+    <dimen name="chat_text_size">15sp</dimen>
+    <dimen name="chat_name_text_size">15sp</dimen>
+    <dimen name="chat_time_text_size">11sp</dimen>
+    <dimen name="file_info_text_size">13sp</dimen>
+    <dimen name="tree_user_text_size">13sp</dimen>
+    <dimen name="size">40dp</dimen>
+
+    <!-- COMMON -->
+    <dimen name="common_icon">48dp</dimen>
+    <dimen name="common_progress_bar">6dp</dimen>
+    <dimen name="common_avatar">47dp</dimen>
+    <dimen name="common_avatar_group">24dp</dimen>
+    <dimen name="common_badge">24dp</dimen>
+    <dimen name="common_header_layout">48dp</dimen>
+    <dimen name="common_footer_layout">48dp</dimen>
+
+
+    <!-- PADDING & MARGIN -->
+    <dimen name="padding_block">16dp</dimen>
+    <dimen name="padding_normal_2">10dp</dimen>
+    <dimen name="padding_normal">6dp</dimen>
+    <dimen name="padding_small">5dp</dimen>
+    <dimen name="padding_smallest">2dp</dimen>
+    <dimen name="margin_normal">10dp</dimen>
+    <dimen name="margin_normal_2">12dp</dimen>
+    <dimen name="margin_small">5dp</dimen>
+
+    <!-- TEXT SIZE -->
+    <dimen name="text_size_profile_title">20sp</dimen>
+    <dimen name="text_size_row_current_chat_name">16sp</dimen>
+    <dimen name="text_size_row_current_chat_content">14sp</dimen>
+    <dimen name="text_size_avatar_group">12sp</dimen>
+
+    <!-- ACTIVITY PROFILE -->
+    <dimen name="profile_avatar">100dp</dimen>
+    <dimen name="profile_avatar_margin_top">23dp</dimen>
+    <dimen name="profile_avatar_margin_bottom">12dp</dimen>
+    <dimen name="profile_text_size_username">16sp</dimen>
+    <dimen name="profile_text_size_company">13sp</dimen>
+    <dimen name="profile_text_size_content">16sp</dimen>
+    <dimen name="profile_text_size_label">14sp</dimen>
+    <dimen name="profile_button_call_email">50dp</dimen>
+    <dimen name="profile_button_call_email_padding">14dp</dimen>
+    <dimen name="profile_space_between_button_call_email">45dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="divider_height">0.67dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="button_text_size">16sp</dimen>
+    <dimen name="activity_login_logo_margin">20dp</dimen>
+    <dimen name="activity_login_btn_margin">50dp</dimen>
+    <dimen name="scroll_height_login">110dp</dimen>
+    <dimen name="dimen_chatting_avatar">40dp</dimen>
+    <dimen name="tree_user_avatar_dimen">48dp</dimen>
+    <dimen name="dimen_textview_time">10dp</dimen>
+    <dimen name="chat_text_max_width">250dp</dimen>
+    <dimen name="dimen_lnl_chat_left_pl">15dp</dimen>
+    <dimen name="dimen_lnl_chat_left">10dp</dimen>
+
+    <!--Common-->
+    <dimen name="dimen_1_2">1dp</dimen>
+    <dimen name="dimen_2_4">2dp</dimen>
+    <dimen name="dimen_3_6">3dp</dimen>
+    <dimen name="dimen_4_8">4dp</dimen>
+    <dimen name="dimen_5_10">5dp</dimen>
+    <dimen name="dimen_8_16">8dp</dimen>
+    <dimen name="dimen_10_20">10dp</dimen>
+    <dimen name="dimen_12_24">12dp</dimen>
+    <dimen name="dimen_20_40">20dp</dimen>
+    <dimen name="dimen_25_50">25dp</dimen>
+    <dimen name="dimen_40_80">40dp</dimen>
+    <dimen name="dimen_45_90">45dp</dimen>
+    <dimen name="dimen_70_140">70dp</dimen>
+    <dimen name="dimen_110_220">110dp</dimen>
+    <!--<dimen name="dimen_140_280">140dp</dimen>-->
+    <dimen name="dimen_140_280">210dp</dimen>
+    <dimen name="dimen_150_300">150dp</dimen>
+    <dimen name="dimen_240_480">240dp</dimen>
+    <dimen name="dimen_300_600">300dp</dimen>
+    <dimen name="dimen_320_640">320dp</dimen>
+    <dimen name="text_13_25">13sp</dimen>
+    <dimen name="text_15_30">15sp</dimen>
+    <dimen name="text_16_32">16sp</dimen>
+    <dimen name="text_14">14sp</dimen>
+    <dimen name="text_20_40">20sp</dimen>
+    <dimen name="text_size_15_17">17sp</dimen>
+    <dimen name="activity_login_horizontal_margin">20dp</dimen>
+
+    <!-- TAB INDICATOR-->
+    <dimen name="button_tab_radius">5dp</dimen>
+    <dimen name="padding_icon_search">14dp</dimen>
+    <dimen name="margin_left_avatart_and_text">10dp</dimen>
+    <dimen name="intro_margin_l_r">15dp</dimen>
+    <dimen name="intro_margin_top">70dp</dimen>
+    <dimen name="ic_intro_check">20dp</dimen>
+    <dimen name="iv_margin_bottom">30dp</dimen>
+    <dimen name="tv_margin_bottom">5dp</dimen>
+    <dimen name="change_pass_margin_top">5dp</dimen>
+    <dimen name="autoLoginMargin">20dp</dimen>
+    <dimen name="font_actionbar">18sp</dimen>
+    <dimen name="text_date">95dp</dimen>
+    <dimen name="text_unread_min_width">35dp</dimen>
+    <dimen name="text_size_normal">15sp</dimen>
+    <dimen name="padding_22">22dp</dimen>
+    <dimen name="line_3dp">3dp</dimen>
+    <dimen name="padding_25">25dp</dimen>
+    <dimen name="dimen_05_1">0.5dp</dimen>
+    <dimen name="dimen_42">42dp</dimen>
+    <dimen name="dimen_16_32">16sp</dimen>
+    <dimen name="dimen_16_sp">16sp</dimen>
+    <dimen name="dimen_17">17sp</dimen>
+    <dimen name="dimen_20">20dp</dimen>
+</resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/slider_intro_01_bg">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/intro_margin_l_r"
+        android:layout_marginRight="@dimen/intro_margin_l_r">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ln"
+            android:layout_marginBottom="@dimen/iv_margin_bottom"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/intro_ic_slide2" />
+
+        <LinearLayout
+            android:id="@+id/ln"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView style="@style/iv_intro_page" />
+
+                <TextView
+                    style="@style/text_intro_page"
+                    android:layout_gravity="center|left"
+                    android:text="@string/select_a_contact" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tv_margin_bottom"
+                android:orientation="horizontal">
+
+                <ImageView style="@style/iv_intro_page" />
+
+                <TextView
+                    style="@style/text_intro_page"
+                    android:layout_gravity="center|left"
+                    android:text="@string/personal_office" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tv_margin_bottom"
+                android:layout_marginBottom="@dimen/intro_margin_top"
+                android:orientation="horizontal">
+
+                <ImageView style="@style/iv_intro_page" />
+
+                <TextView
+                    style="@style/text_intro_page"
+                    android:layout_gravity="center|left"
+                    android:text="@string/the_same_room" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>
