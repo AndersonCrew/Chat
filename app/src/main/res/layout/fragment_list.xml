@@ -21,19 +21,11 @@
         android:background="@android:color/white"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/recycler_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone" />
-
         <RelativeLayout
             android:id="@+id/list_content_rl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/recycler_footer"
-            android:layout_below="@+id/recycler_header">
+            android:layout_above="@+id/recycler_footer">
 
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefreshLayout"
@@ -78,13 +70,13 @@
 
             <RelativeLayout
                 android:id="@+id/layoutSpeak"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:background="#88000000"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -92,6 +84,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/speak_now"
                     android:textColor="@color/white" />
+
                 <TextView
                     android:id="@+id/tvUpdateTime"
                     android:layout_width="wrap_content"
@@ -131,7 +124,6 @@
                     android:src="@drawable/arrow_down" />
 
             </RelativeLayout>
-
         </RelativeLayout>
 
         <LinearLayout
@@ -157,10 +149,6 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="true" />
         </LinearLayout>
-        <!--<ProgressBar-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_height="wrap_content" />-->
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

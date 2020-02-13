@@ -70,7 +70,7 @@ public abstract class BasePagerActivity extends BaseActivity {
 
         setContentView(R.layout.activity_base_pager);
         CrewChatApplication.isAddUser = true;
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -78,11 +78,11 @@ public abstract class BasePagerActivity extends BaseActivity {
         tabAdapter = new TabPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(tabAdapter);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        ivSearch = (FrameLayout) findViewById(R.id.iv_search);
+        ivSearch = findViewById(R.id.iv_search);
         ivSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,7 +106,7 @@ public abstract class BasePagerActivity extends BaseActivity {
         });
 
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

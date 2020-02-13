@@ -92,9 +92,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private String TAG = "ChattingActivity";
-    private TreeUserDTO dto;
-    //ChattingDto chattingDto;
-
     // 채팅방 내부 플래그먼트
     private ChattingFragment fragment;
     private ArrayList<TreeUserDTOTemp> treeUserDTOTempArrayList = null;
@@ -107,18 +104,12 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     public static ArrayList<Integer> userNos;
     private boolean isOne = false;
     private boolean isShow = true;
-    private OnFilterMessage mFilterMessage;
     private String title;
     private String roomTitle = "";
     private long myId;
     public static Uri videoPath = null;
     private ChattingDto mDto = null;
     public static ChattingActivity instance = null;
-
-    public void setmFilterMessage(OnFilterMessage mFilterMessage) {
-        this.mFilterMessage = mFilterMessage;
-    }
-
 
     public void removeUserList(int userId) {
         if (userNos != null) {
@@ -135,7 +126,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     public void updateSTT() {
         String subtitle = "";
         try {
-            subtitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, userNos.size());
+            subtitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, String.valueOf(userNos.size()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,7 +143,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         instance = this;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
 
         if (CompanyFragment.instance != null)
             treeUserDTOTempArrayList = CompanyFragment.instance.getUser();
@@ -221,7 +211,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     roomSize = userNos.size();
                 }
 
-                subTitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, roomSize);
+                subTitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, String.valueOf(roomSize));
                 Log.d(TAG, "onCreate:" + roomSize);
             }
             Log.d(TAG, "setupTitleRoom 1:" + roomTitle);
@@ -269,13 +259,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         HttpRequest.getInstance().GetChatRoom(roomNo, new OnGetChatRoom() {
             @Override
             public void OnGetChatRoomSuccess(ChatRoomDTO chatRoomDTO) {
-//                Log.d(TAG, "chatRoomDTO:" + new Gson().toJson(chatRoomDTO));
-//                userNos = chatRoomDTO.getUserNos();
                 userNos = Constant.removeDuplicatePosition(chatRoomDTO.getUserNos());
-
-
                 boolean isExistMe = false;
-
                 for (int u = 0; u < userNos.size(); u++) {
                     if (userNos.get(u) == myId) {
                         if (!isExistMe) {
@@ -310,7 +295,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         roomSize = userNos.size();
                     }
 
-                    subTitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, roomSize);
+                    subTitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, String.valueOf(roomSize));
                     Log.d(TAG, "getChatRoomInfo:" + roomSize);
                 }
                 Log.d(TAG, "setupTitleRoom 2");
@@ -343,8 +328,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
 
     private void setupTitleRoom(ArrayList<Integer> userNos, String roomTitle, String status) {
-
-//        Log.d(TAG, "setupTitleRoom userNos:" + new Gson().toJson(userNos));
         if (mDto != null) {
             if (mDto.getRoomType() != 1) {
                 if (userNos.size() == 2) {
@@ -469,16 +452,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private String getGroupTitleName(ArrayList<Integer> userNos) {
-
         boolean flag = false;
-        if (mDto != null) {
-//            Log.d(TAG,"Dto != null: roomType: "+mDto.getRoomType());
-            if (mDto.getRoomType() == 1) flag = true;
-
-        } else {
-//            Log.d(TAG,"Dto null:"+userNos.size());
-        }
-
         String result = "";
         for (int i : userNos) {
             if (i != myId || flag) {
@@ -516,26 +490,14 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         return result.substring(0, result.length() - 1);
     }
 
-    public void addUserFromRoomUser(ArrayList<Integer> userNosAdded) {
-        for (int i : userNosAdded) {
-            if (Constant.isAddUser(userNos, i)) {
-                userNos.add(i);
-            }
-        }
-    }
-
     public void activityResultAddUser(Intent data) {
         try {
             Bundle bc = data.getExtras();
             if (bc != null) {
-                //int[] list = bc.getIntArray(Statics.CHATTING_DTO_ADD_USER_NEW);
-                //int i = bc.getInt(Statics.CHATTING_DTO_ADD_USER_NEW);
                 ArrayList<Integer> userNosAdded = bc.getIntegerArrayList(Constant.KEY_INTENT_USER_NO_ARRAY);
-                //ArrayList<Integer> userNos = this.userNos;
                 ArrayList<Integer> lstNew = new ArrayList<>();
                 if (userNosAdded != null) {
                     for (int i : userNosAdded) {
-//                        userNos.add(i);
                         if (Constant.isAddUser(userNos, i)) {
                             userNos.add(i);
                             lstNew.add(i);
@@ -623,7 +585,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         intent.putExtra(Statics.CHATTING_DTO_REG_DATE, currentTime);
                         startActivityForResult(intent, Statics.IMAGE_ROTATE_CODE);
                     }
-                    //Send(Utils.getPathFromURI(uri, this));
                     break;
 
                 case Statics.CAMERA_VIDEO_REQUEST_CODE:
@@ -640,7 +601,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             Log.d(TAG, "path:" + path);
                             String filename = path.substring(path.lastIndexOf("/") + 1);
                             Log.d(TAG, "filename:" + filename);
-                            //ChattingDto chattingDto = this.chattingDto;
                             ChattingDto chattingDto = new ChattingDto();
                             chattingDto.setmType(CHATTING_VIEW_TYPE_SELECT_VIDEO);
                             chattingDto.setAttachFilePath(path);
@@ -648,7 +608,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             chattingDto.setAttachFileSize((int) file.length());
                             ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                             Log.d(TAG, "addNewRow 2");
-                            //Send(Utils.getPathFromURI(videoUri, this));
                         }
                     } else {
                         Log.d(TAG, "data==null");
@@ -659,10 +618,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
                             galleryAddPic(path);
 
-//                            Log.d(TAG,"path:"+path);
                             File file = new File(path);
                             String filename = path.substring(path.lastIndexOf("/") + 1);
-                            //ChattingDto chattingDto = this.chattingDto;
                             ChattingDto chattingDto = new ChattingDto();
                             chattingDto.setmType(CHATTING_VIEW_TYPE_SELECT_VIDEO);
                             chattingDto.setAttachFilePath(path);
@@ -670,7 +627,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             chattingDto.setAttachFileSize((int) file.length());
                             ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                             Log.d(TAG, "addNewRow 3");
-                            //Send(Utils.getPathFromURI(videoUri, this));
                         }
                     }
                     break;
@@ -686,7 +642,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         }
                         File file = new File(path);
                         String filename = path.substring(path.lastIndexOf("/") + 1);
-                        //ChattingDto chattingDto = this.chattingDto;
                         ChattingDto chattingDto = new ChattingDto();
                         chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO);
                         chattingDto.setAttachFilePath(path);
@@ -700,7 +655,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
                         ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                         Log.d(TAG, "addNewRow 4");
-                        //Send(Utils.getPathFromURI(videoUriPick, this));
                     }
                     break;
                 case Statics.FILE_PICKER_SELECT:
@@ -746,7 +700,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                                 String filename = path.substring(path.lastIndexOf("/") + 1);
                                 Log.d(TAG, "filename:" + filename);
                                 if (filename.contains(".")) {
-                                    //ChattingDto chattingDto = this.chattingDto;
                                     ChattingDto chattingDto = new ChattingDto();
                                     chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
                                     chattingDto.setAttachFilePath(path);
@@ -759,7 +712,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
                                     chattingDto.setPositionUploadImage(ChattingFragment.instance.dataSet.size() - 1);
                                     integerList.add(chattingDto);
-                                    //Send(path);
                                 } else {
                                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.can_not_send_this_file) + " " + filename, Toast.LENGTH_SHORT).show();
                                 }
@@ -772,9 +724,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
                 case Statics.CONTACT_PICKER_SELECT:
                     if (data != null && data.hasExtra(ContactPickerActivity.RESULT_CONTACT_DATA)) {
-                        //ArrayList<UserDto> listUserDto = (ArrayList<UserDto>) data.getSerializableExtra("PICK_CONTACT");
                         // Loop all contact that user has picked and display it on chat windows
-
                         // we got a result from the contact picker
                         List<Contact> contacts = (List<Contact>) data.getSerializableExtra(ContactPickerActivity.RESULT_CONTACT_DATA);
 
@@ -890,7 +840,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     public static File getOutputMediaFile(int type) {
-        //File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),Statics.IMAGE_DIRECTORY_NAME);
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), Constant.pathDownload);
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
@@ -924,21 +873,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         uri = Uri.fromFile(getOutputMediaFile(type));
         return uri;
     }
-
-//    private final static int MSG_UPDATE_DISPLAY = 2;
-//    Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//
-//            switch (msg.what) {
-//                case MSG_UPDATE_DISPLAY:
-//                    // TODO
-//                    final ChattingDto chattingDto = (ChattingDto) msg.obj; // get contents
-//                    addNewRow(chattingDto);
-//                    break;
-//            }
-//        }
-//    };
 
     private final BroadcastReceiver imageBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -979,58 +913,11 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     if (ChattingFragment.instance != null)
                         ChattingFragment.instance.sendFileWithQty(integerList, 0);
                 }
-
-
-//                new Thread() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            for (int i = 0; i < listFilePath.size(); i++) {
-//                                String path = listFilePath.get(i);
-//                                ChattingDto chattingDto = new ChattingDto();
-//
-//                                if (intent.getAction().equals(MediaChooser.IMAGE_SELECTED_ACTION_FROM_MEDIA_CHOOSER)) {
-//                                    Log.d(TAG, "IMAGE_SELECTED_ACTION_FROM_MEDIA_CHOOSER");
-//                                    chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
-//                                } else {
-//                                    chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
-//                                }
-//
-//                                chattingDto.setAttachFilePath(path);
-//                                chattingDto.setRoomNo(chattingDto.getRoomNo());
-//                                chattingDto.setRegDate(chattingDto.getRegDate());
-//
-//                                handler.obtainMessage(MSG_UPDATE_DISPLAY, chattingDto).sendToTarget();
-//                                Thread.sleep(100);
-//                            }
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }.start();
             }
 
 
         }
     };
-
-    // add new row for attach file, then perform notify data to upload file to server
-    private void addNewRow(ChattingDto chattingDto) {
-        ChattingFragment.instance.addLineToday();
-        ChattingFragment.instance.dataSet.add(chattingDto);
-        ChattingFragment.instance.adapterList.notifyItemInserted(ChattingFragment.instance.dataSet.size());
-        ChattingFragment.instance.layoutManager.scrollToPosition(ChattingFragment.instance.dataSet.size() - 1);
-
-
-        //Send(path);
-        //SendTest(path, ChattingFragment.instance.dataSet.size() - 1);
-        //ChattingFragment.instance.(chattingDto, path);
-        /*if (ChattingFragment.instance.rvMainList != null) {
-            ChattingSelfImageViewHolder vh = (ChattingSelfImageViewHolder) ChattingFragment.instance.rvMainList.findViewHolderForPosition(ChattingFragment.instance.dataSet.size() - 2);
-            ProgressBar progressBar = vh.progressBar;
-            SendTest(path, progressBar);
-        }*/
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -1039,7 +926,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                 backToListChat();
                 break;
         }
-
         return true;
     }
 
@@ -1051,7 +937,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     private void backToListChat() {
         if (ChattingFragment.instance != null) {
             int i = ChattingFragment.instance.checkBack();
-
             if (i != 0) {
                 ChattingFragment.instance.hidden(i);
             } else {
@@ -1086,48 +971,10 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private void showCallMenu(View v) {
-        // POPUP MENU
-        /*PopupMenu popup = new PopupMenu(this, v);
-        // Inflate the menu from xml
-        popup.getMenuInflater().inflate(R.menu.menu_call_in_chatting, popup.getMenu());
-        Menu menu = popup.getMenu();
-        List<TreeUserDTOTemp> listUser = chattingDto.getListTreeUser();
-        for (TreeUserDTOTemp treeUserDTOTemp : listUser) {
-            String userName = treeUserDTOTemp.getName();
-            String phone = !TextUtils.isEmpty(treeUserDTOTemp.getCellPhone().trim()) ?
-                    treeUserDTOTemp.getCellPhone() :
-                    !TextUtils.isEmpty(treeUserDTOTemp.getCompanyPhone().trim()) ?
-                            treeUserDTOTemp.getCompanyPhone() :
-                            "";
-            System.out.println("treeUserDTOTemp");
-            if (!TextUtils.isEmpty(phone)) {
-                menu.add(0, Menu.FIRST + listUser.indexOf(treeUserDTOTemp), Menu.NONE, userName + " (" + phone + ")");
-            }
-        }*/
-
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(ChattingActivity.this);
         builderSingle.setTitle("Call");
-
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(ChattingActivity.this, R.layout.row_chatting_call);
-
         Utils.addCallArray(userNos, arrayAdapter, treeUserDTOTempArrayList);
-        /*for (int i : userNos) {
-            if (i != UserDBHelper.getUser().Id) {
-                TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(treeUserDTOTempArrayList, i);
-                if (treeUserDTOTemp != null) {
-                    String userName = treeUserDTOTemp.getName();
-                    String phone = !TextUtils.isEmpty(treeUserDTOTemp.getCellPhone().trim()) ?
-                            treeUserDTOTemp.getCellPhone() :
-                            !TextUtils.isEmpty(treeUserDTOTemp.getCompanyPhone().trim()) ?
-                                    treeUserDTOTemp.getCompanyPhone() :
-                                    "";
-                    if (!TextUtils.isEmpty(phone)) {
-                        arrayAdapter.add(userName + " (" + phone + ")");
-                    }
-                }
-            }
-        }*/
-
         builderSingle.setNegativeButton(
                 "cancel",
                 new DialogInterface.OnClickListener() {
@@ -1185,24 +1032,15 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_list_chat:
-                       /* Intent intent2 = new Intent(ChattingActivity.this, GroupListUser.class);
-                        intent2.putExtra(Constant.KEY_INTENT_USER_NO_ARRAY, userNos);
-                        startActivity(intent2);*/
-
                         menu_list_chat();
-
-
                         return true;
-
                     case R.id.menu_add_chat:
-//                        final Intent intent = new Intent(ChattingActivity.this, OrganizationActivity.class);
                         final Intent intent = new Intent(ChattingActivity.this, InviteUserActivity.class);
                         intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
                         intent.putExtra(Constant.KEY_INTENT_COUNT_MEMBER, userNos);
                         intent.putExtra(Constant.KEY_INTENT_ROOM_TITLE, title);
                         startActivityForResult(intent, Statics.ADD_USER_SELECT);
                         return true;
-
                     case R.id.menu_left_group:
                         HttpRequest.getInstance().DeleteChatRoomUser(roomNo, myId, new BaseHTTPCallBack() {
                             @Override
@@ -1219,20 +1057,10 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
                             @Override
                             public void onHTTPFail(ErrorDto errorDto) {
-//                                Utils.showMessage(getString(R.string.error_server));
                             }
                         });
                         return true;
-
                     case R.id.menu_send_file:
-//                        Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
-//                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
-//                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
-//                        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-//                        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
-//                        ChattingActivity.Instance.startActivityForResult(i, Statics.FILE_PICKER_SELECT);
-
-
                         if (checkPermissionsReadExternalStorage()) {
                             Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
                             i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
@@ -1243,13 +1071,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         } else {
                             ChattingActivity.instance.setPermissionsReadExternalStorage();
                         }
-
-
                         return true;
-
-//                    case R.id.menu_chat_setting:
-//                        return true;
-
                     case R.id.menu_close:
                         finish();
                         return true;
@@ -1404,12 +1226,14 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         requestPermission = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
         ActivityCompat.requestPermissions(this, requestPermission, CAMERA_PERMISSIONS_REQUEST_CODE);
     }
+
     public boolean checkPermissionsWriteExternalStorage() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
         return true;
     }
+
     public boolean checkPermissionsCamera() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             return false;
@@ -1457,21 +1281,13 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                 break;
             }
         }
-        if (isGranted) {
-//            enable permission
-        } else {
-            // dont enable permission
-        }
     }
 
     public boolean checkPermissionsWandR() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-
         return true;
     }
 

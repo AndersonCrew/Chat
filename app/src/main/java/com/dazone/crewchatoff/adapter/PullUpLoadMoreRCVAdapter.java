@@ -1,5 +1,6 @@
 package com.dazone.crewchatoff.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -29,6 +30,7 @@ public abstract class PullUpLoadMoreRCVAdapter<T> extends RecyclerView.Adapter<R
     protected Context mContext;
     protected boolean isFiltering = false;
 
+    @SuppressLint("HandlerLeak")
     protected final Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
@@ -114,7 +116,6 @@ public abstract class PullUpLoadMoreRCVAdapter<T> extends RecyclerView.Adapter<R
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 for (T c : mDataSet) {
                     if (!itemsCopy.contains(c)) {
                         itemsCopy.add(c);

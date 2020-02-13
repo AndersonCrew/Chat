@@ -31,7 +31,6 @@ public class CurrentChatAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder vh;
-
         if (viewType == VIEW_ITEM) {
             vh = new ListCurrentViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.row_current_chat, parent, false), this.mOnContextMenuSelect);
         } else if (viewType == Statics.CHATTING_VIEW_TYPE_EMPTY) {
@@ -66,10 +65,6 @@ public class CurrentChatAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
         if (holder instanceof ListCurrentViewHolder) {
             final ChattingDto item = mDataSet.get(position);
             ItemViewHolder viewHolder = (ListCurrentViewHolder) holder;
-//            if(position==10)
-//            {
-//                Log.d(TAG,new Gson().toJson(item.getListTreeUser().size()));
-//            }
             if (item.getListTreeUser() != null ) {
                 viewHolder.bindData(item);
             }

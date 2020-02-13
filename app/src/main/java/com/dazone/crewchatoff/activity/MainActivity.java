@@ -1,6 +1,7 @@
 package com.dazone.crewchatoff.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -81,6 +82,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     private boolean doubleBackToExitPressedOnce = false;
     public static MainActivity instance = null;
     public static long myRoom = -55;
+    @SuppressLint("HandlerLeak")
     protected Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -89,14 +91,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
 
             if (aResponse) {
                 int tab = msg.getData().getInt("tab");
-
-//                if (tab == TAB_COMPANY) {
-//                    ArrayList<TreeUserDTOTemp> lst = AllUserDBHelper.getUser();
-//
-//                } else if (tab == TAB_FAVORITE) {
-////                    AllUserDBHelper.getUser()
-//
-//                }
 
                 if (mGetStatusCallbackCompany != null && tab == TAB_COMPANY) {
                     mGetStatusCallbackCompany.onGetStatusFinish();
@@ -137,12 +131,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
 
     @Override
     protected void init() {
-
-
-//        Log.d(TAG,"getRegDate"+ TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(),"/Date(1490835539991+0900)/", 0, TimeUtils.KEY_FROM_SERVER));
-//        Log.d(TAG, "getRegDate"+TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), "/Date(1490831939991+0900)/", 0, TimeUtils.KEY_FROM_SERVER));
-
-
         File dir = new File(Environment.getExternalStorageDirectory() + Constant.pathDownload_no);
         if (dir.exists() && dir.isDirectory()) {
             // do something here

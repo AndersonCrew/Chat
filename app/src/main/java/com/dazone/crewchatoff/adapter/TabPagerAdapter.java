@@ -14,6 +14,7 @@ import com.dazone.crewchatoff.fragment.SettingFragment;
 public class TabPagerAdapter extends FragmentPagerAdapter {
     private int count = 4;
     private Activity mContext;
+
     public TabPagerAdapter(FragmentManager fm, int count, Activity context) {
         super(fm);
         this.count = count;
@@ -28,9 +29,6 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: // 채팅 리스트 탭
-                return new CurrentChatListFragment();
-
             case 1: // 조직도 탭
                 CompanyFragment companyFragment = new CompanyFragment();
                 companyFragment.setContext(mContext);
@@ -43,37 +41,11 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 
             case 3: // 환경설정 탭
                 return new SettingFragment();
-
+            case 0: // 채팅 리스트 탭
             default: // 기본(채팅리스트)
                 return new CurrentChatListFragment();
         }
     }
-
-/*
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
-        // save the appropriate reference depending on position
-        switch (position) {
-            case 0:
-                currentChatListFragment = (CurrentChatListFragment) createdFragment;
-                break;
-            case 1:
-                companyFragment = (CompanyFragment) createdFragment;
-                break;
-            case 2:
-                baseFavoriteFragment =(BaseFavoriteFragment)createdFragment;
-                break;
-            case 3:
-                settingFragment=(SettingFragment)createdFragment;
-                break;
-
-        }
-        return createdFragment;
-    }
-*/
-
-
 
     // 해당 탭을 데이터 삭제
     @Override

@@ -33,18 +33,18 @@ public abstract class BaseSingleActivity extends BaseActivity {
 
     protected void init() {
         setContentView(R.layout.activity_base_single);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        ivMore = (ImageView) findViewById(R.id.more_menu);
-        ivCall = (ImageView) findViewById(R.id.call_menu);
-        ivSearch = (ImageView) findViewById(R.id.search_menu);
-        mSearchView = (SearchView) findViewById(R.id.searchView);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ivMore = findViewById(R.id.more_menu);
+        ivCall = findViewById(R.id.call_menu);
+        ivSearch = findViewById(R.id.search_menu);
+        mSearchView = findViewById(R.id.searchView);
         mSearchView.setMaxWidth( Integer.MAX_VALUE );
         mSearchView.setImeOptions(mSearchView.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        toolbar_title = (TextView) findViewById(R.id.toolbar_title);
-        toolbar_status = (TextView) findViewById(R.id.toolbar_status);
+        fab = findViewById(R.id.fab);
+        toolbar_title = findViewById(R.id.toolbar_title);
+        toolbar_status = findViewById(R.id.toolbar_status);
         fab.setVisibility(View.GONE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

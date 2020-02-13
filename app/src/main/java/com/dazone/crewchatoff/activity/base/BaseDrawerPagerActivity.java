@@ -9,7 +9,6 @@ import com.dazone.crewchatoff.adapter.TabPagerAdapter;
 import com.dazone.crewchatoff.R;
 
 public abstract class BaseDrawerPagerActivity extends BaseDrawerActivity {
-    protected TabPagerAdapter tabAdapter;
     protected ViewPager mViewPager;
     protected TabLayout tabLayout;
 
@@ -17,9 +16,9 @@ public abstract class BaseDrawerPagerActivity extends BaseDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         content_main.setVisibility(View.GONE);
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setVisibility(View.VISIBLE);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.setVisibility(View.VISIBLE);
         init();
     }

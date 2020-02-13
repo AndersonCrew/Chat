@@ -113,13 +113,11 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
     @Override
     protected void initList() {
-//        init();
         showLoading();
     }
 
 
     private void getDataFromClient(List<TreeUserDTOTemp> listOfUsers) {
-
         dataSet.clear();
         List<TreeUserDTOTemp> list1;
         TreeUserDTOTemp treeUserDTOTemp1;
@@ -149,7 +147,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
             chattingDto.setListTreeUser(list1);
             Log.d(TAG, "add 1:");
-            if (Constant.isAddChattingDto(chattingDto)&&chattingDto.getListTreeUser()!=null&&chattingDto.getListTreeUser().size()>0)
+            if (Constant.isAddChattingDto(chattingDto) && chattingDto.getListTreeUser() != null && chattingDto.getListTreeUser().size() > 0)
                 dataSet.add(chattingDto);
         }
 
@@ -275,18 +273,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         if (dataSet == null)
             dataSet = new ArrayList<>();
         return dataSet;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        showIcon();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        hideIcon();
     }
 
     public void updateRenameRoom(int roomNo, String roomTitle) {
@@ -531,18 +517,8 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            showIcon();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-
-        showIcon();
         isActive = true;
         registerGCMReceiver();
         if (isUpdate) {
@@ -633,7 +609,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
             if (intent.getAction().equals(Statics.ACTION_RECEIVER_NOTIFICATION)) {
                 getDataFromServer();
-                isUpdate=false;
+                isUpdate = false;
                 Log.d(TAG, "ACTION_RECEIVER_NOTIFICATION");
                /* final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -643,9 +619,9 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                         adapterList.updateData(dataSet);
                     }
                 }, 1500);*/
-              //  adapterList.updateData(dataSet);
+                //  adapterList.updateData(dataSet);
                 //adapterList.updateData(dataSet);
-               // getDataFromServer();
+                // getDataFromServer();
                 //isUpdate = false;
 
               /*  adapterList.updateData(dataSet);
@@ -854,7 +830,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                             }
                             chattingDto.setListTreeUser(list1);
                             Log.d(TAG, "add 3");
-                            if (Constant.isAddChattingDto(chattingDto)&&chattingDto.getListTreeUser()!=null&&chattingDto.getListTreeUser().size()>0)
+                            if (Constant.isAddChattingDto(chattingDto) && chattingDto.getListTreeUser() != null && chattingDto.getListTreeUser().size() > 0)
                                 dataSet.add(chattingDto);
 
                             // store data to local database

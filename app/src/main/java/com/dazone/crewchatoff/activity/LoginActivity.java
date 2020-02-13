@@ -86,7 +86,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     private String username, password;
     private String subDomain;
     protected int activityNumber = 0;
-    private TextView forgot_pass, help_login, have_no_id_login;
     private String msg = "";
     private Dialog errorDialog;
     private IconButton mBtnSignUp;
@@ -104,7 +103,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             activityNumber = bundle.getInt("count_id");
         }
 
-//        Log.d(TAG,"CrewChatApplication.isAddUser:"+CrewChatApplication.isAddUser);
     }
 
     @Override
@@ -201,11 +199,11 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         } catch (Exception e) {
             e.printStackTrace();
         }
-        btnLogin = (Button) findViewById(R.id.login_btn_login);
-        edtUserName = (EditText) findViewById(R.id.login_edt_username);
-        edtPassword = (EditText) findViewById(R.id.login_edt_passsword);
-        edtServer = (AutoCompleteTextView) findViewById(R.id.login_edt_server);
-        scrollView = (ScrollView) findViewById(R.id.scl_login);
+        btnLogin = findViewById(R.id.login_btn_login);
+        edtUserName = findViewById(R.id.login_edt_username);
+        edtPassword = findViewById(R.id.login_edt_passsword);
+        edtServer = findViewById(R.id.login_edt_server);
+        scrollView = findViewById(R.id.scl_login);
         /*forgot_pass = (TextView) findViewById(R.id.forgot_pass);
         help_login = (TextView) findViewById(R.id.help_login);
         have_no_id_login = (TextView) findViewById(R.id.have_no_id_login);*/
@@ -214,14 +212,14 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         String dm = prefs.getDDSServer();
         Log.d(TAG, "domain:" + dm);
         if (dm.contains("crewcloud.net")) {
-            String str[] = dm.split("[.]");
+            String[] str = dm.split("[.]");
             if (str[0] != null)
                 dm = str[0];
         } else {
         }
         edtServer.setText(dm);
         edtPassword.setText(prefs.getPass());
-        mBtnSignUp = (IconButton) findViewById(R.id.login_btn_signup);
+        mBtnSignUp = findViewById(R.id.login_btn_signup);
         mBtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,7 +232,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             @Override
             public void onClick(View v) {
 
-//                Log.d(TAG, "AllUserDBHelper.getUser():" + AllUserDBHelper.getUser().size());
                 username = edtUserName.getText().toString().trim();
                 password = edtPassword.getText().toString();
                 subDomain = edtServer.getText().toString().trim();
@@ -287,7 +284,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             }
         });
 
-        iv = (FrameLayout) findViewById(R.id.iv);
+        iv = findViewById(R.id.iv);
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -394,9 +391,9 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     public void showDialogAutoLogin(final String companyID, final String UserID) {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.auto_login, null);
-        TextView tvCompany = (TextView) alertLayout.findViewById(R.id.tvCompany);
-        TextView tvUser = (TextView) alertLayout.findViewById(R.id.tvUser);
-        TextView tvTitle = (TextView) alertLayout.findViewById(R.id.tv_title_auto);
+        TextView tvCompany = alertLayout.findViewById(R.id.tvCompany);
+        TextView tvUser = alertLayout.findViewById(R.id.tvUser);
+        TextView tvTitle = alertLayout.findViewById(R.id.tv_title_auto);
         tvCompany.setText(": " + companyID);
         tvUser.setText(": " + UserID);
         tvTitle.setText(getResources().getString(R.string.autoLogin));
@@ -436,8 +433,8 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             }
         });
 */
-        TextView btnYes = (TextView) alertLayout.findViewById(R.id.btn_yes_auto);
-        TextView btnNo = (TextView) alertLayout.findViewById(R.id.btn_no_auto);
+        TextView btnYes = alertLayout.findViewById(R.id.btn_yes_auto);
+        TextView btnNo = alertLayout.findViewById(R.id.btn_no_auto);
         btnYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -686,7 +683,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         if (keyboardListenersAttached) {
             return;
         }
-        rootLayout = (ViewGroup) findViewById(R.id.root_login);
+        rootLayout = findViewById(R.id.root_login);
         rootLayout.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
         keyboardListenersAttached = true;
     }
@@ -726,7 +723,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
                 InputStream inputStream = urlConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-                String serverVersion = String.valueOf(bufferedReader.readLine().trim());
+                String serverVersion = bufferedReader.readLine().trim();
                 Log.d(TAG, "serverVersion:" + serverVersion);
                 prefs.setSERVER_VERSION(serverVersion);
                 inputStream.close();
