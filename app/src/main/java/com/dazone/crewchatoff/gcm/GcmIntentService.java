@@ -76,7 +76,6 @@ public class GcmIntentService extends IntentService {
     private static int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
     ArrayList<TreeUserDTOTemp> listTemp = AllUserDBHelper.getUser();
-    int current_user_status = UserDBHelper.getUser().getStatus();
     ChattingDto chattingDto;
     private Prefs prefs;
     private NotificationCompat.Builder mBuilder;
@@ -106,16 +105,8 @@ public class GcmIntentService extends IntentService {
         return isBetween || isLeft || isRight;
     }
 
-    public static String bundle2string(Bundle bundle) {
-        StringBuffer buf = new StringBuffer("Bundle{");
-        for (String key : bundle.keySet()) buf.append(" " + key + " => " + bundle.get(key) + ";");
-        buf.append(" }Bundle");
-        return buf.toString();
-    }
-
     @Override
     protected void onHandleIntent(Intent intent) {
-//        Log.d(TAG,"onHandleIntent");
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         String messageType = gcm.getMessageType(intent);
@@ -127,17 +118,14 @@ public class GcmIntentService extends IntentService {
         isEnableTime = prefs.getBooleanValue(Statics.ENABLE_TIME, false);
         isPCVersion = prefs.getBooleanValue(Statics.ENABLE_NOTIFICATION_WHEN_USING_PC_VERSION, true);
 
-//        Utils.writeNotificationLog(extras);
         if (extras != null) { // Check enable notification and current time avaiable [on time table]
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-//                sendNotification("Send error",extras.toString());
+                //TODO sendNotification("Send error",extras.toString());
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-//                sendNotification("Deleted messages on server ",
-//                        extras.toString());
+               //TODO sendNotification("Deleted messages on server ", extras.toString());
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 if (extras.containsKey("Code")) {
                     Code = Integer.parseInt(extras.getString("Code", "0"));
-
                     switch (Code) {
                         case 1:
                             Log.d("TAG", "Case 1 ###");
@@ -170,19 +158,7 @@ public class GcmIntentService extends IntentService {
                 }
             }
         }
-//        boolean isInBackground = false;
-//        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
-
-      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            ActivityManager.getMyMemoryState(myProcess);
-            isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
-        }
-        Log.d("sssDebug", "isInBackground" + isInBackground);
-        if (isInBackground) {*/
         GcmBroadcastReceiver.completeWakefulIntent(intent);
-        //  }
-
-        // NotifyService.enqueueWork(getApplicationContext(), new Intent());
         NOTIFICATION_ID = NOTIFICATION_ID + 1;
     }
 
@@ -245,12 +221,6 @@ public class GcmIntentService extends IntentService {
                     ShortcutBadger.applyCount(this, (int) unreadCount); //for 1.1.4
 
                     String currentTime = System.currentTimeMillis() + "";
-//                    if (extras.containsKey("google.sent_time")){
-//                        long t = extras.getLong("google.sent_time");
-//
-//                        currentTime = Long.toString(t);
-//                    }
-
                     chattingDto.setRegDate(currentTime);
                     chattingDto.setLastedMsgDate(currentTime);
 
@@ -295,8 +265,6 @@ public class GcmIntentService extends IntentService {
                         myIntent.putExtra(Statics.CHATTING_DTO, chattingDto);
                         myIntent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
                         TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(listTemp, chattingDto.getWriterUserNo());
-                        //if (!CrewChatApplication.isActivityVisible()) {
-
                         boolean isShowNotification = bundleDto.isShowNotification();
                         if (roomNo != CrewChatApplication.currentRoomNo) {
                             if (treeUserDTOTemp != null) {
@@ -345,14 +313,6 @@ public class GcmIntentService extends IntentService {
                         }
 
                     }
-//                    if (ChattingFragment.instance != null) {
-//                        if (ChattingFragment.instance.roomNo == roomNo && !ChattingFragment.instance.isVisible) {
-//                            ChattingFragment.instance.isUpdate = true;
-//                            // Check store data TH nay
-//                            Log.d(TAG, "CurrentChatListFragment 3");
-//                            ChattingFragment.instance.updateData(chattingDto);
-//                        }
-//                    }
 
                     // Just send notification
                     sendBroadcastToActivity(chattingDto, true);
@@ -461,11 +421,6 @@ public class GcmIntentService extends IntentService {
 
                 ShortcutBadger.applyCount(this, unReadTotalCount); //for 1.1.4
 
-//                Log.d(TAG,"update data unread:"+unReadTotalCount);
-                // Send Broadcast
-
-
-//                Log.d(TAG,"roomNoroomNo:"+roomNo+"unReadTotalCount:"+unReadTotalCount);
                 Constant.cancelAllNotification(CrewChatApplication.getInstance(), (int) roomNo);
                 Intent intent = new Intent(Constant.INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT);
                 intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
@@ -506,7 +461,6 @@ public class GcmIntentService extends IntentService {
                     public void OnGetChatRoomSuccess(final ChatRoomDTO chatRoomDTO) {
 
                         if (chatRoomDTO != null) {
-//                            Log.d(TAG, "chatRoomDTO:" + new Gson().toJson(chatRoomDTO));
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -534,69 +488,9 @@ public class GcmIntentService extends IntentService {
         }
     }
 
-
-    /*private void sendNotification(String txt, String title) {
-        int icon_id;
-
-        PendingIntent contentIntent;
-
-        Intent intent = new Intent(this, MainActivity.class);
-        icon_id = R.drawable.ic_group_white_24dp;
-        contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationManager mNotificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(icon_id)
-                        .setContentTitle(title)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(txt))
-                        .setContentText(txt);
-        mBuilder.setAutoCancel(true);
-
-        mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(0, mBuilder.build());
-    }*/
-
     interface getBitmap {
         void onSuccess(Bitmap result);
     }
-
-    class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        String avatarUrl;
-        getBitmap calback;
-
-        public DownloadImageTask(String avatarUrl, getBitmap calback) {
-            this.avatarUrl = avatarUrl;
-            this.calback = calback;
-
-        }
-
-        Bitmap bitmapOrg = null;
-
-        protected Bitmap doInBackground(String... urls) {
-            try {
-                URL url = new URL(avatarUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                bitmapOrg = BitmapFactory.decodeStream(input);
-            } catch (Exception e) {
-//                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return bitmapOrg;
-        }
-
-        protected void onPostExecute(final Bitmap result) {
-            calback.onSuccess(result);
-        }
-    }
-
 
     @Override
     public void onCreate() {
@@ -652,11 +546,6 @@ public class GcmIntentService extends IntentService {
             NotificationChannel mChannel = new NotificationChannel(channelId, "crewChat", importance);
             mChannel.setShowBadge(true);
             mNotificationManager.createNotificationChannel(mChannel);
-            //  }
-
-
-/*        myintent.putExtra("MESSAGE", link);
-        myintent.putExtra("FLAG","1");*/
             myIntent.putExtra(Statics.CHATTING_DTO, chattingDto);
             myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -678,13 +567,6 @@ public class GcmIntentService extends IntentService {
 
             final String msgTemp = msg;
             if (avatarUrl != null) {
-              /*  new DownloadImageTask(avatarUrl, new getBitmap() {
-                    @Override
-                    public void onSuccess(Bitmap result) {
-
-                        if (result == null) {
-                            result = BitmapFactory.decodeResource(getResources(), R.drawable.chatting1);
-                        }*/
                 Bitmap bitmap = getBitmapFromURL(avatarUrl);
 
                 mBuilder = new NotificationCompat.Builder(getApplicationContext(), channelId);
@@ -717,29 +599,13 @@ public class GcmIntentService extends IntentService {
                 Notification notification = mBuilder.build();
                 notification.number = 100;
                 notification.tickerText = getTickerText(unReadCount);
-                //mNotificationManager.notify((int) roomNo, notification);
                 mNotificationManager.notify((int) roomNo, mBuilder.build());
-                  /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForeground(notification,1);
-                    }*/
                 startForeground(2, notification);
             }
-                /*}).execute();
-            }*/
         } else {
             final long[] vibrate = new long[]{1000, 1000, 0, 0, 0};
             final Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            // CharSequence name = getString(R.string.channel_name);
-          /*  if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                NotificationChannel mChannel = new NotificationChannel(channelId, "t", importance);
-                mNotificationManager.createNotificationChannel(mChannel);
-            }*/
-
-
-/*        myintent.putExtra("MESSAGE", link);
-        myintent.putExtra("FLAG","1");*/
             myIntent.putExtra(Statics.CHATTING_DTO, chattingDto);
             myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             final PendingIntent contentIntent = PendingIntent.getActivity(this, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -761,13 +627,6 @@ public class GcmIntentService extends IntentService {
 
             final String msgTemp = msg;
             if (avatarUrl != null) {
-               /* new DownloadImageTask(avatarUrl, new getBitmap() {
-                    @Override
-                    public void onSuccess(Bitmap result) {*/
-
-                       /* if (result == null) {
-                            result = BitmapFactory.decodeResource(getResources(), R.drawable.chatting1);
-                        }*/
                 Bitmap bitmap = getBitmapFromURL(avatarUrl);
                 mBuilder = new NotificationCompat.Builder(getApplicationContext());
                 mBuilder.setNumber(unReadCount)
@@ -798,67 +657,10 @@ public class GcmIntentService extends IntentService {
                 Notification notification = mBuilder.build();
                 notification.number = 100;
                 notification.tickerText = getTickerText(unReadCount);
-                //  mNotificationManager.notify((int) roomNo, notification);
                 mNotificationManager.notify((int) roomNo, mBuilder.build());
-                  /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForeground(notification,1);
-                    }*/
                 startForeground(1, notification);
-
             }
-              /*  }).execute();
-            }*/
         }
-//        Bitmap bitmap = null;
-//        if (avatarUrl != null) {
-//
-//            File file = ImageLoader.getInstance().getDiskCache().get(avatarUrl);
-//
-//            if (file.exists()) {
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//
-//                try {
-//                    bitmap = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//            } else {
-//                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.chatting1);
-//            }
-//        }
-
-//        mBuilder.setNumber(unReadCount)
-//                .setSmallIcon(R.drawable.small_icon_chat)
-//                .setLargeIcon(bitmap)
-//                .setContentTitle(title)
-//                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
-//                .setContentText(msg)
-//                .setPriority(Notification.PRIORITY_MAX)
-//                .setAutoCancel(true);
-//
-//        // Check notification setting and config notification
-//        if (isEnableSound) mBuilder.setSound(soundUri);
-//        if (isEnableVibrate) mBuilder.setVibrate(vibrate);
-//        mBuilder.setContentIntent(contentIntent);
-//        if (msg.contains("\r\n")) {
-//            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
-//            /** STYLE BIG TEXT */
-//            String bigText = msg.replaceAll("\r\n", "<br/>");
-//            bigTextStyle.bigText(Html.fromHtml(bigText));
-//            mBuilder.setStyle(bigTextStyle);
-//            mBuilder.setContentText(msg.split("\r\n")[0]);
-//        }
-//        if ((int) roomNo != (int) CrewChatApplication.currentNotification) {
-//            CrewChatApplication.currentNotification = roomNo;
-//            mNotificationManager.cancelAll();
-//        }
-//        Notification notification = mBuilder.build();
-//        notification.number = 100;
-//        notification.tickerText = getTickerText(unReadCount);
-//        mNotificationManager.notify((int) roomNo, notification);
-//        mNotificationManager.notify((int) roomNo, mBuilder.build());
-
 
     }
 
@@ -885,104 +687,6 @@ public class GcmIntentService extends IntentService {
         sendBroadcast(intent);
         Log.d(TAG, "sendBroadcastToActivity ACTION_RECEIVER_NOTIFICATION");
         EventBus.getDefault().post(new ReceiveMessage(dto));
-    }
-
-    /*private void executeGCM(GCMDto dto,Intent intent)
-    {
-        switch (BuildConfig.App_name)
-        {
-            case 0:
-                if(dto.type ==1||dto.type==2)
-                {
-                    HttpRequest.getInstance().checkLogin(null);
-                }
-                break;
-            case 1:
-                CrewGCMDatabaseHelper.updateGCMItem(dto);
-                if(Global.isAppForeground)
-                {
-                    sendBroadcastToActivity(dto);
-                }
-                else
-                {
-                    new CrewPrefs().putBooleanValue(CrewStatics.RELOAD_MAIN_KEY,true);
-                }
-                break;
-            case 2:
-                if(dto.type ==1||dto.type==2)
-                {
-                    HttpRequest.getInstance().checkLogin(null);
-                }
-                else {
-                    Util.setBadge(DazoneApplication.getInstance(), dto.count);
-                }
-                break;
-            default:
-                break;
-        }
-
-        if(dto.type!=500&&BuildConfig.App_name!=0) {
-            sendNotification(dto);
-        }
-            GcmBroadcastReceiver.completeWakefulIntent(intent);
-    }
-    private void sendNotification(GCMDto dto) {
-        int icon_id;
-
-        PendingIntent contentIntent;
-        switch (BuildConfig.App_name)
-        {
-            case 0:
-                icon_id = R.drawable.notifi_ic_timecard;
-                contentIntent = PendingIntent.getActivity(this, 0,
-                    new Intent(this, LoginActivity.class), 0);
-                break;
-            case 1:
-                icon_id = R.drawable.notifi_ic_crewcloud;
-                contentIntent = PendingIntent.getActivity(this, 0,
-                        new Intent(this, LoginActivity.class), 0);
-                break;
-            default:
-
-                Intent intent = new Intent(this, CrewNoteActivity.class);
-                intent.putExtra(Statics.KEY_NOTE_NO, dto.NoteNo);
-                intent.putExtra(Statics.KEY_NOTE_TITLE, dto.title);
-                icon_id = R.drawable.notifi_ic_crewnote;
-                contentIntent = PendingIntent.getActivity(this, 0,
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                break;
-        }
-        NotificationManager mNotificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder mBuilder =exif.getAttributeInt
-                new NotificationCompat.Builder(this)
-        .setSmallIcon(icon_id)
-        .setContentTitle(dto.title)
-        .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(dto.content))
-        .setContentText(dto.content);
-        mBuilder.setAutoCancel(true);
-
-        mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(0, mBuilder.build());
-    }
-    // called to send data to Activity
-    private void sendBroadcastToActivity(GCMDto dto) {
-        Intent intent = new Intent(Statics.ACTION_RECEIVER_NOTIFICATION);
-        intent.putExtra(Statics.GCM_DATA_NOTIFICATOON, new Gson().toJson(dto));
-        sendBroadcast(intent);
-    }*/
-    public boolean isRunning(Context ctx) {
-        ActivityManager activityManager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
-
-        for (ActivityManager.RunningTaskInfo task : tasks) {
-            if (ctx.getPackageName().equalsIgnoreCase(task.baseActivity.getPackageName()))
-                return true;
-        }
-
-        return false;
     }
 
     public Bitmap getBitmapFromURL(String strURL) {

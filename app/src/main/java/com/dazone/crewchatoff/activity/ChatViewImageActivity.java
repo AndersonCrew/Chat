@@ -101,30 +101,30 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initView() {
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager = findViewById(R.id.view_pager);
         viewPager.addOnPageChangeListener(this);
 
-        btnBack = (ImageView) findViewById(R.id.btn_back);
+        btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(this);
 
-        btnDownload = (ImageView) findViewById(R.id.btn_download);
+        btnDownload = findViewById(R.id.btn_download);
         btnDownload.setOnClickListener(this);
 
-        btnShare = (ImageView) findViewById(R.id.btn_share);
+        btnShare = findViewById(R.id.btn_share);
         btnShare.setOnClickListener(this);
 
-        btnDelete = (ImageView) findViewById(R.id.btn_delete);
+        btnDelete = findViewById(R.id.btn_delete);
         btnDelete.setOnClickListener(this);
 
-        btn_infor = (ImageView) findViewById(R.id.btn_infor);
+        btn_infor = findViewById(R.id.btn_infor);
         btn_infor.setOnClickListener(this);
 
-        imgAvatar = (ImageView) findViewById(R.id.img_avatar);
-        tvUserName = (TextView) findViewById(R.id.tv_username);
-        tvDate = (TextView) findViewById(R.id.tv_date);
+        imgAvatar = findViewById(R.id.img_avatar);
+        tvUserName = findViewById(R.id.tv_username);
+        tvDate = findViewById(R.id.tv_date);
 
-        rlHeader = (RelativeLayout) findViewById(R.id.rl_header);
-        lnFooter = (LinearLayout) findViewById(R.id.ln_footer);
+        rlHeader = findViewById(R.id.rl_header);
+        lnFooter = findViewById(R.id.ln_footer);
     }
 
     List<TreeUserDTOTemp> allUser;
@@ -140,10 +140,7 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
             listData = new ArrayList<>();
         }
 
-//        Log.d(TAG,new Gson().toJson(listData));
         Intent i = getIntent();
-//        listData = (ArrayList<ChattingDto>) i.getSerializableExtra(Statics.CHATTING_DTO_GALLERY_LIST);
-
         position = i.getIntExtra(Statics.CHATTING_DTO_GALLERY_POSITION, 0);
         showFull = i.getBooleanExtra(Statics.CHATTING_DTO_GALLERY_SHOW_FULL, false);
         get_user_name_from_db = i.getBooleanExtra(Statics.get_user_name_from_db, false);
@@ -162,7 +159,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    // Callback function when single tap to image
     OnClickViewCallback mCallback = new OnClickViewCallback() {
         @Override
         public void onClick() {
@@ -253,21 +249,15 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-//        String urlDownload1 = new Prefs().getServerSite() + Urls.URL_DOWNLOAD_THUMBNAIL + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + listData.get(viewPager.getCurrentItem()).getAttachNo();
-
         ChattingDto dto = listData.get(viewPager.getCurrentItem());
-
         String url = String.format("/UI/CrewChat/MobileAttachDownload.aspx?session=%s&no=%s",
                 new Prefs().getaccesstoken(), dto.getAttachNo());
         String urlDownload1 = new Prefs().getServerSite() + url;
-
-        Log.d(TAG, "urlDownload1:" + urlDownload1);
         String path = "";
         if (listData.get(viewPager.getCurrentItem()).getAttachInfo() != null) {
             path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + listData.get(viewPager.getCurrentItem()).getAttachInfo().getFileName();
         }
 
-        Log.d(TAG, "path:" + path);
         switch (v.getId()) {
             case R.id.btn_back:
                 finish();
@@ -281,13 +271,11 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
                         Utils.DownloadImage_v2(this, urlDownload1, listData.get(viewPager.getCurrentItem()).getAttachInfo().getFileName(), new DownLoadIMGFinish() {
                             @Override
                             public void onSuccess() {
-                              //  shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
                                 shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider",photoFile));
                                 startActivity(Intent.createChooser(shareIntent, "Share image using"));
                             }
                         });
                     } else {
-                        //shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
                         shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider",photoFile));
                         startActivity(Intent.createChooser(shareIntent, "Share image using"));
                     }
@@ -420,10 +408,10 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.image_infor_layout);
 
-        TextView tv_type = (TextView) dialog.findViewById(R.id.tv_type);
-        final TextView tv_size = (TextView) dialog.findViewById(R.id.tv_size);
-        final TextView tv_dimen = (TextView) dialog.findViewById(R.id.tv_dimen);
-        final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.progressBar);
+        TextView tv_type = dialog.findViewById(R.id.tv_type);
+        final TextView tv_size = dialog.findViewById(R.id.tv_size);
+        final TextView tv_dimen = dialog.findViewById(R.id.tv_dimen);
+        final ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
         String[] str = dto.getAttachInfo().getFileName().split("[.]");
         int size = dto.getAttachFileSize() / 1024;
         String strSize = size + " KB";

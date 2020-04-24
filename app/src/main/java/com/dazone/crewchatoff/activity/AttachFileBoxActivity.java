@@ -52,8 +52,8 @@ public class AttachFileBoxActivity extends AppCompatActivity {
     void init() {
         roomNo = getIntent().getLongExtra(Statics.ROOM_NO, -1);
         Log.d(TAG, "roomNo:" + roomNo);
-        tvNodata = (TextView) findViewById(R.id.tvNodata);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        tvNodata = findViewById(R.id.tvNodata);
+        progressBar = findViewById(R.id.progressBar);
         imagesURL = new ArrayList<>();
 
         List<TreeUserDTOTemp> allUser = null;
@@ -61,7 +61,7 @@ public class AttachFileBoxActivity extends AppCompatActivity {
         if (allUser == null) allUser = new ArrayList<>();
 
         mAdapter = new AttachFileBoxAdapter(this, imagesURL, allUser);
-        rvIvFileBox = (RecyclerView) findViewById(R.id.rvIvFileBox);
+        rvIvFileBox = findViewById(R.id.rvIvFileBox);
         lLayout = new LinearLayoutManager(AttachFileBoxActivity.this);
 
 
@@ -74,7 +74,6 @@ public class AttachFileBoxActivity extends AppCompatActivity {
                 tvNodata.setVisibility(View.GONE);
                 for (AttachImageList obj : lst) {
                     if (obj.getType() != 1 && roomNo == obj.getRoomNo()) {
-//                    if (obj.getType() != 1) {
                         imagesURL.add(obj);
                     }
                 }
@@ -84,7 +83,6 @@ public class AttachFileBoxActivity extends AppCompatActivity {
                 } else {
                     tvNodata.setVisibility(View.VISIBLE);
                 }
-
             }
 
             @Override

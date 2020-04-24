@@ -167,17 +167,7 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_type_6_layout, parent, false);
                 vh = new ChattingViewHolder6(v);
                 break;
-//            case Statics.CHATTING_VIEW_TYPE_AUDIO_ME:
-//                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_me_layout, parent, false);
-//                vh = new AudioVH(v, mActivity);
-//                break;
-//            case Statics.CHATTING_VIEW_TYPE_AUDIO_USER:
-//                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.audio_user_layout, parent, false);
-//                vh = new AudioVH(v, mActivity);
-//                break;
             default:
-              /*  v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_date, parent, false);
-                vh = new ChattingDateViewHolder(v);*/
                 break;
 
         }
@@ -187,7 +177,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) != Statics.CHATTING_VIEW_TYPE_EMPTY) {
-//            Log.d(TAG,"position:"+position);
             final ChattingDto item = mDataSet.get(position);
             BaseChattingHolder viewHolder = (BaseChattingHolder) holder;
             viewHolder.bindData(item);
@@ -217,10 +206,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
         if (mDataSet.get(position).getType() == 6) {
             return Statics.CHATTING_VIEW_TYPE_6;
         }
-
-//        Log.d(TAG,"pos:"+mDataSet.get(position).getName()+" - "+mDataSet.get(position).getmType()+" - "+mDataSet.get(position).getMessage());
-//        Log.d(TAG,"data:"+new Gson().toJson(mDataSet.get(position)));
-
 
         return mDataSet.get(position).getmType();
     }

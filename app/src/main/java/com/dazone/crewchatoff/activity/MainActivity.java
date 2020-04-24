@@ -78,7 +78,7 @@ import java.util.List;
 import static com.dazone.crewchatoff.utils.Utils.compareVersionNames;
 
 public class MainActivity extends BasePagerActivity implements ViewPager.OnPageChangeListener, ServiceConnection {
-    String TAG = "MainActivity";
+    String TAG = MainActivity.class.getName();
     private boolean doubleBackToExitPressedOnce = false;
     public static MainActivity instance = null;
     public static long myRoom = -55;
@@ -144,7 +144,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
 
         active = true;
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        // Load client data after login
         if (!CrewChatApplication.isLoggedIn) {
             Log.d(TAG, "loadStaticLocalData");
             CrewChatApplication.getInstance().syncData();

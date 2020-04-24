@@ -74,19 +74,19 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
     @Override
     protected void setup(View v) {
-        layoutMain = (RelativeLayout) v.findViewById(R.id.layout_main);
-        date_tv = (TextView) v.findViewById(R.id.date_tv);
+        layoutMain = v.findViewById(R.id.layout_main);
+        date_tv = v.findViewById(R.id.date_tv);
 
-        content_tv = (TextView) v.findViewById(R.id.content_tv);
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
-
-
-        progressBarSending = (ProgressBar) v.findViewById(R.id.progressbar_sending);
-        lnSendFailed = (LinearLayout) v.findViewById(R.id.ln_send_failed);
+        content_tv = v.findViewById(R.id.content_tv);
+        tvUnread = v.findViewById(R.id.text_unread);
 
 
-        btnResend = (ImageView) v.findViewById(R.id.btn_resend);
-        btnDelete = (ImageView) v.findViewById(R.id.btn_delete);
+        progressBarSending = v.findViewById(R.id.progressbar_sending);
+        lnSendFailed = v.findViewById(R.id.ln_send_failed);
+
+
+        btnResend = v.findViewById(R.id.btn_resend);
+        btnDelete = v.findViewById(R.id.btn_delete);
     }
 
     void reLay(long MessageNo) {
@@ -194,18 +194,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 Log.d(TAG, "onDismiss");
             }
         });
-//        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-//            @Override
-//            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
-//
-//                if (i == KeyEvent.KEYCODE_BACK) {
-//                    enableText();
-//                    Log.d(TAG, "OnKeyListener");
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
 
         Button b = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         if (b != null) {
@@ -249,8 +237,8 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
         if (dto.getMessage() != null) {
             String message = dto.getMessage();
-            //  String[] url = message.split("http");
             try {
+                Spanned msg;
                 if (dto.getType() == Constant.APPROVAL) {
                     String[] fullUrl = message.split("\\|");
                     String msgText = "";
@@ -260,42 +248,36 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                         msgText = fullUrl[0];
                         linkUrl = fullUrl[1];
                         linkTitle = fullUrl[2];
-                        Spanned Text = Html.fromHtml(msgText + " <br /><br />" +
-                                "<a href='" + linkUrl + "'>" + linkTitle + "</a><br />");
-                        //content_tv.setText(Html.fromHtml(text));
 
-                        // content_tv
+                        if (checkNullOrEmpty(linkUrl) && checkNullOrEmpty(linkTitle)) {
+                            msg = Html.fromHtml(msgText.replace("\n", "<br/>") + "<br/>" +
+                                    "<a href='" + linkUrl + "'>" + linkTitle + "</a><br/>");
+                        } else {
+                            msg = Html.fromHtml(msgText.replace("\n", "<br/>") + "<br/>");
+                        }
+
                         content_tv.setAutoLinkMask(0);
                         content_tv.setLinkTextColor(CrewChatApplication.getInstance().getResources().getColor(R.color.colorPrimary));
                         content_tv.setLinksClickable(true);
                         content_tv.setMovementMethod(LinkMovementMethod.getInstance());
-                        content_tv.setText(Text);
+                        content_tv.setText(msg);
                     } else {
                         content_tv.setAutoLinkMask(Linkify.ALL);
-                        // Linkify.addLinks(content_tv, Linkify.WEB_URLS);
                         content_tv.setLinksClickable(true);
                         content_tv.setText(dto.getMessage());
                     }
                 } else {
                     content_tv.setAutoLinkMask(Linkify.ALL);
-                    // Linkify.addLinks(content_tv, Linkify.WEB_URLS);
                     content_tv.setLinksClickable(true);
                     content_tv.setText(dto.getMessage());
                 }
 
 
             } catch (Exception e) {
+                e.printStackTrace();
             }
-            // content_tv.setText(dto.getMessage());
-          /*  Spanned Text = Html.fromHtml(url[0]+" <br />" +
-                    "<a href='https://www.android-examples.com'>☞ 바로가기</a>");
-*/
-
-
         }
 
-
-//        tvUnread.setVisibility(dto.getUnReadCount() == 0 ? View.GONE : View.VISIBLE);
         date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -315,9 +297,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 }
             });
         }
-      /*  if (isReSend) {
-            isReSend = false;
-        }*/
 
         if (dto.isHasSent()) {
             if (progressBarSending != null) progressBarSending.setVisibility(View.GONE);
@@ -329,18 +308,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
         /** SHOW DIALOG */
         layoutMain.setTag(content_tv.getText().toString());
-
-//        content_tv.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                content_tv.setLinksClickable(true);
-//            }
-//        });
-
-
-//        content_tv.setLinksClickable(true);
-//        content_tv.setMovementMethod(LinkMovementMethod.getInstance());
-
 
         content_tv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -359,14 +326,13 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
         layoutMain.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                Log.d(TAG,"layoutMain onLongClick:"+new Gson().toJson(dto));
                 long MessageNo = dto.getMessageNo();
                 String content = (String) v.getTag();
-//                DialogUtils.showDialogChat(content);
                 showDialogChat(content, MessageNo);
                 return true;
             }
         });
+
         // Set event listener for failed message
         if (btnResend != null) {
             btnResend.setTag(dto.getId());
@@ -380,7 +346,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                         dto.isSendding = true;
                         Log.d(TAG, "btnResend:" + dto.getMessage());
                         final Integer localId = (Integer) v.getTag();
-                        final long localMessageNo = dto.getMessageNo();
                         for (int i = 0; i <= mAdapter.getData().size() - 1; i++) {
                             if (dto.getId() == mAdapter.getData().get(i).getId()) {
                                 HttpRequest.getInstance().SendChatMsg(dto.getRoomNo(), mAdapter.getData().get(i).getMessage(), new SendChatMessage() {
@@ -400,8 +365,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                                         EventBus.getDefault().post(new ReloadListMessage());
                                         dto.isSendding = false;
                                         btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
-                                        //  mAdapter.notifyDataSetChanged();
-                                        // sendComplete=false;
                                     }
 
                                     @Override
@@ -409,94 +372,10 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                                         EventBus.getDefault().post(new ReloadListMessage());
                                         dto.isSendding = false;
                                         btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
-                                        // sendComplete=false;
-                                     /*   newDto.isSendding = false;
-                                        isSend = true;
-                                        ///Toast.makeText(mActivity, "Send message failed !", Toast.LENGTH_SHORT).show();
-                                        if (isNetWork) {
-                                            ChatMessageDBHelper.deleteByIdTmp(newDto, finalLastId);
-                                        }*/
-
                                     }
                                 });
                             }
                         }
-                       /* HttpRequest.getInstance().SendChatMsg(dto.getRoomNo(), dto.getMessage(), new SendChatMessage() {
-                            @Override
-                            public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
-                               *//* dto.setHasSent(true);
-                                dto.setMessageNo(chattingDto.getMessageNo());
-                                dto.setUnReadCount(chattingDto.getUnReadCount());
-                                String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
-                                dto.setRegDate(time);*//*
-
-                                Log.d(TAG, "onSendChatMessageSuccess:" + dto.getMessage());
-                                // update old chat message model --> messageNo from server
-                                // perform update when send message success
-
-                                // Notify current adapter
-                          *//*      if (mAdapter != null) {
-                                    for (int i = mAdapter.getData().size() - 1; i > -1; i--) {
-                                        if (mAdapter.getData().get(i).getId() == localId) {
-                                            mAdapter.getData().get(i).setHasSent(true);
-                                            mAdapter.getData().get(i).setMessageNo(chattingDto.getMessageNo());
-                                            mAdapter.getData().get(i).setUnReadCount(chattingDto.getUnReadCount());
-                                            String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
-                                            mAdapter.getData().get(i).setRegDate(time);
-                                            mAdapter.notifyItemChanged(i);
-                                            }
-
-                                    }
-
-                                }*//*
-                         *//* new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-//                                        dto.setHasSent(true);
-//                                        Log.d(TAG,"finalLastId adapter:"+localId);
-                                        dto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate()));
-                                        dto.setHasSent(true);
-                                        dto.setUnReadCount(chattingDto.getUnReadCount());
-                                        ChatMessageDBHelper.updateMessage(dto, localId);
-
-
-                                    }
-                                }).start();*//*
-
-                                    if (chattingDto.getId() == dto.getId()) {
-                                        if (!dto.isHasSent()) {
-                                            dto.setUnReadCount(chattingDto.getUnReadCount());
-                                            dto.setHasSent(true);
-                                            dto.setMessage(chattingDto.getMessage());
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    *//*ChatMessageDBHelper.updateMessageHasSend(chattingDto.getMessageNo() , true,chattingDto.getUnReadCount());*//*
-                                                    ChatMessageDBHelper.updateMessage(dto, dto.getId());
-                                                }
-                                            }).start();
-                                            //  if (!isReSend) {
-
-                                            mAdapter.notifyDataSetChanged();
-                                            //  }
-                                            // adapterList.notifyDataSetChanged();
-                                            Log.d(TAG, "adapterList.notifyItemChanged(i);");
-                                    }
-                                }
-                                // mAdapter.notifyDataSetChanged();
-
-                                dto.isSendding = false;
-
-                                *//* mAdapter.notifyDataSetChanged();*//*
-                            }
-
-                            @Override
-                            public void onSendChatMessageFail(ErrorDto errorDto, String url) {
-                                dto.isSendding = false;
-
-                                Log.d(TAG, "onSendChatMessageFail btnResend:" + dto.getMessage());
-                            }
-                        });*/
                     } else {
                         Log.d(TAG, "wait finish send: dto.isSendding:" + dto.isSendding + " msg:" + dto.getMessage());
                     }
@@ -548,6 +427,10 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 }
             });
         }
+    }
+
+    private boolean checkNullOrEmpty(String msg) {
+        return msg != null && !msg.equals(" ") && !TextUtils.isEmpty(msg);
     }
 
 }

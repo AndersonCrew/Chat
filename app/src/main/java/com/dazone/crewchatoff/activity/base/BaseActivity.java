@@ -35,7 +35,6 @@ import org.greenrobot.eventbus.Subscribe;
 import static com.dazone.crewchatoff.fragment.ChattingFragment.sendComplete;
 
 public abstract class BaseActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
-    public ActionBar actionBar;
     protected Context mContext;
     public static BaseActivity Instance = null;
     public Prefs prefs;
@@ -120,10 +119,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         final View customView = LayoutInflater.from(this).inflate(R.layout.dialog_alert, null);
         builder.setView(customView);
 
-        Button btnCancel = (Button) customView.findViewById(R.id.add_btn_cancel);
-        Button btnAdd = (Button) customView.findViewById(R.id.add_btn_log_time);
-        final TextView textView = (TextView) customView.findViewById(R.id.textView);
-        final TextView contentTextView = (TextView) customView.findViewById(R.id.contentTextView);
+        Button btnCancel = customView.findViewById(R.id.add_btn_cancel);
+        Button btnAdd = customView.findViewById(R.id.add_btn_log_time);
+        final TextView textView = customView.findViewById(R.id.textView);
+        final TextView contentTextView = customView.findViewById(R.id.contentTextView);
         btnCancel.setText(getText(R.string.string_ok));
         if (TextUtils.isEmpty(title)) {
             textView.setVisibility(View.GONE);
@@ -181,90 +180,9 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
                 });
     }
 
-    public void showAlertDialog(String title, Spannable content, String positiveTitle,
-                                String negativeTitle, View.OnClickListener positiveListener,
-                                View.OnClickListener negativeListener) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View customView = LayoutInflater.from(this).inflate(R.layout.dialog_alert, null);
-        builder.setView(customView);
-
-        Button btnCancel = (Button) customView.findViewById(R.id.add_btn_cancel);
-        Button btnAdd = (Button) customView.findViewById(R.id.add_btn_log_time);
-        final TextView textView = (TextView) customView.findViewById(R.id.textView);
-        final TextView contentTextView = (TextView) customView.findViewById(R.id.contentTextView);
-        btnCancel.setText(getText(R.string.string_ok));
-        if (TextUtils.isEmpty(title)) {
-            textView.setVisibility(View.GONE);
-        } else {
-            textView.setVisibility(View.VISIBLE);
-            textView.setText(title);
-        }
-        if (TextUtils.isEmpty(content)) {
-            contentTextView.setVisibility(View.GONE);
-        } else {
-            contentTextView.setVisibility(View.VISIBLE);
-            contentTextView.setText(content);
-        }
-
-        if (TextUtils.isEmpty(positiveTitle)) {
-            btnAdd.setVisibility(View.GONE);
-        } else {
-            btnAdd.setVisibility(View.VISIBLE);
-            btnAdd.setText(positiveTitle);
-            btnAdd.setOnClickListener(positiveListener);
-        }
-        if (TextUtils.isEmpty(negativeTitle)) {
-            btnCancel.setVisibility(View.GONE);
-        } else {
-            btnCancel.setVisibility(View.VISIBLE);
-            btnCancel.setText(negativeTitle);
-            btnCancel.setOnClickListener(negativeListener);
-        }
-        customDialog = builder.create();
-        customDialog.show();
-    }
-
-    public void showNetworkDialog() {
-        if (customDialog == null || !customDialog.isShowing()) {
-            if (Utils.isWifiEnable()) {
-                showAlertDialog(getString(R.string.app_name), getString(R.string.no_connection_error),
-                        getString(R.string.string_ok), null, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                customDialog.dismiss();
-                                finish();
-                            }
-                        }, null);
-            } else {
-                showAlertDialog(getString(R.string.app_name), getString(R.string.no_wifi_error),
-                        getString(R.string.turn_wifi_on), getString(R.string.string_cancel), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent wireLess = new Intent(
-                                        Settings.ACTION_WIFI_SETTINGS);
-                                startActivity(wireLess);
-                                customDialog.dismiss();
-                            }
-                        }, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                customDialog.dismiss();
-
-                                // don't close app when wifi network is disabled
-                                finish();
-                            }
-                        });
-            }
-        }
-    }
-
     public void rotationSetting() {
         try {
-
-
             int rotation = prefs.getIntValue(Statics.SCREEN_ROTATION, Constant.PORTRAIT);
-
             switch (rotation) {
                 case Constant.AUTOMATIC:
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -284,7 +202,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
 
     @Override
     public void networkAvailable() {
-
         if (isDisConnect) {
             sendComplete=false;
             EventBus.getDefault().post(new CloseScreen());
@@ -295,7 +212,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     @Override
     public void networkUnavailable() {
         isDisConnect = true;
-        // isDelete=false;
         Toast.makeText(getApplicationContext(),R.string.no_connection_error,Toast.LENGTH_SHORT).show();
     }
 }

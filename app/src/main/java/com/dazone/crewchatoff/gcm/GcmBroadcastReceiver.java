@@ -27,9 +27,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().compareTo(Intent.ACTION_LOCALE_CHANGED) == 0) {
             BelongsToDBHelper.clearBelong();
-//                                    Log.d(TAG,"before delete AllUserDBHelper.getUser():"+AllUserDBHelper.getUser().size());
             AllUserDBHelper.clearUser();
-//                                    Log.d(TAG,"after delete AllUserDBHelper.getUser():"+AllUserDBHelper.getUser().size());
             ChatRoomDBHelper.clearChatRooms();
             ChatMessageDBHelper.clearMessages();
             DepartmentDBHelper.clearDepartment();

@@ -35,9 +35,9 @@ public class ChattingPersonViewHolder extends ChattingSelfViewHolder {
     @Override
     protected void setup(View v) {
         super.setup(v);
-        user_name_tv = (TextView) v.findViewById(R.id.user_name_tv);
-        avatar_imv = (ImageView) v.findViewById(R.id.avatar_imv);
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
+        user_name_tv = v.findViewById(R.id.user_name_tv);
+        avatar_imv = v.findViewById(R.id.avatar_imv);
+        tvUnread = v.findViewById(R.id.text_unread);
     }
 
     @Override
@@ -61,12 +61,8 @@ public class ChattingPersonViewHolder extends ChattingSelfViewHolder {
             Glide.with(mContext).load(R.drawable.avatar_l).transform(new CircleTransform(CrewChatApplication.getInstance())).into(avatar_imv);
         }
 
-//        ImageUtils.RoundIMG(url, avatar_imv);
-
-
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);
-//        tvUnread.setVisibility(dto.getUnReadCount() == 0 ? View.GONE : View.VISIBLE);
         tvUnread.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,12 +72,11 @@ public class ChattingPersonViewHolder extends ChattingSelfViewHolder {
                 BaseActivity.Instance.sendBroadcast(intent);
             }
         });
-//        avatar_imv.setTag(dto.getUserNo());
+
         avatar_imv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-//                    int userNo = (int) v.getTag();
                     int userNo = dto.getUserNo();
                     Intent intent = new Intent(BaseActivity.Instance, ProfileUserActivity.class);
                     intent.putExtra(Constant.KEY_INTENT_USER_NO, userNo);

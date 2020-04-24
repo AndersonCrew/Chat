@@ -80,11 +80,11 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home_media_chooser);
 
-        headerBarTitle = (TextView) findViewById(R.id.titleTextViewFromMediaChooserHeaderBar);
-        headerBarCamera = (ImageView) findViewById(R.id.cameraImageViewFromMediaChooserHeaderBar);
-        headerBarBack = (ImageView) findViewById(R.id.backArrowImageViewFromMediaChooserHeaderView);
-        headerBarDone = (TextView) findViewById(R.id.doneTextViewViewFromMediaChooserHeaderView);
-        mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
+        headerBarTitle = findViewById(R.id.titleTextViewFromMediaChooserHeaderBar);
+        headerBarCamera = findViewById(R.id.cameraImageViewFromMediaChooserHeaderBar);
+        headerBarBack = findViewById(R.id.backArrowImageViewFromMediaChooserHeaderView);
+        headerBarDone = findViewById(R.id.doneTextViewViewFromMediaChooserHeaderView);
+        mTabHost = findViewById(android.R.id.tabhost);
 
 
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realTabcontent);
@@ -143,7 +143,7 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
 
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
 
-            TextView textView = (TextView) mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            TextView textView = mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
             if (textView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
 
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) textView.getLayoutParams();

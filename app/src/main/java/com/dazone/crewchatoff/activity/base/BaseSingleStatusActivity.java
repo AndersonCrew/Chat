@@ -30,7 +30,6 @@ public abstract class BaseSingleStatusActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         init();
         addFragment(savedInstanceState);
     }

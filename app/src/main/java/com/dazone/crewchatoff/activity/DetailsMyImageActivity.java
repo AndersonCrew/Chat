@@ -25,7 +25,7 @@ public class DetailsMyImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.details_my_image_layout);
-        imageView = (ImageViewZoomSupport) findViewById(R.id.imageView);
+        imageView = findViewById(R.id.imageView);
         url = getIntent().getStringExtra(Statics.CHATTING_DTO_GALLERY_SHOW_FULL);
         Log.d(TAG, "url:" + url);
 

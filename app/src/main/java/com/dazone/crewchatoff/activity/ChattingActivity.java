@@ -86,19 +86,14 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
         intent.putExtras(args);
         context.startActivity(intent);
-
     }
 
     private String TAG = "ChattingActivity";
-    // 채팅방 내부 플래그먼트
     private ChattingFragment fragment;
     private ArrayList<TreeUserDTOTemp> treeUserDTOTempArrayList = null;
-    // Uri 객체
     public static Uri uri = null;
     private boolean isFromNotification = false;
     private long roomNo;
-
-    // 채팅방 참여유저 UserNo 리스트
     public static ArrayList<Integer> userNos;
     private boolean isOne = false;
     private boolean isShow = true;
@@ -300,7 +295,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
             @Override
             public void OnGetChatRoomFail(ErrorDto errorDto) {
-//                Utils.showMessage(getString(R.string.error_server));
             }
         });
     }
@@ -606,7 +600,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             if (clip != null) {
                                 for (int i = 0; i < clip.getItemCount(); i++) {
                                     pathUri.add(clip.getItemAt(i).getUri());
-//                                    Log.d(TAG, "for pathUri:" + pathUri.toString());
                                 }
                             }
                             // For Ice Cream Sandwich
@@ -633,7 +626,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             for (Uri obj : pathUri) {
                                 Log.d(TAG, "pathUri != null:" + obj.toString());
                                 String path = Utils.getPathFromURI(obj, this);
-                                // String path = getPath(this, obj);
                                 Log.d(TAG, "path:" + path);
                                 File file = new File(path);
                                 String filename = path.substring(path.lastIndexOf("/") + 1);
@@ -685,7 +677,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             String currentTime = System.currentTimeMillis() + "";
                             String time = TimeUtils.convertTimeDeviceToTimeServerDefault(currentTime);
                             dto.setRegDate(time);
-                            //  ChattingFragment.instance.addNewRowFromChattingActivity(dto);
                             final long lastId = ChatMessageDBHelper.addSimpleMessage(dto);
                             HttpRequest.getInstance().SendChatMsg(roomNo, contact.getPhone(0) == null ? contact.getDisplayName() : contact.getDisplayName() + "\n" + contact.getPhone(0), new SendChatMessage() {
                                 @Override
@@ -758,8 +749,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         String[] projection = {MediaStore.Video.Media.DATA};
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null) {
-            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
             int column_index = cursor
                     .getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
             cursor.moveToFirst();
@@ -1027,8 +1016,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             }
         });
 
-        // Handle dismissal with: popup.setOnDismissListener(...);
-        // Show the menu
         popup.show();
     }
 
@@ -1067,9 +1054,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
 
     }
-    /*
-     * Show search view to search content in a chat
-     * */
+
     private void showSearchView() {
         if (isShow) {
             mSearchView.setIconified(true);
@@ -1115,7 +1100,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-//        ChattingFragment.instance.adapterList.filter(query);
         Log.d(TAG, "onQueryTextSubmit");
         return false;
     }
@@ -1203,20 +1187,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         String[] requestPermission;
         requestPermission = new String[]{Manifest.permission.READ_CONTACTS};
         ActivityCompat.requestPermissions(this, requestPermission, CAMERA_PERMISSIONS_REQUEST_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode != CAMERA_PERMISSIONS_REQUEST_CODE) {
-            return;
-        }
-        boolean isGranted = true;
-        for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                isGranted = false;
-                break;
-            }
-        }
     }
 
     public boolean checkPermissionsWandR() {

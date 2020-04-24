@@ -23,10 +23,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private Button btnChange;
 
     void initView() {
-        edOldPass = (EditText) findViewById(R.id.edOldPass);
-        edNewPass = (EditText) findViewById(R.id.edNewPass);
-        edConfirmPass = (EditText) findViewById(R.id.edConfirmPass);
-        btnChange = (Button) findViewById(R.id.btnChange);
+        edOldPass = findViewById(R.id.edOldPass);
+        edNewPass = findViewById(R.id.edNewPass);
+        edConfirmPass = findViewById(R.id.edConfirmPass);
+        btnChange = findViewById(R.id.btnChange);
 
         btnChange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,10 +49,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
             else if (newPass.length() == 0) showMsg("missing input New password");
             else showMsg("missing input Confirm password");
         } else {
-            String pass = CrewChatApplication.getInstance().getPrefs().getPass();
-//            if (!oldPass.equals(pass)) {
-//                showMsg("Old pass incorrect");
-//            } else
             if (!newPass.equals(cfPass)) {
                 showMsg("Confirm pass incorrect");
             } else {

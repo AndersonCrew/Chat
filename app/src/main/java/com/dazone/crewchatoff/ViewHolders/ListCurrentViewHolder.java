@@ -81,28 +81,27 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
     @Override
     protected void setup(final View v) {
         view = v;
-        tvUserName = (TextView) v.findViewById(R.id.user_name_tv);
-        tvDate = (TextView) v.findViewById(R.id.date_tv);
-        tvContent = (TextView) v.findViewById(R.id.content_tv);
-        status_imv_null = (ImageView) v.findViewById(R.id.status_imv_null);
-        imgAvatar = (ImageView) v.findViewById(R.id.avatar_imv);
-        ivStatus = (ImageView) v.findViewById(R.id.status_imv);
-        layoutAvatar = (RelativeLayout) v.findViewById(R.id.layoutAvatar);
+        tvUserName = v.findViewById(R.id.user_name_tv);
+        tvDate = v.findViewById(R.id.date_tv);
+        tvContent = v.findViewById(R.id.content_tv);
+        status_imv_null = v.findViewById(R.id.status_imv_null);
+        imgAvatar = v.findViewById(R.id.avatar_imv);
+        ivStatus = v.findViewById(R.id.status_imv);
+        layoutAvatar = v.findViewById(R.id.layoutAvatar);
 
-        imgBadge = (ImageView) v.findViewById(R.id.image_badge);
-        ivLastedAttach = (ImageView) v.findViewById(R.id.iv_lasted_attach);
-        tvTotalUser = (TextView) v.findViewById(R.id.tv_user_total);
-        avatar_null = (RelativeLayout) v.findViewById(R.id.avatar_null);
-        layoutGroupAvatar = (RoundLayoutGroup) v.findViewById(R.id.avatar_group);
-        imgGroupAvatar1 = (ImageView) v.findViewById(R.id.avatar_group_1);
-        imgGroupAvatar2 = (ImageView) v.findViewById(R.id.avatar_group_2);
-        imgGroupAvatar3 = (ImageView) v.findViewById(R.id.avatar_group_3);
-        imgGroupAvatar4 = (ImageView) v.findViewById(R.id.avatar_group_4);
-        tvGroupAvatar = (TextView) v.findViewById(R.id.avatar_group_number);
-        ivFavorite = (ImageView) v.findViewById(R.id.iv_favorite);
-        ivNotification = (ImageView) v.findViewById(R.id.iv_notification);
+        imgBadge = v.findViewById(R.id.image_badge);
+        ivLastedAttach = v.findViewById(R.id.iv_lasted_attach);
+        tvTotalUser = v.findViewById(R.id.tv_user_total);
+        avatar_null = v.findViewById(R.id.avatar_null);
+        layoutGroupAvatar = v.findViewById(R.id.avatar_group);
+        imgGroupAvatar1 = v.findViewById(R.id.avatar_group_1);
+        imgGroupAvatar2 = v.findViewById(R.id.avatar_group_2);
+        imgGroupAvatar3 = v.findViewById(R.id.avatar_group_3);
+        imgGroupAvatar4 = v.findViewById(R.id.avatar_group_4);
+        tvGroupAvatar = v.findViewById(R.id.avatar_group_number);
+        ivFavorite = v.findViewById(R.id.iv_favorite);
+        ivNotification = v.findViewById(R.id.iv_notification);
 
-        //gestureDetector = new GestureDetector(CrewChatApplication.getInstance(), new CustomGestureDetector(view));
         view.setOnCreateContextMenuListener(this);
     }
 
@@ -192,18 +191,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
             name = dto.getRoomTitle();
         }
 
-//        if (name.length() == 0 && dto.getRoomType() == 1) {
-//            if (CrewChatApplication.currentName != null && CrewChatApplication.currentName.length() > 0) {
-//
-//            } else {
-//                CrewChatApplication.currentName = Constant.getUserName(AllUserDBHelper.getUser(), Utils.getCurrentId());
-//            }
-//            String msg = "";
-//            msg = "[Me]" + CrewChatApplication.currentName;
-//            name = msg;
-//        }
-
-
         // Global value
         roomTitle = name;
         roomNo = dto.getRoomNo();
@@ -287,29 +274,14 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                 layoutGroupAvatar.setVisibility(View.GONE);
                 layoutAvatar.setVisibility(View.VISIBLE);
 
-//                ImageUtils.showRoundImage(dto.getListTreeUser().get(0), imgAvatar);
                 DrawImageItem obj = dto.getListTreeUser().get(0);
                 String linkIMG = obj.getImageLink();
-//                Log.d(TAG, "linkIMG:" + linkIMG);
 
                 if (linkIMG != null && linkIMG.length() > 0) {
                     String rootUrl = new Prefs().getServerSite() + linkIMG;
 
-
-//                    String s= "http://122.41.175.67:8080/_Repository/_UserPhoto/70.png?date=636047265850000000";
-//                    if(s.equals(rootUrl))
-//                    {
-//                        Log.d(TAG,"rootUrl:");
-//                    }
-
                     ImageUtils.showCycleImageFromLink(rootUrl, imgAvatar, R.dimen.button_height);
-//                    if (dto.getUserNos().get(0) == 70) {
-//                        Log.d(TAG, "showCycleImageFromLinkScale");
-//                    }
                 } else {
-//                    if (dto.getUserNos().get(0) == 70) {
-//                        Log.d(TAG, "showRoundImage");
-//                    }
                     ImageUtils.showRoundImage(dto.getListTreeUser().get(0), imgAvatar);
                 }
 
@@ -325,11 +297,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                     ivStatus.setImageResource(R.drawable.home_status_me);
                 }
             } else {
-//                if(dto.getRoomNo()==2547)
-//                {
-//                    Log.d(TAG,"data:"+new Gson().toJson(dto));
-//                }
-
                 layoutGroupAvatar.setVisibility(View.VISIBLE);
                 layoutAvatar.setVisibility(View.GONE);
 
@@ -348,9 +315,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                         url1 = new Prefs().getServerSite() + dto.getListTreeUser().get(0).getAvatarUrl();
                         url2 = new Prefs().getServerSite() + dto.getListTreeUser().get(1).getAvatarUrl();
 
-//                        Glide.with(CrewChatApplication.getInstance()).load(url1).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar1);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url2).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar2);
-
                         ImageUtils.setImgFromUrl(url1, imgGroupAvatar1);
                         ImageUtils.setImgFromUrl(url2, imgGroupAvatar2);
                         break;
@@ -365,10 +329,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                         url1 = new Prefs().getServerSite() + dto.getListTreeUser().get(0).getAvatarUrl();
                         url3 = new Prefs().getServerSite() + dto.getListTreeUser().get(1).getAvatarUrl();
                         url4 = new Prefs().getServerSite() + dto.getListTreeUser().get(2).getAvatarUrl();
-
-//                        Glide.with(CrewChatApplication.getInstance()).load(url1).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar1);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url3).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar3);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url4).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar4);
 
                         ImageUtils.setImgFromUrl(url1, imgGroupAvatar1);
                         ImageUtils.setImgFromUrl(url3, imgGroupAvatar3);
@@ -390,11 +350,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                         url3 = new Prefs().getServerSite() + dto.getListTreeUser().get(2).getAvatarUrl();
                         url4 = new Prefs().getServerSite() + dto.getListTreeUser().get(3).getAvatarUrl();
 
-//                        Glide.with(CrewChatApplication.getInstance()).load(url1).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar1);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url2).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar2);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url3).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar3);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url4).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar4);
-
                         ImageUtils.setImgFromUrl(url1, imgGroupAvatar1);
                         ImageUtils.setImgFromUrl(url2, imgGroupAvatar2);
                         ImageUtils.setImgFromUrl(url3, imgGroupAvatar3);
@@ -407,25 +362,18 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                         imgGroupAvatar1.getLayoutParams().height = (int) CrewChatApplication.getInstance().getResources().getDimension(R.dimen.common_avatar_group);
                         imgGroupAvatar1.getLayoutParams().width = (int) CrewChatApplication.getInstance().getResources().getDimension(R.dimen.common_avatar_group);
                         imgGroupAvatar2.getLayoutParams().height = (int) CrewChatApplication.getInstance().getResources().getDimension(R.dimen.common_avatar_group);
-                       // imgGroupAvatar2.getLayoutParams().width = (int) CrewChatApplication.getInstance().getResources().getDimension(R.dimen.common_avatar_group);
                         imgGroupAvatar2.setVisibility(View.VISIBLE);
                         imgGroupAvatar3.setVisibility(View.VISIBLE);
                         imgGroupAvatar4.setVisibility(View.VISIBLE);
 
                         tvGroupAvatar.setVisibility(View.VISIBLE);
                         String strNumber = dto.getListTreeUser().size() - 3 + "";
-//                        Log.d(TAG, "strNumber:" + strNumber);
                         tvGroupAvatar.setText(strNumber);
 
                         url1 = new Prefs().getServerSite() + dto.getListTreeUser().get(0).getAvatarUrl();
                         url2 = new Prefs().getServerSite() + dto.getListTreeUser().get(1).getAvatarUrl();
                         url3 = new Prefs().getServerSite() + dto.getListTreeUser().get(2).getAvatarUrl();
                         url4 = "drawable://" + R.drawable.avatar_group_bg;
-
-//                        Glide.with(CrewChatApplication.getInstance()).load(url1).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar1);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url2).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar2);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url3).bitmapTransform(ImageUtils.mCropSquareTransformation).into(imgGroupAvatar3);
-//                        Glide.with(CrewChatApplication.getInstance()).load(url4).into(imgGroupAvatar4);
 
 
                         ImageUtils.setImgFromUrl(url1, imgGroupAvatar1);
@@ -441,9 +389,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
         if (dto.getListTreeUser() == null || dto.getListTreeUser().size() == 0) {
             layoutGroupAvatar.setVisibility(View.GONE);
             layoutAvatar.setVisibility(View.GONE);
-//            layoutAvatar.setVisibility(View.VISIBLE);
-//            String url = "drawable://" + R.drawable.avatar_l;
-//            Glide.with(CrewChatApplication.getInstance()).load(url).into(imgAvatar);
             avatar_null.setVisibility(View.VISIBLE);
 
 
@@ -458,19 +403,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
             public void onClick(View v) {
 
                 long roomNo = (long) v.getTag();
-/*
-
-                long roomNo = (long) v.getTag();
-                Intent intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
-
-                Bundle args = new Bundle();
-                args.putLong(Constant.KEY_INTENT_ROOM_NO, roomNo);
-                args.putLong(Constant.KEY_INTENT_USER_NO, myId);
-                args.putSerializable(Constant.KEY_INTENT_ROOM_DTO, tempDto);
-
-                intent.putExtras(args);
-
-                BaseActivity.Instance.startActivity(intent);*/
                 ChattingActivity.toActivity(BaseActivity.Instance,roomNo,myId,tempDto);
             }
         });
@@ -604,9 +536,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                 break;
 
             case Statics.ROOM_REMOVE_FROM_FAVORITE:
-                /*final Bundle finalRoomInfo = roomInfo;
-                mOnContextMenuSelect.onSelect(Statics.ROOM_ADD_TO_FAVORITE, finalRoomInfo);*/
-
                 HttpRequest.getInstance().removeFromFavorite(roomNo, new BaseHTTPCallBack() {
                     @Override
                     public void onHTTPSuccess() {
@@ -629,11 +558,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                 break;
 
             case Statics.ROOM_ADD_TO_FAVORITE:
-                /*roomInfo = new Bundle();
-                roomInfo.putInt(Statics.ROOM_NO, (int) roomNo);*/
-                /*final Bundle finalRoomInfo = roomInfo;
-                mOnContextMenuSelect.onSelect(Statics.ROOM_ADD_TO_FAVORITE, finalRoomInfo);*/
-
                 if (Utils.isNetworkAvailable()) {
                     HttpRequest.getInstance().addRoomToFavorite(roomNo, new BaseHTTPCallBack() {
                         @Override

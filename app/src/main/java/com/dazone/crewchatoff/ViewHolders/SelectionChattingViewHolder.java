@@ -256,13 +256,7 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
     }
 
     private void contactPicker() {
-
-
-        //Intent intent = new Intent(ChattingActivity.Instance, ContactPickerMultiActivity.class);
-
-
         Intent intent = new Intent(ChattingActivity.Instance, ContactPickerActivity.class)
-                //.putExtra(ContactPickerActivity.EXTRA_THEME, mDarkTheme ? R.style.Theme_Dark : R.style.Theme_Light)
                 .putExtra(ContactPickerActivity.EXTRA_CONTACT_BADGE_TYPE, ContactPictureType.ROUND.name())
                 .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION, ContactDescription.ADDRESS.name())
                 .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
@@ -274,17 +268,11 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
     private void recordVideo() {
 
         if (Build.VERSION.SDK_INT > 23) {
-            // for android >= 7
-
             ContentValues values = new ContentValues();
-//            values.put(MediaStore.Video.Media.TITLE, "Title1");
-//            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
             values.put(MediaStore.Video.VideoColumns.MIME_TYPE, "video/mp4");
-//            values.put(MediaStore.Video.Media.DATA, videoPath);
             Uri mVideoUri = CrewChatApplication.getInstance().getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
             Uri uriTemp = Constant.convertUri(CrewChatApplication.getInstance(), mVideoUri);
             ChattingActivity.videoPath = uriTemp;
-//            Log.d(TAG,"uriTemp:"+uriTemp.toString());
             Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mVideoUri);
             if (takeVideoIntent.resolveActivity(CrewChatApplication.getInstance().getPackageManager()) != null) {
@@ -295,7 +283,6 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
         } else {
             Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             Uri videoPath = ChattingActivity.getOutputMediaFileUri(Statics.MEDIA_TYPE_VIDEO);
-//            Log.d(TAG, "videoPath:" + videoPath.toString());
             takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoPath);
             ChattingActivity.videoPath = videoPath;
             if (takeVideoIntent.resolveActivity(CrewChatApplication.getInstance().getPackageManager()) != null) {

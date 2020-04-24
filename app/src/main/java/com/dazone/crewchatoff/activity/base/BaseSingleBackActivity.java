@@ -23,11 +23,11 @@ public abstract class BaseSingleBackActivity extends BaseActivity {
 
     protected void init() {
         setContentView(R.layout.activity_base_single_back);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        toolbar_title = (TextView) findViewById(R.id.toolbar_title);
-        ivBack = (ImageView) findViewById(R.id.back_imv);
+        toolbar_title = findViewById(R.id.toolbar_title);
+        ivBack = findViewById(R.id.back_imv);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,23 +44,20 @@ public abstract class BaseSingleBackActivity extends BaseActivity {
             toolbar_title.setText(title);
             toolbar_title.setTextColor(ContextCompat.getColor(mContext, R.color.white));
         }
-
     }
 
     public void setupToolBarSingleTitle(String title, Toolbar toolbar) {
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        TextView toolbar_title = (TextView) findViewById(R.id.toolbar_title);
+        TextView toolbar_title = findViewById(R.id.toolbar_title);
         toolbar_title.setText(title);
-        ImageView ivBack = (ImageView) findViewById(R.id.back_imv);
+        ImageView ivBack = findViewById(R.id.back_imv);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
     }
 
     protected abstract void addFragment(Bundle bundle);

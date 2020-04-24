@@ -403,7 +403,6 @@ public class CompanyFragment extends Fragment {
 
     @Subscribe
     public void notifyAdapter(NotifyAdapterOgr notifyAdapterOgr) {
-        /* Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();*/
         mAdapter.notifyDataSetChanged();
     }
 

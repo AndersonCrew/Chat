@@ -130,7 +130,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         });
 
         for (ChattingDto chattingDto : listChat) {
-//            if (!Utils.checkChat(chattingDto, myId)) {
             list1 = new ArrayList<>();
             ArrayList<Integer> cloneArr = new ArrayList<>(chattingDto.getUserNos());
             Utils.removeArrayDuplicate(cloneArr);
@@ -202,23 +201,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     break;
 
                 case Statics.ROOM_ADD_TO_FAVORITE:
-                   /* final Resources res = mContext.getResources();
-                    HttpRequest.getInstance().addRoomToFavorite(roomNo, new BaseHTTPCallBack() {
-                        @Override
-                        public void onHTTPSuccess() {
-                            Toast.makeText(mContext, res.getString(R.string.favorite_add_success) , Toast.LENGTH_LONG).show();
-                            for (ChattingDto chat : dataSet){
-                                if (chat.getRoomNo() == roomNo){
-
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onHTTPFail(ErrorDto errorDto) {
-                            Toast.makeText(mContext, res.getString(R.string.favorite_add_success) , Toast.LENGTH_LONG).show();
-                        }
-                    });*/
 
                     break;
 
@@ -330,31 +312,12 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
     @Override
     protected void reloadContentPage() {
-        //dataSet.add(null);
-        //adapterList.notifyItemInserted(dataSet.size() - 1);
-//        mHttpRequest.getAllEmployeesSort(this, millis,limit,userNo,sortType);
         initList();
     }
 
     @Override
     public void onHTTPSuccess(List<CurrentChatDto> dtos) {
-       /* if(dataSet==null) {
-            return;
-        }
-        int dataSetSize= dataSet.size();
-        if(dataSetSize>0) {
-            dataSet.remove(dataSet.size() - 1);
-            adapterList.notifyItemRemoved(dataSet.size());
-        }
-        dataSet.addAll(dtos);
-//        if(dataSet!=null&&dataSet.size()>0) {
-//            lastID = (current_Task.get(current_Task.size() - 1)).userno;
-//        }
-        adapterList.notifyItemChanged(dataSetSize, dataSet.size());
-        if(dataSetSize+limit<=dataSet.size())
-        {
-            adapterList.setLoaded();
-        }*/
+
     }
 
     @Override
@@ -368,7 +331,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     }
 
     public void updateRoomUnread(long roomNo) {
-
         for (ChattingDto chattingDto : dataSet) {
             if (chattingDto.getRoomNo() == roomNo) {
                 Log.d(TAG, "setUnReadCount 6");
@@ -380,7 +342,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     }
 
     public void updateRoomUnread(long roomNo, int count) {
-
         for (ChattingDto chattingDto : dataSet) {
             if (chattingDto.getRoomNo() == roomNo) {
                 Log.d(TAG, "setUnReadCount 7");
@@ -428,12 +389,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 }
 
                 if (ChattingFragment.instance == null) {
-//                    Log.d(TAG, "setUnReadCount 1:" + chattingDto.getUnReadCount());
                     chattingDto.setUnReadCount(chattingDto.getUnReadCount() + 1);
                     unRead = chattingDto.getUnReadCount() + 1;
                 } else {
                     if (ChattingFragment.instance.roomNo != CrewChatApplication.currentRoomNo) {
-//                        Log.d(TAG, "setUnReadCount 2");
                         chattingDto.setUnReadCount(chattingDto.getUnReadCount() + 1);
                         unRead = chattingDto.getUnReadCount() + 1;
                     }
@@ -466,7 +425,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     });
 
                     for (ChattingDto chattingDto : list) {
-//                        if (!Utils.checkChat(chattingDto, myId)) {
                         if (!Utils.checkChatId198(chattingDto)) {
                             list1 = new ArrayList<>();
 
@@ -484,9 +442,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                             if (Constant.isAddChattingDto(chattingDto))
                                 dataSet.add(chattingDto);
                         }
-//                        }
                     }
-                    //adapterList.updateData(dataSet);
                 }
 
                 @Override
@@ -505,14 +461,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
                 }
             });
-
-            /*Collections.sort(dataSet, new Comparator<ChattingDto>() {
-                public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                    return chattingDto2.getUnReadCount() - chattingDto1.getUnReadCount();
-                }
-            });*/
-
-            //adapterList.updateData(dataSet);
         }
     }
 
@@ -1148,11 +1096,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 }
             });
 
-           /* Collections.sort(dataSet, new Comparator<ChattingDto>() {
-                public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                    return chattingDto2.getUnReadCount() - chattingDto1.getUnReadCount();
-                }
-            });*/
+
 
             adapterList.updateData(dataSet);
 
@@ -1167,7 +1111,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             List<ChattingDto> lst = new ArrayList<>();
             for (ChattingDto obj : dataSet) {
                 if (obj.isFavorite()) {
-//                    Log.d(TAG, "updateFavoriteList:" + new Gson().toJson(obj));
                     try {
                         lst.add((ChattingDto) obj.clone());
                     } catch (CloneNotSupportedException e) {

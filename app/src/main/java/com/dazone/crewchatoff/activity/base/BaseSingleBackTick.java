@@ -29,13 +29,13 @@ public abstract class BaseSingleBackTick extends BaseActivity {
 
     protected void init() {
         setContentView(R.layout.activity_base_single_back_tick);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        toolbar_title = (TextView) findViewById(R.id.toolbar_title);
-        ivBack = (ImageView) findViewById(R.id.back_imv);
-        ivTick = (ImageView) findViewById(R.id.iv_tick);
+        toolbar_title = findViewById(R.id.toolbar_title);
+        ivBack = findViewById(R.id.back_imv);
+        ivTick = findViewById(R.id.iv_tick);
         ivTick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

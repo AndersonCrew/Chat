@@ -20,7 +20,6 @@ import java.util.Iterator;
 public class OrganizationFavoriteActivity extends BaseSingleActivity {
     private OrganizationFragment fragment;
     private long groupNo = -1;
-    private int countMember = 0;
     private ArrayList<Integer> userNos;
     String TAG = "OrganizationFavoriteActivity";
     private Handler mHandler = new Handler();
@@ -40,13 +39,11 @@ public class OrganizationFavoriteActivity extends BaseSingleActivity {
                 userNos = intent.getIntegerArrayListExtra(Constant.KEY_INTENT_COUNT_MEMBER);
             } catch (Exception e) {
                 groupNo = -1;
-                countMember = 0;
                 e.printStackTrace();
             }
         }
 
         fragment = OrganizationFragment.newInstance(userNos, true);
-
         if (intent != null) {
             Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false);
         }

@@ -108,17 +108,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     @Override
     protected void onResume() {
         super.onResume();
-//        if (Utils.isNetworkAvailable()) {
-//            Thread thread = new Thread(new UpdateRunnable());
-//            thread.setDaemon(true);
-//            thread.start();
-//        } else {
-//            firstChecking();
-//        }
-
         firstChecking();
-
-        //firstChecking(); // for beta version on google play store
     }
 
     private void firstChecking() {
@@ -126,13 +116,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         if (firstLogin) {
             Log.d(TAG, "firstLogin:" + firstLogin);
             if (Utils.isNetworkAvailable()) {
-               /* if (prefs.getintrocount() < 1) {
-                    //HttpOauthRequest.getInstance().checkPhoneToken(this);
-                    prefs.putintrocount(prefs.getintrocount() + 1);
-                } else {
-                    doLogin();
-                }*/
-
                 doLogin();
                 Log.d(TAG, "isNetworkAvailable");
             } else {
@@ -180,8 +163,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     private boolean isAutoLogin = true;
 
     private void init() {
-
-
         Intent intent = new Intent();
         intent.setAction("com.dazone.crewcloud.account.get");
         intent.putExtra("senderPackageName", this.getPackageName());
@@ -204,9 +185,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         edtPassword = findViewById(R.id.login_edt_passsword);
         edtServer = findViewById(R.id.login_edt_server);
         scrollView = findViewById(R.id.scl_login);
-        /*forgot_pass = (TextView) findViewById(R.id.forgot_pass);
-        help_login = (TextView) findViewById(R.id.help_login);
-        have_no_id_login = (TextView) findViewById(R.id.have_no_id_login);*/
         edtUserName.setText(prefs.getUserID());
 
         String dm = prefs.getDDSServer();
@@ -397,42 +375,11 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         tvCompany.setText(": " + companyID);
         tvUser.setText(": " + UserID);
         tvTitle.setText(getResources().getString(R.string.autoLogin));
-       /* ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.title_auto_login));
-        String titleText = getResources().getString(R.string.autoLogin);
-
-        // Initialize a new spannable string builder instance
-        SpannableStringBuilder ssBuilder = new SpannableStringBuilder(titleText);
-
-        // Apply the text color span
-        ssBuilder.setSpan(
-                foregroundColorSpan,
-                0,
-                titleText.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        );*/
         final AlertDialog.Builder adb = new AlertDialog.Builder(this);
-
-      //  adb.setTitle(ssBuilder);
         adb.setView(alertLayout);
         final AlertDialog alertDialog = adb.create();
         alertDialog.show();
-      /*  TextView textView = (TextView) alertDialog.findViewById(android.R.id.title);
-        float spTextSize = 17;
-        textView.setTextSize(spTextSize);*/
-       /* adb.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                autoLogin(UserID, "", companyID);
-            }
-        });
 
-        adb.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-*/
         TextView btnYes = alertLayout.findViewById(R.id.btn_yes_auto);
         TextView btnNo = alertLayout.findViewById(R.id.btn_no_auto);
         btnYes.setOnClickListener(new View.OnClickListener() {
@@ -448,8 +395,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
                 alertDialog.dismiss();
             }
         });
-
-      // adb.create().show();
     }
 
     private String checkStringValue(String server_site, String username, String password) {
@@ -519,7 +464,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
 
                 BelongsToDBHelper.clearBelong();
                 AllUserDBHelper.clearUser();
-//                Log.d(TAG,"AllUserDBHelper.getUser():"+AllUserDBHelper.getUser().size());
                 ChatRoomDBHelper.clearChatRooms();
                 ChatMessageDBHelper.clearMessages();
                 DepartmentDBHelper.clearDepartment();
@@ -567,22 +511,13 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
                 findViewById(R.id.logo).setVisibility(View.GONE);
                 init();
             }
-
-
-//            Log.d(TAG,"firstLogin");
-//            dismissProgressDialog();
-//            firstLogin = false;
-//            findViewById(R.id.logo).setVisibility(View.GONE);
-//            init();
         } else {
             Log.d(TAG, "not firstLogin");
             dismissProgressDialog();
             String error_msg = "";
             switch (errorDto.code) {
                 case 2:
-//                    error_msg = getString(R.string.string_error_code_2);
                     error_msg = errorDto.getMessage();
-//                    Log.d(TAG,errorDto.getMessage());
                     break;
                 case 3:
                     error_msg = getString(R.string.string_error_code_3);
@@ -603,19 +538,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             if (errorDto.getCode() == 1) {
                 Log.d(TAG, "error_msg:" + error_msg);
                 Toast.makeText(this, error_msg, Toast.LENGTH_SHORT).show();
-
-//                String first_login = Statics.FIRST_LOGIN;
-//                boolean isLogin = new Prefs().getBooleanValue(first_login, false);
-//                Log.d(TAG,"isLogin:"+isLogin);
-//                if (isLogin && error_msg.equals(getString(R.string.string_error_code_default))) {
-//                    notNetwork();
-//                } else {
-//                    Toast.makeText(this, error_msg, Toast.LENGTH_SHORT).show();
-//                }
-
-
             } else {
-
                 showAlertDialog(error_msg, getString(R.string.string_ok), "", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -692,9 +615,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     protected void onDestroy() {
         super.onDestroy();
-//        unregisterReceiver(accountReceiver);
-//        accountReceiver = null;
-
         if (keyboardListenersAttached) {
             try {
                 rootLayout.getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
@@ -710,37 +630,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
 
     private static final int ACTIVITY_HANDLER_NEXT_ACTIVITY = 1111;
     private static final int ACTIVITY_HANDLER_START_UPDATE = 1112;
-
-    private class UpdateRunnable implements Runnable {
-        @Override
-        public void run() {
-            try {
-                String url = Constant.ROOT_URL_UPDATE + "/Android/Version/CrewChat.txt";
-
-                URL txtUrl = new URL(url);
-                HttpURLConnection urlConnection = (HttpURLConnection) txtUrl.openConnection();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String serverVersion = bufferedReader.readLine().trim();
-                Log.d(TAG, "serverVersion:" + serverVersion);
-                prefs.setSERVER_VERSION(serverVersion);
-                inputStream.close();
-
-                String appVersion = BuildConfig.VERSION_NAME;
-                // text file is UTF8 - Change to ASCII   of this server file
-
-                if (appVersion.equals(serverVersion)) {
-                    mActivityHandler.sendEmptyMessageDelayed(ACTIVITY_HANDLER_NEXT_ACTIVITY, 1);
-                } else {
-                    mActivityHandler.sendEmptyMessage(ACTIVITY_HANDLER_START_UPDATE);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private static class ActivityHandler extends Handler {
         private final WeakReference<LoginActivity> mWeakActivity;
@@ -889,14 +778,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             LoginActivity activity = mWeakActivity.get();
 
             if (activity != null) {
-//                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/CrewChat.apk";
-//                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
-//                activity.startActivity(intent);
-
-
                 String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/CrewChat.apk";
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     File toInstall = new File(filePath);
                     Uri apkUri = FileProvider.getUriForFile(activity, BuildConfig.APPLICATION_ID + ".provider", toInstall);
@@ -919,7 +801,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private GoogleCloudMessaging gcm;
-    //    AtomicInteger msgId = new AtomicInteger();
     private Context context;
     private String regId;
 

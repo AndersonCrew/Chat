@@ -55,20 +55,6 @@ public abstract class BaseSingleActivity extends BaseActivity {
         });
     }
 
-    public void setUPToolBar(String title, String status) {
-        if (TextUtils.isEmpty(title)) {
-            toolbar_title.setText(mContext.getResources().getString(R.string.unknown));
-            toolbar_title.setTextColor(ContextCompat.getColor(mContext, R.color.gray));
-            toolbar_status.setText("");
-        } else {
-            toolbar_title.setText(title);
-            toolbar_title.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-            toolbar_status.setText(status);
-        }
-
-    }
-
-
     protected abstract void addFragment(Bundle bundle);
 
     @Override
