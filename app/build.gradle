@@ -19,30 +19,13 @@ android {
             keyPassword 'tranquoctrung'
         }
     }
-/*    signingConfigs {
-        release {
-            storeFile file("DazoneKeyChatoff.jks")
-            storePassword 'tranquoctrung'
-            keyAlias 'tranquoctrung'
-            keyPassword 'tranquoctrung'
-        }
-    }*/
-/*    defaultConfig {
-        applicationId "com.crewcloud.apps.crewchat"
-        minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 10391;
-        versionName "2.4.7";
-        multiDexEnabled true
 
-    }*/
     defaultConfig {
-//        applicationId "com.crewcloud.apps.crewchat"
-        applicationId "com.dazone.crewchat"
+        applicationId "com.crewcloud.apps.crewchat"
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 10420
-        versionName "2.5.7"
+        versionName "2.5.9"
         multiDexEnabled true
     }
 
@@ -58,12 +41,23 @@ android {
         }
     }
 
+    flavorDimensions "default"
+
+    productFlavors {
+        serverVersion {
+            applicationId "com.crewcloud.apps.crewchat"
+        }
+
+        storeVersion {
+            applicationId "com.dazone.crewchat"
+        }
+    }
+
     dependencies {
         implementation fileTree(include: ['*.jar'], dir: 'libs')
         implementation project(':multi-level-listview')
 
         implementation 'com.android.support:multidex:1.0.3'
-        //noinspection GradleCompatible
         implementation 'com.android.support:appcompat-v7:28.0.0'
         implementation 'com.android.support:support-v4:28.0.0'
         implementation 'com.android.support:design:28.0.0'

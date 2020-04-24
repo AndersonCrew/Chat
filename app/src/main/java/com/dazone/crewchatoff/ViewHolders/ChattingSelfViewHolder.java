@@ -253,7 +253,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                             msg = Html.fromHtml(msgText.replace("\n", "<br/>") + "<br/>" +
                                     "<a href='" + linkUrl + "'>" + linkTitle + "</a><br/>");
                         } else {
-                            msg = Html.fromHtml(msgText.replace("\n", "<br/>") + "<br/>");
+                            msg = Html.fromHtml(msgText.replace("\n", "<br/>"));
                         }
 
                         content_tv.setAutoLinkMask(0);
