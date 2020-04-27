@@ -403,7 +403,7 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
             public void onClick(View v) {
 
                 long roomNo = (long) v.getTag();
-                ChattingActivity.toActivity(BaseActivity.Instance,roomNo,myId,tempDto);
+                ChattingActivity.toActivity(BaseActivity.Instance, roomNo, myId, tempDto);
             }
         });
 

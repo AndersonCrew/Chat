@@ -298,11 +298,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
             startNo = listChatMessage.get(index).getMessageNo();
         }
-//        // Call API to update this message
+
         updateUnreadCount(roomNo, startNo);
 
         int mesType = startNo == 0 ? ChatMessageDBHelper.FIRST : ChatMessageDBHelper.AFTER;
-//        // Get all message from standard message
         Log.d(TAG, "roomNo:" + roomNo);
         Log.d(TAG, "startNo:" + startNo);
         Log.d(TAG, "mesType:" + mesType);
@@ -312,7 +311,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             @Override
             public void OnGetChatMessageSuccess(List<ChattingDto> listNew) {
                 Log.d(TAG, "OnGetChatMessageSuccess");
-                // hide progressBar when loading data from server is success
                 mHandler.obtainMessage(WHAT_CODE_HIDE_PROCESS).sendToTarget();
                 isLoaded = true;
                 // perform thread to sync data server with client
@@ -328,12 +326,12 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     updateUnreadCount(roomNo, startMsgNo);
                     if (CurrentChatListFragment.fragment != null) {
                         CurrentChatListFragment.fragment.updateRoomUnread(roomNo);
-                        //CurrentChatListFragment.fragment.updateRoomUnread(roomNo, listNew.get(listNew.size() - 1).getUnReadCount());
                     }
+
                     if (RecentFavoriteFragment.instance != null) {
                         RecentFavoriteFragment.instance.updateRoomUnread(roomNo);
-                        // CurrentChatListFragment.fragment.updateRoomUnread(roomNo, listNew.get(listNew.size() - 1).getUnReadCount());
                     }
+
                     // Save online data to local data
                     for (ChattingDto chat : listNew) {
                         boolean isExist = false;
@@ -491,7 +489,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initList() {
-
         view = new ChatInputView(getContext());
         view.addToView(recycler_footer);
         view.mEmojiView.setEventListener(this);
@@ -542,6 +539,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 return true;
             }
         });
+
         // btnVoice
         view.btnVoice.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -550,8 +548,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         Log.d(TAG, "ACTION_DOWN");
-
-//                        startRecording();
                         break;
                     case MotionEvent.ACTION_UP:
                         Log.d(TAG, "ACTION_UP");

@@ -152,7 +152,9 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             CrewChatApplication.currentId = currentUserNo;
         }
 
-        checkVersion();
+        if(BuildConfig.FLAVOR.equals("serverVersion")) {
+            checkVersion();
+        }
     }
 
     public void setPermissionsReadExternalStorage() {
