@@ -17,7 +17,6 @@
 package com.dazone.crewchatoff.libGallery;
 
 public class MediaModel {
-
 	public String url = null;
 	public boolean status = false;
 

@@ -219,10 +219,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             roomNo = bundle.getLong(Constant.KEY_INTENT_ROOM_NO, 0);
             userNos = bundle.getIntegerArrayList(Constant.KEY_INTENT_USER_NO_ARRAY);
         }
-        Log.d(TAG, "roomNo:" + roomNo);
+
         Constant.cancelAllNotification(CrewChatApplication.getInstance(), (int) roomNo);
-        Log.d(TAG, "finish onCreate");
-        Log.d("sssDebugdataa", dataSet.size() + "");
     }
 
     /**
@@ -241,30 +239,19 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         refFreshData();
     }
 
-    //--------------end Son edit
     private void loadClientData() {
         isLoaded = true;
         final List<ChattingDto> listChatMessage = ChatMessageDBHelper.getMsgSession(roomNo, 0, ChatMessageDBHelper.FIRST);
 
         dataFromServer = listChatMessage;
         if (listChatMessage != null && listChatMessage.size() > 0) {
-            Log.d(TAG, "listChatMessage != null");
-            for (ChattingDto obj : listChatMessage) {
-                Log.d(TAG, "loadClientData:"
-                        + "  -  " + obj.getMessage() + "  -  "
-                        + obj.isHasSent() + "  -  " + obj.getMessageNo()
-                        + " - " + obj.getRegDate());
-            }
-            Log.d(TAG, "initData 1");
             initData(listChatMessage, 1);
         }
         if (Utils.isNetworkAvailable()) {
-            Log.d(TAG, "isNetworkAvailable");
             getOnlineData(roomNo, listChatMessage);
         } else {
             progressBar.setVisibility(View.GONE);
             if (listChatMessage != null && listChatMessage.size() == 0) {
-                Log.d(TAG, "listChatMessage !=null initData");
                 initData();
             }
         }
@@ -302,11 +289,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         updateUnreadCount(roomNo, startNo);
 
         int mesType = startNo == 0 ? ChatMessageDBHelper.FIRST : ChatMessageDBHelper.AFTER;
-        Log.d(TAG, "roomNo:" + roomNo);
-        Log.d(TAG, "startNo:" + startNo);
-        Log.d(TAG, "mesType:" + mesType);
-        Log.d(TAG, "URL_GET_CHAT_MSG_SECTION");
-
         HttpRequest.getInstance().GetChatMsgSection(roomNo, startNo, mesType, new OnGetChatMessage() {
             @Override
             public void OnGetChatMessageSuccess(List<ChattingDto> listNew) {
@@ -317,9 +299,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 // add to current data list and notify dataset
                 ArrayList<ChattingDto> newDataFromServer = new ArrayList<>();
                 if (listNew.size() > 0) {
-                    /*
-                     * Change follow --> just update unReadCount when loading image success
-                     * */
                     // Update unread count to server
                     long startMsgNo = listNew.get(listNew.size() - 1).getMessageNo();
                     // Update unRead count message
@@ -376,7 +355,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         }
                     }
                 } else {
-                    Log.d(TAG, "finish add listNew <= 0:");
                     getFirstDB();
                 }
             }
@@ -390,8 +368,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
                 if (listChatMessage.size() == 0) {
                     mHandler.obtainMessage(WHAT_CODE_EMPTY).sendToTarget();
-                } else {
-                    //TODO updateDataServer();
                 }
             }
         });

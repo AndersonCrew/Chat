@@ -38,12 +38,12 @@ public class UnreadAdapter extends RecyclerView.Adapter<UnreadAdapter.MyViewHold
 
         public MyViewHolder(View view) {
             super(view);
-            ivIcon = (ImageView) view.findViewById(R.id.ivIcon);
-            status_imv = (ImageView) view.findViewById(R.id.status_imv);
+            ivIcon = view.findViewById(R.id.ivIcon);
+            status_imv = view.findViewById(R.id.status_imv);
 
-            tvName = (TextView) view.findViewById(R.id.tvName);
-            tvPosition = (TextView) view.findViewById(R.id.tvPosition);
-            tvTime = (TextView) view.findViewById(R.id.tvTime);
+            tvName = view.findViewById(R.id.tvName);
+            tvPosition = view.findViewById(R.id.tvPosition);
+            tvTime = view.findViewById(R.id.tvTime);
         }
 
         public void handler(TreeUserDTO dto) {
@@ -53,12 +53,9 @@ public class UnreadAdapter extends RecyclerView.Adapter<UnreadAdapter.MyViewHold
             String nameString = dto.getName();
             tvName.setText(nameString);
 
-           /* String namePosition = dto.getPosition();
-            tvPosition.setText(namePosition);*/
             setDutyOrPosition(tvPosition,dto.getDutyName(),dto.getPosition());
 
             int status = dto.getStatus();
-            //Utils.printLogs("User name ="+treeUserDTO.getName()+" status ="+status);
             if (dto.getId() == myId) {
                 status_imv.setImageResource(R.drawable.home_status_me);
             } else if (status == Statics.USER_LOGIN) {

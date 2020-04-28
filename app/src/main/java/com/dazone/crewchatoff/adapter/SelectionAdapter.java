@@ -31,13 +31,6 @@ public abstract class SelectionAdapter<T> extends RecyclerView.Adapter<RecyclerV
         return vh;
     }
 
-//    @Override
-//    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-////        final ChattingDto item = dataSet.get(position);
-//        BaseChattingHolder viewHolder = (BaseChattingHolder) holder;
-//        viewHolder.bindData(item);
-//    }
-
     @Override
     public int getItemCount() {
         return dataSet.size();

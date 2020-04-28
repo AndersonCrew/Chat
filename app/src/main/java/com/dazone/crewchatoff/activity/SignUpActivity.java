@@ -23,9 +23,9 @@ public class SignUpActivity extends BaseActivity {
         setContentView(R.layout.activity_signup);
         initToolBar();
 
-        mEtEmail = (CustomEditText) findViewById(R.id.sign_up_edt_email);
+        mEtEmail = findViewById(R.id.sign_up_edt_email);
 
-        mBtnSignUp = (IconButton) findViewById(R.id.login_btn_register);
+        mBtnSignUp = findViewById(R.id.login_btn_register);
         mBtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,7 +52,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     public void initToolBar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.title_sign_up_screen));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);

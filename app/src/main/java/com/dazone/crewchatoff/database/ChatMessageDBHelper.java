@@ -20,7 +20,6 @@ public class ChatMessageDBHelper {
     public static String TAG = "ChatMessageDBHelper";
     public static final String TABLE_NAME = "ChatMessageTbl";
     public static final String ID = "Id";
-    //private long RoomNo;
     public static final String ROOM_NO = "room_no";
     public static final String MAKE_USER_NO = "make_user_no";
     public static final String MOD_DATE = "mod_date";
@@ -148,56 +147,7 @@ public class ChatMessageDBHelper {
 
         return false;
     }
-    public static boolean updateMessageByMesssageNo(ChattingDto dto, long messageNo) {
-        try {
-            ContentValues values = new ContentValues();
-            values.put(UNREAD_COUNT, dto.getUnReadCount());
-            values.put(ATTACH_NO, dto.getAttachNo());
-            values.put(MESSAGE, dto.getMessage());
-            values.put(MESSAGE_NO, dto.getMessageNo());
-            values.put(REG_DATE, dto.getRegDate());
 
-            int hasSentValue = dto.isHasSent() ? 1 : 0;
-            values.put(HAS_SENT, hasSentValue);
-
-            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + dto.getRoomNo() + " AND " + MESSAGE_NO + " = " + messageNo, null);
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-    public static boolean deleteById(ChattingDto dto, long id) {
-        try {
-
-            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.delete(AppContentProvider.GET_MESSAGE_CONTENT_URI, ROOM_NO + " = " + dto.getRoomNo() + " AND " + MESSAGE_NO + " = " + id, null);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public static boolean deleteByIdTmp(ChattingDto dto, long id) {
-        try {
-
-            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.delete(AppContentProvider.GET_MESSAGE_CONTENT_URI, ROOM_NO + " = " + dto.getRoomNo() + " AND " + ID + " = " + id, null);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-    /*
-     * Update message unread count
-     **/
     public static boolean updateMessage(long id, int unreadCount) {
         try {
             ContentValues values = new ContentValues();
@@ -211,24 +161,7 @@ public class ChatMessageDBHelper {
 
         return false;
     }
-    public static boolean updateMessageHasSend(long id, boolean hasSend,int unreadCount) {
-        try {
-            ContentValues values = new ContentValues();
-            int hasSentValue = hasSend ? 1 : 0;
-            values.put(HAS_SENT, hasSentValue);
-            values.put(UNREAD_COUNT, unreadCount);
-            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, MESSAGE_NO + " = " + id, null);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        return false;
-    }
-    /*
-     * Add a new simple message from Edit text and save to local database
-     **/
     public static long addSimpleMessage(ChattingDto dto) {
         try {
             ContentValues values = new ContentValues();
@@ -258,10 +191,7 @@ public class ChatMessageDBHelper {
      * This function to add one of message line
      **/
     public static boolean addMessage(ChattingDto dto) {
-
-
         if (CrewChatApplication.CrewChatLocalDatabase) {
-//        if (CrewChatApplication.CrewChatLocalDatabase && dto.getMessageNo() != 262530 && dto.getMessageNo() != 262529) {// for test
             Log.d(TAG, "addMessage");
             try {
                 if (!isExist(dto)) {

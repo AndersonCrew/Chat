@@ -58,11 +58,6 @@ public class CustomEditText extends EditText {
         if (event.getAction() == MotionEvent.ACTION_UP && dLeft != null) {
             lBounds = dLeft.getBounds();
 
-            int n1 = this.getLeft();
-            int n2 = this.getLeft() + lBounds.width();
-            int n3 = this.getPaddingTop();
-            int n4 = this.getHeight() - this.getPaddingBottom();
-
             // leva strana
             if (x >= (this.getLeft())
                     && x <= (this.getLeft() + lBounds.width())
@@ -75,10 +70,6 @@ public class CustomEditText extends EditText {
 
         if (event.getAction() == MotionEvent.ACTION_UP && dRight != null) {
             rBounds = dRight.getBounds();
-            int n1 = this.getRight() - rBounds.width();
-            int n2 = this.getRight() - this.getPaddingRight();
-            int n3 = this.getPaddingTop();
-            int n4 = this.getHeight() - this.getPaddingBottom();
             // prava strana
             if (x >= (this.getRight() - rBounds.width()) && x <= (this.getRight() - this.getPaddingRight())
                     && y >= this.getPaddingTop() && y <= (this.getHeight() - this.getPaddingBottom())) {
@@ -96,13 +87,5 @@ public class CustomEditText extends EditText {
         dRight = null;
         rBounds = null;
         super.finalize();
-    }
-
-    public void setBtnOk(Button btnOk) {
-        CustomEditText.btnOk = btnOk;
-    }
-
-    public Button getBtnOk() {
-        return btnOk;
     }
 }

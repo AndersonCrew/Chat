@@ -19,22 +19,6 @@ public class FavoriteChatRoomDto {
                 '}';
     }
 
-    public long getFavoriteChatRoomNo() {
-        return FavoriteChatRoomNo;
-    }
-
-    public void setFavoriteChatRoomNo(long favoriteChatRoomNo) {
-        FavoriteChatRoomNo = favoriteChatRoomNo;
-    }
-
-    public long getRegUserNo() {
-        return RegUserNo;
-    }
-
-    public void setRegUserNo(long regUserNo) {
-        RegUserNo = regUserNo;
-    }
-
     public long getRoomNo() {
         return RoomNo;
     }
@@ -42,13 +26,4 @@ public class FavoriteChatRoomDto {
     public void setRoomNo(long roomNo) {
         RoomNo = roomNo;
     }
-
-    public String getModDate() {
-        return ModDate;
-    }
-
-    public void setModDate(String modDate) {
-        ModDate = modDate;
-    }
-
 }

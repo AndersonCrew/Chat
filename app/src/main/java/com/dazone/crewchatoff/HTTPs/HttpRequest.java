@@ -72,11 +72,6 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(final String response) {
-//                Type listType = new TypeToken<ArrayList<TreeUserDTOTemp>>() {
-//                }.getType();
-//                ArrayList<TreeUserDTOTemp> list = new Gson().fromJson(response, listType);
-//                if (iGetListOrganization != null)
-//                    iGetListOrganization.onGetListSuccess(list);
                 new ExportUserList(response, iGetListOrganization).execute();
             }
 
@@ -90,24 +85,17 @@ public class HttpRequest {
 
     public void GetListOrganize_Mod(String moddate, final IGetListOrganization iGetListOrganization) {
         String url = root_link + Urls.URL_GET_ALL_USER_BE_LONGS_MOD;
-        Log.v("sssDebugurl", url);
-        Log.d(TAG, "moddate:" + moddate);
+
         Map<String, String> params = new HashMap<>();
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params.put("moddate", moddate);
         WebServiceManager webServiceManager = new WebServiceManager();
-        Log.d(TAG, "GetListOrganize_Mod:" + new Gson().toJson(params));
+
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(final String response) {
-                Log.d(TAG, "URL_GET_ALL_USER_BE_LONGS_MOD response:" + response);
-//                Type listType = new TypeToken<ArrayList<TreeUserDTOTemp>>() {
-//                }.getType();
-//                ArrayList<TreeUserDTOTemp> list = new Gson().fromJson(response, listType);
-//                if (iGetListOrganization != null)
-//                    iGetListOrganization.onGetListSuccess(list);
                 new ExportUserList(response, iGetListOrganization).execute();
             }
 
@@ -145,7 +133,6 @@ public class HttpRequest {
     }
 
     public void GetListDepart_Mod(final String moddate, final IGetListDepart iGetListDepart) {
-        Log.d(TAG, "getListDepartment_Mod");
         String url = root_link + Urls.URL_GET_DEPARTMENT_MOD;
         Map<String, String> params = new HashMap<>();
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
@@ -157,12 +144,6 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(final String response) {
-                Log.d(TAG, "GetListDepart_Mod response:" + response);
-//                Type listType = new TypeToken<List<TreeUserDTO>>() {
-//                }.getType();
-//                ArrayList<TreeUserDTO> list = new Gson().fromJson(response, listType);
-//                if (iGetListDepart != null)
-//                    iGetListDepart.onGetListDepartSuccess(list);
                 new ExportDepartmentList(response, iGetListDepart).execute();
             }
 
@@ -176,7 +157,6 @@ public class HttpRequest {
     }
 
     public void GetListDepart(final IGetListDepart iGetListDepart) {
-
         String url = root_link + Urls.URL_GET_DEPARTMENT;
         Map<String, String> params = new HashMap<>();
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
@@ -186,11 +166,6 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(final String response) {
-//                Type listType = new TypeToken<List<TreeUserDTO>>() {
-//                }.getType();
-//                ArrayList<TreeUserDTO> list = new Gson().fromJson(response, listType);
-//                if (iGetListDepart != null)
-//                    iGetListDepart.onGetListDepartSuccess(list);
                 new ExportDepartmentList(response, iGetListDepart).execute();
             }
 
@@ -215,23 +190,18 @@ public class HttpRequest {
         String js = gson.toJson(params2);
 
         if (UserNo != Utils.getCurrentId()) {
-
             params.put("command", "" + Urls.URL_CREATE_ONE_USER_CHAT);
             params.put("reqJson", js);
         } else {
-
             params.put("command", "" + Urls.URL_CREATE_MY_CHAT_ROOM);
             params.put("reqJson", "");
         }
-//        Log.d("CreateOneUserChatRoom",new Gson().toJson(params));
 
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-                Log.d("CreateOneUserChatRoom", response);
                 ChattingDto chattingDto = new Gson().fromJson(response, ChattingDto.class);
-
                 if (iCreateOneUserChatRom != null)
                     iCreateOneUserChatRom.onICreateOneUserChatRomSuccess(chattingDto);
             }
@@ -348,26 +318,22 @@ public class HttpRequest {
 
         ForwardMsgRoom forwardMsg = new ForwardMsgRoom(messageNo, s);
         params.put("reqJson", new Gson().toJson(forwardMsg));
-//        Log.d(TAG, "params:" + new Gson().toJson(params));
 
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-//                Log.d(TAG, "ForwardChatMsgChatRoom: " + response);
                 callback.onSuccess();
             }
 
             @Override
             public void onFailure(ErrorDto error) {
                 callback.onFail();
-                Log.d(TAG, "ForwardChatMsgChatRoom ErrorDto:");
             }
         });
     }
 
     public void ForwardChatMsgUser(long messageNo, List<String> userNos, final IF_Relay callback) {
-//        HttpRequest.getInstance().ForwardChatMsgUser(
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
 
@@ -386,19 +352,16 @@ public class HttpRequest {
 
         ForwardMsg forwardMsg = new ForwardMsg(messageNo, s);
         params.put("reqJson", new Gson().toJson(forwardMsg));
-//        Log.d(TAG, "params:" + new Gson().toJson(params));
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-//                Log.d(TAG, "ForwardChatMsgUser: " + response);
                 callback.onSuccess();
             }
 
             @Override
             public void onFailure(ErrorDto error) {
                 callback.onFail();
-                Log.d(TAG, "ForwardChatMsgUser ErrorDto:");
             }
         });
     }
@@ -417,7 +380,6 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-//                Log.d(TAG, "getAttachFileList:" + response);
                 List<AttachImageList> lst = null;
                 Type listType = new TypeToken<ArrayList<AttachImageList>>() {
                 }.getType();
@@ -425,16 +387,13 @@ public class HttpRequest {
                 if (lst == null) {
                     lst = new ArrayList<>();
                 }
-//                for (AttachImageList obj : lst) {
-//                    Log.d(TAG, "getAttachFileList:" + new Gson().toJson(obj));
-//                }
+
                 callback.onSuccess(lst);
             }
 
             @Override
             public void onFailure(ErrorDto error) {
                 callback.onFail();
-                Log.d(TAG, "getAttachFileList ErrorDto:");
             }
         });
     }
@@ -451,12 +410,10 @@ public class HttpRequest {
         RestoreUser obj = new RestoreUser(RoomNo, userNos);
         params.put("reqJson", new Gson().toJson(obj));
 
-//        Log.d(TAG, "UserRestore params:" + new Gson().toJson(params));
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-                Log.d(TAG, "UserRestore:" + response);
                 callback.onSuccess();
             }
 
@@ -528,7 +485,6 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-//                Log.d(TAG,"CreateGroupChatRoom onSuccess:"+response);
                 ChattingDto chattingDto = new Gson().fromJson(response, ChattingDto.class);
                 if (iCreateOneUserChatRom != null)
                     iCreateOneUserChatRom.onICreateOneUserChatRomSuccess(chattingDto);
@@ -591,16 +547,15 @@ public class HttpRequest {
             if (treeUserDTO.getType() == 2)
                 user += treeUserDTO.getId() + ",";
         }
+
         String lstUser = user.substring(0, user.length() - 1);
         CreateRoomTitle obj = new CreateRoomTitle(lstUser, titleRoom, type);
         String js = new Gson().toJson(obj);
         params.put("reqJson", js);
-        Log.d(TAG, "CreateGroupChatRoomNew:" + new Gson().toJson(params));
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-//                Log.d(TAG,"CreateGroupChatRoomWithRoomTitle onSuccess:"+response);
                 ChattingDto chattingDto = new Gson().fromJson(response, ChattingDto.class);
                 if (iCreateOneUserChatRom != null)
                     iCreateOneUserChatRom.onICreateOneUserChatRomSuccess(chattingDto);
@@ -608,7 +563,6 @@ public class HttpRequest {
 
             @Override
             public void onFailure(ErrorDto error) {
-                Log.d(TAG, "CreateGroupChatRoomWithRoomTitle error");
                 if (iCreateOneUserChatRom != null)
                     iCreateOneUserChatRom.onICreateOneUserChatRomFail(error);
             }
@@ -616,7 +570,6 @@ public class HttpRequest {
     }
 
     public void SendChatMsg(long RoomNo, String message, final SendChatMessage sendChatMessage) {
-        Log.d(TAG, "SendChatMsg");
         final String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
@@ -648,41 +601,8 @@ public class HttpRequest {
         });
     }
 
-    public void SendChatAttachFileTest(long RoomNo, int attachNo, final SendChatMessage sendChatMessage, int position) {
-        final String url = root_link + Urls.URL_ROOT_2;
-        Map<String, String> params = new HashMap<>();
-        Map<Object, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_SEND_ATTACH_FILE);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-        params2.put("roomNo", RoomNo);
-        params2.put("attachNo", attachNo);
-
-        Gson gson = new Gson();
-        String js = gson.toJson(params2);
-        params.put("reqJson", js);
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-                ChattingDto chattingDto = new Gson().fromJson(response, ChattingDto.class);
-                if (sendChatMessage != null)
-                    sendChatMessage.onSendChatMessageSuccess(chattingDto);
-            }
-
-            @Override
-            public void onFailure(ErrorDto error) {
-                if (sendChatMessage != null)
-                    sendChatMessage.onSendChatMessageFail(error, url);
-            }
-        });
-    }
-
     public void SendChatAttachFile(long RoomNo, int attachNo, final SendChatMessage sendChatMessage) {
-
         final String url = root_link + Urls.URL_ROOT_2;
-        Log.d(TAG, "SendChatAttachFile:" + url);
         Map<String, String> params = new HashMap<>();
         Map<Object, Object> params2 = new HashMap<>();
         params.put("command", "" + Urls.URL_SEND_ATTACH_FILE);
@@ -695,8 +615,6 @@ public class HttpRequest {
         Gson gson = new Gson();
         String js = gson.toJson(params2);
         params.put("reqJson", js);
-//        if (sendChatMessage != null)
-//            sendChatMessage.onSendChatMessageFail(new ErrorDto(), url);
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
@@ -714,9 +632,6 @@ public class HttpRequest {
         });
     }
 
-    /*
-    * Get users status
-    * */
     public void getAllUserInfo(final OnGetUserInfo callback) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
@@ -735,7 +650,6 @@ public class HttpRequest {
                 Type listType = new TypeToken<ArrayList<UserInfoDto>>() {
                 }.getType();
                 ArrayList<UserInfoDto> list = new Gson().fromJson(response, listType);
-//                Log.d(TAG, "list:" + list.size());
                 callback.OnSuccess(list);
             }
 
@@ -746,9 +660,6 @@ public class HttpRequest {
         });
     }
 
-    /**
-     * GET MESSAGE UNREAD COUNT
-     */
     public void GetMessageUnreadCount(long roomNo, long startMsgNo, final OnGetMessageUnreadCountCallBack callBack) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
@@ -781,7 +692,6 @@ public class HttpRequest {
      * UPDATE MESSAGE UNREAD COUNT
      */
     public void UpdateMessageUnreadCount(long roomNo, int userNo, long startMsgNo) {
-        Log.d(TAG, "UpdateMessageUnreadCount");
         final String url = root_link + Urls.URL_ROOT_2;
         final Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
@@ -796,8 +706,6 @@ public class HttpRequest {
         final String js = gson.toJson(params2);
         params.put("reqJson", js);
 
-        Log.d(TAG, "start UpdateMessageUnreadCount");
-
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
@@ -810,42 +718,6 @@ public class HttpRequest {
                 Log.d(TAG, "UpdateMessageUnreadCount response ErrorDto");
             }
         });
-
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        if (response == null) response = "";
-//                        Log.d(TAG, "UpdateMessageUnreadCount response:" + response);
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.d(TAG, "onErrorResponse:" + error.toString());
-//                    }
-//                }) {
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                //Adding parameters to request
-//                params.put("command", "" + Urls.URL_UPDATE_MESSAGE_UNREAD_COUNT);
-//                params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-//                params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-//                params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-//                params.put("reqJson", js);
-//                return params;
-//            }
-//        };
-//
-//        int CREWCHAT_SOCKET_TIMEOUT_MS = 4000;
-//        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-//                CREWCHAT_SOCKET_TIMEOUT_MS,
-//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-//        //Adding the string request to the queue
-//        RequestQueue requestQueue = Volley.newRequestQueue(CrewChatApplication.getInstance());
-//        requestQueue.add(stringRequest);
     }
 
     /**
@@ -876,7 +748,6 @@ public class HttpRequest {
     }
 
     public void GetChatMsgSection(long roomNo, long baseMsgNo, int type, final OnGetChatMessage onGetChatMessage) {
-        Log.d(TAG, "GetChatMsgSection start");
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
@@ -890,40 +761,7 @@ public class HttpRequest {
         Gson gson = new Gson();
         String js = gson.toJson(params2);
         params.put("reqJson", js);
-        Log.d(TAG, new Gson().toJson(params));
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-                Log.d(TAG, "GetChatMsgSection response");
-                Type listType = new TypeToken<List<ChattingDto>>() {
-                }.getType();
-                List<ChattingDto> list = new Gson().fromJson(response, listType);
-                Log.d(TAG, "GetChatMsgSection finist convert response");
-                if (onGetChatMessage != null)
-                    onGetChatMessage.OnGetChatMessageSuccess(list);
-            }
 
-            @Override
-            public void onFailure(ErrorDto error) {
-                if (onGetChatMessage != null)
-                    onGetChatMessage.OnGetChatMessageFail(error);
-            }
-        });
-    }
-
-    public void GetChatMsg(long RoomNo, final OnGetChatMessage onGetChatMessage) {
-        String url = root_link + Urls.URL_ROOT_2;
-        Map<String, String> params = new HashMap<>();
-        Map<String, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_GET_CHAT_MSG);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-        params2.put("roomNo", RoomNo);
-        Gson gson = new Gson();
-        String js = gson.toJson(params2);
-        params.put("reqJson", js);
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
@@ -943,10 +781,6 @@ public class HttpRequest {
         });
     }
 
-
-    /**
-     * GET CHAT ROOM INFO
-     */
     public void GetChatRoom(long roomNo, final OnGetChatRoom callBack) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
@@ -989,17 +823,14 @@ public class HttpRequest {
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params.put("reqJson", "");
         WebServiceManager webServiceManager = new WebServiceManager();
-//        Log.d(TAG,"onGetChatList params:"+new Gson().toJson(params));
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-//                Log.d(TAG,"onGetChatList Response" + response);
                 new Prefs().putStringValue(Statics.KEY_DATA_CURRENT_CHAT_LIST, response);
                 Type listType = new TypeToken<List<ChattingDto>>() {
                 }.getType();
                 try {
                     List<ChattingDto> list = new Gson().fromJson(response, listType);
-
                     if (list != null) {
                         if (list.size() > 0) {
                             for (ChattingDto dto : list) {
@@ -1036,10 +867,8 @@ public class HttpRequest {
 
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> jsonParam = new HashMap<>();
-
         jsonParam.put("DeviceType", Statics.DEVICE_TYPE);
         jsonParam.put("DeviceID", deviceId);
-
 
         Gson gson = new Gson();
         jsonParam.put("NotifcationOptions", notificationParams);
@@ -1048,7 +877,6 @@ public class HttpRequest {
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-
 
         //Gson gson = new Gson();
         String js = gson.toJson(jsonParam);
@@ -1064,39 +892,6 @@ public class HttpRequest {
             @Override
             public void onFailure(ErrorDto error) {
                 callback.OnFail(error);
-            }
-        });
-    }
-
-    public void GetChatListV2(final OnGetChatListV2 onGetChatList) {
-        String url = root_link + Urls.URL_ROOT_2;
-        Map<String, String> params = new HashMap<>();
-        params.put("command", "" + Urls.URL_GET_CHAT_LIST);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-        params.put("reqJson", "");
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-                System.out.println("Get chatRoom V2: " + response);
-                new Prefs().putStringValue(Statics.KEY_DATA_CURRENT_CHAT_LIST, response);
-                Type listType = new TypeToken<List<ChatRoomDTO>>() {
-                }.getType();
-                List<ChatRoomDTO> list = new Gson().fromJson(response, listType);
-                for (ChatRoomDTO chattingDto : list) {
-                    System.out.println("aaaaaaaaaaaaaaaaaa " + chattingDto.toString());
-
-                }
-                if (onGetChatList != null)
-                    onGetChatList.OnGetChatListSuccess(list);
-            }
-
-            @Override
-            public void onFailure(ErrorDto error) {
-                if (onGetChatList != null)
-                    onGetChatList.OnGetChatListFail(error);
             }
         });
     }
@@ -1153,8 +948,6 @@ public class HttpRequest {
 
         params.put("reqJson", js);
 
-//        Log.d(TAG,"insertFavoriteUser params:"+new Gson().toJson(params));
-
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
@@ -1170,7 +963,6 @@ public class HttpRequest {
             }
         });
     }
-
 
      /*
     * Function to add an user to favorite group
@@ -1225,38 +1017,6 @@ public class HttpRequest {
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
 
-
-        params.put("reqJson", "");
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-                if (baseHTTPCallBack != null)
-                    baseHTTPCallBack.onHTTPSuccess(response);
-            }
-
-            @Override
-            public void onFailure(ErrorDto error) {
-                if (baseHTTPCallBack != null)
-                    baseHTTPCallBack.onHTTPFail(error);
-            }
-        });
-    }
-
-    /* Function to get all favorite group and data
-    * */
-
-    public void getFavotiteTopGroupAndData(final BaseHTTPCallbackWithJson baseHTTPCallBack) {
-
-        String url = root_link + Urls.URL_ROOT_2;
-        Map<String, String> params = new HashMap<>();
-
-        params.put("command", "" + Urls.URL_GET_TOP_FAVORITE_GROUP_AND_DATA);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-
-
         params.put("reqJson", "");
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
@@ -1297,39 +1057,6 @@ public class HttpRequest {
             public void onFailure(ErrorDto error) {
                 if (baseHTTPCallBack != null)
                     baseHTTPCallBack.onHTTPFail(error);
-            }
-        });
-    }
-
-    public void getGetFavoriteChatRoom(final OnGetFavoriteChatRoom callback) {
-        String url = root_link + Urls.URL_ROOT_2;
-        Map<String, String> params = new HashMap<>();
-
-        params.put("command", "" + Urls.URL_GET_FAVORITE_CHAT_ROOM);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-
-        params.put("reqJson", "");
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-
-                Type listType = new TypeToken<List<FavoriteChatRoomDto>>() {
-                }.getType();
-                List<FavoriteChatRoomDto> list = new Gson().fromJson(response, listType);
-
-                if (callback != null) {
-                    callback.OnGetChatRoomSuccess(list);
-                }
-            }
-
-            @Override
-            public void onFailure(ErrorDto error) {
-                if (callback != null) {
-                    callback.OnGetChatRoomFail(error);
-                }
             }
         });
     }
@@ -1497,7 +1224,6 @@ public class HttpRequest {
     }
 
     public void InsertDevice(String deviceId, final BaseHTTPCallBack baseHTTPCallBack) {
-        Log.d(TAG, "InsertDevice");
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
@@ -1508,12 +1234,6 @@ public class HttpRequest {
 
         params2.put("DeviceType", Statics.DEVICE_TYPE);
         params2.put("DeviceID", deviceId);
-
-//        boolean isEnableN = prefs.getBooleanValue(Statics.ENABLE_NOTIFICATION, false);
-//        boolean isEnableSound = prefs.getBooleanValue(Statics.ENABLE_SOUND, false);
-//        boolean isEnableVibrate = prefs.getBooleanValue(Statics.ENABLE_VIBRATE, false);
-//        boolean isEnableTime = prefs.getBooleanValue(Statics.ENABLE_TIME, false);
-//        boolean isEnableNotificationWhenUsingPcVersion = prefs.getBooleanValue(Statics.ENABLE_NOTIFICATION_WHEN_USING_PC_VERSION, false);
 
         boolean isEnableN = prefs.getBooleanValue(Statics.ENABLE_NOTIFICATION, true);
         boolean isEnableSound = prefs.getBooleanValue(Statics.ENABLE_SOUND, true);
@@ -1572,7 +1292,6 @@ public class HttpRequest {
         Gson gson = new Gson();
         String js = gson.toJson(params2);
         params.put("reqJson", js);
-        Log.d(TAG, "DeleteDevice:" + new Gson().toJson(params));
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
@@ -1607,7 +1326,6 @@ public class HttpRequest {
         String js = gson.toJson(params2);
 
         params.put("reqJson", js);
-//        Log.d(TAG, new Gson().toJson(params));
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
@@ -1707,15 +1425,8 @@ public class HttpRequest {
         for (TreeUserDTO treeUserDTO : list) {
             temp.add(treeUserDTO.getId());
         }
+
         params2.put("userNos", temp);
-
-
-        /*String user = "";
-        for (TreeUserDTO treeUserDTO : list) {
-            if(treeUserDTO.getType()==2)
-                user+=treeUserDTO.getId()+",";
-        }
-        params2.put("userNos",user.substring(0,user.length()-1));*/
         params2.put("roomNo", roomNo);
         Gson gson = new Gson();
         String js = gson.toJson(params2);
@@ -1725,7 +1436,6 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-                Log.d(TAG, "response:" + response);
                 if (baseHTTPCallBack != null) {
                     baseHTTPCallBack.onHTTPSuccess();
                 }
@@ -1761,12 +1471,10 @@ public class HttpRequest {
         UserUnreadClass userUnreadClass = new UserUnreadClass(roomNo, messageNo);
         params.put("reqJson", new Gson().toJson(userUnreadClass));
 
-
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-                Log.d(TAG, "GetCheckMessageUserList response:" + response);
                 ArrayList<UnreadDto> list = null;
                 try {
                     Type listType = new TypeToken<ArrayList<UnreadDto>>() {
@@ -1782,7 +1490,6 @@ public class HttpRequest {
 
             @Override
             public void onFailure(ErrorDto error) {
-                Log.d(TAG, "GetCheckMessageUserList onFailure");
                 callBack.onFail();
             }
         });
@@ -1791,8 +1498,6 @@ public class HttpRequest {
     public void checkVersionUpdate(final BaseHTTPCallBackWithString baseHTTPCallBack, final Context context) {
         final String url = Urls.URL_CHECK_UPDATE;
         Map<String, String> params = new HashMap<>();
-
-        //  String mTempDomain = "" + preferenceUtilities.getCurrentServiceDomain();
         params.put("Domain", prefs.getDDSServer());
         params.put("MobileType", "Android");
         params.put("Applications", "" + "CrewChat");

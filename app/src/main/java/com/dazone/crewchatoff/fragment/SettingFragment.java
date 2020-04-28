@@ -1,5 +1,6 @@
 package com.dazone.crewchatoff.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -74,27 +75,24 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private ImageView mAvatar;
 
     private void initSettingGroup() {
-
-        tvGeneralSetting = (TextView) mView.findViewById(R.id.tv_general_setting);
+        tvGeneralSetting = mView.findViewById(R.id.tv_general_setting);
         tvGeneralSetting.setOnClickListener(this);
-        tvLogout = (TextView) mView.findViewById(R.id.tv_logout);
+        tvLogout = mView.findViewById(R.id.tv_logout);
         tvLogout.setOnClickListener(this);
-        tvNotificationSettings = (TextView) mView.findViewById(R.id.tv_notification_settings);
+        tvNotificationSettings = mView.findViewById(R.id.tv_notification_settings);
         tvNotificationSettings.setOnClickListener(this);
-        tvUserName = (TextView) mView.findViewById(R.id.tv_username);
+        tvUserName = mView.findViewById(R.id.tv_username);
         tvUserName.setOnClickListener(this);
-        tvCrewChatSettings = (TextView) mView.findViewById(R.id.tv_crew_chat_settings);
+        tvCrewChatSettings = mView.findViewById(R.id.tv_crew_chat_settings);
         tvCrewChatSettings.setOnClickListener(this);
-        mAvatar = (ImageView) mView.findViewById(R.id.iv_avatar);
+        mAvatar = mView.findViewById(R.id.iv_avatar);
         mAvatar.setOnClickListener(this);
 
-        tv_infor = (TextView) mView.findViewById(R.id.tv_infor);
+        tv_infor = mView.findViewById(R.id.tv_infor);
         tv_infor.setOnClickListener(this);
-
 
         String url = prefs.getServerSite() + prefs.getAvatarUrl();
         Log.d(TAG, "url:" + url);
-//        ImageUtils.showCycleImageSquareFromLink(url, mAvatar, R.dimen.button_height);
         ImageUtils.showCycleImageFromLink(url, mAvatar, R.dimen.button_height);
 
 
@@ -110,8 +108,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_username:
-                goProfile();
-                break;
             case R.id.iv_avatar:
                 goProfile();
                 break;
@@ -126,47 +122,14 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
             case R.id.tv_logout:
                 logoutV2();
-                //logout();
                 break;
             case R.id.tv_infor:
                 showInfoV2();
-                //showInfor();
                 break;
             case R.id.tv_crew_chat_settings:
-                //TODO CHAT SETTING
                 CrewChatSettingActivity.toActivity(mContext);
                 break;
         }
-    }
-
-
-    void showInfor() {
-        Prefs prefs = CrewChatApplication.getInstance().getPrefs();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getResources().getString(R.string.crewchat_version));
-
-        String versionName = BuildConfig.VERSION_NAME;
-        String user_version = getResources().getString(R.string.user_version) + " " + versionName;
-
-        String lastest_version = getResources().getString(R.string.lastest_version) + " " + prefs.getSERVER_VERSION();
-//        String msg = user_version + "\n\n" + lastest_version;
-        String msg = user_version;
-        builder.setMessage(msg);
-
-        builder.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        Button b = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        if (b != null) {
-            b.setTextColor(ContextCompat.getColor(mContext, R.color.light_black));
-        }
-
     }
 
     private void showInfoV2() {
@@ -176,14 +139,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void goProfile() {
-//        Intent intent = new Intent(mContext, ProfileActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(Constant.KEY_INTENT_USER_NO, userDBHelper.getId());
-//        intent.putExtras(bundle);
-//        startActivity(intent);
-
-
         try {
             Intent intent = new Intent(mContext, ProfileUserActivity.class);
             int userNo = 0;
@@ -202,23 +157,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private void generalSetting() {
     }
 
-
-    private void logout() {
-        // Show logout confirm
-        AlertDialogView.normalAlertDialogWithCancel(mContext, Utils.getString(R.string.logout_confirm_title), Utils.getString(R.string.logout_confirm), Utils.getString(R.string.no), Utils.getString(R.string.yes), new AlertDialogView.OnAlertDialogViewClickEvent() {
-
-            @Override
-            public void onOkClick(DialogInterface alertDialog) {
-                doLogout();
-            }
-
-            @Override
-            public void onCancelClick() {
-
-            }
-        });
-    }
-
     private void logoutV2() {
         Utils.customAlertDialog(getActivity(), getResources().getString(R.string.app_name),Utils.getString(R.string.logout_confirm_title), Utils.getString(R.string.yes), Utils.getString(R.string.no), new DialogUtils.OnAlertDialogViewClickEvent() {
             @Override
@@ -234,6 +172,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     }
 
     final int LOGOUT_COMPLETE = 100;
+    @SuppressLint("HandlerLeak")
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -250,17 +189,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 prefs1.putBooleanValue(Statics.FIRST_LOGIN, false);
                 prefs1.set_login_install_app(false);
                 prefs1.setDataComplete(false);
-                Log.d(TAG, "CLEAR ALL");
-                // Finish current activity to start new activity
                 ((MainActivity) getActivity()).destroyFragment();
                 getActivity().finish();
 
-//                            ShortcutBadger.applyCount(getActivity(),0);
-//                            Log.d(TAG,"Log out");
-
                 Intent intent = new Intent(mContext, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
                 startActivity(intent);
             }
         }
@@ -283,16 +216,13 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                                 @Override
                                 public void run() {
                                     BelongsToDBHelper.clearBelong();
-//                                    Log.d(TAG,"before delete AllUserDBHelper.getUser():"+AllUserDBHelper.getUser().size());
                                     AllUserDBHelper.clearUser();
-//                                    Log.d(TAG,"after delete AllUserDBHelper.getUser():"+AllUserDBHelper.getUser().size());
                                     ChatRoomDBHelper.clearChatRooms();
                                     ChatMessageDBHelper.clearMessages();
                                     DepartmentDBHelper.clearDepartment();
                                     UserDBHelper.clearUser();
                                     FavoriteGroupDBHelper.clearGroups();
                                     FavoriteUserDBHelper.clearFavorites();
-                                    // CrewChatApplication.getInstance().getPrefs().clear();
                                     CrewChatApplication.resetValue();
                                     CrewChatApplication.isLoggedIn = false;
                                     handler.obtainMessage(LOGOUT_COMPLETE).sendToTarget();

@@ -273,7 +273,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             fab.performClick();
         }
     }
-    //--->Check version
+
     private void checkVersion() {
         HttpRequest.getInstance().checkVersionUpdate(new BaseHTTPCallBackWithString() {
             @Override

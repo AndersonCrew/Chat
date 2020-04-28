@@ -27,7 +27,7 @@ import com.dazone.crewchatoff.utils.CrewChatApplication;
 public class RenameRoomFragment extends BaseFragment {
     String TAG="RenameRoomFragment";
     private View rootView;
-    private TextView tvOldTitle, tvRemainCharacterCount;
+    private TextView tvRemainCharacterCount;
     private EditText et_title;
     private Button btnClear;
 

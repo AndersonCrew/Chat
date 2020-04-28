@@ -30,7 +30,6 @@ public class SettingNotificationFragment extends Fragment implements CompoundBut
     private SwitchCompat swEnableNotification, swEnableSound, swEnableVibrate, swEnableNotificationTime, swEnableNotificationWhenUsingPCVersion;
     private Prefs prefs;
     private TextView tvStartTime, tvEndTime,tv_notify_setting_time;
-    private Context mContext;
     /*
     * All date time var
     * */
@@ -51,23 +50,18 @@ public class SettingNotificationFragment extends Fragment implements CompoundBut
     }
 
     private void initView() {
-        swEnableNotification = (SwitchCompat) mView.findViewById(R.id.sw_enable_notification);
-        swEnableSound = (SwitchCompat) mView.findViewById(R.id.sw_enable_sound);
-        swEnableVibrate = (SwitchCompat) mView.findViewById(R.id.sw_enable_vibrate);
-        swEnableNotificationTime = (SwitchCompat) mView.findViewById(R.id.sw_enable_notification_time);
-        swEnableNotificationWhenUsingPCVersion = (SwitchCompat) mView.findViewById(R.id.sw_enable_chat_by_pc_version);
+        swEnableNotification = mView.findViewById(R.id.sw_enable_notification);
+        swEnableSound = mView.findViewById(R.id.sw_enable_sound);
+        swEnableVibrate = mView.findViewById(R.id.sw_enable_vibrate);
+        swEnableNotificationTime = mView.findViewById(R.id.sw_enable_notification_time);
+        swEnableNotificationWhenUsingPCVersion = mView.findViewById(R.id.sw_enable_chat_by_pc_version);
 
-        tvStartTime = (TextView) mView.findViewById(R.id.tv_start_time);
-        tvEndTime = (TextView) mView.findViewById(R.id.tv_end_time);
-        tv_notify_setting_time = (TextView) mView.findViewById(R.id.tv_notify_setting_time);
+        tvStartTime = mView.findViewById(R.id.tv_start_time);
+        tvEndTime = mView.findViewById(R.id.tv_end_time);
+        tv_notify_setting_time = mView.findViewById(R.id.tv_notify_setting_time);
         tv_notify_setting_time.setText(Html.fromHtml("<font color=#000>"
                 + getResources().getString(R.string.settings_notification_time_value) + "<br />" + "<small>" + getResources().getString(R.string.settings_notification_time_2)
                 + "</small>"));
-
-//        boolean isEnableN = prefs.getBooleanValue(Statics.ENABLE_NOTIFICATION, false);
-//        boolean isEnableSound = prefs.getBooleanValue(Statics.ENABLE_SOUND, false);
-//        boolean isEnableVibrate = prefs.getBooleanValue(Statics.ENABLE_VIBRATE, false);
-//        boolean isEnableTime = prefs.getBooleanValue(Statics.ENABLE_TIME, false);
 
         boolean isEnableN = prefs.getBooleanValue(Statics.ENABLE_NOTIFICATION, true);
         boolean isEnableSound = prefs.getBooleanValue(Statics.ENABLE_SOUND, true);
@@ -318,6 +312,5 @@ public class SettingNotificationFragment extends Fragment implements CompoundBut
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context;
     }
 }

@@ -1,5 +1,6 @@
 package com.dazone.crewchatoff.Class;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -43,22 +44,23 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
         initView(currentView);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView(View v) {
         if (v == null) {
             return;
         }
 
-        btnVoice = (Button) v.findViewById(R.id.btnVoice);
+        btnVoice = v.findViewById(R.id.btnVoice);
 
-        plus_imv = (ImageView) v.findViewById(R.id.plus_imv);
+        plus_imv = v.findViewById(R.id.plus_imv);
         plus_imv.setOnClickListener(this);
-        btnEmotion = (ImageView) v.findViewById(R.id.btnEmotion);
+        btnEmotion = v.findViewById(R.id.btnEmotion);
         btnEmotion.setOnClickListener(this);
-        btnSend = (ImageView) v.findViewById(R.id.btnSend);
+        btnSend = v.findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
-        edt_comment = (EditText) v.findViewById(R.id.edt_comment);
+        edt_comment = v.findViewById(R.id.edt_comment);
         edt_comment.setImeOptions(edt_comment.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
-        selection_lnl = (LinearLayout) v.findViewById(R.id.selection_lnl);
+        selection_lnl = v.findViewById(R.id.selection_lnl);
         selection_lnl.setVisibility(View.GONE);
 
         // set height selection_lnl
@@ -68,15 +70,11 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
         } else {
             params.height = Utils.getDimenInPx(R.dimen.dimen_140_280);
         }
-        selection_lnl.setLayoutParams(params);
-        // finish set height selection_lnl
 
-        linearEmoji = (LinearLayout) v.findViewById(R.id.linearEmoj);
+        selection_lnl.setLayoutParams(params);
+        linearEmoji = v.findViewById(R.id.linearEmoj);
         linearEmoji.setVisibility(View.GONE);
-        mEmojiView = (EmojiView) v.findViewById(R.id.emojicons);
-/*        selection_lnl.setVisibility(View.VISIBLE);
-        GridSelectionChatting grid = new GridSelectionChatting(context);
-        grid.addToView(selection_lnl);*/
+        mEmojiView = v.findViewById(R.id.emojicons);
 
         edt_comment.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -100,8 +98,6 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
     @Override
     public void onClick(View v) {
         int viewID = v.getId();
-/*        InputMethodManager imm = (InputMethodManager) v.getContext()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);*/
 
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 

@@ -25,23 +25,21 @@ public class AudioPlayer extends Dialog {
     private MediaPlayer mp;
     private ProgressBar songProgressBar;
     private Handler mHandler = new Handler();
-    private TextView songTotalDurationLabel, songCurrentDurationLabel,tvName;
-    private String _fileName="";
-    public AudioPlayer(@NonNull Context context, String pathAudio,String _fileName) {
+    private TextView songTotalDurationLabel, songCurrentDurationLabel, tvName;
+
+    public AudioPlayer(@NonNull Context context, String pathAudio, String _fileName) {
         super(context);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.player);
-//        this.setCanceledOnTouchOutside(false);
 
-        tvName=(TextView)findViewById(R.id.tvName);
-        if(_fileName==null)_fileName="";
+        tvName = findViewById(R.id.tvName);
+        if (_fileName == null) _fileName = "";
         tvName.setText(_fileName);
 
-        songProgressBar = (ProgressBar) findViewById(R.id.songProgressBar);
+        songProgressBar = findViewById(R.id.songProgressBar);
 
-        songTotalDurationLabel = (TextView) findViewById(R.id.songTotalDurationLabel);
-        songCurrentDurationLabel = (TextView) findViewById(R.id.songCurrentDurationLabel);
-        // MediaPlayer
+        songTotalDurationLabel = findViewById(R.id.songTotalDurationLabel);
+        songCurrentDurationLabel = findViewById(R.id.songCurrentDurationLabel);
         mp = new MediaPlayer();
         try {
             mp.setDataSource(pathAudio);
@@ -54,36 +52,21 @@ public class AudioPlayer extends Dialog {
                     dismiss();
                 }
             });
-            // set Progress bar values
             songProgressBar.setProgress(0);
             songProgressBar.setMax(100);
-            // Updating progress bar
             updateProgressBar();
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (mp == null) return;
 
-
-        // btnClose
-        FrameLayout btnClose = (FrameLayout) findViewById(R.id.btnClose);
+        FrameLayout btnClose = findViewById(R.id.btnClose);
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
-
-        // setOnKeyListener dialog
-//        this.setOnKeyListener(new DialogInterface.OnKeyListener() {
-//            @Override
-//            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-//                if (keyCode == KeyEvent.KEYCODE_BACK) {
-//                    Log.d("audioPlayer", "KEYCODE_BACK");
-//                }
-//                return true;
-//            }
-//        });
 
         Window window = this.getWindow();
         window.setGravity(Gravity.CENTER);
@@ -122,7 +105,7 @@ public class AudioPlayer extends Dialog {
             songCurrentDurationLabel.setText("" + milliSecondsToTimer(currentDuration));
 
             // Updating progress bar
-            int progress = (int) (getProgressPercentage(currentDuration, totalDuration));
+            int progress = getProgressPercentage(currentDuration, totalDuration);
             //Log.d("Progress", ""+progress);
             songProgressBar.setProgress(progress);
             Log.d(TAG, "mUpdateTimeTask");

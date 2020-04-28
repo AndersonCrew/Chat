@@ -29,10 +29,10 @@ public class TreeParent extends TreeView {
     @Override
     protected void setupView() {
         currentView = inflater.inflate(R.layout.tree_office_row, null);
-        title = (TextView) currentView.findViewById(R.id.office_title);
-        icon = (ImageView) currentView.findViewById(R.id.ic_folder);
-        checkBox = (CheckBox) currentView.findViewById(R.id.row_check);
-        main = (RelativeLayout) currentView.findViewById(R.id.mainParent);
+        title = currentView.findViewById(R.id.office_title);
+        icon = currentView.findViewById(R.id.ic_folder);
+        checkBox = currentView.findViewById(R.id.row_check);
+        main = currentView.findViewById(R.id.mainParent);
         bindData();
     }
 
@@ -43,7 +43,7 @@ public class TreeParent extends TreeView {
 
         checkBox.setVisibility(View.VISIBLE);
         title.setText(dto.getItemName());
-        lnl_child = (LinearLayout) currentView.findViewById(R.id.lnl_child);
+        lnl_child = currentView.findViewById(R.id.lnl_child);
 
         if (dto.getSubordinates() != null && dto.getSubordinates().size() != 0) {
             if (dto.getItemName().equalsIgnoreCase("Customer Business Div.")) {

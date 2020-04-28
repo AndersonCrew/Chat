@@ -39,9 +39,6 @@ public class AllUserDBHelper {
             + ALL_AVATAR_URL + " text, "
             + ALL_CELL_PHONE + " text,"
             + ALL_COMPANY_NUMBER + " text );";
-    // public static final String SQL_EXECUTE1 = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + ALL_USER_ENABLE + " boolean;";
-    /*    public static final String SQL_EXECUTE1 = "ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + ALL_USER_ENABLE + " boolean;";*/
-
 
     public static ArrayList<TreeUserDTOTemp> getUser_v2() {
         ArrayList<TreeUserDTOTemp> arrayList = new ArrayList<>();
@@ -63,7 +60,6 @@ public class AllUserDBHelper {
                     int _ALL_USER_NAME = cursor.getColumnIndex(ALL_USER_NAME);
                     int _ALL_USER_NAME_EN = cursor.getColumnIndex(ALL_USER_NAME_EN);
                     int _ALL_USER_STATUS = cursor.getColumnIndex(ALL_USER_STATUS);
-                    //int _ALL_USER_ENABLE = cursor.getColumnIndex(ALL_USER_ENABLE);
                     int _ALL_USER_STATUS_STRING = cursor.getColumnIndex(ALL_USER_STATUS_STRING);
 
                     while (!cursor.isLast()) {
@@ -82,18 +78,9 @@ public class AllUserDBHelper {
                         userDto.CompanyPhone = cursor.getString(_ALL_COMPANY_NUMBER);
                         userDto.Name = cursor.getString(_ALL_USER_NAME);
                         userDto.NameEN = cursor.getString(_ALL_USER_NAME_EN);
-                       /* try {
-                            userDto.Enabled = Boolean.getBoolean(cursor.getString(_ALL_USER_ENABLE));
-                        } catch (Exception e) {
-                            userDto.Enabled = true;
 
-                            e.printStackTrace();
-                        }
-*/
                         String statusStr = cursor.getString(_ALL_USER_STATUS) == null ? "0" : cursor.getString(_ALL_USER_STATUS);
                         userDto.setStatus(Integer.parseInt(statusStr));
-
-//                        Log.d(TAG,"getUser:"+cursor.getString(_ID)+" --- "+cursor.getString(_ALL_USER_NAME)+" --- "+cursor.getString(_ALL_USER_STATUS));
 
                         ArrayList<BelongDepartmentDTO> _belongs = new ArrayList<>();
 
@@ -120,78 +107,9 @@ public class AllUserDBHelper {
 
     public static ArrayList<TreeUserDTOTemp> getUser() {
         TinyDB tinyDB = new TinyDB(CrewChatApplication.getInstance());
-        ArrayList<TreeUserDTOTemp> arrayList = new ArrayList<>();
+        ArrayList<TreeUserDTOTemp> arrayList;
         arrayList = (tinyDB.getListTreeTmp("user", TreeUserDTOTemp.class));
         return arrayList;
-
-
-//        List<BelongDepartmentDTO> allOfBelongs = BelongsToDBHelper.getAllOfBelongs();
-//
-//        String[] columns = new String[]{"*"};
-//        ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-//        Cursor cursor = resolver.query(AppContentProvider.GET_ALL_CONTENT_URI, columns, null, null, null);
-//
-//
-//        if (cursor != null) {
-//            if (cursor.getCount() > 0) {
-//                try {
-//                    int _ID = cursor.getColumnIndex(ID);
-//                    int _ALL_USER_NO = cursor.getColumnIndex(ALL_USER_NO);
-//                    int _ALL_USER_ID = cursor.getColumnIndex(ALL_USER_ID);
-//                    int _ALL_DEPART_NO = cursor.getColumnIndex(ALL_DEPART_NO);
-//                    int _ALL_POSITION = cursor.getColumnIndex(ALL_POSITION);
-//                    int _ALL_AVATAR_URL = cursor.getColumnIndex(ALL_AVATAR_URL);
-//                    int _ALL_CELL_PHONE = cursor.getColumnIndex(ALL_CELL_PHONE);
-//                    int _ALL_COMPANY_NUMBER = cursor.getColumnIndex(ALL_COMPANY_NUMBER);
-//                    int _ALL_USER_NAME = cursor.getColumnIndex(ALL_USER_NAME);
-//                    int _ALL_USER_NAME_EN = cursor.getColumnIndex(ALL_USER_NAME_EN);
-//                    int _ALL_USER_STATUS = cursor.getColumnIndex(ALL_USER_STATUS);
-//                    int _ALL_USER_STATUS_STRING = cursor.getColumnIndex(ALL_USER_STATUS_STRING);
-//
-//                    while (!cursor.isLast()) {
-//                        cursor.moveToNext();
-//
-//                        TreeUserDTOTemp userDto = new TreeUserDTOTemp();
-//                        userDto.setDBId(Integer.parseInt(cursor.getString(_ID)));
-//
-//                        int userNo = Integer.parseInt(cursor.getString(_ALL_USER_NO));
-//                        userDto.UserNo = userNo;
-//                        userDto.UserID = cursor.getString(_ALL_USER_ID);
-//                        userDto.DepartNo = Integer.parseInt(cursor.getString(_ALL_DEPART_NO));
-//                        userDto.Position = cursor.getString(_ALL_POSITION);
-//                        userDto.AvatarUrl = cursor.getString(_ALL_AVATAR_URL);
-//                        userDto.CellPhone = cursor.getString(_ALL_CELL_PHONE);
-//                        userDto.CompanyPhone = cursor.getString(_ALL_COMPANY_NUMBER);
-//                        userDto.Name = cursor.getString(_ALL_USER_NAME);
-//                        userDto.NameEN = cursor.getString(_ALL_USER_NAME_EN);
-//
-//                        String statusStr = cursor.getString(_ALL_USER_STATUS) == null ? "0" : cursor.getString(_ALL_USER_STATUS);
-//                        userDto.setStatus(Integer.parseInt(statusStr));
-//
-////                        Log.d(TAG,"getUser:"+cursor.getString(_ID)+" --- "+cursor.getString(_ALL_USER_NAME)+" --- "+cursor.getString(_ALL_USER_STATUS));
-//
-//                        ArrayList<BelongDepartmentDTO> _belongs = new ArrayList<>();
-//
-//                        for (BelongDepartmentDTO belong : allOfBelongs) {
-//                            if (belong.UserNo == userNo) {
-//                                _belongs.add(belong);
-//                            }
-//                        }
-//
-//                        userDto.setBelongs(_belongs);
-//                        userDto.setUserStatusString(cursor.getString(_ALL_USER_STATUS_STRING));
-//
-//                        arrayList.add(userDto);
-//                    }
-//                } finally {
-//                    cursor.close();
-//                }
-//            }
-//
-//            cursor.close();
-//        }
-
-
     }
 
     public static TreeUserDTOTemp getAUser(long userNo) {
@@ -235,83 +153,6 @@ public class AllUserDBHelper {
         return null;
     }
 
-    public static ArrayList<TreeUserDTOTemp> getAUser1(int userNo1) {
-        ArrayList<TreeUserDTOTemp> arrayList = new ArrayList<>();
-        List<BelongDepartmentDTO> allOfBelongs = BelongsToDBHelper.getAllOfBelongs();
-        String[] columns = new String[]{"*"};
-        ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-        Cursor cursor = resolver.query(AppContentProvider.GET_ALL_CONTENT_URI, columns, ALL_USER_NO + "=" + userNo1, null, null);
-        if (cursor != null) {
-            if (cursor.getCount() > 0) {
-                try {
-                    int _ID = cursor.getColumnIndex(ID);
-                    int _ALL_USER_NO = cursor.getColumnIndex(ALL_USER_NO);
-                    int _ALL_USER_ID = cursor.getColumnIndex(ALL_USER_ID);
-                    int _ALL_DEPART_NO = cursor.getColumnIndex(ALL_DEPART_NO);
-                    int _ALL_POSITION = cursor.getColumnIndex(ALL_POSITION);
-                    int _ALL_AVATAR_URL = cursor.getColumnIndex(ALL_AVATAR_URL);
-                    int _ALL_CELL_PHONE = cursor.getColumnIndex(ALL_CELL_PHONE);
-                    int _ALL_COMPANY_NUMBER = cursor.getColumnIndex(ALL_COMPANY_NUMBER);
-                    int _ALL_USER_NAME = cursor.getColumnIndex(ALL_USER_NAME);
-                    int _ALL_USER_NAME_EN = cursor.getColumnIndex(ALL_USER_NAME_EN);
-                    int _ALL_USER_STATUS = cursor.getColumnIndex(ALL_USER_STATUS);
-                    int _ALL_USER_ENABLE = cursor.getColumnIndex(ALL_USER_ENABLE);
-                    int _ALL_USER_STATUS_STRING = cursor.getColumnIndex(ALL_USER_STATUS_STRING);
-
-                    while (!cursor.isLast()) {
-                        cursor.moveToNext();
-
-                        TreeUserDTOTemp userDto = new TreeUserDTOTemp();
-                        userDto.setDBId(Integer.parseInt(cursor.getString(_ID)));
-
-                        int userNo = Integer.parseInt(cursor.getString(_ALL_USER_NO));
-                        userDto.UserNo = userNo;
-                        userDto.UserID = cursor.getString(_ALL_USER_ID);
-                        userDto.DepartNo = Integer.parseInt(cursor.getString(_ALL_DEPART_NO));
-                        userDto.Position = cursor.getString(_ALL_POSITION);
-                        userDto.AvatarUrl = cursor.getString(_ALL_AVATAR_URL);
-                        userDto.CellPhone = cursor.getString(_ALL_CELL_PHONE);
-                        userDto.CompanyPhone = cursor.getString(_ALL_COMPANY_NUMBER);
-                        userDto.Name = cursor.getString(_ALL_USER_NAME);
-                        userDto.NameEN = cursor.getString(_ALL_USER_NAME_EN);
-                        try {
-                            userDto.Enabled = (cursor.getInt(_ALL_USER_ENABLE) == 1);
-
-                        } catch (Exception e) {
-                            userDto.Enabled = true;
-
-                            e.printStackTrace();
-                        }
-
-                        String statusStr = cursor.getString(_ALL_USER_STATUS) == null ? "0" : cursor.getString(_ALL_USER_STATUS);
-                        userDto.setStatus(Integer.parseInt(statusStr));
-
-//                        Log.d(TAG,"getUser:"+cursor.getString(_ID)+" --- "+cursor.getString(_ALL_USER_NAME)+" --- "+cursor.getString(_ALL_USER_STATUS));
-
-                        ArrayList<BelongDepartmentDTO> _belongs = new ArrayList<>();
-
-                        for (BelongDepartmentDTO belong : allOfBelongs) {
-                            if (belong.UserNo == userNo) {
-                                _belongs.add(belong);
-                            }
-                        }
-
-                        userDto.setBelongs(_belongs);
-                        userDto.setUserStatusString(cursor.getString(_ALL_USER_STATUS_STRING));
-
-                        arrayList.add(userDto);
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-
-            cursor.close();
-        }
-
-        return arrayList;
-    }
-
     public static String getAUserStatus(int userNo) {
         String[] columns = new String[]{ALL_USER_STATUS_STRING};
         ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
@@ -341,7 +182,6 @@ public class AllUserDBHelper {
             ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
             ContentValues conValues = new ContentValues();
             conValues.put(ALL_USER_STATUS, status);
-//            Log.d(TAG,"updateStatus 1:"+userId+" - "+status);
             resolver.update(AppContentProvider.GET_ALL_CONTENT_URI, conValues, ID + "=" + userId, null);
 
             return true;
@@ -371,14 +211,10 @@ public class AllUserDBHelper {
         try {
             ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
             ContentValues values = new ContentValues();
-
-//            Log.d(TAG,"updateUser:"+ treeUserDTOTemp.getUserNo() +" -- "+treeUserDTOTemp.getDepartNo());
-
             values.put(ALL_DEPART_NO, treeUserDTOTemp.getDepartNo());
             values.put(ALL_USER_ID, treeUserDTOTemp.getUserID());
             values.put(ALL_USER_NO, treeUserDTOTemp.getUserNo());
             values.put(ALL_AVATAR_URL, treeUserDTOTemp.getAvatarUrl());
-            /* values.put(ALL_POSITION, treeUserDTOTemp.getPosition());*/
             values.put(ALL_POSITION, treeUserDTOTemp.getBelongs().get(0).getPositionName());
             values.put(ALL_CELL_PHONE, treeUserDTOTemp.getCellPhone());
             values.put(ALL_COMPANY_NUMBER, treeUserDTOTemp.getCompanyPhone());
@@ -419,11 +255,7 @@ public class AllUserDBHelper {
     }
 
     public synchronized static boolean addUser(List<TreeUserDTOTemp> list) {
-        //     Log.d(TAG, "addUser"+list.toString());
-
         for (TreeUserDTOTemp treeUserDTOTemp : list) {
-
-//                Log.d(TAG,new Gson().toJson(treeUserDTOTemp));
             Log.d(TAG, "isAddUser" + CrewChatApplication.isAddUser);
             if (CrewChatApplication.isAddUser) {
                 // Check user before insert
@@ -435,7 +267,6 @@ public class AllUserDBHelper {
                     if (isSuccess) {
                         // perform insert to database
 
-//                        Log.d(TAG,new Gson().toJson(treeUserDTOTemp));
                         Log.d(TAG, "addUser" + "isSuccess");
                         ContentValues values = new ContentValues();
                         values.put(ALL_DEPART_NO, treeUserDTOTemp.getDepartNo());
@@ -467,7 +298,6 @@ public class AllUserDBHelper {
                     Log.d(TAG, "updateUser:" + new Gson().toJson(treeUserDTOTemp));
                     try {
                         BelongsToDBHelper.clearBelongWithUserNo(treeUserDTOTemp.getUserNo());
-                        boolean isSuccess = BelongsToDBHelper.addDepartment(treeUserDTOTemp.getBelongs());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -481,10 +311,6 @@ public class AllUserDBHelper {
         }
 
         return true;
-      /*  } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;*/
     }
 
     public static boolean clearUser() {

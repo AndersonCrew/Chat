@@ -1,12 +1,12 @@
 /*
  * Copyright 2013 - learnNcode (learnncode@gmail.com)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -71,7 +71,6 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
     private TextView headerBarDone;
 
     private static Uri fileUri;
-
     private final Handler handler = new Handler();
 
     @Override
@@ -96,9 +95,7 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
             headerBarCamera.setVisibility(View.GONE);
         }
 
-
         if (getIntent() != null && (getIntent().getBooleanExtra("isFromBucket", false))) {
-
             if (getIntent().getBooleanExtra("image", false)) {
                 headerBarTitle.setText(getResources().getString(R.string.image));
                 setHeaderBarCameraBackground(getResources().getDrawable(R.drawable.selector_camera_button));
@@ -142,7 +139,6 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
         mTabHost.getTabWidget().getChildAt(0).setVisibility(View.GONE);
 
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
-
             TextView textView = mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
             if (textView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
 
@@ -160,7 +156,6 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
             }
             textView.setTextColor(getResources().getColor(R.color.tabs_title_color));
             textView.setTextSize(Utils.convertDipToPixels(this, 10));
-
         }
 
         if ((mTabHost.getTabWidget().getChildAt(0) != null)) {
@@ -175,21 +170,17 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
 
             @Override
             public void onTabChanged(String tabId) {
-
                 android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                 ImageFragment imageFragment = (ImageFragment) fragmentManager.findFragmentByTag("tab1");
                 VideoFragment videoFragment = (VideoFragment) fragmentManager.findFragmentByTag("tab2");
                 android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-
                 if (tabId.equalsIgnoreCase("tab1")) {
-
                     headerBarTitle.setText(getResources().getString(R.string.image));
                     setHeaderBarCameraBackground(getResources().getDrawable(R.drawable.selector_camera_button));
                     headerBarCamera.setTag(getResources().getString(R.string.image));
 
                     if (imageFragment != null) {
-
                         if (videoFragment != null) {
                             fragmentTransaction.hide(videoFragment);
                         }
@@ -204,7 +195,6 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
                     headerBarCamera.setTag(getResources().getString(R.string.video));
 
                     if (videoFragment != null) {
-
                         if (imageFragment != null) {
                             fragmentTransaction.hide(imageFragment);
                         }
@@ -266,7 +256,6 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == MediaChooserConstants.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
 
@@ -300,9 +289,7 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
             }
         } else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri));
-
                 final AlertDialog alertDialog = MediaChooserConstants.getDialog(HomeFragmentActivity.this).create();
                 alertDialog.show();
                 handler.postDelayed(new Runnable() {
@@ -383,12 +370,6 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
                     startActivityForResult(intent, MediaChooserConstants.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
 
                 } else {
-                   /* Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    fileUri = getOutputMediaFileUri(MediaChooserConstants.MEDIA_TYPE_IMAGE); // create a file to save the image
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-
-                    // start the image capture Intent
-                    startActivityForResult(intent, MediaChooserConstants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);*/
                     if (ChattingActivity.instance.checkPermissionsCamera()) {
                         try {
                             captureImage();
@@ -445,8 +426,6 @@ public class HomeFragmentActivity extends FragmentActivity implements ImageFragm
                 break;
         }
     }
-
-
 
 
     //Capture camera

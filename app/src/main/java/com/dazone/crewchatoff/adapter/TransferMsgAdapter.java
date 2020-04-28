@@ -72,10 +72,6 @@ public class TransferMsgAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
         if (holder instanceof TransferMsgViewHolder) {
             final ChattingDto item = mDataSet.get(position);
             ItemViewHolder viewHolder = (TransferMsgViewHolder) holder;
-//            if(position==10)
-//            {
-//                Log.d(TAG,new Gson().toJson(item.getListTreeUser().size()));
-//            }
             viewHolder.bindData(item);
         } else {
             try {

@@ -83,28 +83,6 @@ public class GcmIntentService extends IntentService {
     //  private NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
     boolean isEnableN, isEnableSound, isEnableVibrate, isEnableTime, isPCVersion;
 
-    private boolean timeAvaiable() {
-        boolean isTimeEnable = prefs.getBooleanValue(Statics.ENABLE_TIME, false);
-
-        if (!isTimeEnable) { // Check is enable notification time
-            return true; // if check time is disable. the condition always true
-        }
-
-        Calendar calendar = Calendar.getInstance();
-        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int currentMinute = calendar.get(Calendar.MINUTE);
-        int start_hour = prefs.getIntValue(Statics.START_NOTIFICATION_HOUR, Statics.DEFAULT_START_NOTIFICATION_TIME);
-        int start_minutes = prefs.getIntValue(Statics.START_NOTIFICATION_MINUTES, 0);
-        int end_hour = prefs.getIntValue(Statics.END_NOTIFICATION_HOUR, Statics.DEFAULT_END_NOTIFICATION_TIME);
-        int end_minutes = prefs.getIntValue(Statics.END_NOTIFICATION_MINUTES, 0);
-
-        boolean isBetween = (currentHour > start_hour) && (currentHour < end_hour);
-        boolean isLeft = (currentHour == start_hour) && (currentMinute > start_minutes);
-        boolean isRight = (currentHour == end_hour) && (currentMinute < end_minutes);
-
-        return isBetween || isLeft || isRight;
-    }
-
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
@@ -148,7 +126,6 @@ public class GcmIntentService extends IntentService {
                             break;
                         case 8:
                             Log.d("TAG", "Case 8 ###");
-                            // dont apply this  version
                             receiveCode8(extras);
                             break;
                         default:
@@ -293,23 +270,13 @@ public class GcmIntentService extends IntentService {
                     if (CurrentChatListFragment.fragment != null) {
                         if (ChattingFragment.instance != null && ChattingFragment.instance.isVisible && ChattingFragment.instance.roomNo == roomNo) {
                             chattingDto.setLastedMsgDate(TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate()));
-
                             CurrentChatListFragment.fragment.isUpdate = true;
-                            Log.d(TAG, "CurrentChatListFragment 1");
                             CurrentChatListFragment.fragment.updateDataSet(chattingDto);
 
                         } else {
-                            Log.d(TAG, "CurrentChatListFragment 2");
                             chattingDto.setLastedMsgDate(TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate()));
                             CurrentChatListFragment.fragment.isUpdate = true;
-
-
-                            long roomNoGet = chattingDto.getRoomNo();
-                            Log.d(TAG, "roomNoGet:" + roomNoGet);
-//                            Log.d(TAG, "chattingDto:" + new Gson().toJson(chattingDto));
                             CurrentChatListFragment.fragment.updateDataSet(chattingDto);
-
-
                         }
 
                     }
@@ -394,7 +361,6 @@ public class GcmIntentService extends IntentService {
      * RECEIVE CODE 5
      */
     private void receiveCode5(Bundle extras) {
-//        Log.d(TAG,"receiveCode5"+new Gson().toJson(extras));
         if (extras.containsKey("Data")) {
             try {
                 /** Get RoomNo */
@@ -432,9 +398,7 @@ public class GcmIntentService extends IntentService {
 
                     boolean flag = CurrentChatListFragment.fragment.active();
                     if (!flag) {
-                        // update read msg when onpause activity
                         CurrentChatListFragment.fragment.updateReadMsgWhenOnPause(roomNo, unReadTotalCount, userNo);
-                        Log.d("TAG", "update read msg when onpause activity");
                     }
                 }
 
@@ -445,21 +409,15 @@ public class GcmIntentService extends IntentService {
     }
 
     private void receiveCode8(Bundle extras) {
-        Log.d(TAG, "receiveCode8");
         if (extras.containsKey("Data")) {
-            Log.d(TAG, "containsKey Data");
             try {
-                /** Get RoomNo */
                 String objExtra = extras.getString("Data", "");
                 JSONObject object = new JSONObject(objExtra);
 
                 final long roomNo = object.getLong("RoomNo");
-                Log.d(TAG, "roomNo:" + roomNo);
-
                 HttpRequest.getInstance().GetChatRoom(roomNo, new OnGetChatRoom() {
                     @Override
                     public void OnGetChatRoomSuccess(final ChatRoomDTO chatRoomDTO) {
-
                         if (chatRoomDTO != null) {
                             new Thread(new Runnable() {
                                 @Override
@@ -472,12 +430,10 @@ public class GcmIntentService extends IntentService {
                             intent.putExtra(Statics.ROOM_TITLE, chatRoomDTO.getRoomTitle().trim());
                             sendBroadcast(intent);
                         }
-
                     }
 
                     @Override
                     public void OnGetChatRoomFail(ErrorDto errorDto) {
-                        Log.d(TAG, "OnGetChatRoomFail");
                     }
                 });
 
@@ -486,10 +442,6 @@ public class GcmIntentService extends IntentService {
                 e.printStackTrace();
             }
         }
-    }
-
-    interface getBitmap {
-        void onSuccess(Bitmap result);
     }
 
     @Override
@@ -519,7 +471,6 @@ public class GcmIntentService extends IntentService {
     @TargetApi(26)
     private synchronized String createChannel() {
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
         String name = "crewChat";
         int importance = NotificationManager.IMPORTANCE_LOW;
 

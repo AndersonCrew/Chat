@@ -85,7 +85,7 @@ public class ImageFragment extends Fragment {
         if (mView == null) {
             mView = inflater.inflate(R.layout.view_grid_layout_media_chooser, container, false);
 
-            mImageGridView = (GridView) mView.findViewById(R.id.gridViewFromMediaChooser);
+            mImageGridView = mView.findViewById(R.id.gridViewFromMediaChooser);
 
 
             if (getArguments() != null) {
@@ -135,18 +135,14 @@ public class ImageFragment extends Fragment {
 
 
     private void setAdapter(Cursor imageCursor) {
-
         if (imageCursor.getCount() > 0) {
-
             mGalleryModelList = new ArrayList<>();
-
             for (int i = 0; i < imageCursor.getCount(); i++) {
                 imageCursor.moveToPosition(i);
                 int dataColumnIndex = imageCursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 MediaModel galleryModel = new MediaModel(imageCursor.getString(dataColumnIndex), false);
                 mGalleryModelList.add(galleryModel);
             }
-
 
             mImageAdapter = new GridViewAdapter(getActivity(), 0, mGalleryModelList, false);
             mImageGridView.setAdapter(mImageAdapter);
@@ -158,7 +154,6 @@ public class ImageFragment extends Fragment {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
                 GridViewAdapter adapter = (GridViewAdapter) parent.getAdapter();
                 MediaModel galleryModel = adapter.getItem(position);
                 File file = new File(galleryModel.url);
@@ -178,19 +173,14 @@ public class ImageFragment extends Fragment {
                 GridViewAdapter adapter = (GridViewAdapter) parent.getAdapter();
                 MediaModel galleryModel = adapter.getItem(position);
 
-
                 if (!galleryModel.status) {
-
-
                     if (CrewChatApplication.getInstance().getPrefs().getDDSServer().contains(Statics.chat_jw_group_co_kr)) {
-                        // check limit for chat_jw_group_co_kr
                         List<MediaModel> mGalleryModelList = adapter.getList();
                         int index = 0;
                         for (int i = 0; i < mGalleryModelList.size(); i++) {
                             MediaModel obj = mGalleryModelList.get(i);
                             if (obj.status) {
                                 index++;
-//                        Log.d(TAG,"i: "+i);
                             }
                         }
                         if (index >= Statics.chat_jw_group_co_kr_limit_image) {
@@ -198,7 +188,6 @@ public class ImageFragment extends Fragment {
                                     Statics.chat_jw_group_co_kr_limit_image + " image", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        // finish check limit
                     }
 
 

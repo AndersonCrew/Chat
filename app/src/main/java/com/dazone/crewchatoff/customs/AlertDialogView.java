@@ -60,11 +60,6 @@ public class AlertDialogView {
         AlertDialog alert = builder.create();
         alert.show();
 
-        // You Can Customise your Message here
-        /*TextView messageView = (TextView) alert
-                .findViewById(android.R.id.message);
-        messageView.setGravity(Gravity.CENTER);*/
-
         Button btnYes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
         Button btnNo = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
 
@@ -99,11 +94,6 @@ public class AlertDialogView {
 
         AlertDialog alert = builder.create();
         alert.show();
-
-        // You Can Customise your Message here
-        /*TextView messageView = (TextView) alert
-                .findViewById(android.R.id.message);
-        messageView.setGravity(Gravity.CENTER);*/
 
         Button btnYes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
         Button btnNo = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
@@ -141,11 +131,6 @@ public class AlertDialogView {
         AlertDialog alert = builder.create();
         alert.show();
 
-        // You Can Customise your Message here
-        /*TextView messageView = (TextView) alert
-                .findViewById(android.R.id.message);
-        messageView.setGravity(Gravity.CENTER);*/
-
         Button btnYes = alert.getButton(DialogInterface.BUTTON_POSITIVE);
         Button btnNo = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
 
@@ -153,31 +138,6 @@ public class AlertDialogView {
         btnYes.setTextColor(color);
         btnNo.setTextColor(color);
     }
-
-    /*public static void alertDialogShow(final Context context,
-                                       final String resultMobile) {
-
-        LayoutInflater li = LayoutInflater.from(context);
-        View promptsView = li.inflate(R.layout.prompt,
-                null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                context, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-        // set prompts.xml to alertdialog builder
-        alertDialogBuilder.setView(promptsView);
-        final EditText userInput = (EditText) promptsView
-                .findViewById(R.id.editTextDialogUserInput);
-        userInput.setText(resultMobile);
-        userInput.setEnabled(false);
-
-        Button btnCancel = (Button) promptsView.findViewById(R.id.aaa);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-            }
-        });
-    }*/
 
     public interface onAlertDialogViewClickEventData {
         void onOkClick(String groupName);

@@ -44,11 +44,11 @@ public class TreeOfficeView extends TreeView implements View.OnCreateContextMenu
     @Override
     protected void setupView() {
         currentView = inflater.inflate(R.layout.tree_office_row, null);
-        title = (TextView) currentView.findViewById(R.id.office_title);
-        icon = (ImageView) currentView.findViewById(R.id.ic_folder);
-        checkBox = (CheckBox) currentView.findViewById(R.id.row_check);
-        main = (RelativeLayout) currentView.findViewById(R.id.mainParent);
-        mLnTittle = (LinearLayout) currentView.findViewById(R.id.layout_title);
+        title = currentView.findViewById(R.id.office_title);
+        icon = currentView.findViewById(R.id.ic_folder);
+        checkBox = currentView.findViewById(R.id.row_check);
+        main = currentView.findViewById(R.id.mainParent);
+        mLnTittle = currentView.findViewById(R.id.layout_title);
         mLnTittle.setOnCreateContextMenuListener(this);
 
         bindData();
@@ -62,7 +62,7 @@ public class TreeOfficeView extends TreeView implements View.OnCreateContextMenu
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) icon.getLayoutParams();
         params.leftMargin = marginLeft;
 
-        lnl_child = (LinearLayout) currentView.findViewById(R.id.lnl_child);
+        lnl_child = currentView.findViewById(R.id.lnl_child);
 
         if (dto.getId() != 0) {
             title.setText(dto.getItemName());

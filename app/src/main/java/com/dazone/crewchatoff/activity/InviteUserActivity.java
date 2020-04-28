@@ -106,7 +106,7 @@ public class InviteUserActivity extends AppCompatActivity {
     }
 
     void initView() {
-        recyclerView = (RecyclerView) findViewById(R.id.rv);
+        recyclerView = findViewById(R.id.rv);
         InviteUserActivity instance = this;
         mAdapter = new AdapterOrganizationChart(this, list, true, null, instance, userNos);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -130,39 +130,6 @@ public class InviteUserActivity extends AppCompatActivity {
         }
     }
 
-    private void initWholeOrganization() {
-        // build offline version
-        // Get offline data
-        mDepartmentList = new ArrayList<>();
-        listTemp = new ArrayList<>();
-
-        if (CompanyFragment.instance != null) {
-            listTemp = CompanyFragment.instance.getUser();
-            mDepartmentList = CompanyFragment.instance.getDepartments();
-        }
-
-        if (mDepartmentList == null) mDepartmentList = new ArrayList<>();
-        if (listTemp == null) listTemp = new ArrayList<>();
-
-        if (mDepartmentList != null && mDepartmentList.size() > 0) {
-            buildTree(mDepartmentList, false);
-            Log.d(TAG, "1");
-        } else { // Get department from server
-            Log.d(TAG, "2");
-            Log.d(TAG, "URL_GET_DEPARTMENT 3");
-//            HttpRequest.getInstance().GetListDepart(new IGetListDepart() {
-//                @Override
-//                public void onGetListDepartSuccess(ArrayList<TreeUserDTO> treeUserDTOs) {
-//                    buildTree(treeUserDTOs, true);
-//                }
-//
-//                @Override
-//                public void onGetListDepartFail(ErrorDto dto) {
-//
-//                }
-//            });
-        }
-    }
     @Subscribe
     public void rotationActionRc(RotationAction rotationAction) {
         rotationSetting();
@@ -189,78 +156,6 @@ public class InviteUserActivity extends AppCompatActivity {
         }
     }
 
-    private void buildTree(final ArrayList<TreeUserDTO> treeUserDTOs, boolean isFromServer) {
-        if (treeUserDTOs != null) {
-            if (isFromServer) {
-                convertData(treeUserDTOs);
-            } else {
-                temp.clear();
-                temp.addAll(treeUserDTOs);
-            }
-
-            for (TreeUserDTO treeUserDTO : temp) {
-                if (treeUserDTO.getSubordinates() != null && treeUserDTO.getSubordinates().size() > 0) {
-                    treeUserDTO.setSubordinates(null);
-                }
-            }
-
-            // sort data by order
-            Collections.sort(temp, new Comparator<TreeUserDTO>() {
-                @Override
-                public int compare(TreeUserDTO r1, TreeUserDTO r2) {
-                    if (r1.getmSortNo() > r2.getmSortNo()) {
-                        return 1;
-                    } else if (r1.getmSortNo() == r2.getmSortNo()) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
-                }
-            });
-
-            for (TreeUserDTOTemp treeUserDTOTemp : listTemp) {
-                for (BelongDepartmentDTO belong : treeUserDTOTemp.getBelongs()) {
-                    TreeUserDTO treeUserDTO = new TreeUserDTO(
-                            treeUserDTOTemp.getName(),
-                            treeUserDTOTemp.getNameEN(),
-                            treeUserDTOTemp.getCellPhone(),
-                            treeUserDTOTemp.getAvatarUrl(),
-                            belong.getPositionName(),
-                            treeUserDTOTemp.getType(),
-                            treeUserDTOTemp.getStatus(),
-                            treeUserDTOTemp.getUserNo(),
-                            belong.getDepartNo(),
-                            treeUserDTOTemp.getUserStatusString(),
-                            belong.getPositionSortNo()
-                    );
-                    for (TreeUserDTO u : mSelectedPersonList) {
-                        if (treeUserDTOTemp.getUserNo() == u.getId()) {
-                            treeUserDTO.setIsCheck(true);
-                            break;
-                        }
-                    }
-
-                    temp.add(treeUserDTO);
-                }
-            }
-
-            mPersonList = new ArrayList<>();
-            mPersonList.addAll(temp);
-
-            TreeUserDTO dto = null;
-
-            try {
-                dto = Org_tree.buildTree(mPersonList);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (dto != null) {
-                list = dto.getSubordinates();
-                mAdapter.updateList(list);
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -272,7 +167,6 @@ public class InviteUserActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                Log.d(TAG, "onQueryTextSubmit:" + query);
                 return false;
             }
 
@@ -436,7 +330,6 @@ public class InviteUserActivity extends AppCompatActivity {
     List<TreeUserDTO> lstCurrent = new ArrayList<>();
 
     void updateCurrentList() {
-        Log.d(TAG, "updateCurrentList");
         if (lstCurrent != null && lstCurrent.size() > 0) {
             mAdapter.updateListSearch(lstCurrent);
         }

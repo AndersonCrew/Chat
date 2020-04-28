@@ -13,8 +13,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
-
 package com.dazone.crewchatoff.libGallery.activity;
 
 import android.annotation.SuppressLint;
@@ -67,9 +65,7 @@ import java.util.Date;
 import static com.dazone.crewchatoff.constant.Statics.CHOOSE_OPTION_IMAGE;
 import static com.dazone.crewchatoff.libGallery.MediaChooserConstants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
 
-
 public class BucketHomeFragmentActivity extends FragmentActivity {
-    private String TAG="BucketHomeFragmentActivity";
     private FragmentTabHost mTabHost;
     private TextView headerBarTitle;
     private ImageView headerBarCamera;
@@ -92,10 +88,10 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
         setContentView(R.layout.activity_home_media_chooser);
 
         prefs = CrewChatApplication.getInstance().getPrefs();
-        headerBarTitle = (TextView) findViewById(R.id.titleTextViewFromMediaChooserHeaderBar);
-        headerBarCamera = (ImageView) findViewById(R.id.cameraImageViewFromMediaChooserHeaderBar);
-        headerBarBack = (ImageView) findViewById(R.id.backArrowImageViewFromMediaChooserHeaderView);
-        image_option = (ImageView) findViewById(R.id.image_option);
+        headerBarTitle = findViewById(R.id.titleTextViewFromMediaChooserHeaderBar);
+        headerBarCamera = findViewById(R.id.cameraImageViewFromMediaChooserHeaderBar);
+        headerBarBack = findViewById(R.id.backArrowImageViewFromMediaChooserHeaderView);
+        image_option = findViewById(R.id.image_option);
         image_option.setVisibility(View.VISIBLE);
         image_option.setOnClickListener(new OnClickListener() {
             @Override
@@ -128,8 +124,8 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
                 popup.show();//showing popup menu
             }
         });
-        headerBarDone = (TextView) findViewById(R.id.doneTextViewViewFromMediaChooserHeaderView);
-        mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
+        headerBarDone = findViewById(R.id.doneTextViewViewFromMediaChooserHeaderView);
+        mTabHost = findViewById(android.R.id.tabhost);
 
         headerBarTitle.setText(getResources().getString(R.string.app_name));
         headerBarCamera.setBackgroundResource(R.drawable.ic_camera_unselect_from_media_chooser_header_bar);
@@ -165,7 +161,7 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
 
             View childView = mTabHost.getTabWidget().getChildAt(i);
-            TextView textView = (TextView) childView.findViewById(android.R.id.title);
+            TextView textView = childView.findViewById(android.R.id.title);
 
 
             if (textView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
@@ -186,15 +182,10 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
             textView.setTextSize(convertDipToPixels(10));
         }
 
-/*		((TextView)(mTabHost.getTabWidget().getChildAt(1).findViewById(android.R.id.title))).setTextColor(getResources().getColor(R.color.headerbar_selected_tab_color));
-        ((TextView)(mTabHost.getTabWidget().getChildAt(0).findViewById(android.R.id.title))).setTextColor(Color.WHITE);*/
-
-
         mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
 
             @Override
             public void onTabChanged(String tabId) {
-
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 BucketImageFragment imageFragment = (BucketImageFragment) fragmentManager.findFragmentByTag("tab1");
                 BucketVideoFragment videoFragment = (BucketVideoFragment) fragmentManager.findFragmentByTag("tab2");
@@ -209,9 +200,7 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
                     if (imageFragment == null) {
                         BucketImageFragment newImageFragment = new BucketImageFragment();
                         fragmentTransaction.add(R.id.realTabcontent, newImageFragment, "tab1");
-
                     } else {
-
                         if (videoFragment != null) {
                             fragmentTransaction.hide(videoFragment);
                         }
@@ -226,14 +215,11 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
                     headerBarTitle.setText(getResources().getString(R.string.video));
                     headerBarCamera.setBackgroundResource(R.drawable.selector_video_button);
                     headerBarCamera.setTag(getResources().getString(R.string.video));
-
                     if (videoFragment == null) {
-
                         final BucketVideoFragment newVideoFragment = new BucketVideoFragment();
                         fragmentTransaction.add(R.id.realTabcontent, newVideoFragment, "tab2");
 
                     } else {
-
                         if (imageFragment != null) {
                             fragmentTransaction.hide(imageFragment);
                         }
@@ -243,7 +229,6 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
 
                     ((TextView) (mTabHost.getTabWidget().getChildAt(0).findViewById(android.R.id.title))).setTextColor(Color.WHITE);
                     ((TextView) (mTabHost.getTabWidget().getChildAt(1).findViewById(android.R.id.title))).setTextColor(getResources().getColor(R.color.headerbar_selected_tab_color));
-
                 }
 
                 fragmentTransaction.commit();
@@ -274,12 +259,6 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
                     startActivityForResult(intent, MediaChooserConstants.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
 
                 } else {
-                   /* Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    fileUri = getOutputMediaFileUri(MediaChooserConstants.MEDIA_TYPE_IMAGE); // create a file to save the image
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-*/
-                    // start the image capture Intent
-                    // startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                     if (ChattingActivity.instance.checkPermissionsCamera()) {
                         try {
                             captureImage();
@@ -293,12 +272,9 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
                 }
 
             } else if (view == headerBarDone) {
-
                 if (mSelectedImage.size() == 0 && mSelectedVideo.size() == 0) {
                     Toast.makeText(BucketHomeFragmentActivity.this, getString(R.string.please_select_file), Toast.LENGTH_SHORT).show();
-
                 } else {
-
                     if (mSelectedVideo.size() > 0) {
                         Intent videoIntent = new Intent();
                         videoIntent.setAction(MediaChooser.VIDEO_SELECTED_ACTION_FROM_MEDIA_CHOOSER);
@@ -390,21 +366,13 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == Activity.RESULT_OK) {
-
             if (requestCode == MediaChooserConstants.BUCKET_SELECT_IMAGE_CODE) {
-
                 addMedia(mSelectedImage, data.getStringArrayListExtra("list"));
-//                Log.d(TAG,"BUCKET_SELECT_IMAGE_CODE: mSelectedImage: "+mSelectedImage.size());
-
             } else if (requestCode == MediaChooserConstants.BUCKET_SELECT_VIDEO_CODE) {
                 addMedia(mSelectedVideo, data.getStringArrayListExtra("list"));
-
             } else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri));
                 final AlertDialog alertDialog = MediaChooserConstants.getDialog(BucketHomeFragmentActivity.this).create();
                 alertDialog.show();
@@ -412,9 +380,7 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //Do something after 2000ms
                         try {
-
                             String fileUriString = fileUri.toString().replaceFirst("file:///", "/").trim();
                             android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
                             BucketImageFragment bucketImageFragment = (BucketImageFragment) fragmentManager.findFragmentByTag("tab1");
@@ -430,10 +396,7 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
                 }, 5000);
 
             } else if (requestCode == MediaChooserConstants.CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
-
-
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, fileUri));
-
                 final AlertDialog alertDialog = MediaChooserConstants.getDialog(BucketHomeFragmentActivity.this).create();
                 alertDialog.show();
                 handler.postDelayed(new Runnable() {

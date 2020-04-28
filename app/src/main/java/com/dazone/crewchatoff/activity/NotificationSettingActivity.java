@@ -18,13 +18,10 @@ public class NotificationSettingActivity extends BaseSingleBackActivity {
 
     @Override
     protected void addFragment(Bundle bundle) {
-        /** Setup FRAGMENT*/
         fragment = new SettingNotificationFragment();
-        /** ADD FRAGMENT TO ACTIVITY */
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.content_base_single_activity, fragment, fragment.getClass().getSimpleName());
         transaction.commit();
-        //Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
     }
 }

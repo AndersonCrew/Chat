@@ -1,12 +1,12 @@
 /*
  * Copyright 2013 - learnNcode (learnncode@gmail.com)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -38,97 +38,97 @@ import java.util.ArrayList;
 
 public class BucketGridAdapter extends ArrayAdapter<BucketEntry> {
 
-	public BucketVideoFragment bucketVideoFragment;
+    public BucketVideoFragment bucketVideoFragment;
 
-	private Context mContext;
-	private ArrayList<BucketEntry> mBucketEntryList;
-	private boolean mIsFromVideo;
-	private int mWidth;
-	LayoutInflater viewInflater;
-	
+    private Context mContext;
+    private ArrayList<BucketEntry> mBucketEntryList;
+    private boolean mIsFromVideo;
+    private int mWidth;
+    LayoutInflater viewInflater;
 
-	public BucketGridAdapter(Context context, int resource, ArrayList<BucketEntry> categories, boolean isFromVideo) {
-		super(context, resource, categories);
-		mBucketEntryList = categories;
-		mContext         = context;
-		mIsFromVideo     = isFromVideo;
-		viewInflater = LayoutInflater.from(mContext);
-	}
 
-	public int getCount() {
-		return mBucketEntryList.size();
-	}
+    public BucketGridAdapter(Context context, int resource, ArrayList<BucketEntry> categories, boolean isFromVideo) {
+        super(context, resource, categories);
+        mBucketEntryList = categories;
+        mContext = context;
+        mIsFromVideo = isFromVideo;
+        viewInflater = LayoutInflater.from(mContext);
+    }
 
-	@Override
-	public BucketEntry getItem(int position) {
-		return mBucketEntryList.get(position);
-	}
+    public int getCount() {
+        return mBucketEntryList.size();
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    @Override
+    public BucketEntry getItem(int position) {
+        return mBucketEntryList.get(position);
+    }
 
-	public void addLatestEntry(String url) {
-		int count = mBucketEntryList.size();
-		boolean success = false;
-		for(int i = 0; i< count; i++){
-			if(mBucketEntryList.get(i).bucketName.equals(MediaChooserConstants.folderName)){
-				mBucketEntryList.get(i).bucketUrl = url;
-				success = true;
-				break;
-			}
-		}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-		if(!success){
-			BucketEntry latestBucketEntry = new BucketEntry(0, MediaChooserConstants.folderName, url);
-			mBucketEntryList.add(0, latestBucketEntry);
-		}
-	}
+    public void addLatestEntry(String url) {
+        int count = mBucketEntryList.size();
+        boolean success = false;
+        for (int i = 0; i < count; i++) {
+            if (mBucketEntryList.get(i).bucketName.equals(MediaChooserConstants.folderName)) {
+                mBucketEntryList.get(i).bucketUrl = url;
+                success = true;
+                break;
+            }
+        }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+        if (!success) {
+            BucketEntry latestBucketEntry = new BucketEntry(0, MediaChooserConstants.folderName, url);
+            mBucketEntryList.add(0, latestBucketEntry);
+        }
+    }
 
-		ViewHolder holder;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-		if (convertView == null) {
+        ViewHolder holder;
 
-			mWidth = mContext.getResources().getDisplayMetrics().widthPixels;  
+        if (convertView == null) {
 
-			convertView  = viewInflater.inflate(R.layout.view_grid_bucket_item_media_chooser, parent, false);
+            mWidth = mContext.getResources().getDisplayMetrics().widthPixels;
 
-			holder = new ViewHolder();
-			holder.imageView    = (ImageView) convertView.findViewById(R.id.imageViewFromMediaChooserBucketRowView);
-			holder.nameTextView = (TextView) convertView.findViewById(R.id.nameTextViewFromMediaChooserBucketRowView);
+            convertView = viewInflater.inflate(R.layout.view_grid_bucket_item_media_chooser, parent, false);
 
-			convertView.setTag(holder);
+            holder = new ViewHolder();
+            holder.imageView = convertView.findViewById(R.id.imageViewFromMediaChooserBucketRowView);
+            holder.nameTextView = convertView.findViewById(R.id.nameTextViewFromMediaChooserBucketRowView);
 
-		}else{
-			holder = (ViewHolder) convertView.getTag();
-		}
+            convertView.setTag(holder);
 
-		FrameLayout.LayoutParams imageParams = (FrameLayout.LayoutParams) holder.imageView.getLayoutParams();
-		imageParams.width  = mWidth/2;
-		imageParams.height = mWidth/2;
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-		holder.imageView.setLayoutParams(imageParams);
+        FrameLayout.LayoutParams imageParams = (FrameLayout.LayoutParams) holder.imageView.getLayoutParams();
+        imageParams.width = mWidth / 2;
+        imageParams.height = mWidth / 2;
 
-		if(mIsFromVideo){
-			new VideoLoadAsync(bucketVideoFragment, holder.imageView, false, mWidth/2).executeOnExecutor(MediaAsync.THREAD_POOL_EXECUTOR, mBucketEntryList.get(position).bucketUrl);
+        holder.imageView.setLayoutParams(imageParams);
 
-		}else{
-			ImageLoadAsync loadAsync = new ImageLoadAsync(mContext, holder.imageView, mWidth/2);
-			loadAsync.executeOnExecutor(MediaAsync.THREAD_POOL_EXECUTOR, mBucketEntryList.get(position).bucketUrl);
-		}
+        if (mIsFromVideo) {
+            new VideoLoadAsync(bucketVideoFragment, holder.imageView, false, mWidth / 2).executeOnExecutor(MediaAsync.THREAD_POOL_EXECUTOR, mBucketEntryList.get(position).bucketUrl);
 
-		holder.nameTextView.setText(mBucketEntryList.get(position).bucketName );
-		return convertView;
-	}
+        } else {
+            ImageLoadAsync loadAsync = new ImageLoadAsync(mContext, holder.imageView, mWidth / 2);
+            loadAsync.executeOnExecutor(MediaAsync.THREAD_POOL_EXECUTOR, mBucketEntryList.get(position).bucketUrl);
+        }
 
-	class ViewHolder {
-		ImageView imageView;
-		TextView nameTextView;
-	}
+        holder.nameTextView.setText(mBucketEntryList.get(position).bucketName);
+        return convertView;
+    }
+
+    class ViewHolder {
+        ImageView imageView;
+        TextView nameTextView;
+    }
 }
 
 

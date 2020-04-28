@@ -45,10 +45,10 @@ public class RelayActivity extends AppCompatActivity {
     }
 
     void initView() {
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -59,7 +59,6 @@ public class RelayActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                Log.d(TAG, "position:" + position);
                 if (position == 0) showSearch();
                 else hideSearch();
 
@@ -88,8 +87,6 @@ public class RelayActivity extends AppCompatActivity {
         if (myActionMenuItem != null) {
             myActionMenuItem.collapseActionView();
             myActionMenuItem.setVisible(false);
-        } else {
-            Log.d(TAG, "myActionMenuItem null");
         }
 
     }
@@ -107,7 +104,6 @@ public class RelayActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                Log.d(TAG, "onQueryTextSubmit:" + query);
                 return false;
             }
 

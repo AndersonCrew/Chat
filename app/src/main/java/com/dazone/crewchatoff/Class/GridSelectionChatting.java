@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GridSelectionChatting extends BaseViewClass {
-    private String TAG="GridSelectionChatting";
     private RecyclerView selection_rcl;
     private List<SelectionPlusDto> dataSet;
 
@@ -27,7 +26,7 @@ public class GridSelectionChatting extends BaseViewClass {
     @Override
     protected void setupView() {
         currentView = inflater.inflate(R.layout.grid_selection_chatting, null);
-        selection_rcl = (RecyclerView) currentView.findViewById(R.id.selection_rcl);
+        selection_rcl = currentView.findViewById(R.id.selection_rcl);
         initView();
     }
 
@@ -35,14 +34,11 @@ public class GridSelectionChatting extends BaseViewClass {
         dataSet = new ArrayList<>();
 
 
-        if(CrewChatApplication.getInstance().getPrefs().getDDSServer().contains(Statics.chat_jw_group_co_kr)){
+        if (CrewChatApplication.getInstance().getPrefs().getDDSServer().contains(Statics.chat_jw_group_co_kr)) {
             dataSet.add(new SelectionPlusDto(1));
-//            dataSet.add(new SelectionPlusDto(2));
             dataSet.add(new SelectionPlusDto(3));
-//            dataSet.add(new SelectionPlusDto(4));
-//            dataSet.add(new SelectionPlusDto(5));
             dataSet.add(new SelectionPlusDto(6));
-        }else{
+        } else {
             dataSet.add(new SelectionPlusDto(1));
             dataSet.add(new SelectionPlusDto(2));
             dataSet.add(new SelectionPlusDto(3));
@@ -50,8 +46,8 @@ public class GridSelectionChatting extends BaseViewClass {
             dataSet.add(new SelectionPlusDto(5));
             dataSet.add(new SelectionPlusDto(6));
         }
+
         dataSet.add(new SelectionPlusDto(7));
-//        Log.d(TAG,"initView dataSet:"+dataSet.size());
         selection_rcl.setHasFixedSize(true);
         selection_rcl.setLayoutManager(new GridLayoutManager(context, 3));
         selection_rcl.addItemDecoration(new GridDecoration(0));

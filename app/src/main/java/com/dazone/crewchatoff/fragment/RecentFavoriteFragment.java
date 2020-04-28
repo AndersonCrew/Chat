@@ -276,19 +276,11 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     @Override
     public void onResume() {
         super.onResume();
-
-//        if (getActivity() != null) {
-//            ((MainActivity) getActivity()).hideMenuSearch();
-//        }
     }
 
     @Override
     protected void initAdapter() {
         adapterList = new RecentFavoriteAdapter(mContext, dataSet, rvMainList, mOnContextMenuSelect);
-    }
-
-    @Override
-    protected void reloadContentPage() {
     }
 
     void showLoading(){
@@ -306,51 +298,8 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     ArrayList<TreeUserDTOTemp> listOfUsers = null;
 
     public void init() {
-        int myId = Utils.getCurrentId();
-
         if (CompanyFragment.instance != null) listOfUsers = CompanyFragment.instance.getUser();
         if (listOfUsers == null) listOfUsers = new ArrayList<>();
-
-//        dataSet.clear();
-//        List<TreeUserDTOTemp> list1;
-//        TreeUserDTOTemp treeUserDTOTemp1;
-//        ArrayList<ChattingDto> listChat = ChatRoomDBHelper.getChatRooms();
-//
-//        Collections.sort(listChat, new Comparator<ChattingDto>() {
-//            public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-//                return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
-//            }
-//        });
-//
-//        for (ChattingDto chattingDto : listChat) {
-//            list1 = new ArrayList<>();
-//            ArrayList<Integer> cloneArr = new ArrayList<>(chattingDto.getUserNos());
-//            Utils.removeArrayDuplicate(cloneArr);
-//
-//            for (int id : cloneArr) {
-//                if ((myId != id) || (cloneArr.size() == 1 && cloneArr.get(0) == myId && chattingDto.getRoomType() == 1)) {
-//                    treeUserDTOTemp1 = Utils.GetUserFromDatabase(listOfUsers, id);
-//                    if (treeUserDTOTemp1 != null) {
-//                        list1.add(treeUserDTOTemp1);
-//                    }
-//                }
-//            }
-//            chattingDto.setListTreeUser(list1);
-//            if (Constant.isAddChattingDto(chattingDto))
-//                dataSet.add(chattingDto);
-//        }
-//
-//        if (dataSet != null && dataSet.size() > 0) {
-//            List<ChattingDto> lst = new ArrayList<>();
-//            for (ChattingDto dto : dataSet) {
-//                if (dto.isFavorite()) {
-//                    lst.add(dto);
-//                }
-//            }
-//            Log.d(TAG, "lst update offline:" + lst.size());
-//            getData(lst);
-//        }
-
         hideLoading();
     }
 
@@ -358,12 +307,9 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
 
         rvMainList.setVisibility(View.VISIBLE);
         hideLoading();
-//        if (lst.size() > 0) {
         dataSet = lst;
         Log.d(TAG, "updateList from list chat:" + dataSet.size());
         adapterList.updateData(dataSet);
-//        }
-
         if (tvNodata != null) {
             tvNodata.setVisibility(View.VISIBLE);
         }
@@ -557,54 +503,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
         }
     };
 
-    private void getDataFromClient(List<TreeUserDTOTemp> listOfUsers) {
-        int myId = Utils.getCurrentId();
-        List<TreeUserDTOTemp> list1;
-        TreeUserDTOTemp treeUserDTOTemp1;
-        ArrayList<ChattingDto> listChat = ChatRoomDBHelper.getFavoriteChatRooms();
-
-        Collections.sort(listChat, new Comparator<ChattingDto>() {
-            public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
-            }
-        });
-
-        for (ChattingDto chattingDto : listChat) {
-//            if (!Utils.checkChat(chattingDto, myId)) {
-            list1 = new ArrayList<>();
-
-            for (int id : chattingDto.getUserNos()) {
-                if ((myId != id) || (chattingDto.getUserNos().size() == 1 && chattingDto.getUserNos().get(0) == myId && chattingDto.getRoomType() == 1)) {
-                    treeUserDTOTemp1 = Utils.GetUserFromDatabase(listOfUsers, id);
-
-                    if (treeUserDTOTemp1 != null) {
-                        list1.add(treeUserDTOTemp1);
-                    }
-                }
-            }
-
-            chattingDto.setListTreeUser(list1);
-            Log.d(TAG, "add 1 ");
-            if (Constant.isAddChattingDto(chattingDto))
-                dataSet.add(chattingDto);
-//            }
-        }
-
-        if (dataSet != null && dataSet.size() > 0) {
-            countDataFromServer(true);
-            Log.d(TAG, "finish update");
-            updateStatus();
-            adapterList.notifyDataSetChanged();
-            Log.d(TAG, "adapterList.notifyDataSetChanged 8");
-        } else {
-            countDataFromServer(false);
-        }
-
-        /*if (Utils.isNetworkAvailable()){
-            getDataFromServer();
-        }*/
-    }
-
     public void updateSTTOffline() {
         Log.d(TAG, "updateSTTOffline");
         if (dataSet != null) {
@@ -628,41 +526,8 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
                     }
                 }
                 adapterList.notifyDataSetChanged();
-                Log.d(TAG, "adapterList.notifyDataSetChanged 9");
             }
         }
-    }
-
-    public void updateStatus() {
-//        new getStatus(new onStatus() {
-//            @Override
-//            public void finishStatus() {
-//                if (dataSet != null) {
-//                    if (dataSet.size() > 0) {
-//                        ArrayList<TreeUserDTOTemp> lst = listOfUsers;
-//                        for (ChattingDto dto : dataSet) {
-//                            if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0) {
-//                                if (dto.getListTreeUser().size() < 2) {
-//                                    int userNo = dto.getListTreeUser().get(0).getUserNo();
-//                                    String userName = dto.getListTreeUser().get(0).getName();
-//                                    for (TreeUserDTOTemp obj : lst) {
-//                                        int stt = obj.getStatus();
-//                                        int uN = obj.getUserNo();
-//                                        if (userNo == uN) {
-//                                            Log.d(TAG, "userNo:" + userNo + " userName:" + userName + " stt:" + stt);
-//                                            dto.setStatus(stt);
-//                                            break;
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        adapterList.notifyDataSetChanged();
-//                        Log.d(TAG, "adapterList.notifyDataSetChanged 10");
-//                    }
-//                }
-//            }
-//        }).execute();
     }
 
     interface onStatus {
@@ -699,11 +564,9 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
         ArrayList<TreeUserDTOTemp> users = listOfUsers;
         StatusDto status = new GetUserStatus().getStatusOfUsers(new Prefs().getHOST_STATUS(), new Prefs().getCompanyNo());
         if (status != null) {
-//            Log.d(TAG,new Gson().toJson(status));
             for (TreeUserDTOTemp u : users) {
                 for (StatusItemDto sItem : status.getItems()) {
                     if (sItem.getUserID().equals(u.getUserID())) {
-//                        Log.d(TAG,"update userID:"+sItem.getUserID()+" --- "+u.getDBId()+" --- "+sItem.getStatus());
                         AllUserDBHelper.updateStatus(u.getDBId(), sItem.getStatus());
                         break;
                     }
@@ -719,7 +582,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
                     if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0) {
                         if (dto.getListTreeUser().size() < 2) {
                             int userNo = dto.getListTreeUser().get(0).getUserNo();
-//                            String userName = dto.getListTreeUser().get(0).getName();
                             for (TreeUserDTOTemp obj : lst) {
                                 int stt = obj.getStatus();
                                 int uN = obj.getUserNo();
@@ -735,66 +597,5 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
                 Log.d(TAG, "adapterList.notifyDataSetChanged 11");
             }
         }
-    }
-
-    private void countDataFromServer(boolean isHaveData) {
-        if (isHaveData) {
-            hideLoading();
-            rvMainList.setVisibility(View.VISIBLE);
-            //no_item_found.setVisibility(View.GONE);
-        } else {
-            hideLoading();
-            rvMainList.setVisibility(View.GONE);
-            Log.d(TAG, "rvMainList GONE");
-            //no_item_found.setVisibility(View.VISIBLE);
-            //no_item_found.setText("No Data");
-        }
-    }
-
-//    public void updateRoomNo(long roomNo, int unreadCount, long userNo) {
-//        for (int i = 0; i < dataSet.size(); i++) {
-//            if (dataSet.get(i).getRoomNo() == roomNo) {
-//                dataSet.get(i).setUnreadTotalCount(unreadCount);
-//                if (userNo != 0) {
-//                    dataSet.get(i).setUnReadCount(0);
-//                }
-//                adapterList.notifyItemChanged(i);
-//                break;
-//            }
-//        }
-//    }
-
-    public void updateDataSet(ChattingDto dto, int unRead) {
-        Log.d(TAG, "unRead:" + unRead);
-        for (int i = 0; i < dataSet.size(); i++) {
-            if (dataSet.get(i).getRoomNo() == dto.getRoomNo()) {
-                dataSet.get(i).setLastedMsg(dto.getMessage());
-                dataSet.get(i).setLastedMsgType(dto.getLastedMsgType());
-                dataSet.get(i).setLastedMsgAttachType(dto.getLastedMsgAttachType());
-                dataSet.get(i).setLastedMsgDate(dto.getLastedMsgDate());
-                dataSet.get(i).setRegDate(dto.getRegDate());
-                dataSet.get(i).setUnreadTotalCount(dto.getUnreadTotalCount());
-                dataSet.get(i).setWriterUserNo(dto.getWriterUserNo());
-                dataSet.get(i).setRoomNo(dto.getRoomNo());
-                dataSet.get(i).setMessage(dto.getMessage());
-                dataSet.get(i).setMessageNo(dto.getMessageNo());
-                dataSet.get(i).setAttachNo(dto.getAttachNo());
-                dataSet.get(i).setAttachFileName(dto.getAttachFileName());
-                dataSet.get(i).setAttachFileType(dto.getAttachFileType());
-                dataSet.get(i).setAttachFilePath(dto.getAttachFilePath());
-                dataSet.get(i).setAttachFileSize(dto.getAttachFileSize());
-                if (dto.getLastedMsgDate() != null) {
-                    String time = TimeUtils.convertTimeDeviceToTimeServerDefault(dto.getLastedMsgDate());
-                    dataSet.get(i).setLastedMsgDate(time);
-                } else if (dto.getRegDate() != null) {
-                    String time = TimeUtils.convertTimeDeviceToTimeServerDefault(dto.getRegDate());
-                    dataSet.get(i).setLastedMsgDate(time);
-                }
-
-                dataSet.get(i).setUnReadCount(unRead);
-                break;
-            }
-        }
-        adapterList.updateData(dataSet);
     }
 }

@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-//import com.google.gson.Gson;
-
-
 public class TinyDB {
 
     private SharedPreferences preferences;

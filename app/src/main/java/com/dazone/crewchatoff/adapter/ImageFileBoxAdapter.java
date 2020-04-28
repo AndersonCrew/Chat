@@ -42,8 +42,8 @@ public class ImageFileBoxAdapter extends RecyclerView.Adapter<ImageFileBoxAdapte
         // add event  click
         public RecyclerViewHolders(View itemView) {
             super(itemView);
-            btnDetails = (LinearLayout) itemView.findViewById(R.id.btnDetails);
-            iv = (ImageView) itemView.findViewById(R.id.iv);
+            btnDetails = itemView.findViewById(R.id.btnDetails);
+            iv = itemView.findViewById(R.id.iv);
         }
     }
 
@@ -97,17 +97,6 @@ public class ImageFileBoxAdapter extends RecyclerView.Adapter<ImageFileBoxAdapte
                     dto.setAttachFileType(attachImageList.getType());
                     dto.setAttachInfo(AttachInfo);
 
-
-//                    String userName = "";
-//                    try {
-//                        userName = Constant.getUserName(allUser,attachImageList.getUserNo());
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    Log.d(TAG,"userName:"+userName);
-//                    us.FullName = userName;
-//                    us.setFullName(userName);
-
                     urls.add(dto);
                 }
 
@@ -118,7 +107,6 @@ public class ImageFileBoxAdapter extends RecyclerView.Adapter<ImageFileBoxAdapte
                     prefs.setIMAGE_LIST("");
 
                 Intent intent = new Intent(context, ChatViewImageActivity.class);
-//                intent.putExtra(Statics.CHATTING_DTO_GALLERY_LIST, urls);
                 intent.putExtra(Statics.CHATTING_DTO_GALLERY_POSITION, position);
                 intent.putExtra(Statics.get_user_name_from_db, true);
                 context.startActivity(intent);

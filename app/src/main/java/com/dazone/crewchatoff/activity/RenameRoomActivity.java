@@ -48,6 +48,4 @@ public class RenameRoomActivity extends BaseSingleBackTick {
         fragment.setTickSuccessCallback(mOnTickSuccess);
         Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
     }
-
-    // Need to check
 }

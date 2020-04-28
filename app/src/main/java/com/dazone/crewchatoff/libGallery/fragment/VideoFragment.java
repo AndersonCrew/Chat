@@ -92,7 +92,7 @@ public class VideoFragment extends Fragment implements OnScrollListener {
 		if(mView == null){
 			mView = inflater.inflate(R.layout.view_grid_layout_media_chooser, container, false);
 
-			mVideoGridView = (GridView)mView.findViewById(R.id.gridViewFromMediaChooser);
+			mVideoGridView = mView.findViewById(R.id.gridViewFromMediaChooser);
 
 			if (getArguments() != null) {
 				initVideos(getArguments().getString("name"));

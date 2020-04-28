@@ -35,12 +35,10 @@ public class AdapterOrganizationChartFragment extends RecyclerView.Adapter<Adapt
     private List<TreeUserDTO> list;
     private List<TreeUserDTO> listTemp = new ArrayList<>();
     private List<TreeUserDTO> listTemp_3 = new ArrayList<>();
-    private Context context;
     private int isSearch = 0; // 0 -> normal : 1 -> search
-    private boolean mIsDisableSelected = false;
     private int myId = Utils.getCurrentId();
     private TabOrganizationChartFragment instance;
-    private int mg = 0;
+    private int mg;
 
     public List<TreeUserDTO> getCurrentList() {
         return list;
@@ -81,21 +79,21 @@ public class AdapterOrganizationChartFragment extends RecyclerView.Adapter<Adapt
 
         public MyViewHolder(View view) {
             super(view);
-            item_org_wrapper = (LinearLayout) view.findViewById(R.id.item_org_wrapper);
-            child_list = (LinearLayout) view.findViewById(R.id.child_list);
-            avatar = (ImageView) view.findViewById(R.id.avatar);
-            folderIcon = (ImageView) view.findViewById(R.id.ic_folder);
-            relAvatar = (RelativeLayout) view.findViewById(R.id.relAvatar);
-            iconWrapper = (LinearLayout) view.findViewById(R.id.icon_wrapper);
-            ivStatus = (ImageView) view.findViewById(R.id.status_imv);
-            name = (TextView) view.findViewById(R.id.name);
-            position = (TextView) view.findViewById(R.id.position);
-            row_check = (CheckBox) view.findViewById(R.id.row_check);
+            item_org_wrapper = view.findViewById(R.id.item_org_wrapper);
+            child_list = view.findViewById(R.id.child_list);
+            avatar = view.findViewById(R.id.avatar);
+            folderIcon = view.findViewById(R.id.ic_folder);
+            relAvatar = view.findViewById(R.id.relAvatar);
+            iconWrapper = view.findViewById(R.id.icon_wrapper);
+            ivStatus = view.findViewById(R.id.status_imv);
+            name = view.findViewById(R.id.name);
+            position = view.findViewById(R.id.position);
+            row_check = view.findViewById(R.id.row_check);
         }
 
         public void handler(final TreeUserDTO treeUserDTO, final int index) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            int margin = treeUserDTO.getMargin();
+            int margin;
             if (isSearch == 0) {
                 margin = treeUserDTO.getMargin();
             } else {
@@ -122,8 +120,6 @@ public class AdapterOrganizationChartFragment extends RecyclerView.Adapter<Adapt
             if (namePosition == null) namePosition = "";
             if (treeUserDTO.getType() == 2) {
                 String url = new Prefs().getServerSite() + treeUserDTO.getAvatarUrl();
-
-//                Log.d(TAG, "url:" + url);
                 avatar.setImageResource(R.drawable.avatar_l);
                 ImageLoader.getInstance().displayImage(url, avatar, Statics.options2);
 
@@ -525,12 +521,8 @@ public class AdapterOrganizationChartFragment extends RecyclerView.Adapter<Adapt
                     addList(obj, tempMargin, -1);
                 }
             }
-            this.notifyDataSetChanged();
-//            String listLevel = new Gson().toJson(this.list);
-//            Type type = new TypeToken<List<TreeUserDTO>>() {
-//            }.getType();
-//            listTemp = new Gson().fromJson(listLevel, type);
 
+            this.notifyDataSetChanged();
         }
 
     }
@@ -540,9 +532,7 @@ public class AdapterOrganizationChartFragment extends RecyclerView.Adapter<Adapt
     }
 
     public AdapterOrganizationChartFragment(Context context, List<TreeUserDTO> list, boolean mIsDisableSelected, TabOrganizationChartFragment instance) {
-        this.context = context;
         this.list = list;
-        this.mIsDisableSelected = mIsDisableSelected;
         this.instance = instance;
         this.mg = Utils.getDimenInPx(R.dimen.dimen_20_40) * 2;
     }
@@ -627,7 +617,6 @@ public class AdapterOrganizationChartFragment extends RecyclerView.Adapter<Adapt
         notifyDataSetChanged();
         if (flag) {
             instance.scrollToEndList(position + 1);
-//            instance.scrollToEndList(list.size());
         }
     }
 

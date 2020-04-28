@@ -45,11 +45,11 @@ public class AttachFileBoxAdapter extends RecyclerView.Adapter<AttachFileBoxAdap
         // add event  click
         public RecyclerViewHolders(View itemView) {
             super(itemView);
-            btnDetails = (RelativeLayout) itemView.findViewById(R.id.btnDetails);
-            tvFileName = (TextView) itemView.findViewById(R.id.tvFileName);
-            tvUserName = (TextView) itemView.findViewById(R.id.tvUserName);
-            tvSize = (TextView) itemView.findViewById(R.id.tvSize);
-            tvDate = (TextView) itemView.findViewById(R.id.tvDate);
+            btnDetails = itemView.findViewById(R.id.btnDetails);
+            tvFileName = itemView.findViewById(R.id.tvFileName);
+            tvUserName = itemView.findViewById(R.id.tvUserName);
+            tvSize = itemView.findViewById(R.id.tvSize);
+            tvDate = itemView.findViewById(R.id.tvDate);
             btnDetails.setOnCreateContextMenuListener(this);
 
         }
@@ -65,19 +65,10 @@ public class AttachFileBoxAdapter extends RecyclerView.Adapter<AttachFileBoxAdap
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case Statics.MENU_DOWNLOAD:
-//                    Log.d(TAG, "MENU_DOWNLOAD:" + new Gson().toJson(objTemp));
                     if (objTemp != null) {
                         String url = String.format("/UI/CrewChat/MobileAttachDownload.aspx?session=%s&no=%s",
                                 new Prefs().getaccesstoken(), objTemp.getAttachNo());
                         String urlDownload = new Prefs().getServerSite() + url;
-
-                        String path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + objTemp.getFileName();
-                        File file = new File(path);
-//                        if (file.exists()) {
-//                            context.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-//                        } else {
-//                            Utils.displayDownloadFileDialog(context, urlDownload, objTemp.getFileName());
-//                        }
                         Utils.displayDownloadFileDialog(context, urlDownload, objTemp.getFileName());
                     }
                     break;
@@ -114,10 +105,9 @@ public class AttachFileBoxAdapter extends RecyclerView.Adapter<AttachFileBoxAdap
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         final AttachImageList obj = imagesURL.get(position);
         holder.tvFileName.setText(obj.getFileName());
-        String userName = "";
+        String userName;
         userName = Constant.getUserName(allUser, obj.getUserNo());
         if (userName.length() == 0) {
-//            userName = "" + obj.getUserNo();
             userName = context.getResources().getString(R.string.unknown);
         }
         holder.tvUserName.setText(userName);
@@ -150,12 +140,6 @@ public class AttachFileBoxAdapter extends RecyclerView.Adapter<AttachFileBoxAdap
         Log.d(TAG, "path:" + path);
 
         if (obj != null) {
-            File file = new File(path);
-//            if (file.exists()) {
-//                context.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-//            } else {
-//                Utils.displayDownloadFileDialog(context, urlDownload1, obj.getFileName());
-//            }
             Utils.displayDownloadFileDialog(context, urlDownload1, obj.getFileName());
         }
     }

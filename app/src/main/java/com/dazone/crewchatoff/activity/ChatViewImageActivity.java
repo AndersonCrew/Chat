@@ -279,66 +279,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
                         shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider",photoFile));
                         startActivity(Intent.createChooser(shareIntent, "Share image using"));
                     }
-
-
-//                Glide.with(CrewChatApplication.getInstance())
-//                        .load(urlShare)
-//                        .asBitmap()
-//                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                        .placeholder(R.drawable.loading)
-//                        .error(R.drawable.loading)
-//                        .fallback(R.drawable.loading)
-//                        .into(new SimpleTarget<Bitmap>() {
-//                            @Override
-//                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//
-//                                /** SAVE FILE */
-//                                String path = Utils.saveFile(resource);
-//                                Uri screenshotUri = Uri.parse("file:///" + path);
-//                                try {
-//                                    final Intent intent = ShareCompat.IntentBuilder.from(ChatViewImageActivity.this)
-//                                            .setType("image/*")
-//                                            .setText("....")
-//                                            .setSubject("Share image via...")
-//                                            .setStream(screenshotUri)
-//                                            .setChooserTitle("Share.")
-//                                            .createChooserIntent()
-//                                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-//                                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//                                    startActivity(intent);
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//                            }
-//                        });
-
-
-                /*ImageLoader.getInstance().loadImage(urlShare, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-                        *//** SAVE FILE *//*
-                        String path = Utils.saveFile(loadedImage);
-                        Uri screenshotUri = Uri.parse("file:///" + path);
-                        try {
-                            final Intent intent = ShareCompat.IntentBuilder.from(ChatViewImageActivity.this)
-                                    .setType("image*//*")
-                                    .setText("....")
-                                    .setSubject("Share image via...")
-                                    .setStream(screenshotUri)
-                                    .setChooserTitle("Share.")
-                                    .createChooserIntent()
-                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-                                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });*/
                 } else {
                     ChattingActivity.instance.setPermissionsReadExternalStorage();
                 }
@@ -347,12 +287,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
             case R.id.btn_download:
                 ChattingDto chattingDto = listData.get(viewPager.getCurrentItem());
                 if (chattingDto != null) {
-                    File file = new File(path);
-//                    if (file.exists()) {
-//                        startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-//                    } else {
-//                        Utils.displayDownloadFileDialog(this, urlDownload1, chattingDto.getAttachInfo().getFileName());
-//                    }
                     Utils.displayDownloadFileDialog(this, urlDownload1, chattingDto.getAttachInfo().getFileName());
                 }
                 break;
@@ -360,7 +294,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
             case R.id.btn_delete:
                 break;
             case R.id.btn_infor:
-                Log.d(TAG, "btn_infor");
                 getInfor(dto, urlDownload1);
                 break;
 
@@ -392,7 +325,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
                 InputStream input = connection.getInputStream();
                 bitmapOrg = BitmapFactory.decodeStream(input);
             } catch (Exception e) {
-//                Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
             return bitmapOrg;
@@ -416,7 +348,7 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
         int size = dto.getAttachFileSize() / 1024;
         String strSize = size + " KB";
 
-        String type = "";
+        String type;
         try {
             type = str[str.length - 1];
         } catch (Exception e) {
@@ -424,7 +356,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
             e.printStackTrace();
         }
         tv_type.setText(type);
-        // tv_size.setText(strSize);
         new DownloadImageTask(url, new getBitmap() {
             @Override
             public void onSuccess(Bitmap result) {
@@ -434,9 +365,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
                     tv_dimen.setText(dimensions);
 
                     int size = result.getRowBytes() * result.getHeight();
-                   /* ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-                    result.copyPixelsToBuffer(byteBuffer);
-                    byte[] byteArray = byteBuffer.array();*/
                     tv_size.setText(size + " KB");
                 }
             }
@@ -454,8 +382,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onPageSelected(int position) {
         ChattingDto chattingDto = listData.get(position);
-
-        // ImageUtils.showCycleImageFromLink(new Prefs().getServerSite() + chattingDto.getUser().avatar, imgAvatar, R.dimen.common_avatar);
         String avatarUrl = new Prefs().getServerSite();
         if (chattingDto != null && chattingDto.getUser() != null) {
             avatarUrl += chattingDto.getUser().avatar;

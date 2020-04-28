@@ -217,11 +217,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name="com.dazone.crewchatoff.activity.ProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-
-        <activity
             android:name="com.onegravity.contactpicker.core.ContactPickerActivity"
             android:enabled="true"
             android:exported="false">
@@ -249,13 +244,8 @@
             android:name="com.dazone.crewchatoff.activity.RotateImageActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name="com.dazone.crewchatoff.activity.VideoStreamingActivity" />
         <activity android:name="com.dazone.crewchatoff.activity.NewOrganizationChart">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.SEND" />-->
-            <!--<category android:name="android.intent.category.DEFAULT" />-->
-            <!--<data android:mimeType="image/*" />-->
-            <!--</intent-filter>-->
+
         </activity>
         <activity android:name="com.dazone.crewchatoff.activity.InviteUserActivity"></activity>
         <activity

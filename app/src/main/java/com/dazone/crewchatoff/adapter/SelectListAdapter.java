@@ -33,8 +33,8 @@ public class SelectListAdapter extends DrawerListAdapter<MenuDrawItem> {
         }
         else {
             view = inflater.inflate(R.layout.row_menu, null);
-            TextView titleView = (TextView) view.findViewById(R.id.title);
-            ImageView iconView = (ImageView) view.findViewById(R.id.ic_folder);
+            TextView titleView = view.findViewById(R.id.title);
+            ImageView iconView = view.findViewById(R.id.ic_folder);
 
             titleView.setText(item.getStringTitle());
             titleView.setTextColor(Color.BLACK);

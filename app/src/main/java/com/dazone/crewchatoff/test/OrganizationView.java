@@ -61,9 +61,6 @@ public class OrganizationView extends FrameLayout {
         Log.d(TAG, "selectedPersonList:" + selectedPersonList.size());
         this.mContext = context;
 
-//        View view = inflate(mContext, R.layout.view_organization, null);
-//        addView(view);
-
         this.mIsDisableSelected = isDisableSelected;
         if (selectedPersonList != null)
             this.mSelectedPersonList = selectedPersonList;
@@ -71,7 +68,6 @@ public class OrganizationView extends FrameLayout {
             this.mSelectedPersonList = new ArrayList<>();
 
         rootView = viewGroup;
-//        initView(viewGroup);
         initWholeOrganization(viewGroup);
     }
 
@@ -96,26 +92,12 @@ public class OrganizationView extends FrameLayout {
 
         if (CompanyFragment.instance != null) {
             listTemp = CompanyFragment.instance.getUser();
-//            mDepartmentList = CompanyFragment.instance.getDepartments();
             mDepartmentList = DepartmentDBHelper.getDepartments_v2();
         }
         if (mDepartmentList == null) mDepartmentList = new ArrayList<>();
         if (listTemp == null) listTemp = new ArrayList<>();
         if (mDepartmentList != null && mDepartmentList.size() > 0) {
             buildTree(mDepartmentList, viewGroup, false);
-        } else { // Get department from server
-            Log.d(TAG, "URL_GET_DEPARTMENT 7");
-//            HttpRequest.getInstance().GetListDepart(new IGetListDepart() {
-//                @Override
-//                public void onGetListDepartSuccess(ArrayList<TreeUserDTO> treeUserDTOs) {
-//                    buildTree(treeUserDTOs, viewGroup, true);
-//                }
-//
-//                @Override
-//                public void onGetListDepartFail(ErrorDto dto) {
-//
-//                }
-//            });
         }
     }
 
@@ -124,7 +106,6 @@ public class OrganizationView extends FrameLayout {
             if (isFromServer) {
                 convertData(treeUserDTOs);
             } else {
-                // add data offline to temp
                 temp.clear();
                 temp.addAll(treeUserDTOs);
             }
@@ -158,7 +139,6 @@ public class OrganizationView extends FrameLayout {
                                 treeUserDTOTemp.getCellPhone(),
                                 treeUserDTOTemp.getAvatarUrl(),
                                 belong.getPositionName(),
-//                                belong.getDutyName(),
                                 treeUserDTOTemp.getType(),
                                 treeUserDTOTemp.getStatus(),
                                 treeUserDTOTemp.getUserNo(),
@@ -179,17 +159,12 @@ public class OrganizationView extends FrameLayout {
 
                         if (isAdd(temp, treeUserDTO)) {
                             temp.add(treeUserDTO);
-                            Log.d(TAG, "add" + treeUserDTO.toString());
-                        } else {
-                            Log.d(TAG, "noadd");
                         }
                     }
                 }
             }
 
             mPersonList = new ArrayList<>(temp);
-//            mAdapter.updateList(mDepartmentList);
-
             TreeUserDTO dto = null;
             try {
                 dto = Org_tree.buildTree(mPersonList);
@@ -253,11 +228,6 @@ public class OrganizationView extends FrameLayout {
         return true;
     }
 
-    public void loadMore() {
-
-    }
-
-
     public void setOnSelectedEvent(OnOrganizationSelectedEvent selectedEvent) {
         this.mSelectedEvent = selectedEvent;
     }
@@ -276,21 +246,21 @@ public class OrganizationView extends FrameLayout {
         View view = inflater.inflate(R.layout.row_organization, null);
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         layout.addView(view);
-        child_list = (LinearLayout) view.findViewById(R.id.child_list);
-        avatar = (ImageView) view.findViewById(R.id.avatar);
-        folderIcon = (ImageView) view.findViewById(R.id.ic_folder);
-        relAvatar = (RelativeLayout) view.findViewById(R.id.relAvatar);
-        iconWrapper = (LinearLayout) view.findViewById(R.id.icon_wrapper);
-        ivStatus = (ImageView) view.findViewById(R.id.status_imv);
+        child_list = view.findViewById(R.id.child_list);
+        avatar = view.findViewById(R.id.avatar);
+        folderIcon = view.findViewById(R.id.ic_folder);
+        relAvatar = view.findViewById(R.id.relAvatar);
+        iconWrapper = view.findViewById(R.id.icon_wrapper);
+        ivStatus = view.findViewById(R.id.status_imv);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) iconWrapper.getLayoutParams();
         if (displayType == 0) // set margin for icon if it's company type
         {
             params.leftMargin = iconMargin;
         }
         iconWrapper.setLayoutParams(params);
-        name = (TextView) view.findViewById(R.id.name);
-        position = (TextView) view.findViewById(R.id.position);
-        row_check = (CheckBox) view.findViewById(R.id.row_check);
+        name = view.findViewById(R.id.name);
+        position = view.findViewById(R.id.position);
+        row_check = view.findViewById(R.id.row_check);
 
         row_check.setChecked(treeUserDTO.isCheck());
 
@@ -366,7 +336,7 @@ public class OrganizationView extends FrameLayout {
 
                                 dto1.setIsCheck(isChecked);
                                 View childView = child_list.getChildAt(index);
-                                CheckBox childCheckBox = (CheckBox) childView.findViewById(R.id.row_check);
+                                CheckBox childCheckBox = childView.findViewById(R.id.row_check);
                                 if (childCheckBox != null) {
                                     if (childCheckBox.isEnabled()) {
                                         childCheckBox.setChecked(dto1.isCheck());
@@ -434,7 +404,7 @@ public class OrganizationView extends FrameLayout {
 
     private void unCheckBoxParent(ViewGroup view) {
         if (view.getId() == R.id.item_org_main_wrapper || view.getId() == R.id.item_org_wrapper) {
-            CheckBox parentCheckBox = (CheckBox) view.findViewById(R.id.row_check);
+            CheckBox parentCheckBox = view.findViewById(R.id.row_check);
             if (parentCheckBox.isChecked()) {
                 parentCheckBox.setTag(false);
                 parentCheckBox.setChecked(false);
@@ -549,7 +519,7 @@ public class OrganizationView extends FrameLayout {
     private AdapterOrganizationChartFragment mAdapter;
 
     void initView(ViewGroup v) {
-        recyclerView = (RecyclerView) findViewById(R.id.rv_organization);
+        recyclerView = findViewById(R.id.rv_organization);
 //        TabOrganizationChartFragment instance = this;
         mAdapter = new AdapterOrganizationChartFragment(mContext, new ArrayList<TreeUserDTO>(), true, null);
         mLayoutManager = new LinearLayoutManager(mContext);

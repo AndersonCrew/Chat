@@ -34,9 +34,9 @@ public class CrewChatPresenter implements CompoundButton.OnCheckedChangeListener
         mDialog.setCancelable(true);
         mDialog.setCanceledOnTouchOutside(true);
         mDialog.setContentView(R.layout.dialog_group_radiobutton);
-        rd_automatic = (RadioButton) mDialog.findViewById(R.id.rd_automatic);
-        rd_portrait = (RadioButton) mDialog.findViewById(R.id.rd_portrait);
-        rd_landscape = (RadioButton) mDialog.findViewById(R.id.rd_landscape);
+        rd_automatic = mDialog.findViewById(R.id.rd_automatic);
+        rd_portrait = mDialog.findViewById(R.id.rd_portrait);
+        rd_landscape = mDialog.findViewById(R.id.rd_landscape);
         rd_automatic.setOnCheckedChangeListener(this);
         rd_portrait.setOnCheckedChangeListener(this);
         rd_landscape.setOnCheckedChangeListener(this);
@@ -49,8 +49,6 @@ public class CrewChatPresenter implements CompoundButton.OnCheckedChangeListener
         int rotation = mPrefs.getIntValue(Statics.SCREEN_ROTATION, Constant.AUTOMATIC);
         switch (rotation) {
             case Constant.AUTOMATIC:
-                mRotationInterface.rotationScreen();
-                break;
             case Constant.PORTRAIT:
                 mRotationInterface.rotationScreen();
                 break;
@@ -110,6 +108,7 @@ public class CrewChatPresenter implements CompoundButton.OnCheckedChangeListener
 
     /**
      * set value to Textview Rotation
+     *
      * @param tv
      */
     public void rotationSettingValue(TextView tv) {

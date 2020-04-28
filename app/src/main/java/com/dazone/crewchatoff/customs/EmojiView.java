@@ -82,10 +82,10 @@ public class EmojiView extends LinearLayout {
         mPreference = getContext().getSharedPreferences(EMOJI_PREFERENCE, Context.MODE_PRIVATE);
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View root = inflater.inflate(R.layout.emoji_layout, this);
-        mTabs = (PagerSlidingTabStrip) root.findViewById(R.id.tabs);
-        mPager = (ViewPager) root.findViewById(R.id.pager);
-        mBackSpace = (ImageButton) root.findViewById(R.id.back_space);
-        mGridViews = new ArrayList<GridView>();
+        mTabs = root.findViewById(R.id.tabs);
+        mPager = root.findViewById(R.id.pager);
+        mBackSpace = root.findViewById(R.id.back_space);
+        mGridViews = new ArrayList<>();
 
         for (int i = 0, count = mIcons.length; i < count; i++) {
             String[] emoji = getResources().getStringArray(mEmojis[i]);

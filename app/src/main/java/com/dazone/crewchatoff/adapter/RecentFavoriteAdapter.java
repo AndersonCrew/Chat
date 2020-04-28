@@ -48,10 +48,6 @@ public class RecentFavoriteAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof RecentFavoriteViewHolder) {
             final ChattingDto item = mDataSet.get(position);
-//            if(position==1)
-//            {
-//                Log.d(TAG,new Gson().toJson(item.getListTreeUser().size()));
-//            }
             ItemViewHolder viewHolder = (RecentFavoriteViewHolder) holder;
             viewHolder.bindData(item);
         } else if (holder instanceof ProgressViewHolder) {

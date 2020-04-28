@@ -44,13 +44,9 @@ import java.util.List;
 
 public class HybiParser {
     private static final String TAG = "HybiParser";
-
     private WebSocketClient mClient;
-
     private boolean mMasking = true;
-
     private int     mStage;
-
     private boolean mFinal;
     private boolean mMasked;
     private int     mOpcode;

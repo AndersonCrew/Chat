@@ -39,14 +39,6 @@ public class ServerSiteDBHelper {
         return false;
     }
 
-    public static void addServerSites(List<String> sites) {
-        if (sites != null) {
-            for (String site : sites) {
-                addServerSite(site);
-            }
-        }
-    }
-
     public static ArrayList<String> getAllSerVerSite() {
         String[] columns = new String[]{ID, SERVER_SITE_ID, SERVER_SITE_LINK};
         ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();

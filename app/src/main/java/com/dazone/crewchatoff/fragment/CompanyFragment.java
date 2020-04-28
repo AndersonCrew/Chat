@@ -168,7 +168,6 @@ public class CompanyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_company, container, false);
-        Log.d(TAG, "onCreateView");
         mSharePersonContent = rootView.findViewById(R.id.container);
         listCompany = rootView.findViewById(R.id.listCompany);
         adapter = new CompanySearchAdapter(getActivity(), new ArrayList<TreeUserDTOTemp>());
@@ -228,17 +227,13 @@ public class CompanyFragment extends Fragment {
     }
 
     private void initWholeOrganization() {
-        Log.d(TAG, "initWholeOrganization");
         mDepartmentList = new ArrayList<>();
         listTemp = new ArrayList<>();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "getUser");
                 listTemp = AllUserDBHelper.getUser_v2();
-
-                Log.d(TAG, "getDepartments");
                 mDepartmentList = DepartmentDBHelper.getDepartments_v2();
                 if (listTemp == null) listTemp = new ArrayList<>();
                 if (mDepartmentList == null) mDepartmentList = new ArrayList<>();
@@ -249,7 +244,6 @@ public class CompanyFragment extends Fragment {
     }
 
     private void getListDepartment_Mod() {
-        Log.d(TAG, "getListDepartment_Mod");
         String moddate = new Prefs().getModdate_deppartment();
         if (moddate.length() == 0) {
             Calendar calendar = Calendar.getInstance();
@@ -287,7 +281,6 @@ public class CompanyFragment extends Fragment {
     }
 
     private void getListDepartment() {
-        Log.d(TAG, "URL_GET_DEPARTMENT 1");
         HttpRequest.getInstance().GetListDepart(new IGetListDepart() {
             @Override
             public void onGetListDepartSuccess(final ArrayList<TreeUserDTO> treeUserDTOs) {
@@ -310,7 +303,6 @@ public class CompanyFragment extends Fragment {
             @Override
             public void onGetListDepartFail(ErrorDto dto) {
                 progressBar.setVisibility(View.GONE);
-                Log.d(TAG, "onGetListDepartFail getListDepartment");
 
             }
         });
@@ -320,7 +312,6 @@ public class CompanyFragment extends Fragment {
     ArrayList<TreeUserDTOTemp> treeUserDTOsInit = new ArrayList<>();
 
     private void getListAllUser() {
-        Log.d(TAG, "URL_GET_ALL_USER_BE_LONGS 2");
         HttpRequest.getInstance().GetListOrganize(new IGetListOrganization() {
             @Override
             public void onGetListSuccess(final ArrayList<TreeUserDTOTemp> treeUserDTOs) {
@@ -329,7 +320,6 @@ public class CompanyFragment extends Fragment {
                     String modDate = TimeUtils.showTimeWithoutTimeZone(calendar.getTimeInMillis(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
                     new Prefs().setModDate(modDate);
                     isGetUser = true;
-                    Log.d(TAG, "getListAllUser\t\tonGetListSuccess");
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -345,7 +335,6 @@ public class CompanyFragment extends Fragment {
             @Override
             public void onGetListFail(ErrorDto dto) {
                 progressBar.setVisibility(View.GONE);
-                Log.d(TAG, "onGetListFail getListAllUser");
             }
         });
     }
@@ -362,7 +351,6 @@ public class CompanyFragment extends Fragment {
     }
 
     private void getListAllUser_Mod() {
-        Log.d(TAG, "URL_GET_ALL_USER_BE_LONGS_MOD");
         String moddate = new Prefs().getModDate();
         if (moddate.length() == 0) {
             Calendar calendar = Calendar.getInstance();

@@ -37,9 +37,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ProfileUserActivity extends AppCompatActivity implements View.OnClickListener {
-    /**
-     * VIEW
-     */
     String TAG = "ProfileUserActivity";
     private ImageView btnBack;
     private ImageView btnCall;
@@ -82,30 +79,30 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initView() {
-        pwLayout = (FrameLayout) findViewById(R.id.pwLayout);
-        btnChat = (RelativeLayout) findViewById(R.id.btnChat);
+        pwLayout = findViewById(R.id.pwLayout);
+        btnChat = findViewById(R.id.btnChat);
         btnChat.setOnClickListener(this);
-        btnBack = (ImageView) findViewById(R.id.btn_back);
-        btnCall = (ImageView) findViewById(R.id.btn_call);
-        btnEmail = (ImageView) findViewById(R.id.btn_email);
+        btnBack = findViewById(R.id.btn_back);
+        btnCall = findViewById(R.id.btn_call);
+        btnEmail = findViewById(R.id.btn_email);
 
-        ivEmailEmail = (ImageView) findViewById(R.id.iv_email_email);
+        ivEmailEmail = findViewById(R.id.iv_email_email);
         ivEmailEmail.setOnClickListener(this);
 
-        ivPhoneCall = (ImageView) findViewById(R.id.iv_phone_call);
+        ivPhoneCall = findViewById(R.id.iv_phone_call);
         ivPhoneCall.setOnClickListener(this);
-        ivPhoneEmail = (ImageView) findViewById(R.id.iv_phone_email);
+        ivPhoneEmail = findViewById(R.id.iv_phone_email);
         ivPhoneEmail.setOnClickListener(this);
 
-        ivExPhoneCall = (ImageView) findViewById(R.id.iv_ex_phone_call);
+        ivExPhoneCall = findViewById(R.id.iv_ex_phone_call);
         ivExPhoneCall.setOnClickListener(this);
-        ivExPhoneEmail = (ImageView) findViewById(R.id.iv_ex_phone_email);
+        ivExPhoneEmail = findViewById(R.id.iv_ex_phone_email);
         ivExPhoneEmail.setOnClickListener(this);
 
-        lnExPhone = (LinearLayout) findViewById(R.id.ln_ex_phone);
-        lnPhone = (LinearLayout) findViewById(R.id.ln_phone);
+        lnExPhone = findViewById(R.id.ln_ex_phone);
+        lnPhone = findViewById(R.id.ln_phone);
         /** ROW AVATAR*/
-        ivAvatar = (ImageView) findViewById(R.id.iv_avatar);
+        ivAvatar = findViewById(R.id.iv_avatar);
         ivAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,33 +113,32 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
                 }
             }
         });
-        tvFullName = (TextView) findViewById(R.id.tv_full_name);
-        tvPositionName = (TextView) findViewById(R.id.tv_position_name);
+        tvFullName = findViewById(R.id.tv_full_name);
+        tvPositionName = findViewById(R.id.tv_position_name);
 
 
-        tvUserID = (TextView) findViewById(R.id.tv_user_id);
-        tvName = (TextView) findViewById(R.id.tv_name);
-        tvMailAddress = (TextView) findViewById(R.id.tv_mail_address);
-        tvSex = (TextView) findViewById(R.id.tv_sex);
-        tvPhoneNumber = (TextView) findViewById(R.id.tv_phone_number);
-        tvCompanyNumber = (TextView) findViewById(R.id.tv_company_number);
-        tvExtensionNumber = (TextView) findViewById(R.id.tv_extension_number);
-        tvEntranceDate = (TextView) findViewById(R.id.tv_entrance_date);
-        tvEntranceDate_Label = (LinearLayout) findViewById(R.id.tv_entrance_date_label);
-        tvBirthday = (TextView) findViewById(R.id.tv_birthday);
-        tvBirthday_Label = (LinearLayout) findViewById(R.id.tv_birthday_label);
-        tvBelongToDepartment = (TextView) findViewById(R.id.tv_belong_to_department);
+        tvUserID = findViewById(R.id.tv_user_id);
+        tvName = findViewById(R.id.tv_name);
+        tvMailAddress = findViewById(R.id.tv_mail_address);
+        tvSex = findViewById(R.id.tv_sex);
+        tvPhoneNumber = findViewById(R.id.tv_phone_number);
+        tvCompanyNumber = findViewById(R.id.tv_company_number);
+        tvExtensionNumber = findViewById(R.id.tv_extension_number);
+        tvEntranceDate = findViewById(R.id.tv_entrance_date);
+        tvEntranceDate_Label = findViewById(R.id.tv_entrance_date_label);
+        tvBirthday = findViewById(R.id.tv_birthday);
+        tvBirthday_Label = findViewById(R.id.tv_birthday_label);
+        tvBelongToDepartment = findViewById(R.id.tv_belong_to_department);
 
         btnBack.setOnClickListener(this);
         btnCall.setOnClickListener(this);
         btnEmail.setOnClickListener(this);
 
-        tv_pass = (TextView) findViewById(R.id.tv_pass);
+        tv_pass = findViewById(R.id.tv_pass);
         String pass = CrewChatApplication.getInstance().getPrefs().getPass();
         Log.d(TAG, "pass:" + pass);
-//        tv_pass.setText(pass);
 
-        btnChangePass = (TextView) findViewById(R.id.btnChangePass);
+        btnChangePass = findViewById(R.id.btnChangePass);
         btnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,7 +201,6 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void fillData(ProfileUserDTO profileUserDTO) {
-//        Log.d(TAG,"fillData:"+new Gson().toJson(profileUserDTO));
         String url = new Prefs().getServerSite() + profileUserDTO.getAvatarUrl();
         urlAv = url;
         ImageUtils.showCycle(url, ivAvatar, R.dimen.button_height);
@@ -258,11 +253,7 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
             ivExPhoneCall.setTag(exPhone);
             ivExPhoneEmail.setTag(exPhone);
         }
-//if(profileUserDTO.getE)
-        /*if (Utils.getCurrentId() != userNo) {
-            tvEntranceDate.setText(TimeUtils.displayTimeWithoutOffset(profileUserDTO.getEntranceDate()));
-            tvBirthday.setText(TimeUtils.displayTimeWithoutOffset(profileUserDTO.getBirthDate()));
-        } else {*/
+
         if (Utils.getCurrentUser().EntranceDateDisplay) {
             tvEntranceDate.setText(TimeUtils.displayTimeWithoutOffset(profileUserDTO.getEntranceDate()));
         } else {
@@ -291,6 +282,10 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
             case R.id.btn_call:
+
+            case R.id.iv_phone_call:
+
+            case R.id.iv_ex_phone_call:
                 phoneNumber = (String) v.getTag();
                 if (!TextUtils.isEmpty(phoneNumber.trim())) {
                     Utils.CallPhone(ProfileUserActivity.this, phoneNumber);
@@ -303,26 +298,7 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
                 }
                 break;
 
-            case R.id.iv_phone_call:
-                phoneNumber = (String) v.getTag();
-                if (!TextUtils.isEmpty(phoneNumber.trim())) {
-                    Utils.CallPhone(ProfileUserActivity.this, phoneNumber);
-                }
-                break;
-
-            case R.id.iv_ex_phone_call:
-                phoneNumber = (String) v.getTag();
-                if (!TextUtils.isEmpty(phoneNumber.trim())) {
-                    Utils.CallPhone(ProfileUserActivity.this, phoneNumber);
-                }
-                break;
-
             case R.id.iv_phone_email:
-                phoneNumber = (String) v.getTag();
-                if (!TextUtils.isEmpty(phoneNumber.trim())) {
-                    Utils.sendSMS(ProfileUserActivity.this, phoneNumber);
-                }
-                break;
 
             case R.id.iv_ex_phone_email:
                 phoneNumber = (String) v.getTag();
@@ -334,7 +310,6 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
 
                 btnChat.setEnabled(false);
                 ArrayList<TreeUserDTO> selectedPersonList = new ArrayList<>();
-//                Log.d(TAG, "userNo:" + userNo+"  Utils.getCurrentId();"+Utils.getCurrentId());
                 TreeUserDTO obj = new TreeUserDTO("", "", "", "", "", 1, 3, userNo, 0);
                 selectedPersonList.add(obj);
                 createChatRoom(selectedPersonList);
@@ -345,10 +320,6 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
 
 
     private void createChatRoom(final ArrayList<TreeUserDTO> selectedPersonList) {
-//        if (selectedPersonList.size() == 1) {
-//            if (selectedPersonList.get(0).getId() == Utils.getCurrentId()) {
-//                Utils.showMessage(Utils.getString(R.string.can_not_chat));
-//            } else {
         HttpRequest.getInstance().CreateOneUserChatRoom(selectedPersonList.get(0).getId(), new ICreateOneUserChatRom() {
             @Override
             public void onICreateOneUserChatRomSuccess(ChattingDto chattingDto) {
@@ -380,23 +351,6 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
                 Utils.showMessageShort("Fail");
             }
         });
-//            }
-//        } else if (selectedPersonList.size() > 1) {
-//            HttpRequest.getInstance().CreateGroupChatRoom(selectedPersonList, new ICreateOneUserChatRom() {
-//                @Override
-//                public void onICreateOneUserChatRomSuccess(ChattingDto chattingDto) {
-//                    Intent intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
-//                    intent.putExtra(Statics.CHATTING_DTO, chattingDto);
-//                    intent.putExtra(Constant.KEY_INTENT_ROOM_NO, chattingDto.getRoomNo());
-//                    BaseActivity.Instance.startActivity(intent);
-//                }
-//
-//                @Override
-//                public void onICreateOneUserChatRomFail(ErrorDto errorDto) {
-//                    Utils.showMessageShort("Fail");
-//                }
-//            });
-//        }
     }
 
     @Override

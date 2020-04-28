@@ -29,13 +29,13 @@ public class TreeChild extends TreeView {
     @Override
     public void setupView() {
         currentView = inflater.inflate(R.layout.tree_row, null);
-        avatar_imv = (ImageView) currentView.findViewById(R.id.avatar_imv);
-        status_imv = (ImageView) currentView.findViewById(R.id.status_imv);
-        title = (TextView) currentView.findViewById(R.id.name);
-        position = (TextView) currentView.findViewById(R.id.position);
-        status_tv = (TextView) currentView.findViewById(R.id.status_tv);
-        checkBox = (CheckBox) currentView.findViewById(R.id.row_check);
-        main = (RelativeLayout) currentView.findViewById(R.id.mainParent);
+        avatar_imv = currentView.findViewById(R.id.avatar_imv);
+        status_imv = currentView.findViewById(R.id.status_imv);
+        title = currentView.findViewById(R.id.name);
+        position = currentView.findViewById(R.id.position);
+        status_tv = currentView.findViewById(R.id.status_tv);
+        checkBox = currentView.findViewById(R.id.row_check);
+        main = currentView.findViewById(R.id.mainParent);
         lnl_child = linearLayout;
 
         binData();
@@ -77,9 +77,6 @@ public class TreeChild extends TreeView {
 
     private void setupStatusImage() {
         switch (dto.getStatus()) {
-            case Statics.USER_STATUS_WORKING:
-                status_imv.setImageResource(R.drawable.home_status_01);
-                break;
             case Statics.USER_STATUS_AWAY:
                 status_imv.setImageResource(R.drawable.home_status_02);
                 break;
@@ -95,6 +92,7 @@ public class TreeChild extends TreeView {
             case Statics.USER_STATUS_METTING:
                 status_imv.setImageResource(R.drawable.home_status_06);
                 break;
+            case Statics.USER_STATUS_WORKING:
             default:
                 status_imv.setImageResource(R.drawable.home_status_01);
                 break;

@@ -78,14 +78,6 @@ public abstract class BaseSingleActivity extends BaseActivity {
         toolbar_status.setVisibility(View.GONE);
     }
 
-    public void HideStatus() {
-        toolbar_status.setVisibility(View.GONE);
-    }
-
-    public void HideBtnMore() {
-        ivMore.setVisibility(View.GONE);
-    }
-
     public void setTitle(String title) {
         toolbar_title.setText(title);
     }

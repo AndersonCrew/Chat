@@ -70,8 +70,8 @@ public class OrganizationFragment extends BaseFragment implements OnOrganization
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_organization, container, false);
-        mSharePersonContent = (LinearLayout) mView.findViewById(R.id.container);
-        mTvNodata = (TextView) mView.findViewById(R.id.tv_no_data);
+        mSharePersonContent = mView.findViewById(R.id.container);
+        mTvNodata = mView.findViewById(R.id.tv_no_data);
 
 
         if (CompanyFragment.instance != null) listTemp = CompanyFragment.instance.getUser();
@@ -151,7 +151,6 @@ public class OrganizationFragment extends BaseFragment implements OnOrganization
     }
 
     private void setSelectedPersonName() {
-
         // First time init selected person list
         if (selectedUserNos != null && selectedUserNos.size() > 0) {
             for (TreeUserDTOTemp treeUserDTOTemp : listTemp) {
@@ -167,16 +166,6 @@ public class OrganizationFragment extends BaseFragment implements OnOrganization
                 }
             }
         }
-
-
-        /*String shareString = "";
-        for (TreeUserDTO selectedPerson : selectedPersonList) {
-            if (!TextUtils.isEmpty(shareString)) {
-                shareString += "; ";
-            }
-            shareString += selectedPerson.getName();
-        }
-        Utils.printLogs("Set selected person name = "+shareString);*/
     }
 
     public ArrayList<TreeUserDTO> getListUser() {
@@ -205,7 +194,6 @@ public class OrganizationFragment extends BaseFragment implements OnOrganization
                     }
                 });
             } else if (selectedPersonList.size() > 1) {
-//                Log.d(TAG, "selectedPersonList.size() > 1: " + new Gson().toJson(selectedPersonList));
                 HttpRequest.getInstance().CreateGroupChatRoom(selectedPersonList, new ICreateOneUserChatRom() {
                     @Override
                     public void onICreateOneUserChatRomSuccess(ChattingDto chattingDto) {

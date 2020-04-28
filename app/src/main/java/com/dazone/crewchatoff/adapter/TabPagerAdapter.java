@@ -36,7 +36,6 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 
             case 2: // 즐겨찾기 탭
                 BaseFavoriteFragment fragment = new BaseFavoriteFragment();
-                fragment.setContext(mContext);
                 return fragment;
 
             case 3: // 환경설정 탭

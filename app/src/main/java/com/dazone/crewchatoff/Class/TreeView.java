@@ -96,22 +96,6 @@ public abstract class TreeView extends BaseViewClass {
             }
         }
 
-        /*main.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                final List<String> itemList = new ArrayList<>();
-                itemList.add(Utils.getString(R.string.add_fav));
-                Utils.displaySingleChoiceList(main.getContext(), itemList, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Utils.showMessage(Utils.getString(R.string.developing));
-                    }
-                }, Utils.getString(R.string.app_name));
-                return true;
-            }
-        });*/
-
         if (checkBox != null)
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -128,7 +112,7 @@ public abstract class TreeView extends BaseViewClass {
                                 for (TreeUserDTO dto1 : dto.getSubordinates()) {
                                     dto1.setIsCheck(isChecked);
                                     View childView = lnl_child.getChildAt(index);
-                                    CheckBox childCheckBox = (CheckBox) childView.findViewById(R.id.row_check);
+                                    CheckBox childCheckBox = childView.findViewById(R.id.row_check);
 
                                     if (childCheckBox != null) {
                                         if (childCheckBox.isEnabled()) {
@@ -159,7 +143,7 @@ public abstract class TreeView extends BaseViewClass {
 
     private void unCheckBoxParent(ViewGroup view) {
         if (view.getId() == R.id.mainParent) {
-            CheckBox parentCheckBox = (CheckBox) view.findViewById(R.id.row_check);
+            CheckBox parentCheckBox = view.findViewById(R.id.row_check);
 
             if (parentCheckBox.isChecked()) {
                 parentCheckBox.setTag(false);
@@ -172,14 +156,6 @@ public abstract class TreeView extends BaseViewClass {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            /*if ((view.getParent()).getParent() instanceof ViewGroup) {
-                try {
-                    ViewGroup parent = (ViewGroup) (view.getParent()).getParent();
-                    unCheckBoxParent(parent);
-                } catch (Exception e) {
-                }
-            }*/
         }
     }
 

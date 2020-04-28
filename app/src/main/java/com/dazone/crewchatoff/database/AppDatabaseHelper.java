@@ -46,7 +46,6 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
     public static final String[] EXECUTE1 = new String[]{
             UserDBHelper.SQL_EXECUTE,
             ServerSiteDBHelper.SQL_EXECUTE,
-            // AllUserDBHelper.SQL_EXECUTE1,
             ChatMessageDBHelper.SQL_EXECUTE,
             ChatRoomDBHelper.SQL_EXECUTE,
             DepartmentDBHelper.SQL_EXCUTE,
@@ -55,9 +54,6 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
             BelongsToDBHelper.SQL_EXECUTE
     };
 
-    public AppDatabaseHelper(Context context, String name, CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
 
     public AppDatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -85,12 +81,9 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Log.d("dbh", "oldVersion" + oldVersion);
+
         try {
             if (oldVersion < newVersion) {
-                Log.d("dbh", "create");
-                // execSQL(db,EXECUTE1[2]);
-                //db.execSQL(EXECUTE1[2]);
                 execMultipleSQL(db, EXECUTE1);
                 doLogout();
             }
@@ -118,16 +111,13 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
                                 @Override
                                 public void run() {
                                     BelongsToDBHelper.clearBelong();
-//                                    Log.d(TAG,"before delete AllUserDBHelper.getUser():"+AllUserDBHelper.getUser().size());
                                     AllUserDBHelper.clearUser();
-//                                    Log.d(TAG,"after delete AllUserDBHelper.getUser():"+AllUserDBHelper.getUser().size());
                                     ChatRoomDBHelper.clearChatRooms();
                                     ChatMessageDBHelper.clearMessages();
                                     DepartmentDBHelper.clearDepartment();
                                     UserDBHelper.clearUser();
                                     FavoriteGroupDBHelper.clearGroups();
                                     FavoriteUserDBHelper.clearFavorites();
-                                    // CrewChatApplication.getInstance().getPrefs().clear();
                                     CrewChatApplication.resetValue();
                                     CrewChatApplication.isLoggedIn = false;
 
@@ -162,16 +152,6 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
                 } catch (android.database.SQLException e) {
                     throw new android.database.SQLException();
                 }
-            }
-        }
-    }
-
-    private void execSQL(SQLiteDatabase db, String s) throws android.database.SQLException {
-        if (s.trim().length() > 0) {
-            try {
-                db.execSQL(s);
-            } catch (android.database.SQLException e) {
-                throw new android.database.SQLException();
             }
         }
     }

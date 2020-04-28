@@ -58,7 +58,7 @@ public class RoomUserInformationActivity extends BaseActivity {
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
         }
-        Log.d("onCreate", TAG);
+
         init();
 
         // Get bundle data
@@ -99,7 +99,6 @@ public class RoomUserInformationActivity extends BaseActivity {
 
     @Subscribe
     public void notifyAdapter(NotifyAdapterOgr notifyAdapterOgr) {
-        /* Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();*/
         mAdapter.notifyDataSetChanged();
     }
 
@@ -168,19 +167,19 @@ public class RoomUserInformationActivity extends BaseActivity {
     }
 
     private void init() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ivBack = (ImageView) findViewById(R.id.iv_back);
+        ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        toolbar_title = (TextView) findViewById(R.id.toolbar_title);
-        rvMainList = (RecyclerView) findViewById(R.id.rv_main);
+        toolbar_title = findViewById(R.id.toolbar_title);
+        rvMainList = findViewById(R.id.rv_main);
 
         rvMainList.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -189,7 +188,6 @@ public class RoomUserInformationActivity extends BaseActivity {
 
     void actionAdd() {
         if (roomNo != -1) {
-//            final Intent intent = new Intent(this, OrganizationActivity.class);
             final Intent intent = new Intent(this, InviteUserActivity.class);
             intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
             intent.putExtra(Constant.KEY_INTENT_COUNT_MEMBER, userNos);
@@ -278,7 +276,6 @@ public class RoomUserInformationActivity extends BaseActivity {
                     break;
             }
         } else if (resultCode == Constant.INTENT_RESULT_CREATE_NEW_ROOM) {
-//            Log.d(TAG, "INTENT_RESULT_CREATE_NEW_ROOM");
             try {
                 Bundle bc = data.getExtras();
                 if (bc != null) {

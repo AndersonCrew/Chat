@@ -73,11 +73,10 @@ public class UnreadActivity extends AppCompatActivity {
         ROOM_NO = intent.getLongExtra(Statics.ROOM_NO, 0);
         userNos = intent.getIntegerArrayListExtra("userNos");
         if (userNos == null) return;
-//        Toast.makeText(context, MessageNo + "-" + ROOM_NO, Toast.LENGTH_SHORT).show();
         myId = Utils.getCurrentId();
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
         adapter = new UnreadAdapter(context, new ArrayList<TreeUserDTO>(), myId);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -86,7 +85,6 @@ public class UnreadActivity extends AppCompatActivity {
 
     @Subscribe
     public void notifyAdapter(NotifyAdapterOgr notifyAdapterOgr) {
-        /* Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();*/
         adapter.notifyDataSetChanged();
     }
 
@@ -146,11 +144,6 @@ public class UnreadActivity extends AppCompatActivity {
                         String positionName = "";
                         String dutyName = "";
                         for (BelongDepartmentDTO belong : treeUserDTOTemp.getBelongs()) {
-                           /* if (TextUtils.isEmpty(positionName)) {
-                                positionName += belong.getPositionName();
-                            } else {
-                                positionName += "," + belong.getPositionName();
-                            }*/
                             if (TextUtils.isEmpty(positionName)) {
                                 positionName += belong.getPositionName();
                             } else {

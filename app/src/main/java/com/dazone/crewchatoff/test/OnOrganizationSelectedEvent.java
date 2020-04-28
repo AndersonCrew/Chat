@@ -7,5 +7,4 @@ import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
  */
 public interface OnOrganizationSelectedEvent {
     void onOrganizationCheck(boolean isCheck, TreeUserDTO personData);
-//    void onOrganizationCollapseExpand(int isHide,PersonData selectedObject);
 }

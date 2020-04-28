@@ -43,15 +43,10 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
     private TextView tvDate;
     private TextView tvQuality;
     private ImageView ivMain;
-    /*private Spinner sp_resolution;*/
     private ImageView image_option;
     private Bitmap mMainBitmap;
     private ProgressBar mProgressBarLoadImage;
-    /*
-    * HIDE AND SHOW MENU
-    * */
     private boolean isHide = false;
-    private boolean isInit = false;
     private Prefs mPref;
 
     int xDim, yDim;        //stores ImageView dimensions
@@ -76,54 +71,30 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
     }
 
     private void initView() {
-        btnBack = (ImageView) findViewById(R.id.btn_back);
+        btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(this);
 
-        btnDownload = (ImageView) findViewById(R.id.btn_download);
+        btnDownload = findViewById(R.id.btn_download);
         btnDownload.setOnClickListener(this);
 
-        btnDelete = (ImageView) findViewById(R.id.btn_delete);
+        btnDelete = findViewById(R.id.btn_delete);
         btnDelete.setOnClickListener(this);
 
-        imgAvatar = (ImageView) findViewById(R.id.img_avatar);
-        tvUserName = (TextView) findViewById(R.id.tv_username);
-        tvQuality = (TextView) findViewById(R.id.tv_quality);
-        tvDate = (TextView) findViewById(R.id.tv_date);
+        imgAvatar = findViewById(R.id.img_avatar);
+        tvUserName = findViewById(R.id.tv_username);
+        tvQuality = findViewById(R.id.tv_quality);
+        tvDate = findViewById(R.id.tv_date);
 
-        rlHeader = (RelativeLayout) findViewById(R.id.rl_header);
-        lnFooter = (LinearLayout) findViewById(R.id.ln_footer);
-        mProgressBarLoadImage = (ProgressBar) findViewById(R.id.progressBarLoadImage);
+        rlHeader = findViewById(R.id.rl_header);
+        lnFooter = findViewById(R.id.ln_footer);
+        mProgressBarLoadImage = findViewById(R.id.progressBarLoadImage);
 
-        ivMain = (ImageView) findViewById(R.id.iv_main_image);
+        ivMain = findViewById(R.id.iv_main_image);
         ivMain.setOnClickListener(this);
-        ivTick = (ImageView) findViewById(R.id.iv_tick);
+        ivTick = findViewById(R.id.iv_tick);
         ivTick.setOnClickListener(this);
 
-        //  sp_resolution = (Spinner) findViewById(R.id.sp_resolution);
-        // fill data
-        //  ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.image_size, R.layout.custom_spinner);
-        // sp_resolution.setAdapter(adapter);
-
-       /* if (mPref.getScaleImageMode() == Statics.MODE_ORIGINAL) {
-            sp_resolution.setSelection(0);
-        } else {
-            sp_resolution.setSelection(1);
-        }*/
-
-      /*  sp_resolution.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // to get images scale mode
-                int newMode = position == 0 ? Statics.MODE_ORIGINAL : Statics.MODE_DEFAULT;
-                mPref.putScaleImageMode(newMode);
-                decodeBitmap(newMode);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });*/
-        image_option = (ImageView) findViewById(R.id.image_option);
+        image_option = findViewById(R.id.image_option);
 
         tvQuality.setText(chooseOption());
         tvQuality.setOnClickListener(new View.OnClickListener() {
@@ -210,124 +181,8 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
             } else {
                 ivMain.setImageBitmap(mMainBitmap);
             }
-
-
-        }
-/*
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-        //Drawable d = new BitmapDrawable(getResources(), myBitmap);
-        mMainBitmap = ExifUtil.rotateBitmap(imagePath, bitmap);
-        ivMain.setImageResource(R.drawable.avatar_test);*/
-          /*   Glide.with(this)
-                .load(imagePath)
-                .into(ivMain);*/
-       /* int height = mMainBitmap.getHeight();
-        int width = mMainBitmap.getWidth();
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        ivMain.setImageBitmap(mMainBitmap);
-        if (height > 1280 && width > 960) {
-            options.inSampleSize = 1;
-            Bitmap imgbitmap = BitmapFactory.decodeFile(imagePath, options);
-            mMainBitmap = ExifUtil.rotateBitmap(imagePath, imgbitmap);
-            ivMain.setImageBitmap(mMainBitmap);
-        } else {
-            ivMain.setImageBitmap(mMainBitmap);
-        }*/
-
-     /*   Glide.with(this)
-                .load(imagePath)
-                .into(ivMain);*/
-
-
-       /* if (imagePath != null) {
-         //   ivMain.setImageBitmap(null);
-          //  ivMain.destroyDrawingCache();
-            if (mMainBitmap != null) {
-                mMainBitmap.recycle();
-            }
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-          *//*  mMainBitmap = BitmapFactory.decodeFile(imagePath);*//*
-         //   ivMain.setImageBitmap(mMainBitmap);
-*/
-
-     /*   Picasso.with(this)
-                .load(imagePath)
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-            *//* Save the bitmap or do something with it here *//*
-
-                        //Set it in the ImageView
-                        mMainBitmap = ExifUtil.rotateBitmap(imagePath, bitmap);
-                        ivMain.setImageBitmap(mMainBitmap);
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });*/
-          /*  Glide.with(this)
-                    .load(imagePath)    // you can pass url too
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            // you can do something with loaded bitmap here
-
-                          //  mMainBitmap = resource;
-                            mMainBitmap = ExifUtil.rotateBitmap(imagePath, resource);
-                            ivMain.setImageBitmap(mMainBitmap);
-                        }
-                    });*/
-        /*    options.inSampleSize = 1; // default inSampleSize
-
-            int height = mMainBitmap.getHeight();
-            int width = mMainBitmap.getWidth();
-
-            if (mode == Statics.MODE_ORIGINAL) {
-                // if size too large, need to reduce size before upload
-                if (height > 1280 && width > 960) {
-                    options.inSampleSize = 1;
-                    Bitmap imgbitmap = BitmapFactory.decodeFile(imagePath, options);
-                    mMainBitmap = ExifUtil.rotateBitmap(imagePath, imgbitmap);
-                    ivMain.setImageBitmap(mMainBitmap);
-                } else {
-                    ivMain.setImageBitmap(mMainBitmap);
-                }
-
-            } else {
-                options.inSampleSize = 1;
-                Bitmap imgbitmap = BitmapFactory.decodeFile(imagePath, options);
-                mMainBitmap = ExifUtil.rotateBitmap(imagePath, imgbitmap);
-                ivMain.setImageBitmap(mMainBitmap);
-            }*/
-
-    }
-
-    //Given the bitmap size and View size calculate a subsampling size (powers of 2)
-    private int calculateInSampleSize(int outWidth, int outHeight, int reqWidth, int reqHeight) {
-        int inSampleSize = 1;    //Default subsampling size
-        // See if image raw height and width is bigger than that of required view
-        if (outHeight > reqHeight || outWidth > reqWidth) {
-            //bigger
-            final int halfHeight = outHeight / 2;
-            final int halfWidth = outWidth / 2;
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
         }
 
-        return inSampleSize;
     }
 
     private void initData() {
@@ -348,7 +203,6 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
         tvUserName.setText(prefs.getFullName());
         tvDate.setText(TimeUtils.displayTimeWithoutOffset(this, TimeUtils.convertTimeDeviceToTimeServerDefault(regDate), 0, TimeUtils.KEY_FROM_SERVER));
         new LoadbitMap().execute();
-        //decodeBitmap();
     }
 
     class LoadbitMap extends AsyncTask<Void, Integer, String> {
@@ -368,19 +222,8 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
         }
 
         protected String doInBackground(Void... arg0) {
-            //  decodeBitmap();
             if (imagePath != null) {
-               /* ivMain.setImageBitmap(null);
-                ivMain.destroyDrawingCache();
-                if (mMainBitmap != null) {
-                    mMainBitmap.recycle();
-                }*/
-
-
                 mMainBitmap = BitmapFactory.decodeFile(imagePath);
-                // options.inSampleSize = 1; // default inSampleSize
-
-
             }
             return "You are at PostExecute";
         }
@@ -410,14 +253,6 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
 
         }
     }
-
-    // Callback function when single tap to image
-    OnClickViewCallback mCallback = new OnClickViewCallback() {
-        @Override
-        public void onClick() {
-            toggleMenu();
-        }
-    };
 
     private void toggleMenu() {
         rlHeader.setTag("Header");

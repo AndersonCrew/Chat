@@ -22,7 +22,7 @@ public class GetUserStatus {
 
 		try {
 			String command = "idstatus";
-			String id = String.valueOf(companyNo) + "_*";
+			String id = companyNo + "_*";
 
 			Socket socket = new Socket(domain, new Prefs().getDDS_SERVER_PORT());
 			InputStream input = socket.getInputStream();

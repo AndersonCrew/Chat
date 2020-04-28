@@ -34,14 +34,12 @@ import java.util.List;
 
 public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrganizationChart.MyViewHolder> {
     private String TAG = "OrganizationChart";
-    private List<TreeUserDTO> list = new ArrayList<>();
+    private List<TreeUserDTO> list;
     private List<TreeUserDTO> listTemp = new ArrayList<>();
     private List<TreeUserDTO> listTemp_2 = new ArrayList<>();
     private List<TreeUserDTO> listTemp_3 = new ArrayList<>();
     private ArrayList<Integer> userNos;
     private int isSearch = 0; // 0 -> normal : 1 -> search
-    private Context context;
-    private boolean mIsDisableSelected = false;
     private int myId;
     private NewOrganizationChart instance;
     private InviteUserActivity instance_2;
@@ -84,7 +82,6 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
     }
 
     public void updateListSearch(List<TreeUserDTO> lst) {
-        Log.d(TAG, "updateListSearch");
         this.list = lst;
         this.notifyDataSetChanged();
     }
@@ -102,28 +99,28 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
         public MyViewHolder(View view) {
             super(view);
 
-            layout_one = (LinearLayout) view.findViewById(R.id.layout_one);
-            layout_two = (LinearLayout) view.findViewById(R.id.layout_two);
+            layout_one = view.findViewById(R.id.layout_one);
+            layout_two = view.findViewById(R.id.layout_two);
 
-            item_org_wrapper = (LinearLayout) view.findViewById(R.id.item_org_wrapper);
+            item_org_wrapper = view.findViewById(R.id.item_org_wrapper);
 
-            avatar = (ImageView) view.findViewById(R.id.avatar);
-            folderIcon = (ImageView) view.findViewById(R.id.ic_folder);
-            relAvatar = (RelativeLayout) view.findViewById(R.id.relAvatar);
-            iconWrapper = (LinearLayout) view.findViewById(R.id.icon_wrapper);
-            ivStatus = (ImageView) view.findViewById(R.id.status_imv);
-            name = (TextView) view.findViewById(R.id.name);
-            position = (TextView) view.findViewById(R.id.position);
-            row_check = (CheckBox) view.findViewById(R.id.row_check);
+            avatar = view.findViewById(R.id.avatar);
+            folderIcon = view.findViewById(R.id.ic_folder);
+            relAvatar = view.findViewById(R.id.relAvatar);
+            iconWrapper = view.findViewById(R.id.icon_wrapper);
+            ivStatus = view.findViewById(R.id.status_imv);
+            name = view.findViewById(R.id.name);
+            position = view.findViewById(R.id.position);
+            row_check = view.findViewById(R.id.row_check);
 
-            name_department = (TextView) view.findViewById(R.id.name_department);
-            nameTwo = (TextView) view.findViewById(R.id.nameTwo);
-            positionTwo = (TextView) view.findViewById(R.id.positionTwo);
+            name_department = view.findViewById(R.id.name_department);
+            nameTwo = view.findViewById(R.id.nameTwo);
+            positionTwo = view.findViewById(R.id.positionTwo);
         }
 
         public void handler(final TreeUserDTO treeUserDTO, final int index) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            int margin = treeUserDTO.getMargin();
+            int margin;
             if (isSearch == 0) {
                 margin = treeUserDTO.getMargin();
                 layout_one.setVisibility(View.VISIBLE);
@@ -146,27 +143,17 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
             } catch (Exception e) {
                 e.printStackTrace();
             }
-           /* if (namePosition == null || namePosition.trim().length() == 0) {
-                try {
-                    namePosition = treeUserDTO.getPosition();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }*/
 
             if (treeUserDTO.getType() == 2) {
                 String url = new Prefs().getServerSite() + treeUserDTO.getAvatarUrl();
 
-//                Log.d(TAG, "url:" + url);
                 avatar.setImageResource(R.drawable.avatar_l);
                 ImageLoader.getInstance().displayImage(url, avatar, Statics.options2);
 
                 position.setVisibility(View.VISIBLE);
-                //position.setText(namePosition);
                 setDutyOrPosition(position, nameDuty, namePosition);
                 positionTwo.setVisibility(View.VISIBLE);
                 setDutyOrPosition(positionTwo, nameDuty, namePosition);
-                //positionTwo.setText(namePosition);
 
                 folderIcon.setVisibility(View.GONE);
                 relAvatar.setVisibility(View.VISIBLE);
@@ -212,7 +199,7 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
                         }
                     } else {
                         boolean flag_2 = treeUserDTO.isCheck();
-                        boolean flag = false;
+                        boolean flag;
                         if (flag_2) {
                             flag = false;
                             row_check.setChecked(false);
@@ -285,9 +272,7 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
                     }
                 }
             });
-//            if (treeUserDTO.getId() == myId) {
-//                row_check.setEnabled(false);
-//            }
+
             row_check.setChecked(treeUserDTO.isCheck());
             row_check.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -510,16 +495,6 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
     }
 
     boolean isAdd(List<TreeUserDTO> lst, TreeUserDTO treeUserDTO) {
-//        for (TreeUserDTO obj : lst) {
-//            if (treeUserDTO.getId() == obj.getId()
-//                    && treeUserDTO.getDBId() == obj.getDBId()
-//                    && treeUserDTO.getParent() == obj.getParent()
-//                    && treeUserDTO.getType() == obj.getType()
-//                    && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
-//                    && treeUserDTO.getmSortNo() == obj.getmSortNo()
-//                    && treeUserDTO.getName().equals(obj.getName()))
-//                return false;
-//        }
         return true;
     }
 
@@ -545,7 +520,6 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
         String temp = obj.getId() + obj.getName() + Utils.getCurrentId();
         boolean flag = new Prefs().getBooleanValue(temp, false);
         obj.setFlag(flag);
-//        Log.d(TAG,new Gson().toJson(obj));
         this.listTemp_2.add(obj);
         this.listTemp_3.add(obj);
         if (obj.getSubordinates() != null) {
@@ -577,17 +551,6 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
     }
 
     public void updateList(List<TreeUserDTO> list) {
-//        if (list != null && list.size() > 0) {
-//            Log.d(TAG, "updateList");
-//            this.list.clear();
-//            final int tempMargin = Utils.getDimenInPx(R.dimen.dimen_20_40) * -1;
-//            for (TreeUserDTO obj : list) {
-//                addList(obj, tempMargin, -1);
-//            }
-//            this.notifyDataSetChanged();
-//            Log.d(TAG, "notifyDataSetChanged");
-//            Log.d(TAG, "finish listTemp:" + this.listTemp.size() + " lst:" + this.list.size());
-//        }
         if (list != null && list.size() > 0) {
             Log.d(TAG, "start updateList");
             this.list.clear();
@@ -641,9 +604,7 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
 
     public AdapterOrganizationChart(Context context, List<TreeUserDTO> list, boolean mIsDisableSelected, NewOrganizationChart instance,
                                     InviteUserActivity instance_2, ArrayList<Integer> userNos) {
-        this.context = context;
         this.list = list;
-        this.mIsDisableSelected = mIsDisableSelected;
         this.instance = instance;
         this.instance_2 = instance_2;
         this.mg = Utils.getDimenInPx(R.dimen.dimen_20_40);

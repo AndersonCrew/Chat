@@ -51,9 +51,8 @@ public class ImageFileBoxActivity extends AppCompatActivity {
 
     void init() {
         roomNo = getIntent().getLongExtra(Statics.ROOM_NO, -1);
-        Log.d(TAG, "roomNo:" + roomNo);
-        tvNodata = (TextView) findViewById(R.id.tvNodata);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        tvNodata = findViewById(R.id.tvNodata);
+        progressBar = findViewById(R.id.progressBar);
         imagesURL = new ArrayList<>();
 
         List<TreeUserDTOTemp> allUser = null;
@@ -63,7 +62,7 @@ public class ImageFileBoxActivity extends AppCompatActivity {
 
 
         mAdapter = new ImageFileBoxAdapter(this, imagesURL, allUser);
-        rvIvFileBox = (RecyclerView) findViewById(R.id.rvIvFileBox);
+        rvIvFileBox = findViewById(R.id.rvIvFileBox);
         lLayout = new GridLayoutManager(ImageFileBoxActivity.this, 3);
         rvIvFileBox.setLayoutManager(lLayout);
         rvIvFileBox.setAdapter(mAdapter);

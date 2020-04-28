@@ -32,7 +32,6 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import java.io.File;
 
 public class ImageLoadAsync extends MediaAsync<String,String, String>{
-
 	private ImageView mImageView;
 	private Context mContext;
 	private int mWidth;
@@ -51,20 +50,13 @@ public class ImageLoadAsync extends MediaAsync<String,String, String>{
 
 	@Override
 	protected void onPostExecute(String result) {
-/*		Picasso.with(mContext)
-		.load(new File(result))
-		.resize(mWidth, mWidth)
-		.centerCrop().placeholder(R.drawable.ic_loading).into(mImageView);*/
-
 		Uri uri = Utils.getImageContentUri(mContext, new File(result), Statics.MEDIA_TYPE_IMAGE);
-
 		ImageSize targetSize = new ImageSize(mWidth, mWidth); // result Bitmap will be fit to this size
 		if (uri != null) {
 			ImageLoader.getInstance().loadImage(uri.toString(), targetSize, Statics.options, new SimpleImageLoadingListener() {
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    // Do whatever you want with Bitmap
                     mImageView.setImageBitmap(loadedImage);
                 }
             });

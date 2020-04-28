@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BelongsToDBHelper {
-    public static final String TAG="BelongsToDBHelper";
+    public static final String TAG = "BelongsToDBHelper";
     public static final String TABLE_NAME = "BelongToTbl";
     public static final String DB_ID = "db_id";
     public static final String BELONG_NO = "belong_no";
@@ -42,7 +42,7 @@ public class BelongsToDBHelper {
             + POSITION_NAME + " text );";
 
     public synchronized static ArrayList<BelongDepartmentDTO> getAllOfBelongs() {
-        String[] columns = new String[] { "*" };
+        String[] columns = new String[]{"*"};
         ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
         Cursor cursor = resolver.query(AppContentProvider.GET_BELONG_TO_CONTENT_URI, columns, null, null, null);
         ArrayList<BelongDepartmentDTO> belongs = new ArrayList<>();
@@ -99,7 +99,7 @@ public class BelongsToDBHelper {
     }
 
     public synchronized static ArrayList<BelongDepartmentDTO> getBelongs(long fromUserNo) {
-        String[] columns = new String[] { "*" };
+        String[] columns = new String[]{"*"};
         ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
         Cursor cursor = resolver.query(AppContentProvider.GET_BELONG_TO_CONTENT_URI, columns, USER_NO + " = " + fromUserNo, null, null);
         ArrayList<BelongDepartmentDTO> belongs = new ArrayList<>();
@@ -219,9 +219,7 @@ public class BelongsToDBHelper {
         try {
 
             for (BelongDepartmentDTO belong : belongs) {
-//                Log.d(TAG,new Gson().toJson(belong));
                 if (!isExist(belong)) {
-//                    Log.d(TAG,"addDepartment");
                     ContentValues values = new ContentValues();
 
                     values.put(BELONG_NO, belong.getBelongNo());
@@ -242,7 +240,6 @@ public class BelongsToDBHelper {
 
                     values.put(POSITION_NAME, belong.getPositionName());
 
-//                    values.put(POSITION_SORT_NO, belong.getPositionNo());
                     values.put(POSITION_SORT_NO, belong.getPositionSortNo());
 
 
@@ -253,47 +250,11 @@ public class BelongsToDBHelper {
                             .getApplicationContext().getContentResolver();
                     resolver.insert(AppContentProvider.GET_BELONG_TO_CONTENT_URI, values);
                 } else {
-//                    Log.d(TAG,"updateDepart");
                     updateDepart(belong);
                 }
             }
             return true;
 
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public static boolean addDepartment(BelongDepartmentDTO belong) {
-        try {
-            ContentValues values = new ContentValues();
-
-            values.put(BELONG_NO, belong.getBelongNo());
-            values.put(USER_NO, belong.getUserNo());
-            values.put(DEPART_NO, belong.getDepartNo());
-            values.put(POSITION_NO, belong.getPositionNo());
-            values.put(DUTY_NO, belong.getDutyNo());
-
-            int isDefault = 0;
-
-            if (belong.isDefault()) {
-                isDefault = 1;
-            }
-
-            values.put(IS_DEFAULT, isDefault);
-            values.put(DEPART_NAME, belong.getDepartName());
-            values.put(DEPART_SORT_NO, belong.getDepartSortNo());
-            values.put(POSITION_NAME, belong.getPositionName());
-            values.put(POSITION_SORT_NO, belong.getPositionNo());
-            values.put(DUTY_NAME, belong.getDutyName());
-            values.put(DUTY_SORT_NO, belong.getDutySortNo());
-
-            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.insert(AppContentProvider.GET_BELONG_TO_CONTENT_URI, values);
-
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -321,7 +282,7 @@ public class BelongsToDBHelper {
             resolver.delete(AppContentProvider.GET_BELONG_TO_CONTENT_URI, null, null);
             return true;
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
         return false;
     }

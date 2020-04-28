@@ -42,7 +42,7 @@ public class DepartmentDBHelper {
             + DEPART_NAME_DEFAULT + " text);";
 
 
-    public synchronized static ArrayList<TreeUserDTO> getDepartments_v2( ) {
+    public synchronized static ArrayList<TreeUserDTO> getDepartments_v2() {
         ArrayList<TreeUserDTO> departs = new ArrayList<>();
 
         String[] columns = new String[]{"*"};
@@ -93,48 +93,6 @@ public class DepartmentDBHelper {
     // this version just get one user
     public synchronized static ArrayList<TreeUserDTO> getDepartments() {
         ArrayList<TreeUserDTO> departs = new ArrayList<>();
-
-//        String[] columns = new String[]{"*"};
-//        ContentResolver resolver = CrewChatApplication.getInstance()
-//                .getApplicationContext().getContentResolver();
-//        Cursor cursor = resolver.query(
-//                AppContentProvider.GET_DEPARTMENT_CONTENT_URI, columns, null,
-//                null, null);
-//
-//        if (cursor != null) {
-//            if (cursor.getCount() > 0) {
-//                try {
-//                    while (cursor.moveToNext()) {
-//                        int id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID)));
-//                        int depart_no = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DEPART_NO)));
-//                        String name = cursor.getString(cursor.getColumnIndex(DEPART_NAME));
-//                        int status = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DEPART_ENABLE)));
-//                        int parent_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DEPART_PARENT_NO)));
-//                        String name_en = cursor.getString(cursor.getColumnIndex(DEPART_NAME_EN));
-//                        int mNumSort = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DEPART_SORT_NO)));
-//
-//                        TreeUserDTO depart = new TreeUserDTO(
-//                                id,
-//                                depart_no,
-//                                status,
-//                                null
-//                                ,
-//                                name,
-//                                name_en,
-//                                parent_id,
-//                                mNumSort
-//                        );
-//                        depart.setType(0); // value 0 = department type
-//                        departs.add(depart);
-//                    }
-//
-//                } finally {
-//                    cursor.close();
-//                }
-//
-//            }
-//            cursor.close();
-//        }
         return departs;
     }
 
@@ -166,9 +124,9 @@ public class DepartmentDBHelper {
 
             values.put(DEPART_NO, depart.getId());
             values.put(DEPART_NAME, depart.getName());
-            if(depart.isEnabled()){
+            if (depart.isEnabled()) {
                 depart.setStatus(0);
-            }else {
+            } else {
                 depart.setStatus(1);
             }
             values.put(DEPART_ENABLE, depart.getStatus());
@@ -207,7 +165,6 @@ public class DepartmentDBHelper {
                 }
             }
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
 
@@ -231,7 +188,6 @@ public class DepartmentDBHelper {
             return true;
 
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
         return false;
@@ -245,7 +201,7 @@ public class DepartmentDBHelper {
             resolver.delete(AppContentProvider.GET_DEPARTMENT_CONTENT_URI, null, null);
             return true;
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
         return false;
     }

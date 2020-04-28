@@ -129,14 +129,6 @@ public class ImageViewZoomSupport extends ImageView {
         userTouchListener = l;
     }
 
-    public void setOnTouchImageViewListener(OnTouchImageViewListener l) {
-        touchImageViewListener = l;
-    }
-
-    public void setOnDoubleTapListener(GestureDetector.OnDoubleTapListener l) {
-        doubleTapListener = l;
-    }
-
     @Override
     public void setImageResource(int resId) {
         super.setImageResource(resId);

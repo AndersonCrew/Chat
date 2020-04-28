@@ -59,8 +59,6 @@ public class RoundLayoutGroup extends RelativeLayout {
     public void draw(Canvas canvas) {
         Bitmap offscreenBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas offscreenCanvas = new Canvas(offscreenBitmap);
-//        Log.d("sssDebug","cnavas"+canvas.getWidth()+"height"+canvas.getHeight());
-
         super.draw(offscreenCanvas);
 
         if (maskBitmap == null) {

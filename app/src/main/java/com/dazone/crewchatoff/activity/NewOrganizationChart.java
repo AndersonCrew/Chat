@@ -70,9 +70,6 @@ public class NewOrganizationChart extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_organization_chart_layout);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.create_chat_room));
 
@@ -95,7 +92,6 @@ public class NewOrganizationChart extends AppCompatActivity {
     }
     @Subscribe
     public void notifyAdapter(NotifyAdapterOgr notifyAdapterOgr) {
-        /* Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();*/
         mAdapter.notifyDataSetChanged();
     }
     public void scrollToEndList(int size) {
@@ -113,8 +109,8 @@ public class NewOrganizationChart extends AppCompatActivity {
 
     void initView() {
 
-        ivShare = (ImageView) findViewById(R.id.ivShare);
-        layoutRoomName = (RelativeLayout) findViewById(R.id.layoutRoomName);
+        ivShare = findViewById(R.id.ivShare);
+        layoutRoomName = findViewById(R.id.layoutRoomName);
         if (isNewChat) {
             layoutRoomName.setVisibility(View.VISIBLE);
             ivShare.setVisibility(View.GONE);
@@ -135,9 +131,9 @@ public class NewOrganizationChart extends AppCompatActivity {
 
 
         }
-        tvCount = (TextView) findViewById(R.id.tvCount);
-        edRoomName = (EditText) findViewById(R.id.edRoomName);
-        cbCreateNewRoom = (CheckBox) findViewById(R.id.cbCreateNewRoom);
+        tvCount = findViewById(R.id.tvCount);
+        edRoomName = findViewById(R.id.edRoomName);
+        cbCreateNewRoom = findViewById(R.id.cbCreateNewRoom);
         edRoomName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -156,7 +152,7 @@ public class NewOrganizationChart extends AppCompatActivity {
         });
 
 
-        recyclerView = (RecyclerView) findViewById(R.id.rv);
+        recyclerView = findViewById(R.id.rv);
         NewOrganizationChart instance = this;
         mAdapter = new AdapterOrganizationChart(this, list, true, instance, null, null);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -165,36 +161,23 @@ public class NewOrganizationChart extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
 
-        EditText edSearch = (EditText) findViewById(R.id.edSearch);
+        EditText edSearch = findViewById(R.id.edSearch);
         edSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                Log.d(TAG, "beforeTextChanged:" + s.toString());
                 String str = s.toString();
                 if (str == null) str = "";
                 if (str.length() == 0) {
-                    Log.d(TAG, "getListTemp");
                     lstCurrent = mAdapter.getCurrentList();
                 }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                Log.d(TAG, "onTextChanged:" + s.toString());
-//                String str = s.toString();
-//                if (str == null) str = "";
-//                if (str.length() == 0) {
-//                    updateCurrentList();
-//                } else {
-//                    Log.d(TAG, "onQueryTextChange:" + str);
-//                    mAdapter.actionSearch(str);
-//                }
-//
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-//                Log.d(TAG, "afterTextChanged:" + s.toString());
                 String str = s.toString();
                 if (str == null) str = "";
                 if (str.length() == 0) {
@@ -202,7 +185,6 @@ public class NewOrganizationChart extends AppCompatActivity {
                     updateCurrentList();
                 } else {
                     mAdapter.updateIsSearch(1);
-//                    Log.d(TAG, "onQueryTextChange:" + str);
                     mAdapter.actionSearch(str);
                 }
 
@@ -219,7 +201,7 @@ public class NewOrganizationChart extends AppCompatActivity {
     }
 
     void handleSendImage(Intent intent) {
-        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
             // Update UI to reflect image being shared
             try {
@@ -233,47 +215,11 @@ public class NewOrganizationChart extends AppCompatActivity {
 
 
     void initDB() {
-//        initWholeOrganization();
-
         if (CompanyFragment.instance != null) {
             list = CompanyFragment.instance.getSubordinates();
             mAdapter.updateList(list);
         } else {
             Toast.makeText(getApplicationContext(), "Can not get list user, restart app please", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void initWholeOrganization() {
-        // build offline version
-        // Get offline data
-        mDepartmentList = new ArrayList<>();
-        listTemp  = new ArrayList<>();
-
-        if (CompanyFragment.instance != null) {
-            listTemp = CompanyFragment.instance.getUser();
-            mDepartmentList= CompanyFragment.instance.getDepartments();
-        }
-
-        if (mDepartmentList == null) mDepartmentList = new ArrayList<>();
-        if (listTemp == null) listTemp = new ArrayList<>();
-
-        if (mDepartmentList != null && mDepartmentList.size() > 0) {
-            buildTree(mDepartmentList, false);
-            Log.d(TAG, "1");
-        } else { // Get department from server
-            Log.d(TAG, "2");
-            Log.d(TAG, "URL_GET_DEPARTMENT 5");
-//            HttpRequest.getInstance().GetListDepart(new IGetListDepart() {
-//                @Override
-//                public void onGetListDepartSuccess(ArrayList<TreeUserDTO> treeUserDTOs) {
-//                    buildTree(treeUserDTOs, true);
-//                }
-//
-//                @Override
-//                public void onGetListDepartFail(ErrorDto dto) {
-//
-//                }
-//            });
         }
     }
 
@@ -368,47 +314,14 @@ public class NewOrganizationChart extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_organization, menu);
-
-//        MenuItem myActionMenuItem = menu.findItem(R.id.menu_search);
-//        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-////                Log.d(TAG, "onQueryTextSubmit:" + query);
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String s) {
-//                if (s.length() == 0) {
-//                    updateCurrentList();
-//                } else {
-//                    Log.d(TAG, "onQueryTextChange:" + s);
-//                    mAdapter.actionSearch(s);
-//                }
-//                return false;
-//            }
-//        });
-
         return true;
     }
 
-//    public void getList() {
-//        if (lstCurrent != null && lstCurrent.size() > 0) {
-//            for (TreeUserDTO obj : lstCurrent) {
-//                if (obj.isCheck())
-//                    Log.d(TAG, new Gson().toJson(obj));
-//            }
-//        }
-//    }
-
     void updateCurrentList() {
-        Log.d(TAG, "updateCurrentList");
         if (lstCurrent != null && lstCurrent.size() > 0) {
             mAdapter.updateListSearch(lstCurrent);
         }
     }
-
 
     List<TreeUserDTO> lstCurrent = new ArrayList<>();
 
@@ -423,10 +336,6 @@ public class NewOrganizationChart extends AppCompatActivity {
                     addToGroupChat();
                 else actionShare();
                 break;
-//            case R.id.menu_search:
-//                lstCurrent = mAdapter.getCurrentList();
-//                Log.d(TAG, "menu_search");
-//                break;
         }
         return false;
     }

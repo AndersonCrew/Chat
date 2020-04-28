@@ -37,31 +37,18 @@ public class OrganizationFragment extends BaseFragment implements IGetListDepart
     private TreeUserDTO dto = null;
     private String treeUser = "";
 
-    /*public OrganizationFragment newInstance(int task) {
-        OrganizationFragment fragment = new OrganizationFragment();
-        Bundle args = new Bundle();
-        args.putLong(Statics.CHATTING_DTO_ADD_USER, task);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-/*        if(getArguments()!=null)
-        {
-            task = getArguments().getLong(Statics.CHATTING_DTO_ADD_USER);
-        }*/
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_organization, container, false);
-        ln_container = (LinearLayout) rootView.findViewById(R.id.container);
+        ln_container = rootView.findViewById(R.id.container);
         treeUser = new Prefs().getStringValue(Statics.ORANGE, "");
         if (TextUtils.isEmpty(treeUser)) {
             Log.d(TAG, "URL_GET_DEPARTMENT 6");
-//            HttpRequest.getInstance().GetListDepart(this);
         } else {
             new Loading().execute();
         }
@@ -118,45 +105,6 @@ public class OrganizationFragment extends BaseFragment implements IGetListDepart
         }
     }
 
-    /*public void callChat()
-    {
-        if (selectedPersonList != null)
-            if(selectedPersonList.size()==0)
-            {
-
-            }else
-            if (selectedPersonList.size() == 1) {
-                HttpRequest.getInstance().CreateOneUserChatRoom(selectedPersonList.get(0).getId(), new ICreateOneUserChatRom() {
-                    @Override
-                    public void onICreateOneUserChatRomSuccess(ChattingDto chattingDto) {
-                        Intent intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
-                        intent.putExtra(Statics.TREE_USER_PC, selectedPersonList.get(0));
-                        intent.putExtra(Statics.CHATTING_DTO, chattingDto);
-                        BaseActivity.Instance.startActivity(intent);
-                    }
-
-                    @Override
-                    public void onICreateOneUserChatRomFail(ErrorDto errorDto) {
-                        Utils.showMessageShort("Fail");
-                    }
-                });
-            } else if (selectedPersonList.size() > 1) {
-                HttpRequest.getInstance().CreateGroupChatRoom(selectedPersonList, new ICreateOneUserChatRom() {
-                    @Override
-                    public void onICreateOneUserChatRomSuccess(ChattingDto chattingDto) {
-                        Intent intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
-                        intent.putExtra(Statics.CHATTING_DTO, chattingDto);
-                        BaseActivity.Instance.startActivity(intent);
-                    }
-
-                    @Override
-                    public void onICreateOneUserChatRomFail(ErrorDto errorDto) {
-                        Utils.showMessageShort("Fail");
-                    }
-                });
-            }
-    }*/
-
     private void unCheckParentData(TreeUserDTO personData) {
 
         TreeUserDTO needRemovePerson = null;
@@ -175,10 +123,6 @@ public class OrganizationFragment extends BaseFragment implements IGetListDepart
                 unCheckParentData(needRemovePerson);
             }
         }
-    }
-
-    public ArrayList<TreeUserDTO> getListUser() {
-        return selectedPersonList;
     }
 
     public class Loading extends AsyncTask<Void, Void, Void> {

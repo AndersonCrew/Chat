@@ -1,5 +1,6 @@
 package com.dazone.crewchatoff.Class;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -56,6 +57,7 @@ public class TreeUserView extends TreeView implements View.OnCreateContextMenuLi
         setupView();
     }
 
+    @SuppressLint("HandlerLeak")
     protected final android.os.Handler mHandler = new android.os.Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
@@ -66,7 +68,6 @@ public class TreeUserView extends TreeView implements View.OnCreateContextMenuLi
                     dto.setAvatarUrl(user.getAvatarUrl());
                     dto.setPosition(user.getPosition());
                     dto.setType(user.getType());
-//                    dto.setStatus(user.getStatus());
                     dto.setId(user.getUserNo());
                     dto.setParent(user.getDepartNo());
                     dto.setCompanyNumber(user.getCompanyPhone());
@@ -100,19 +101,17 @@ public class TreeUserView extends TreeView implements View.OnCreateContextMenuLi
     @Override
     public void setupView() {
         currentView = inflater.inflate(R.layout.tree_user_row, null);
-        avatar_imv = (ImageView) currentView.findViewById(R.id.avatar);
-        status_imv = (ImageView) currentView.findViewById(R.id.status_imv);
-        title = (TextView) currentView.findViewById(R.id.name);
-        position = (TextView) currentView.findViewById(R.id.position);
-        lnItemWraper = (LinearLayout) currentView.findViewById(R.id.item_org_wrapper);
-        //status_tv = (TextView) currentView.findViewById(R.id.status_tv);
-        //checkBox = (CheckBox) currentView.findViewById(R.id.row_check);
-        tv_work_phone = (TextView) currentView.findViewById(R.id.tv_work_phone);
-        tv_personal_phone = (TextView) currentView.findViewById(R.id.tv_personal_phone);
-        tvPhone1 = (TextView) currentView.findViewById(R.id.tv_phone_1);
-        tvPhone2 = (TextView) currentView.findViewById(R.id.tv_phone_2);
-        lnPhone = (LinearLayout) currentView.findViewById(R.id.ln_phone);
-        main = (RelativeLayout) currentView.findViewById(R.id.mainParent);
+        avatar_imv = currentView.findViewById(R.id.avatar);
+        status_imv = currentView.findViewById(R.id.status_imv);
+        title = currentView.findViewById(R.id.name);
+        position = currentView.findViewById(R.id.position);
+        lnItemWraper = currentView.findViewById(R.id.item_org_wrapper);
+        tv_work_phone = currentView.findViewById(R.id.tv_work_phone);
+        tv_personal_phone = currentView.findViewById(R.id.tv_personal_phone);
+        tvPhone1 = currentView.findViewById(R.id.tv_phone_1);
+        tvPhone2 = currentView.findViewById(R.id.tv_phone_2);
+        lnPhone = currentView.findViewById(R.id.ln_phone);
+        main = currentView.findViewById(R.id.mainParent);
 
         currentView.setOnCreateContextMenuListener(this);
         currentView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -131,30 +130,6 @@ public class TreeUserView extends TreeView implements View.OnCreateContextMenuLi
             return;
         }
 
-     /*   if (dto.getName().length() == 0) { // May be it is favorite user
-
-            user  = AllUserDBHelper.getAUser(dto.getId());
-
-            if (user != null) {
-                dto.setName(user.getName());
-                dto.setNameEN(user.getNameEN());
-                dto.setCompanyNumber(user.getCellPhone());
-                dto.setAvatarUrl(user.getAvatarUrl());
-                dto.setPosition(user.getPosition());
-                dto.setType(user.getType());
-                dto.setStatus(user.getStatus());
-                dto.setId(user.getUserNo());
-                dto.setParent(user.getDepartNo());
-                dto.setCompanyNumber(user.getCompanyPhone());
-                dto.setPhoneNumber(user.getCellPhone());
-                dto.setStatus(user.getStatus());
-                dto.setStatusString(user.getUserStatusString());
-
-            }
-        }else{
-            Utils.printLogs("Hix hix");
-        }*/
-
         user = AllUserDBHelper.getAUser(dto.getId());
 
         if (user != null) {
@@ -164,7 +139,6 @@ public class TreeUserView extends TreeView implements View.OnCreateContextMenuLi
             dto.setAvatarUrl(user.getAvatarUrl());
             dto.setPosition(user.getPosition());
             dto.setType(user.getType());
-//            dto.setStatus(user.getStatus());
             dto.setId(user.getUserNo());
             dto.setCompanyNumber(user.getCompanyPhone());
             dto.setPhoneNumber(user.getCellPhone());
@@ -184,29 +158,6 @@ public class TreeUserView extends TreeView implements View.OnCreateContextMenuLi
 
         title.setText(dto.getItemName());
         position.setText(dto.getPosition());
-
-        /*if (TextUtils.isEmpty(dto.getCompanyNumber())){
-            tv_work_phone.setVisibility(View.GONE);
-        }else{
-            tv_work_phone.setVisibility(View.VISIBLE);
-            tv_work_phone.setText(dto.getCompanyNumber());
-        }
-
-        if (TextUtils.isEmpty(dto.getPhoneNumber())){
-            tv_personal_phone.setVisibility(View.GONE);
-        }else{
-            tv_personal_phone.setVisibility(View.VISIBLE);
-            tv_personal_phone.setText(dto.getPhoneNumber());
-        }*/
-
-//        if (TextUtils.isEmpty(dto.getStatusString())){
-//            tv_user_status.setVisibility(View.GONE);
-//            Utils.printLogs("Status string = Rong");
-//        }else{
-//            tv_user_status.setVisibility(View.VISIBLE);
-//            Utils.printLogs("Status string = "+dto.getStatusString());
-//            tv_user_status.setText(dto.getStatusString());
-//        }
 
         setupStatusImage();
         handleItemClick(true);
@@ -233,8 +184,6 @@ public class TreeUserView extends TreeView implements View.OnCreateContextMenuLi
                 status_imv.setImageResource(R.drawable.home_big_status_02);
                 break;
             case Statics.USER_LOGOUT:
-                status_imv.setImageResource(R.drawable.home_big_status_03);
-                break;
             default:
                 status_imv.setImageResource(R.drawable.home_big_status_03);
                 break;

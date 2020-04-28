@@ -18,7 +18,6 @@ import java.util.List;
  */
 
 public class TabCurrentChatFragment extends ListFragment<ChattingDto> implements OnGetCurrentChatCallBack {
-    public boolean isUpdate = false;
     public static TabCurrentChatFragment fragment;
     String TAG = "TabCurrentChatFragment";
 
@@ -72,7 +71,6 @@ public class TabCurrentChatFragment extends ListFragment<ChattingDto> implements
                 if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0) {
                     if (dto.getListTreeUser().size() < 2) {
                         int userNo = dto.getListTreeUser().get(0).getUserNo();
-                        String userName = dto.getListTreeUser().get(0).getName();
                         for (TreeUserDTOTemp obj : lst) {
                             int stt = obj.getStatus();
                             int uN = obj.getUserNo();
@@ -84,12 +82,6 @@ public class TabCurrentChatFragment extends ListFragment<ChattingDto> implements
                     }
                 }
             }
-
-//            for(ChattingDto obj:dataSet)
-//            {
-//                obj.setCbChoose(false);
-//
-//            }
         }
         adapterList = new TransferMsgAdapter(mContext, dataSet, rvMainList, mOnContextMenuSelect);
     }
@@ -108,14 +100,6 @@ public class TabCurrentChatFragment extends ListFragment<ChattingDto> implements
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-
-    @Override
-    protected void reloadContentPage() {
-        //dataSet.add(null);
-        //adapterList.notifyItemInserted(dataSet.size() - 1);
-//        mHttpRequest.getAllEmployeesSort(this, millis,limit,userNo,sortType);
     }
 
     @Override

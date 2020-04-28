@@ -34,11 +34,10 @@ public class ViewImageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
-//        Log.d(TAG, "position:" + position);
         View imageLayout = inflater.inflate(R.layout.row_view_image, view, false);
 
         assert imageLayout != null;
-        final ImageView imageView = (ImageView) imageLayout.findViewById(R.id.imageView);
+        final ImageView imageView = imageLayout.findViewById(R.id.imageView);
 
         ChattingDto dto = imagesURL.get(position);
 
@@ -63,7 +62,6 @@ public class ViewImageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-//        Log.d(TAG,"destroyItem");
         container.removeView((View) object);
     }
 

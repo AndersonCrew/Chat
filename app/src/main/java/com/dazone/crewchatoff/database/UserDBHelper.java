@@ -34,7 +34,7 @@ public class UserDBHelper {
         String[] columns = new String[] { "*" };
         ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
         Cursor cursor = resolver.query(AppContentProvider.GET_USER_CONTENT_URI, columns, null, null, null);
-        UserDto userDto = userDto = new UserDto();
+        UserDto userDto = new UserDto();
 
         if (cursor != null) {
             if (cursor.getCount() > 0) {

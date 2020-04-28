@@ -30,6 +30,7 @@ import java.util.ArrayList;
 /**
  * Created by Dat on 4/20/2016.
  */
+
 public class CompanySearchAdapter extends RecyclerView.Adapter<CompanySearchAdapter.CompanySearchViewHolder> implements View.OnClickListener {
 
     private ArrayList<TreeUserDTOTemp> listData;
@@ -60,14 +61,8 @@ public class CompanySearchAdapter extends RecyclerView.Adapter<CompanySearchAdap
 
     @Override
     public void onBindViewHolder(CompanySearchViewHolder holder, int position) {
-        /** GET ITEM */
         TreeUserDTOTemp item = listData.get(position);
-
-        /** GET URL */
-
         String url = prefs.getServerSite() + item.getAvatarUrl();
-
-        //ImageLoader.getInstance().displayImage(url, holder.ivAvatar, Statics.options2);
         ImageUtils.showCycleImageFromLink(url, holder.ivAvatar, R.dimen.button_height);
 
         holder.tvName.setText(item.getName());
@@ -88,20 +83,10 @@ public class CompanySearchAdapter extends RecyclerView.Adapter<CompanySearchAdap
             case R.id.layout_main:
                 TreeUserDTOTemp treeUserDTOTemp = (TreeUserDTOTemp) v.getTag();
                 if (myId != treeUserDTOTemp.getUserNo()) {
-                   /* final TreeUserDTO treeUserDTO = new TreeUserDTO(treeUserDTOTemp.getName(),
-                            treeUserDTOTemp.getNameEN(),
-                            treeUserDTOTemp.getCellPhone(),
-                            treeUserDTOTemp.getAvatarUrl(),
-                            treeUserDTOTemp.getPosition(),
-                            treeUserDTOTemp.getType(),
-                            treeUserDTOTemp.getStatus(),
-                            treeUserDTOTemp.getUserNo(),
-                            treeUserDTOTemp.getDepartNo());*/
                     HttpRequest.getInstance().CreateOneUserChatRoom(treeUserDTOTemp.getUserNo(), new ICreateOneUserChatRom() {
                         @Override
                         public void onICreateOneUserChatRomSuccess(ChattingDto chattingDto) {
                             Intent intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
-                            //intent.putExtra(Statics.TREE_USER_PC, treeUserDTO);
                             intent.putExtra(Statics.CHATTING_DTO, chattingDto);
                             intent.putExtra(Constant.KEY_INTENT_ROOM_NO, chattingDto.getRoomNo());
                             BaseActivity.Instance.startActivity(intent);
@@ -129,11 +114,11 @@ public class CompanySearchAdapter extends RecyclerView.Adapter<CompanySearchAdap
 
         public CompanySearchViewHolder(View view) {
             super(view);
-            layout = (RelativeLayout) view.findViewById(R.id.layout_main);
-            ivAvatar = (ImageView) view.findViewById(R.id.iv_avatar);
-            ivStatus = (ImageView) view.findViewById(R.id.iv_status);
-            tvName = (TextView) view.findViewById(R.id.tv_username);
-            tvPosition = (TextView) view.findViewById(R.id.tv_position);
+            layout = view.findViewById(R.id.layout_main);
+            ivAvatar = view.findViewById(R.id.iv_avatar);
+            ivStatus = view.findViewById(R.id.iv_status);
+            tvName = view.findViewById(R.id.tv_username);
+            tvPosition = view.findViewById(R.id.tv_position);
         }
     }
 }

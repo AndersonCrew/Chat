@@ -37,9 +37,7 @@ import java.util.List;
 
 
 public class GridViewAdapter extends ArrayAdapter<MediaModel> {
-	private String TAG="GridViewAdapter";
 	public VideoFragment videoFragment;
-
 	private Context mContext;
 	private List<MediaModel> mGalleryModelList;
 	private int mWidth;
@@ -84,8 +82,8 @@ public class GridViewAdapter extends ArrayAdapter<MediaModel> {
 			convertView = viewInflater.inflate(R.layout.view_grid_item_media_chooser, parent, false);
 
 			holder = new ViewHolder();
-			holder.checkBoxTextView   = (CheckedTextView) convertView.findViewById(R.id.checkTextViewFromMediaChooserGridItemRowView);
-			holder.imageView          = (ImageView) convertView.findViewById(R.id.imageViewFromMediaChooserGridItemRowView);
+			holder.checkBoxTextView   = convertView.findViewById(R.id.checkTextViewFromMediaChooserGridItemRowView);
+			holder.imageView          = convertView.findViewById(R.id.imageViewFromMediaChooserGridItemRowView);
 
 			convertView.setTag(holder);
 
@@ -108,11 +106,6 @@ public class GridViewAdapter extends ArrayAdapter<MediaModel> {
 			ImageLoadAsync loadAsync = new ImageLoadAsync(mContext, holder.imageView, mWidth/2);
 			loadAsync.executeOnExecutor(MediaAsync.THREAD_POOL_EXECUTOR, mGalleryModelList.get(position).url);
 		}
-//		for(int i=0;i<mGalleryModelList.size();i++)
-//		{
-//			MediaModel obj = mGalleryModelList.get(i);
-//			if(obj.status) Log.d(TAG,"i: "+i);
-//		}
 
 		holder.checkBoxTextView.setChecked(mGalleryModelList.get(position).status);
 		return convertView;

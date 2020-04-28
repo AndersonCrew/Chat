@@ -98,10 +98,13 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 vh = new ChattingGroupViewHolderNew(v);
                 break;
             case Statics.CHATTING_VIEW_TYPE_SELF_IMAGE:
+
+            case Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_image, parent, false);
                 vh = new ChattingSelfImageViewHolder(mActivity, v);
                 break;
             case Statics.CHATTING_VIEW_TYPE_SELF_FILE:
+            case Statics.CHATTING_VIEW_TYPE_SELECT_FILE:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_file, parent, false);
                 vh = new ChattingSelfFileViewHolder(v);
                 break;
@@ -122,15 +125,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 vh = new ChattingSelfFileViewHolder(v);
                 break;
 
-            case Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE:
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_image, parent, false);
-                vh = new ChattingSelfImageViewHolder(mActivity, v);
-                break;
-            case Statics.CHATTING_VIEW_TYPE_SELECT_FILE:
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_file, parent, false);
-                vh = new ChattingSelfFileViewHolder(v);
-                break;
-
             case Statics.CHATTING_VIEW_TYPE_CONTACT:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_contact, parent, false);
                 vh = new ChattingContactViewHolder(v);
@@ -142,9 +136,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 break;
 
             case Statics.CHATTING_VIEW_TYPE_SELF_VIDEO:
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_video, parent, false);
-                vh = new ChattingSelfVideoViewHolder(mActivity, v);
-                break;
 
             case Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_video, parent, false);

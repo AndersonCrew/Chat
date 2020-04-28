@@ -92,7 +92,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     private ChattingFragment fragment;
     private ArrayList<TreeUserDTOTemp> treeUserDTOTempArrayList = null;
     public static Uri uri = null;
-    private boolean isFromNotification = false;
     private long roomNo;
     public static ArrayList<Integer> userNos;
     private boolean isOne = false;
@@ -217,7 +216,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             try {
-                isFromNotification = bundle.getBoolean(Constant.KEY_INTENT_FROM_NOTIFICATION, false);
                 roomNo = bundle.getLong(Constant.KEY_INTENT_ROOM_NO, 0);
                 myId = bundle.getLong(Constant.KEY_INTENT_USER_NO, 0);
 

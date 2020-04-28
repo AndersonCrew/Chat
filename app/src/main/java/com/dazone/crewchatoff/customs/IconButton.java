@@ -14,7 +14,6 @@ public class IconButton extends Button {
     protected DrawablePositions drawablePosition;
     protected int iconPadding;
 
-    // Cached to prevent allocation during onLayout
     Rect bounds;
 
     private enum DrawablePositions {

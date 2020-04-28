@@ -5,7 +5,6 @@ import com.dazone.crewchatoff.dto.UserInfoDto;
 
 import java.util.ArrayList;
 
-
 /**
  * Created by Dat on 5/4/2016.
  */

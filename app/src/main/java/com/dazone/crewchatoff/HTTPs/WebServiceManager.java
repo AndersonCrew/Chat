@@ -40,14 +40,9 @@ public class WebServiceManager<T> {
     }
 
     public void doJsonObjectRequest(int requestMethod, final String url, final JSONObject bodyParam, final RequestListener<String> listener) {
-//        Log.d(TAG, "bodyUrl:" +url);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethod, url, bodyParam, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, "bodyParam:" + new Gson().toJson(bodyParam));
-                Log.d(TAG, "response:" + response);
-//                if (Statics.WRITE_HTTP_REQUEST) {
-//                }
                 try {
                     int isSuccess;
                     JSONObject json = new JSONObject(response.getString("d"));
@@ -78,7 +73,6 @@ public class WebServiceManager<T> {
                                 CrewChatApplication.getInstance().getPrefs().clearLogin();
                                 BaseActivity.Instance.startNewActivity(LoginActivity.class);
                             } else if (errorDto.code == -100 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
-                                /*doLogout();*/
                                 new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
                                 CrewChatApplication.getInstance().getPrefs().clearLogin();
                                 BaseActivity.Instance.startNewActivity(LoginActivity.class);
@@ -89,12 +83,10 @@ public class WebServiceManager<T> {
                     }
 
                 } catch (JSONException e) {
-
                     ErrorDto errorDto = new ErrorDto();
                     errorDto.message = Utils.getString(R.string.no_network_error);
                     listener.onFailure(errorDto);
                 }
-//                Log.d(TAG, "finish response");
             }
         }, new Response.ErrorListener() {
             @Override
@@ -125,17 +117,6 @@ public class WebServiceManager<T> {
                 CREWCHAT_SOCKET_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-//        DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(0, -1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-//        jsonObjectRequest.setRetryPolicy(retryPolicy);
-
-        /*String temp = "";
-        try {
-            temp = bodyParam.get("command").toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String json_request_tag = "json_request_tag";*/
 
         CrewChatApplication.getInstance().addToRequestQueue(jsonObjectRequest, url);
     }

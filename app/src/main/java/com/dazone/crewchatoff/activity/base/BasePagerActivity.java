@@ -89,7 +89,6 @@ public abstract class BasePagerActivity extends BaseActivity {
                 if (MainActivity.CURRENT_TAB == 0) {
                     if (CurrentChatListFragment.fragment != null) {
                         CurrentChatListFragment.fragment.searchAction(1);
-//                        actionSearchForFab();
                     }
                 } else if (MainActivity.CURRENT_TAB == 1) {
 

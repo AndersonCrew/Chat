@@ -79,7 +79,6 @@ public abstract class ListFragment<T> extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_list, container, false);
         lnNoData = v.findViewById(R.id.lnNoData);
         progressBar = v.findViewById(R.id.progressBar);
@@ -96,9 +95,6 @@ public abstract class ListFragment<T> extends Fragment {
         fab = v.findViewById(R.id.fab);
         mInputSearch = v.findViewById(R.id.inputSearch);
         mInputSearch.setImeOptions(mInputSearch.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
-        Log.d(TAG, "init mInputSearch");
-        if (mInputSearch == null) Log.d(TAG, "init mInputSearch null");
-        else Log.d(TAG, "init mInputSearch not null");
         swipeRefreshLayout = v.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setRefreshing(false);
         swipeRefreshLayout.setEnabled(false);
@@ -117,7 +113,6 @@ public abstract class ListFragment<T> extends Fragment {
 
     protected void scrollEndList(int position) {
         rvMainList.smoothScrollToPosition(position);
-        Log.d(TAG, "scrollEndList");
     }
 
     private TextWatcher mWatcher = new TextWatcher() {
@@ -189,22 +184,16 @@ public abstract class ListFragment<T> extends Fragment {
                     img.showSoftInput(mInputSearch, InputMethodManager.SHOW_IMPLICIT);
                 }
             });
-        } else {
-            Log.d(TAG, "hideSearchInput mInputSearch == null");
         }
     }
 
     public void hideSearchInput() {
-
-
         if (this.mInputSearch != null) {
             this.mInputSearch.setText("");
             this.mInputSearch.setVisibility(View.GONE);
             if (getActivity() != null) {
                 Utils.hideKeyboard(getActivity());
             }
-        } else {
-            Log.d(TAG, "hideSearchInput mInputSearch == null");
         }
     }
 
@@ -217,22 +206,11 @@ public abstract class ListFragment<T> extends Fragment {
         rvMainList.setAdapter(adapterList);
     }
 
-    public void enableLoadingMore() {
-        adapterList.setOnLoadMoreListener(new PullUpLoadMoreRCVAdapter.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                reloadContentPage();
-            }
-        });
-    }
-
     public void disableSwipeRefresh() {
         swipeRefreshLayout.setEnabled(false);
     }
 
     protected abstract void initAdapter();
-
-    protected abstract void reloadContentPage();
 
     //protected abstract void addMoreItem();
     protected abstract void initList();

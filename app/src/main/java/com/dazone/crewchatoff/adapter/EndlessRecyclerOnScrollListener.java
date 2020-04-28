@@ -8,7 +8,6 @@ public abstract class EndlessRecyclerOnScrollListener extends
     public static String TAG = EndlessRecyclerOnScrollListener.class
             .getSimpleName();
 
-    private LinearLayoutManager mLinearLayoutManager;
 
     @Override
     public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {

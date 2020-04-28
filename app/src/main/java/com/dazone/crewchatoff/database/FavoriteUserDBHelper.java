@@ -262,7 +262,6 @@ public class FavoriteUserDBHelper {
         try {
             for (FavoriteUserDto user : users) {
                 if (!isExistByKey(user)) {
-//                    Log.d(TAG, new Gson().toJson(user));
                     ContentValues values = new ContentValues();
                     values.put(GROUP_USER_NO, user.getGroupUserNo());
                     values.put(REG_USER_NO, user.getRegUserNo());
@@ -306,30 +305,9 @@ public class FavoriteUserDBHelper {
     }
 
     public static boolean addFavoriteUser(FavoriteUserDto user) {
-//        try {
-//            if (!isExistByKey(user)) {
-//                Log.d(TAG, new Gson().toJson(user));
-//                ContentValues values = new ContentValues();
-//                values.put(GROUP_USER_NO, user.getGroupUserNo());
-//                values.put(REG_USER_NO, user.getRegUserNo());
-//                values.put(GROUP_NO, user.getGroupNo());
-//                values.put(USER_NO, user.getUserNo());
-//                values.put(SORT_NO, user.getSortNo());
-//                values.put(MOD_DATE, user.getModDate());
-//                values.put(IS_TOP, user.getIsTop());
-//                ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-//                resolver.insert(AppContentProvider.GET_FAVORITE_USER_CONTENT_URI, values);
-//            }
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return false;
         try {
             if (!isExistByKey(user)) {
                 Log.d(TAG, " addFavoriteUser");
-//                Log.d(TAG,"add:"+new Gson().toJson(user));
                 ContentValues values = new ContentValues();
                 values.put(GROUP_USER_NO, user.getGroupUserNo());
                 values.put(REG_USER_NO, user.getRegUserNo());
@@ -341,7 +319,6 @@ public class FavoriteUserDBHelper {
 
                 ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
                 resolver.insert(AppContentProvider.GET_FAVORITE_USER_CONTENT_URI, values);
-
                 return true;
             } else {
                 Log.d(TAG, "dont addFavoriteUser");

@@ -73,25 +73,8 @@ public class CrewChatSettingActivity extends BaseSingleBackActivity implements C
         return false;
     }
 
-   /* @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-
-        finish();
-    }*/
-
     @Override
     protected void addFragment(Bundle bundle) {
-
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-        // check if the request code is same as what is passed  here it is 2
 
     }
 
@@ -161,5 +144,4 @@ public class CrewChatSettingActivity extends BaseSingleBackActivity implements C
         mPresenter.rotationSettingValue(mTvScreenRotation);
         EventBus.getDefault().post(new RotationAction());
     }
-
 }
