@@ -292,7 +292,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         HttpRequest.getInstance().GetChatMsgSection(roomNo, startNo, mesType, new OnGetChatMessage() {
             @Override
             public void OnGetChatMessageSuccess(List<ChattingDto> listNew) {
-                Log.d(TAG, "OnGetChatMessageSuccess");
                 mHandler.obtainMessage(WHAT_CODE_HIDE_PROCESS).sendToTarget();
                 isLoaded = true;
                 // perform thread to sync data server with client
@@ -456,10 +455,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         adapterList = new ChattingAdapter(mContext, mActivity, dataSet, rvMainList);
         rvMainList.setLayoutManager(layoutManager);
-    }
-
-    @Override
-    protected void reloadContentPage() {
     }
 
     @SuppressLint("ClickableViewAccessibility")

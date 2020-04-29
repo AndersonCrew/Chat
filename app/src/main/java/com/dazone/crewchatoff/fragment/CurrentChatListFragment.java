@@ -299,11 +299,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     }
 
     @Override
-    protected void reloadContentPage() {
-        initList();
-    }
-
-    @Override
     public void onHTTPSuccess(List<CurrentChatDto> dtos) {
 
     }

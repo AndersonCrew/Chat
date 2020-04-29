@@ -1,7 +1,6 @@
 package com.dazone.crewchatoff.gcm;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,7 +28,6 @@ import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.ChatMessageDBHelper;
 import com.dazone.crewchatoff.database.ChatRoomDBHelper;
-import com.dazone.crewchatoff.database.UserDBHelper;
 import com.dazone.crewchatoff.dto.AttachDTO;
 import com.dazone.crewchatoff.dto.ChatRoomDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
@@ -57,7 +54,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -100,7 +96,7 @@ public class GcmIntentService extends IntentService {
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 //TODO sendNotification("Send error",extras.toString());
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-               //TODO sendNotification("Deleted messages on server ", extras.toString());
+                //TODO sendNotification("Deleted messages on server ", extras.toString());
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 if (extras.containsKey("Code")) {
                     Code = Integer.parseInt(extras.getString("Code", "0"));
@@ -174,6 +170,7 @@ public class GcmIntentService extends IntentService {
                     chattingDto.setLastedMsg(bundleDto.getMessage());
                     chattingDto.setMsgUserNo(bundleDto.getWriteUserNo());
                     chattingDto.setWriterUser(bundleDto.getWriteUserNo());
+
                     if (bundleDto.getMessageType() == 3) {
                         chattingDto.setType(3);
                     } else {
@@ -217,7 +214,6 @@ public class GcmIntentService extends IntentService {
                                 @Override
                                 public void run() {
                                     Log.d(TAG, "addMessage 3");
-//                                    Log.d(TAG,new Gson().toJson(chattingDto));
                                     ChatMessageDBHelper.addMessage(chattingDto);
                                 }
                             }).start();
@@ -257,7 +253,14 @@ public class GcmIntentService extends IntentService {
                                         }
                                     }
 
-                                    sendNotification(chattingDto.getMessage(), name, url, myIntent, chattingDto.getUnreadTotalCount(), roomNo);
+                                    if (chattingDto.getType() == 3) {
+                                        String[] msg = chattingDto.getMessage().split("\n");
+                                        if (msg.length > 1)
+                                            sendNotification(msg[1], msg[0], url, myIntent, chattingDto.getUnreadTotalCount(), roomNo);
+                                        else
+                                            sendNotification(chattingDto.getMessage(), name, url, myIntent, chattingDto.getUnreadTotalCount(), roomNo);
+                                    } else
+                                        sendNotification(chattingDto.getMessage(), name, url, myIntent, chattingDto.getUnreadTotalCount(), roomNo);
                                 }
                             } else {
                                 if (isShowNotification) {

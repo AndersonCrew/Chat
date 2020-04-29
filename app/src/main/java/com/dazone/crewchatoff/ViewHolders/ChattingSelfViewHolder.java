@@ -61,8 +61,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
     private ImageView btnResend, btnDelete;
     private ChattingAdapter mAdapter;
     String TAG = "ChattingSelfViewHolder";
-    public static boolean isReSend;
-    final Handler handler = new Handler();
 
     public void setAdapter(ChattingAdapter adapter) {
         this.mAdapter = adapter;
@@ -241,16 +239,16 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 Spanned msg;
                 if (dto.getType() == Constant.APPROVAL) {
                     String[] fullUrl = message.split("\\|");
-                    String msgText = "";
-                    String linkUrl = "";
-                    String linkTitle = "";
+                    String msgText;
+                    String linkUrl;
+                    String linkTitle;
                     if (fullUrl.length >= 3) {
                         msgText = fullUrl[0];
                         linkUrl = fullUrl[1];
                         linkTitle = fullUrl[2];
 
                         if (checkNullOrEmpty(linkUrl) && checkNullOrEmpty(linkTitle)) {
-                            msg = Html.fromHtml(msgText.replace("\n", "<br/>") + "<br/>" +
+                            msg = Html.fromHtml(replaceSpecialCharactor(msgText) + "<br/>" +
                                     "<a href='" + linkUrl + "'>" + linkTitle + "</a><br/>");
                         } else {
                             msg = Html.fromHtml(msgText.replace("\n", "<br/>"));
@@ -392,8 +390,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                     if (ChatMessageDBHelper.deleteMessage(dto.getMessageNo())) {
                         if (mAdapter != null && mAdapter.getData() != null) {
                             mAdapter.getData().remove(dto);
-                            // check remove line date
-//                            Log.d(TAG, "position:" + getAdapterPosition());
                             int before = getAdapterPosition() - 1;
                             if (before >= 0) {
                                 Log.d(TAG, "msg before:" + mAdapter.getData().get(before).getMessage());
@@ -427,6 +423,10 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 }
             });
         }
+    }
+
+    private String replaceSpecialCharactor(String msgText) {
+       return msgText.replace("\n", "<br/>").replace("<-", "&lt-").replace("->", "-&gt");
     }
 
     private boolean checkNullOrEmpty(String msg) {

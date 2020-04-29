@@ -10,7 +10,6 @@ public class Org_tree {
         //boolean temp = true;
         TreeUserDTO root = new TreeUserDTO(0, 0, "Dazone");
         HashMap<Integer, ArrayList<TreeUserDTO>> jsonDataMap = new HashMap<>();
-        //HashMap<Integer, ArrayList<TreeUserDTO>> jsonDataMap2 = new HashMap<>();
         for (TreeUserDTO dto : dtos) {
             if(dto.getStatus()==0)
             if (jsonDataMap.containsKey(dto.getParent())) {

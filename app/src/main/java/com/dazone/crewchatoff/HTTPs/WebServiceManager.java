@@ -1,7 +1,5 @@
 package com.dazone.crewchatoff.HTTPs;
 
-import android.util.Log;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -25,7 +23,6 @@ import java.net.HttpURLConnection;
 import java.util.Map;
 
 public class WebServiceManager<T> {
-    String TAG = ">>>WebServiceManager";
     private int CREWCHAT_SOCKET_TIMEOUT_MS = 4000;
     private Map<String, String> mHeaders;
 

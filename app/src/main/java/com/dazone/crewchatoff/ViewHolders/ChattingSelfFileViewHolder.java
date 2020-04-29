@@ -81,16 +81,9 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
     protected ImageView file_thumb;
     private LinearLayout linearLayout, layoutNotAudio, layoutAudio;
     private ProgressBar progressBar, pBar;
-    private LinearLayout lnSendFail;
-    private ImageView ivDelete, ivResend;
     String TAG = "ChattingSelfFileViewHolder";
-    boolean isLoaded = false;
     long MessageNo;
 
-    //    public ChattingSelfFileViewHolder(Activity activity, View v) {
-//        super(v);
-//        mActivity = activity;
-//    }
     public ChattingSelfFileViewHolder(View v) {
         super(v);
     }
@@ -98,24 +91,19 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
     @Override
     protected void setup(View v) {
 
-        date_tv = (TextView) v.findViewById(R.id.date_tv);
-        file_name_tv = (TextView) v.findViewById(R.id.file_name_tv);
-        file_size_tv = (TextView) v.findViewById(R.id.file_size_tv);
-        file_receive_tv = (TextView) v.findViewById(R.id.file_receive_tv);
-        file_thumb = (ImageView) v.findViewById(R.id.file_thumb);
-        linearLayout = (LinearLayout) v.findViewById(R.id.main_attach);
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
-        pBar = (ProgressBar) v.findViewById(R.id.pBar);
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
-        lnSendFail = (LinearLayout) v.findViewById(R.id.ln_send_failed);
-        layoutNotAudio = (LinearLayout) v.findViewById(R.id.layoutNotAudio);
-        layoutAudio = (LinearLayout) v.findViewById(R.id.layoutAudio);
-        tvDuration = (TextView) v.findViewById(R.id.tvDuration);
+        date_tv = v.findViewById(R.id.date_tv);
+        file_name_tv = v.findViewById(R.id.file_name_tv);
+        file_size_tv = v.findViewById(R.id.file_size_tv);
+        file_receive_tv = v.findViewById(R.id.file_receive_tv);
+        file_thumb = v.findViewById(R.id.file_thumb);
+        linearLayout = v.findViewById(R.id.main_attach);
+        progressBar = v.findViewById(R.id.progressBar);
+        pBar = v.findViewById(R.id.pBar);
+        tvUnread = v.findViewById(R.id.text_unread);
+        layoutNotAudio = v.findViewById(R.id.layoutNotAudio);
+        layoutAudio = v.findViewById(R.id.layoutAudio);
+        tvDuration = v.findViewById(R.id.tvDuration);
         linearLayout.setOnCreateContextMenuListener(this);
-//        ivResend = (ImageView) v.findViewById(R.id.btn_resend);
-//        ivDelete = (ImageView) v.findViewById(R.id.btn_delete);
-//
-//        lnSendFail.setVisibility(View.GONE);
     }
 
     public ProgressBar getProgressBar() {
@@ -153,7 +141,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
 
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setProgress(0);
-//            ChattingFragment.instance.SendTo(dto, progressBar, getAdapterPosition(),null);
 
         } else {
             if (TextUtils.isEmpty(dto.getRegDate())) {
@@ -170,8 +157,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             fileType = Utils.getFileType(_fileName);
             ImageUtils.imageFileType(file_thumb, fileType);
 
-//            Log.d(TAG, "! = _fileName:" + dto.getAttachInfo().getFileName());
-
             file_name_tv.setText(_fileName);
             file_size_tv.setText(Utils.readableFileSize(dto.getAttachInfo().getSize()));
             file_receive_tv.setVisibility(View.GONE);
@@ -184,6 +169,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                     touchOnView(attachDTO);
                 }
             });
+
             linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -195,12 +181,10 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                     return true;
                 }
             });
-//        ImageUtils.showRoundImage(dto, avatar_imv);
         }
 
         String strUnReadCount = String.valueOf(dto.getUnReadCount());
         tvUnread.setText(strUnReadCount);
-//        tvUnread.setVisibility(dto.getUnReadCount() == 0 ? View.GONE : View.VISIBLE);
         date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,8 +220,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                     if (!file.exists()) {
                         path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Statics.AUDIO_RECORDER_FOLDER_ROOT + "/" + fileName;
                     }
-                    // ex: path = /storage/emulated/0/CrewChat/Audio/17_09_26_08_58_35.mp3
-                    // Log.d(TAG, "path:" + path);
+
                     new Constant.audioGetDuration(BaseActivity.Instance, path, new AudioGetDuration() {
                         @Override
                         public void onComplete(String duration) {
@@ -257,37 +240,9 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
         if (ChattingActivity.instance != null) {
             if (checkPermissionsWandR()) {
                 if (attachDTO != null) {
-                   /* String fileNameLocal = "/crewChat/" + _fileName;
-                    File file1 = new File(Environment.getExternalStorageDirectory() + fileNameLocal);*/
-                    /*   if (file1.exists()) {
-                     *//*           if (file1 != null && file1.length() > 0) {
-                            if (Utils.isAudio(fileType)) {
-                                String path = file1.getAbsolutePath();
-                                Log.d(TAG, "path:" + path);
-                                new AudioPlayer(BaseActivity.Instance, path, _fileName).show();
-                            } else if (Utils.isVideo(fileType)) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    Uri apkUri = FileProvider.getUriForFile(BaseActivity.Instance, BuildConfig.APPLICATION_ID + ".provider", file1);
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                    intent.setDataAndType(apkUri, "video/*");
-                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    BaseActivity.Instance.startActivity(intent);
-                                } else {
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                    intent.setDataAndType(Uri.fromFile(file1), "video/*");
-                                    BaseActivity.Instance.startActivity(intent);
-                                }
-                            } else {
-                                openFile(file1);
-                            }
-                        }*//*
-                    }*//* else {*/
 
                     String url = new Prefs().getServerSite() + Urls.URL_DOWNLOAD + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTO.getAttachNo();
                     Log.d(TAG, "url:" + url);
-//            String path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + attachDTO.getFileName();
-//            File file = new File(path);
-//            Log.d(TAG,"path:"+path);
 
                     pBar.setVisibility(View.VISIBLE);
                     new WebClientAsyncTask(BaseActivity.Instance, pBar, url, _fileName, new OnDownloadFinish() {
@@ -321,7 +276,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                             Toast.makeText(BaseActivity.Instance, "Can not open this file", Toast.LENGTH_SHORT).show();
                         }
                     }).execute();
-                    // }
                 }
             } else {
                 setPermissionsRandW();
@@ -347,14 +301,8 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(file), type);
                 BaseActivity.Instance.startActivity(intent);
-//                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
-//                activity.startActivity(intent);
             }
         } catch (Exception e) {
-
-
-            Log.d(TAG, "Exception");
             Toast.makeText(BaseActivity.Instance, "No Application available to view this file", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
@@ -368,12 +316,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             String url = new Prefs().getServerSite() + Urls.URL_DOWNLOAD + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTOTemp.getAttachNo();
             Log.d(TAG, "url download:" + url);
             String path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + attachDTOTemp.getFileName();
-            File file = new File(path);
-//            if (file.exists()) {
-//                BaseActivity.Instance.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-//            } else {
-//                Utils.displayDownloadFileDialog(BaseActivity.Instance, url, attachDTOTemp.getFileName());
-//            }
             Utils.displayDownloadFileDialog(BaseActivity.Instance, url, attachDTOTemp.getFileName());
         }
     }
@@ -382,11 +324,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
         if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
-        if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-
-        return true;
+        return ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     int RandW_PERMISSIONS_REQUEST_CODE = 1;
@@ -409,7 +347,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             shareIntent.setType("*/*");
             File file = new File(path);
             if (file.exists()) {
-//                BaseActivity.Instance.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
                 Uri uri = FileProvider.getUriForFile(CrewChatApplication.getInstance(), BuildConfig.APPLICATION_ID + ".provider", file);
                 shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
                 BaseActivity.Instance.startActivity(Intent.createChooser(shareIntent, "Share file using"));
@@ -422,7 +359,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                     mProgressDialog.setCancelable(false);
                     mProgressDialog.show();
                     DownloadImage(BaseActivity.Instance, url, attachDTOTemp.getFileName(), shareIntent, file);
-
                 } else {
                     setPermissionsRandW();
                 }
@@ -444,7 +380,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        //request.setTitle(name);
         int type = getTypeFile(fileType);
         switch (type) {
             case 1:
@@ -478,7 +413,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(reference);
                     Cursor c = downloadmanager.query(query);
@@ -641,9 +575,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                 bufferedInputStream = new BufferedInputStream(inputStream);
                 Log.d("doInBackground", "name:" + this.mName);
                 outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + Constant.pathDownload, this.mName);
-//                if (!outputFile.exists()) {
-//                    outputFile.createNewFile();
-//                }
 
                 if (outputFile.exists()) outputFile.delete();
                 outputFile.createNewFile();

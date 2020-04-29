@@ -744,6 +744,7 @@ public class CompanyFragment extends Fragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                     mHandler.obtainMessage(CREATE_TREE, dto).sendToTarget();
 
                 }
