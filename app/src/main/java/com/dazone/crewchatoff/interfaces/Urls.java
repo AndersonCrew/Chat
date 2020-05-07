@@ -1,7 +1,6 @@
 package com.dazone.crewchatoff.interfaces;
 
 public class Urls {
-    public static final String URL_ROOT = "/UI/WebService/WebServiceCenter.asmx/";
     public static final String URL_ROOT_2 = "/UI/CrewChat/MobileWebService.asmx/RequestData";
     public static final String URL_CREATE_ONE_USER_CHAT = "CreateOneUserChatRoom";
     public static final String URL_CREATE_MY_CHAT_ROOM =  "CreateMyChatRoom";

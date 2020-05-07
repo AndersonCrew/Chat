@@ -39,6 +39,7 @@ public class Org_tree {
                 jsonDataMap.put(dto.getParent(), subordinates);
             }
         }
+
         for (TreeUserDTO subordinate : jsonDataMap.get(root.getId())) {
             root.addSubordinate(subordinate);
             subordinate.setParent(root.getId());

@@ -695,6 +695,7 @@ public class CompanyFragment extends Fragment {
                             treeUserDTO.setSubordinates(null);
                         }
                     }
+
                     Collections.sort(temp, new Comparator<TreeUserDTO>() {
                         @Override
                         public int compare(TreeUserDTO r1, TreeUserDTO r2) {
@@ -710,7 +711,6 @@ public class CompanyFragment extends Fragment {
 
 
                     for (TreeUserDTOTemp treeUserDTOTemp : listTemp) {
-
                         if (treeUserDTOTemp.getBelongs() != null) {
                             for (BelongDepartmentDTO belong : treeUserDTOTemp.getBelongs()) {
                                 TreeUserDTO treeUserDTO = new TreeUserDTO(
@@ -727,6 +727,7 @@ public class CompanyFragment extends Fragment {
                                         belong.getPositionSortNo()
 
                                 );
+
                                 treeUserDTO.DutyName = belong.getDutyName();
                                 treeUserDTO.setCompanyNumber(treeUserDTOTemp.getCompanyPhone());
                                 if (treeUserDTO.isEnabled()) {

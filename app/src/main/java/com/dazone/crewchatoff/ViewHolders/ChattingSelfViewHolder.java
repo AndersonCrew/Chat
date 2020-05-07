@@ -251,7 +251,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                             msg = Html.fromHtml(replaceSpecialCharactor(msgText) + "<br/>" +
                                     "<a href='" + linkUrl + "'>" + linkTitle + "</a><br/>");
                         } else {
-                            msg = Html.fromHtml(msgText.replace("\n", "<br/>"));
+                            msg = Html.fromHtml(replaceSpecialCharactor(msgText).replace("\n", "<br/>"));
                         }
 
                         content_tv.setAutoLinkMask(0);
@@ -426,7 +426,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
     }
 
     private String replaceSpecialCharactor(String msgText) {
-       return msgText.replace("\n", "<br/>").replace("<-", "&lt-").replace("->", "-&gt");
+        return msgText.replace("\n", "<br/>").replace("<-", "&lt-").replace("->", "-&gt");
     }
 
     private boolean checkNullOrEmpty(String msg) {

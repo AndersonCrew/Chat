@@ -117,7 +117,7 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
         List<TreeUserDTOTemp> list1 = new ArrayList<>();
         TreeUserDTOTemp treeUserDTOTemp1;
 
-        ArrayList<TreeUserDTOTemp> listUsers =null;
+        ArrayList<TreeUserDTOTemp> listUsers = null;
         if (CompanyFragment.instance != null) listUsers = CompanyFragment.instance.getUser();
         if (listUsers == null) listUsers = new ArrayList<>();
 
@@ -237,10 +237,10 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
 
                 ivLastedAttach.setVisibility(View.VISIBLE);
                 break;
-                default:
-                    strLastMsg = dto.getLastedMsg()+"";
-                    ivLastedAttach.setVisibility(View.GONE);
-                    break;
+            default:
+                strLastMsg = dto.getLastedMsg() + "";
+                ivLastedAttach.setVisibility(View.GONE);
+                break;
         }
 
         if (strLastMsg != null && strLastMsg.contains("\n")) {

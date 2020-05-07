@@ -100,8 +100,7 @@ public abstract class ListFragment<T> extends Fragment {
         swipeRefreshLayout.setEnabled(false);
 
         mInputSearch.addTextChangedListener(mWatcher);
-        if (mInputSearch == null) Log.d(TAG, "init mInputSearch null");
-        else Log.d(TAG, "init mInputSearch not null");
+
         setupRecyclerView();
         initList();
         return v;

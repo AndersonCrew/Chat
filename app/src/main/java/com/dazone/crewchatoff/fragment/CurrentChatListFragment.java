@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 
@@ -46,7 +47,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     public boolean isUpdate = false;
     public static CurrentChatListFragment fragment;
     private List<TreeUserDTOTemp> treeUserDTOTempList;
-    String TAG = ">>>CurrentChatListFragment";
     public boolean isActive = false;
     private int myId;
     public boolean isFirstTime = true;
@@ -56,12 +56,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         filter.addAction(Statics.ACTION_SHOW_SEARCH_INPUT_IN_CURRENT_CHAT);
         filter.addAction(Statics.ACTION_HIDE_SEARCH_INPUT_IN_CURRENT_CHAT);
         getActivity().registerReceiver(mReceiverShowSearchInput, filter);
-    }
-
-    private void unregisterReceiver() {
-        if (getActivity() != null) {
-            getActivity().unregisterReceiver(mReceiverShowSearchInput);
-        }
     }
 
     private BroadcastReceiver mReceiverShowSearchInput = new BroadcastReceiver() {
@@ -83,7 +77,9 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unregisterReceiver();
+        if (getActivity() != null) {
+            getActivity().unregisterReceiver(mReceiverShowSearchInput);
+        }
     }
 
     ArrayList<TreeUserDTOTemp> listOfUsers = null;

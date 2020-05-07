@@ -160,7 +160,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 break;
             default:
                 break;
-
         }
         return vh;
     }
