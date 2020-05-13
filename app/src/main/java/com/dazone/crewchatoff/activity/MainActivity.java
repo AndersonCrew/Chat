@@ -155,6 +155,8 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         if(BuildConfig.FLAVOR.equals("serverVersion")) {
             checkVersion();
         }
+
+
     }
 
     public void setPermissionsReadExternalStorage() {

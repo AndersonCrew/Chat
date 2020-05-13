@@ -16,6 +16,6 @@ object PermissionUtil {
     }
 
     /*STORAGE*/
-    val permissionsStorage = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).toList()
+    val permissionsStorage = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE).toList()
 }
 

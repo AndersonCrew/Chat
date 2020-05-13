@@ -31,8 +31,17 @@ class ChatttingViewModel : ViewModel() {
     }
 
     fun getHeader(chattingDto: ChattingDto) {
-        var mTitle = ""
 
+        status?.value = if (chattingDto.userNos.size > 2) CrewChatApplication.getInstance().resources.getString(R.string.room_info_participant_count, chattingDto.userNos?.size.toString()) else ""
+
+        roomNo = chattingDto.roomNo
+
+        chattingDto.roomTitle?.let {
+            title?.value = it
+            return
+        }
+
+        var mTitle = ""
         if (!chattingDto.userNos.isNullOrEmpty()) {
             chattingDto.listTreeUser.map {
                 mTitle += it.NameEN + ","
@@ -41,9 +50,7 @@ class ChatttingViewModel : ViewModel() {
 
         title?.value = mTitle.substring(0, mTitle.length - 1)
 
-        status?.value = if (chattingDto.userNos.size > 2) CrewChatApplication.getInstance().resources.getString(R.string.room_info_participant_count, chattingDto.userNos?.size.toString()) else ""
 
-        roomNo = chattingDto.roomNo
     }
 
     fun leaveGroup() {
