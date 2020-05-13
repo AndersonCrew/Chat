@@ -396,7 +396,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         // Load client data at first, then call load online data on new thread
         // Just load on the first time
         if (!isLoaded) {
-            Log.d(TAG, "!isLoaded");
             loadClientData();
         }
         set_msg_for_edit_text();
@@ -414,16 +413,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         Bundle args = new Bundle();
         args.putLong(Constant.KEY_INTENT_ROOM_NO, roomNo);
         args.putIntegerArrayList(Constant.KEY_INTENT_USER_NO_ARRAY, userNos);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public ChattingFragment newInstance(TreeUserDTO dto1, ChattingDto chattingDto1, Activity activity) {
-        ChattingFragment fragment = new ChattingFragment();
-        fragment.setActivity(activity);
-        Bundle args = new Bundle();
-        args.putSerializable(Statics.TREE_USER_PC, dto1);
-        args.putSerializable(Statics.CHATTING_DTO, chattingDto1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -456,7 +445,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             @Override
             public void onScrolledToTop() {
                 super.onScrolledToTop();
-                Log.d(TAG, "onScrolledToTop");
                 try {
                     loadMoreData();
                 } catch (Exception e) {
@@ -488,9 +476,9 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         } else {
             view.edt_comment.setInputType(131073);
         }
+
         list_content_rl.setBackgroundColor(ImageUtils.getColor(getContext(), R.color.chat_list_bg_color));
         disableSwipeRefresh();
-
 
         view.edt_comment.addTextChangedListener(new TextWatcher() {
             @Override
@@ -532,7 +520,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     case MotionEvent.ACTION_DOWN:
                         break;
                     case MotionEvent.ACTION_UP:
-                        Log.d(TAG, "ACTION_UP");
                         if (!isThreadRunning) {
                             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.press_hold), Toast.LENGTH_SHORT).show();
                         }
@@ -2427,13 +2414,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
             adapterList.notifyItemChanged(0);
 
-
             List<ChattingDto> localData = ChatMessageDBHelper.getMsgSession(roomNo, baseMsgNo, ChatMessageDBHelper.BEFORE);
 
             if (Utils.isNetworkAvailable()) {
                 if (localData != null)
                     localData.clear();
-            } else {
             }
 
             if (localData != null && localData.size() > 0) {

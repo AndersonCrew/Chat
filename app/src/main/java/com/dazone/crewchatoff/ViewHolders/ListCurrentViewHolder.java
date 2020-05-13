@@ -21,6 +21,7 @@ import com.dazone.crewchatoff.activity.ChattingActivity;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
 import com.dazone.crewchatoff.activity.RoomUserInformationActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
+import com.dazone.crewchatoff.activity.chatting.Chating2Activity;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.customs.RoundLayoutGroup;
 import com.dazone.crewchatoff.database.ChatRoomDBHelper;
@@ -403,7 +404,8 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
             public void onClick(View v) {
 
                 long roomNo = (long) v.getTag();
-                ChattingActivity.toActivity(BaseActivity.Instance, roomNo, myId, tempDto);
+                //ChattingActivity.toActivity(BaseActivity.Instance, roomNo, myId, tempDto);
+                Chating2Activity.Companion.toActivity(BaseActivity.Instance, tempDto);
             }
         });
 

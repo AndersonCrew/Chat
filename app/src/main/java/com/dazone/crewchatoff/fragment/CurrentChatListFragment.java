@@ -19,6 +19,7 @@ import com.dazone.crewchatoff.activity.ChattingActivity;
 import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.RenameRoomActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
+import com.dazone.crewchatoff.activity.chatting.Chating2Activity;
 import com.dazone.crewchatoff.adapter.CurrentChatAdapter;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.ChatRoomDBHelper;

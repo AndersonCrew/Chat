@@ -446,22 +446,6 @@ public class CrewChatApplication extends MultiDexApplication {
         return _data.get(key);
     }
 
-    public static void activityResumed() {
-        try {
-            activityVisible = true;
-        } catch (NullPointerException e) {
-            // don't know why
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void activityPaused() {
-        activityVisible = false;
-    }
-
-    private static boolean activityVisible;
     public static long currentRoomNo = 0;
     public static long currentNotification = 0;
 

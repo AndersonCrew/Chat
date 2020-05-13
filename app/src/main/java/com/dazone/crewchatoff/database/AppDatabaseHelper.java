@@ -3,10 +3,8 @@ package com.dazone.crewchatoff.database;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.dazone.crewchatoff.HTTPs.HttpOauthRequest;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;

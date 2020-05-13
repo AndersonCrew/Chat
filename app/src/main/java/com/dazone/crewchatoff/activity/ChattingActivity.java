@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -52,7 +51,6 @@ import com.dazone.crewchatoff.fragment.CompanyFragment;
 import com.dazone.crewchatoff.fragment.CurrentChatListFragment;
 import com.dazone.crewchatoff.fragment.RecentFavoriteFragment;
 import com.dazone.crewchatoff.interfaces.BaseHTTPCallBack;
-import com.dazone.crewchatoff.interfaces.OnFilterMessage;
 import com.dazone.crewchatoff.interfaces.OnGetChatRoom;
 import com.dazone.crewchatoff.interfaces.SendChatMessage;
 import com.dazone.crewchatoff.libGallery.MediaChooser;
@@ -90,7 +88,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
     private String TAG = "ChattingActivity";
     private ChattingFragment fragment;
-    private ArrayList<TreeUserDTOTemp> treeUserDTOTempArrayList = null;
+    private ArrayList<TreeUserDTOTemp> treeUserDTOTempArrayList = new ArrayList<>();
     public static Uri uri = null;
     private long roomNo;
     public static ArrayList<Integer> userNos;
@@ -139,10 +137,10 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
         if (CompanyFragment.instance != null)
             treeUserDTOTempArrayList = CompanyFragment.instance.getUser();
-        if (treeUserDTOTempArrayList == null || treeUserDTOTempArrayList.size() == 0)
+
+        if (treeUserDTOTempArrayList.size() == 0)
             treeUserDTOTempArrayList = AllUserDBHelper.getUser_v2();
-        if (treeUserDTOTempArrayList == null)
-            treeUserDTOTempArrayList = new ArrayList<>();
+
 
         /** ADD OnClick Menu */
         ivCall.setOnClickListener(this);
@@ -293,14 +291,12 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
             @Override
             public void OnGetChatRoomFail(ErrorDto errorDto) {
+                Log.d("FAIL", "FAIL");
             }
         });
     }
-    /**
-     * Setup TITLE ROOM
-     */
+
     public void updateRoomName(String title) {
-        Log.d(TAG, "updateRoomName");
         setTitle(title);
         roomTitle = title;
     }
@@ -325,7 +321,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         }
         this.roomTitle = title;
         setTitle(title);
-        Log.d(TAG, "setStatus 1");
         setStatus(status);
     }
 
@@ -335,30 +330,10 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         if (bundle != null) {
             roomNo = bundle.getLong(Constant.KEY_INTENT_ROOM_NO, 0);
             getChatRoomInfo();
-            /** Setup FRAGMENT*/
-
 
             fragment = new ChattingFragment().newInstance(roomNo, userNos, this);
-
-            /** ADD FRAGMENT TO ACTIVITY */
             Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        try {
-            CrewChatApplication.activityResumed();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        CrewChatApplication.activityPaused();
     }
 
     @Override
@@ -369,12 +344,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private void addFragment() {
-        /** Setup FRAGMENT*/
-        // 채팅방 내부 Fragment 값을 설정하고 가져옵니다.
         fragment = new ChattingFragment().newInstance(roomNo, userNos, this);
-
-        /** ADD FRAGMENT TO ACTIVITY */
-        // 채팅방 내부 Fragment 로 이동합니다.
         Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
     }
 
@@ -383,10 +353,9 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private String getGroupTitleName(ArrayList<Integer> userNos) {
-        boolean flag = false;
         String result = "";
         for (int i : userNos) {
-            if (i != myId || flag) {
+            if (i != myId) {
                 for (TreeUserDTOTemp treeUserDTOTemp : treeUserDTOTempArrayList) {
                     if (i == treeUserDTOTemp.getUserNo()) {
                         result += treeUserDTOTemp.getName() + ",";

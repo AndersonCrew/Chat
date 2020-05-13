@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url "https://jitpack.io" }
@@ -6,6 +9,7 @@ repositories {
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:+'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 android {
     compileSdkVersion 28
@@ -25,7 +29,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 10420
-        versionName "2.6.1"
+        versionName "2.6.2"
         multiDexEnabled true
     }
 
@@ -85,5 +89,21 @@ android {
         implementation 'com.jakewharton:butterknife:8.8.1'
         annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
         implementation 'net.ypresto.androidtranscoder:android-transcoder:0.2.0'
+
+
+        // ViewModel and LiveData
+        implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+        // alternatively - just ViewModel
+        implementation "android.arch.lifecycle:viewmodel:$lifecycle_version" // For Kotlin use viewmodel-ktx
+        // alternatively - just LiveData
+        implementation "android.arch.lifecycle:livedata:$lifecycle_version"
+        // alternatively - Lifecycles only (no ViewModel or LiveData).
+        //     Support library depends on this lightweight import
+        implementation "android.arch.lifecycle:runtime:$lifecycle_version"
+
+        implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+        implementation "com.squareup.okhttp3:logging-interceptor:$ok_http_version"
+        implementation "com.google.code.gson:gson:$gson_version"
+        implementation "com.squareup.retrofit2:converter-gson:$gson_convertor_version"
     }
 }

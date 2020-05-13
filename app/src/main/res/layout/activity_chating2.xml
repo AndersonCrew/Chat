@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.dazone.crewchatoff.activity.chatting.Chating2Activity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/csToolBar"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/colorPrimary"
+        android:layout_height="?attr/actionBarSize">
+
+        <!--Icon back-->
+        <ImageView
+            android:id="@+id/icBack"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_arrow_back"
+            android:padding="@dimen/padding_block"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"/>
+
+        <!--Title-->
+        <TextView
+            android:id="@+id/tvTitle"
+            app:layout_constraintStart_toEndOf="@id/icBack"
+            app:layout_constraintEnd_toStartOf="@id/searchView"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="0dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:paddingTop="@dimen/dimen_5_10"
+            android:text="Đinh Công Thành, Đỗ Anh Tâm, Lê Vĩnh "
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_height="wrap_content"/>
+
+        <!--Status-->
+        <TextView
+            android:id="@+id/tvParticipants"
+            android:text="8 Participants"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingBottom="@dimen/dimen_5_10"
+            app:layout_constraintStart_toEndOf="@id/icBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:id="@+id/btnGroup"
+            app:layout_constraintStart_toEndOf="@id/tvParticipants"
+            app:layout_constraintTop_toTopOf="@id/tvParticipants"
+            app:layout_constraintBottom_toBottomOf="@id/tvParticipants"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/circle_bg_ic_group">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_group" />
+        </RelativeLayout>
+
+        <!--Search View-->
+        <android.support.v7.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"
+           app:layout_constraintEnd_toStartOf="@id/icMore"
+            android:showAsAction="collapseActionView|ifRoom"
+            android:visibility="visible">
+
+        </android.support.v7.widget.SearchView>
+
+        <!--Icon more-->
+        <ImageView
+            android:id="@+id/icMore"
+            style="@style/Button"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"
+            android:padding="@dimen/padding_block"
+            android:src="@drawable/nav_mnu_ver_ic" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.v7.widget.RecyclerView
+        app:layout_constraintTop_toBottomOf="@id/csToolBar"
+        app:layout_constraintBottom_toTopOf="@id/llInput"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <LinearLayout
+        android:id="@+id/llInput"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</android.support.constraint.ConstraintLayout>

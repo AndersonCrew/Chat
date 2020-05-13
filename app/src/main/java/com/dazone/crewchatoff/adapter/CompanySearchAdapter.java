@@ -15,6 +15,7 @@ import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.ChattingActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
+import com.dazone.crewchatoff.activity.chatting.Chating2Activity;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.ErrorDto;

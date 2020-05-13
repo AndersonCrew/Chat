@@ -16,14 +16,10 @@
         android:id="@+id/menu_add_chat"
         android:title="@string/add_user" />
 
-
-    <!-- added 6/6/2016 -->
     <item
         android:id="@+id/menu_send_file"
         android:title="@string/send_file" />
-    <!--<item-->
-        <!--android:id="@+id/menu_chat_setting"-->
-        <!--android:title="@string/chat_setting" />-->
+
     <item
         android:id="@+id/menu_close"
         android:title="@string/close" />
