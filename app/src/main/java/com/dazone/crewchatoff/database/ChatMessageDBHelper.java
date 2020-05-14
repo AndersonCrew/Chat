@@ -44,6 +44,9 @@ public class ChatMessageDBHelper {
     public static final String ATTACH_FILE_SIZE = "attach_file_size";
     public static final String UNREAD_TOTAL_COUNT = "unread_total_count";
     public static final String HAS_SENT = "message_has_sent";
+    // Constant type to get message session
+    public static int NONE = 0, FIRST = 1, BEFORE = 2, AFTER = 3;
+
     public static final String SQL_EXECUTE = "CREATE TABLE " + TABLE_NAME + "("
             + ID + " integer primary key autoincrement not null,"
             + ROOM_NO + " integer DEFAULT 0,"
@@ -140,20 +143,6 @@ public class ChatMessageDBHelper {
             ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
             resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + dto.getRoomNo() + " AND " + ID + " = " + id, null);
 
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public static boolean updateMessage(long id, int unreadCount) {
-        try {
-            ContentValues values = new ContentValues();
-            values.put(UNREAD_COUNT, unreadCount);
-            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, MESSAGE_NO + " = " + id, null);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -342,10 +331,6 @@ public class ChatMessageDBHelper {
         return chattingDto;
     }
 
-
-    // Constant type to get message session
-    public static int NONE = 0, FIRST = 1, BEFORE = 2, AFTER = 3;
-
     public static List<ChattingDto> getMsgSession(long roomNo, long baseMsgNo, int type) {
         if (type == NONE) { // currently no use
             return null;
@@ -390,87 +375,6 @@ public class ChatMessageDBHelper {
         }
         if (mesArray != null && mesArray.size() > 0) {
             mesArray = Constant.sortTimeList(mesArray);
-        }
-
-        return mesArray;
-    }
-
-    /*
-     * This function to get all chat list, short by time
-     * Get chat message by session like server session
-     **/
-    public static ArrayList<ChattingDto> getMessages(long roomNo) {
-        ArrayList<ChattingDto> mesArray = new ArrayList<>();
-        String[] columns = new String[]{"*"};
-        ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-        Cursor cursor = resolver.query(AppContentProvider.GET_MESSAGE_CONTENT_URI, columns, ROOM_NO + " = " + roomNo, null, MESSAGE_NO + " ASC");
-
-        if (cursor != null) {
-            if (cursor.getCount() > 0) {
-                try {
-                    while (cursor.moveToNext()) {
-                        ChattingDto chattingDto = new ChattingDto();
-                        chattingDto.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ID))));
-                        chattingDto.setRoomNo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ROOM_NO))));
-                        chattingDto.setMakeUserNo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(MAKE_USER_NO))));
-                        chattingDto.setModdate(cursor.getString(cursor.getColumnIndex(MOD_DATE)));
-                        boolean is_one = cursor.getInt(cursor.getColumnIndex(IS_ONE)) == 1;
-                        chattingDto.setOne(is_one);
-                        chattingDto.setRoomTitle(cursor.getString(cursor.getColumnIndex(ROOM_TITLE)));
-                        chattingDto.setLastedMsg(cursor.getString(cursor.getColumnIndex(LASTED_MSG)));
-                        chattingDto.setLastedMsgDate(cursor.getString(cursor.getColumnIndex(LASTED_MSG_DATE)));
-
-                        String sUserNos = cursor.getString(cursor.getColumnIndex(USER_NOS));
-                        if (sUserNos != null) {
-                            String[] elements = sUserNos.split(",");
-                            ArrayList<Integer> userNosLList = new ArrayList<>();
-                            for (String temp : elements) {
-                                userNosLList.add(Integer.parseInt(temp.trim()));
-                            }
-                            chattingDto.setUserNos(userNosLList);
-                        }
-
-                        chattingDto.setWriterUser(Integer.parseInt(cursor.getString(cursor.getColumnIndex(WRITER_USER))));
-                        chattingDto.setWriterUserNo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(WRITER_USER_NO))));
-                        chattingDto.setMessageNo(Long.parseLong(cursor.getString(cursor.getColumnIndex(MESSAGE_NO))));
-                        chattingDto.setUserNo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(USER_NO))));
-                        chattingDto.setMessage(cursor.getString(cursor.getColumnIndex(MESSAGE)));
-
-
-                        chattingDto.setRegDate(cursor.getString(cursor.getColumnIndex(REG_DATE)));
-                        chattingDto.setUnReadCount(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNREAD_COUNT))));
-                        chattingDto.setCheckFromServer(Integer.parseInt(cursor.getString(cursor.getColumnIndex(IS_CHECK_FROM_SERVER))) == 1);
-
-                        chattingDto.setType(Integer.parseInt(cursor.getString(cursor.getColumnIndex(TYPE))));
-                        chattingDto.setAttachNo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_NO))));
-                        chattingDto.setAttachFileName(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_NAME)));
-                        chattingDto.setAttachFileType(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_TYPE))));
-                        chattingDto.setAttachFilePath(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_PATH)));
-                        chattingDto.setAttachFileSize(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_SIZE))));
-
-                        int hasSendValue = Integer.parseInt(cursor.getString(cursor.getColumnIndex(HAS_SENT)));
-                        boolean isHasSent = hasSendValue == 1;
-                        chattingDto.setHasSent(isHasSent);
-
-                        AttachDTO attachInfo = new AttachDTO();
-                        attachInfo.setType(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_TYPE))));
-                        attachInfo.setAttachNo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_NO))));
-                        attachInfo.setSize(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_SIZE))));
-                        attachInfo.setFullPath(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_PATH)));
-                        attachInfo.setFileName(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_NAME)));
-
-                        chattingDto.setAttachInfo(attachInfo);
-                        chattingDto.setUnreadTotalCount(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNREAD_TOTAL_COUNT))));
-
-                        mesArray.add(chattingDto);
-                    }
-
-                } finally {
-                    cursor.close();
-                }
-            }
-
-            cursor.close();
         }
 
         return mesArray;

@@ -675,7 +675,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             String currentTime = System.currentTimeMillis() + "";
                             String time = TimeUtils.convertTimeDeviceToTimeServerDefault(currentTime);
                             dto.setRegDate(time);
-                            final long lastId = ChatMessageDBHelper.addSimpleMessage(dto);
+                            //final long lastId = ChatMessageDBHelper.addSimpleMessage(dto);
                             HttpRequest.getInstance().SendChatMsg(roomNo, contact.getPhone(0) == null ? contact.getDisplayName() : contact.getDisplayName() + "\n" + contact.getPhone(0), new SendChatMessage() {
                                 @Override
                                 public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
@@ -689,12 +689,12 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                                     String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
                                     dto.setRegDate(time);
                                     ChattingFragment.instance.addNewRowFromChattingActivity(dto);
-                                    new Thread(new Runnable() {
+                                    /*new Thread(new Runnable() {
                                         @Override
                                         public void run() {
                                             ChatMessageDBHelper.updateMessage(dto, lastId);
                                         }
-                                    }).start();
+                                    }).start();*/
 
                                 }
 

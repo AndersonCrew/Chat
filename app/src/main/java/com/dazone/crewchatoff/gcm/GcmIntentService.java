@@ -206,7 +206,7 @@ public class GcmIntentService extends IntentService {
                         }
                     }).start();
 
-                    // When user receive a notification we will store in to database
+                    /*// When user receive a notification we will store in to database
                     // If chatting1 Fragment is visible then store this message to database, else get from ChattingFragment
                     if (ChattingFragment.instance != null) {
                         if (ChattingFragment.instance.roomNo == roomNo && ChattingFragment.instance.isVisible) {
@@ -231,7 +231,7 @@ public class GcmIntentService extends IntentService {
                                 }
                             }
                         }).start();
-                    }
+                    }*/
 
                     if (chattingDto.getWriterUserNo() != Utils.getCurrentId()) {
                         Intent myIntent = new Intent(this, ChattingActivity.class);

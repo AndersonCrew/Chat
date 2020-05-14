@@ -95,6 +95,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import static com.dazone.crewchatoff.activity.MainActivity.mSelectedImage;
@@ -1457,12 +1458,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             newDto.setWriterUser(userID);
             newDto.setHasSent(true);
             newDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(String.valueOf(System.currentTimeMillis())));
-            final long finalLastId = ChatMessageDBHelper.addSimpleMessage(newDto);
-            newDto.setId((int) finalLastId);
+            //final long finalLastId = ChatMessageDBHelper.addSimpleMessage(newDto);
+            newDto.setId(new Random().nextInt());
             newDto.isSendding = true;
-            Log.d(TAG, "addNewChat 10");
             addNewChat(newDto, true, false);
-            Log.d(TAG, "dataFromServer add 6");
             if (addDataFromServer(newDto)) dataFromServer.add(newDto);
 
             // If send success then update
@@ -1480,12 +1479,12 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     newDto.setUnReadCount(chattingDto.getUnReadCount());
                     String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
                     newDto.setRegDate(time);
-                    new Thread(new Runnable() {
+                    /*new Thread(new Runnable() {
                         @Override
                         public void run() {
                             ChatMessageDBHelper.updateMessage(newDto, finalLastId);
                         }
-                    }).start();
+                    }).start();*/
                     adapterList.notifyDataSetChanged();
                     Log.d(TAG, "notifyDataSetChanged 1");
                     sendComplete = false;
@@ -1502,12 +1501,12 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         newDto.setUnReadCount(0);
                         newDto.setHasSent(false);
                     }
-                    new Thread(new Runnable() {
+                    /*new Thread(new Runnable() {
                         @Override
                         public void run() {
                             ChatMessageDBHelper.updateMessage(newDto, finalLastId);
                         }
-                    }).start();
+                    }).start();*/
                     adapterList.notifyDataSetChanged();
 
                 }
@@ -1619,7 +1618,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 String time = TimeUtils.convertTimeDeviceToTimeServerDefault(currentTime);
                 chattingDto.setRegDate(time);
                 Log.d(TAG, "addNewRow 6");
-                final long lastId = ChatMessageDBHelper.addSimpleMessage(chattingDto);
+                /*final long lastId = ChatMessageDBHelper.addSimpleMessage(chattingDto);*/
 
                 /** SEND MESSAGE Anderson*/
                 HttpRequest.getInstance().SendChatMsg(roomNo, data + "\n", new SendChatMessage() {
@@ -1635,12 +1634,12 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto1.getRegDate());
                         chattingDto.setRegDate(time);
 
-                        new Thread(new Runnable() {
+                        /*new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 ChatMessageDBHelper.updateMessage(chattingDto, lastId);
                             }
-                        }).start();
+                        }).start();*/
                     }
 
                     @Override
@@ -1969,12 +1968,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                                     if (chattingDto.getUnReadCount() != messageUnreadCountDTO.getUnreadCount()) {
                                         chattingDto.setUnReadCount(messageUnreadCountDTO.getUnreadCount());
 
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                ChatMessageDBHelper.updateMessage(chattingDto.getMessageNo(), messageUnreadCountDTO.getUnreadCount());
-                                            }
-                                        }).start();
                                         adapterList.notifyItemChanged(i);
                                         Log.d(TAG, "adapterList.notifyItemChanged(i);");
                                     }
@@ -2410,7 +2403,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 ChattingDto chattingDto2 = dataSet.get(0);
                 chattingDto2.setId(999);
                 adapterList.notifyItemChanged(0);
-                Log.d(TAG, "adapterList.notifyItemChanged(0);");
             }
         }
     }
