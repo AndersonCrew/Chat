@@ -354,12 +354,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                                         dto.setUnReadCount(chattingDto.getUnReadCount());
                                         String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
                                         dto.setRegDate(time);
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                ChatMessageDBHelper.updateMessage(dto, localId);
-                                            }
-                                        }).start();
+
                                         EventBus.getDefault().post(new ReloadListMessage());
                                         dto.isSendding = false;
                                         btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));

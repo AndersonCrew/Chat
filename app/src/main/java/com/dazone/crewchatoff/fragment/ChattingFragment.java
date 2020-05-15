@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaRecorder;
@@ -24,7 +23,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -43,7 +41,6 @@ import com.dazone.crewchatoff.Class.ChatInputView;
 import com.dazone.crewchatoff.Enumeration.ChatMessageType;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.ViewHolders.ChattingSelfFileViewHolder;
 import com.dazone.crewchatoff.activity.ChatViewImageActivity;
 import com.dazone.crewchatoff.activity.ChattingActivity;
@@ -56,7 +53,6 @@ import com.dazone.crewchatoff.customs.AudioPlayer;
 import com.dazone.crewchatoff.customs.EmojiView;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.ChatMessageDBHelper;
-import com.dazone.crewchatoff.database.ChatRoomDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
 import com.dazone.crewchatoff.dto.AttachDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
@@ -100,10 +96,8 @@ import java.util.regex.Pattern;
 
 import static com.dazone.crewchatoff.activity.MainActivity.mSelectedImage;
 import static com.dazone.crewchatoff.activity.MainActivity.type;
-import static com.dazone.crewchatoff.database.ChatMessageDBHelper.addMessage;
 
 public class ChattingFragment extends ListFragment<ChattingDto> implements View.OnClickListener, EmojiView.EventListener, View.OnLayoutChangeListener, View.OnKeyListener, TextView.OnEditorActionListener {
-    private String TAG = ChattingFragment.class.getName();
     public long roomNo;
     private ArrayList<Integer> userNos;
     public boolean isActive = false;
@@ -125,17 +119,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     // 메시지 핸들러 코드값
     private int WHAT_CODE_HIDE_PROCESS = 0;
-    private int WHAT_CODE_ADD_NEW_DATA = 2;
-    private int WHAT_CODE_EMPTY = 3;
-    private int WHAT_CODE_HAS_INIT = 4;
-
-    private String ADD_NEW_DATA = "AddNewData";
     private Prefs mPrefs;
     private boolean isLoaded = false;
     public static boolean sendComplete = false;
     CountDownTimer waitTimer;
     int sendTo = 0;
-    long startNo = 0;
     public static boolean isSend = true;
     public static long msgEnd = -1;
     int recordTouch = 0;
@@ -145,6 +133,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private Handler handlerTimer = new Handler();
     private int timeDelay = 1000;
     private int timerCount = -1;
+    private boolean isSendingFile = false;
     private Runnable updateTimer = new Runnable() {
         @Override
         public void run() {
@@ -153,7 +142,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 String msg = Constant.audioFormatDuration(timerCount);
                 setTimer(msg);
                 setTextDurationDialog(msg);
-                Log.d(TAG, "timerCount:" + timerCount);
                 handlerTimer.postDelayed(this, timeDelay);
             }
         }
@@ -168,36 +156,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         public void handleMessage(Message msg) {
             if (msg.what == WHAT_CODE_HIDE_PROCESS) {
                 progressBar.setVisibility(View.GONE);
-            } else if (msg.what == WHAT_CODE_ADD_NEW_DATA) {
-                //code = WHAT_CODE_ADD_NEW_DATA;
-                mPrefs.putIntValue(Statics.VALUE_CODE_SHARE, WHAT_CODE_ADD_NEW_DATA);
-                mPrefs.putBooleanValue(Statics.IS_FIRST_SHARE, true);
-                Bundle args = msg.getData();
-                dataFromServer = (ArrayList<ChattingDto>) args.getSerializable(ADD_NEW_DATA);
-                // prepare this
-                boolean hasInit = false;
-                if (msg.arg1 == WHAT_CODE_HAS_INIT) {
-                    hasInit = true;
-                }
-
-                addData(dataFromServer, hasInit);
-                if (layoutManager != null) {
-                    scrollToEndList();
-                    Log.d(TAG, "finish add dataFromServer:" + " scrollToEndList();");
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setStackFromEnd();
-                            Log.d(TAG, "finish add dataFromServer:" + "  setStackFromEnd()");
-
-                        }
-                    }, 500);
-                }
-
-                getFirstDB();
-
-            } else if (msg.what == WHAT_CODE_EMPTY) {
-                initData();
             }
 
             if (!isSendingFile) {
@@ -258,19 +216,16 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     private void loadClientData() {
         isLoaded = true;
-        final List<ChattingDto> listChatMessage = ChatMessageDBHelper.getMsgSession(roomNo, 0, ChatMessageDBHelper.FIRST);
 
-        dataFromServer = listChatMessage;
-        if (listChatMessage != null && listChatMessage.size() > 0) {
-            initData(listChatMessage, 1);
-        }
         if (Utils.isNetworkAvailable()) {
-            getOnlineData(roomNo, listChatMessage);
+            getOnlineData(roomNo);
         } else {
             progressBar.setVisibility(View.GONE);
-            if (listChatMessage != null && listChatMessage.size() == 0) {
-                initData();
-            }
+
+            List<ChattingDto> chattingDtos = ChatMessageDBHelper.getMsgSession(roomNo, 0, ChatMessageDBHelper.FIRST);
+            if (chattingDtos != null && chattingDtos.size() > 0) {
+                initData(chattingDtos, 1);
+            } else initData();
         }
     }
 
@@ -279,43 +234,16 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     // Thread to get data from server
-    private void getOnlineData(final long roomNo, final List<ChattingDto> listChatMessage) {
-        final int listMessageSize = listChatMessage.size();
-        if (listMessageSize > 0) {
-            int last_index = 1;
-            int unreadCount = 0;
-            try {
-                unreadCount = ChatRoomDBHelper.getUnreadCount(roomNo);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Log.d(TAG, "unreadCount:" + unreadCount);
-            if (unreadCount > 0) {
-                last_index += unreadCount;
-            }
-            int index = listMessageSize - last_index;
-            if (index < 0) {
-                index = 0;
-            }
-            startNo = listChatMessage.get(index).getMessageNo();
-        }
-
-        updateUnreadCount(roomNo, startNo);
-
-        int mesType = startNo == 0 ? ChatMessageDBHelper.FIRST : ChatMessageDBHelper.AFTER;
-
-        HttpRequest.getInstance().GetChatMsgSection(roomNo, startNo, mesType, new OnGetChatMessage() {
+    private void getOnlineData(final long roomNo) {
+        updateUnreadCount(roomNo, 0);
+        HttpRequest.getInstance().GetChatMsgSection(roomNo, 0, ChatMessageDBHelper.FIRST, new OnGetChatMessage() {
             @Override
             public void OnGetChatMessageSuccess(List<ChattingDto> listNew) {
                 mHandler.obtainMessage(WHAT_CODE_HIDE_PROCESS).sendToTarget();
                 isLoaded = true;
-                // perform thread to sync data server with client
-                // add to current data list and notify dataset
-                ArrayList<ChattingDto> newDataFromServer = new ArrayList<>();
+
                 if (listNew.size() > 0) {
-                    // Update unread count to server
                     long startMsgNo = listNew.get(listNew.size() - 1).getMessageNo();
-                    // Update unRead count message
                     updateUnreadCount(roomNo, startMsgNo);
                     if (CurrentChatListFragment.fragment != null) {
                         CurrentChatListFragment.fragment.updateRoomUnread(roomNo);
@@ -327,50 +255,24 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
                     // Save online data to local data
                     for (ChattingDto chat : listNew) {
-                        boolean isExist = false;
-                        for (ChattingDto dto : dataFromServer) {
-                            if (chat.getMessageNo() == dto.getMessageNo()) {
-                                // My be update something
-                                isExist = true;
-                                break;
+                        ChatMessageDBHelper.updateMessage(chat);
+                    }
+
+                    dataFromServer = listNew;
+                    addData(dataFromServer, true);
+
+                    if (layoutManager != null) {
+                        scrollToEndList();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setStackFromEnd();
                             }
-                        }
-                        // Check if message is exist
-                        if (!isExist) {
-                            // add to server and save to local database
-                            Log.d(TAG, "dataFromServer add 5");
-                            if (addDataFromServer(chat)) dataFromServer.add(chat);
-                            newDataFromServer.add(chat);
-                            Log.d(TAG, "addMessage 1:");
-                            addMessage(chat);
-                        }
+                        }, 500);
                     }
-                    // notify database
-                    if (newDataFromServer.size() > 0) {
-                        Log.d(TAG, "newDataFromServer > 0");
-                        // Need to send array list object via handler
-                        Message message = Message.obtain();
-                        message.what = WHAT_CODE_ADD_NEW_DATA;
-                        if (listMessageSize > 0) {
-                            message.arg1 = WHAT_CODE_HAS_INIT;
-                        }
-                        Bundle args = new Bundle();
-                        args.putSerializable(ADD_NEW_DATA, newDataFromServer);
-                        message.setData(args);
-                        mHandler.sendMessage(message);
-                        Log.d(TAG, "mHandler after sendMessage");
-                    } else {
-                        Log.d(TAG, "finish add newDataFromServer <= 0:");
-                        getFirstDB();
-                        if (listChatMessage.size() == 0) {
-                            mHandler.obtainMessage(WHAT_CODE_EMPTY).sendToTarget();
-                        } else {
-                            updateDataServer();
-                        }
-                    }
-                } else {
-                    getFirstDB();
                 }
+
+                getFirstDB();
             }
 
             @Override
@@ -378,10 +280,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 getFirstDB();
                 isLoaded = true;
                 mHandler.obtainMessage(WHAT_CODE_HIDE_PROCESS).sendToTarget();
-
-                if (listChatMessage.size() == 0) {
-                    mHandler.obtainMessage(WHAT_CODE_EMPTY).sendToTarget();
-                }
+                initData();
             }
         });
     }
@@ -394,12 +293,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (listTemp == null || listTemp.size() == 0)
             listTemp = AllUserDBHelper.getUser_v2();
         if (listTemp == null) listTemp = new ArrayList<>();
-        // Load client data at first, then call load online data on new thread
-        // Just load on the first time
+
         if (!isLoaded) {
-            Log.d(TAG, "!isLoaded");
             loadClientData();
         }
+
         set_msg_for_edit_text();
     }
 
@@ -419,16 +317,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         return fragment;
     }
 
-    public ChattingFragment newInstance(TreeUserDTO dto1, ChattingDto chattingDto1, Activity activity) {
-        ChattingFragment fragment = new ChattingFragment();
-        fragment.setActivity(activity);
-        Bundle args = new Bundle();
-        args.putSerializable(Statics.TREE_USER_PC, dto1);
-        args.putSerializable(Statics.CHATTING_DTO, chattingDto1);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -442,13 +330,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             public void onScrolledUp() {
                 super.onScrolledUp();
                 isShowNewMessage = true;
-
             }
 
             @Override
             public void onScrolledToBottom() {
                 super.onScrolledToBottom();
-
                 hideNewMessage();
                 isShowNewMessage = false;
 
@@ -457,7 +343,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             @Override
             public void onScrolledToTop() {
                 super.onScrolledToTop();
-                Log.d(TAG, "onScrolledToTop");
                 try {
                     loadMoreData();
                 } catch (Exception e) {
@@ -533,7 +418,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     case MotionEvent.ACTION_DOWN:
                         break;
                     case MotionEvent.ACTION_UP:
-                        Log.d(TAG, "ACTION_UP");
                         if (!isThreadRunning) {
                             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.press_hold), Toast.LENGTH_SHORT).show();
                         }
@@ -573,14 +457,12 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private MediaRecorder.OnErrorListener errorListener = new MediaRecorder.OnErrorListener() {
         @Override
         public void onError(MediaRecorder mr, int what, int extra) {
-            Log.d(TAG, "Error: " + what + ", " + extra);
         }
     };
 
     private MediaRecorder.OnInfoListener infoListener = new MediaRecorder.OnInfoListener() {
         @Override
         public void onInfo(MediaRecorder mr, int what, int extra) {
-            Log.d(TAG, "Warning: " + what + ", " + extra);
         }
     };
     private String fileAudioName = "fileAudioName";
@@ -600,7 +482,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 e.printStackTrace();
             }
             recorder = null;
-            Log.d(TAG, "isSuccess:" + isSuccess);
             if (isSuccess) {
                 sendAudio();
             }
@@ -610,12 +491,9 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private void sendAudio() {
         List<ChattingDto> integerList = new ArrayList<>();
         String path = Constant.getFilename(currentFormat, fileAudioName);
-        Log.d(TAG, "path:" + path);
         File file = new File(path);
         String filename = path.substring(path.lastIndexOf("/") + 1);
-        Log.d(TAG, "filename:" + filename);
         if (filename.contains(".")) {
-            //ChattingDto chattingDto = this.chattingDto;
             ChattingDto chattingDto = new ChattingDto();
             chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
             chattingDto.setAttachFilePath(path);
@@ -637,7 +515,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     public void addNewRowFromChattingActivity(ChattingDto chattingDto) {
         addLineToday();
         dataSet.add(chattingDto);
-        Log.d(TAG, ": dataSet.size()" + dataSet.size());
         notifyItemInserted();
         scrollToEndList();
     }
@@ -666,7 +543,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             try {
                 recorder.prepare();
                 recorder.start();
-                Log.d(TAG, "Start Recording");
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -777,17 +653,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     new AudioPlayer(getActivity(), path, fileAudioName + Statics.file_exts[currentFormat]).show();
                 }
                 recordTouch++;
-            }
-        });
-
-        // setOnKeyListener dialog
-        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    Log.d(TAG, "KEYCODE_BACK");
-                }
-                return true;
             }
         });
 
@@ -1041,15 +906,9 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (lst.size() > 0) {
             int n = lst.size() - 1;
             ChattingDto obj = lst.get(n);
-            Log.d(TAG, obj.getMessage() + ":" + obj.getMessageNo());
             String s2 = obj.getRegDate();
             if (s2 == null) s2 = "";
-            if (obj.getMessageNo() == msgNo && regDate.equals(s2)) {
-                Log.d(TAG, "isAddMsg duplicate:" + msgNo + " msg:" + obj.getMessage());
-                return false;
-            } else {
-                return true;
-            }
+            return !(obj.getMessageNo() == msgNo && regDate.equals(s2));
         } else {
             return true;
         }
@@ -1259,18 +1118,14 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 if (isTime == -2) {
                     ChattingDto time = new ChattingDto();
                     dataSet.add(time);
-                    Log.d(TAG, "dataSet add time 6 Today");
                     time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                     time.setRegDate(Utils.getString(R.string.today));
-                    Log.d(TAG, "addNewChat 5:" + chattingDto.getMessage());
                     addNewChat(chattingDto, false, false);
                 } else {
                     ChattingDto time = new ChattingDto();
                     dataSet.add(time);
-                    Log.d(TAG, "dataSet add time 7");
                     time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                     time.setTime(TimeUtils.getTime(list.get(0).getRegDate()));
-                    Log.d(TAG, "addNewChat 6:" + chattingDto.getMessage());
                     addNewChat(chattingDto, false, false);
                 }
             } else {
@@ -1278,29 +1133,25 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 long noTemp2 = TimeUtils.getTime((chattingDto.getRegDate()));
                 long isTime = TimeUtils.getTimeForMail(noTemp2);
                 if (TimeUtils.compareTime(noTemp, noTemp2)) {
-                    // 동일한 날짜 일 경우
-                    Log.d(TAG, "addNewChat 7:" + chattingDto.getMessage());
                     addNewChat(chattingDto, false, false);
                 } else {
-                    // 날짜가 틀려졌을 경우
                     if (isTime == -2) {
                         ChattingDto time = new ChattingDto();
                         dataSet.add(time);
-
-                        Log.d(TAG, "dataSet add time 8 Today");
                         time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                         time.setRegDate(Utils.getString(R.string.today));
                     } else {
                         ChattingDto time2 = new ChattingDto();
                         dataSet.add(time2);
-                        Log.d(TAG, "dataSet add time 9 Today getMessage:" + time2.getMessage() + " : getMessageNo:" + time2.getMessageNo());
                         time2.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                         time2.setRegDate(chattingDto.getRegDate());
                     }
-                    Log.d(TAG, "addNewChat 8:" + chattingDto.getMessage());
+
                     addNewChat(chattingDto, false, false);
                 }
             }
+
+            ChatMessageDBHelper.updateMessage(chattingDto);
         }
 
         // Scroll to bottom
@@ -1311,7 +1162,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             hasLoadMore = false;
         }
 
-        Log.d(TAG, "initData finish");
         if (firstOpen == 1) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -1322,62 +1172,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         }
     }
 
-    public void updateDataSet(List<ChattingDto> listNew) {
-        boolean isSort = false;
-        for (ChattingDto obj : listNew) {
-            long newMsgNo = obj.getMessageNo();
-            boolean flag = true;
-            for (ChattingDto dto : dataSet) {
-                long oldMsgNo = dto.getMessageNo();
-                if (newMsgNo == oldMsgNo) {
-                    flag = false;
-                    dto.setRegDate(obj.getRegDate());
-                    break;
-                }
-            }
-            if (flag) {
-                isSort = true;
-                addNewChat(obj, false, false);
-            }
-        }
-
-        if (isSort) {
-            dataFromServer = Constant.sortTimeList(dataSet);
-            initData(dataFromServer, 0);
-            adapterList.notifyDataSetChanged();
-        }
-    }
-
-    public void updateDataServer() {
-        Log.d(TAG, "updateDataServer dataSet:" + dataSet.size());
-        int mesType = 1;
-        int startNo = 0;
-        Log.d(TAG, "URL_GET_CHAT_MSG_SECTION 2");
-
-        HttpRequest.getInstance().GetChatMsgSection(roomNo, startNo, mesType, new OnGetChatMessage() {
-            @Override
-            public void OnGetChatMessageSuccess(List<ChattingDto> listNew) {
-                Log.d(TAG, "updateDataServer OnGetChatMessageSuccess");
-                try {
-                    updateDataSet(listNew);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void OnGetChatMessageFail(ErrorDto errorDto) {
-                Log.d(TAG, "updateDataServer finish add OnGetChatMessageFail:");
-            }
-        });
-    }
-
     public void initData() {
         List<UserDto> userDtos = new ArrayList<>();
         if (userNos != null && userNos.size() > 0) {
             for (int id : userNos) {
                 TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(listTemp, id);
-
                 if (treeUserDTOTemp != null) {
                     userDtos.add(new UserDto(String.valueOf(treeUserDTOTemp.getUserNo()), treeUserDTOTemp.getName(), treeUserDTOTemp.getAvatarUrl()));
                 }
@@ -1387,7 +1186,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (userDtos.size() > 0) {
             ChattingDto group = new GroupDto(userDtos);
             dataSet.add(group);
-            Log.d(TAG, "dataSet add 10 group");
         }
     }
 
@@ -1408,7 +1206,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                         time.setRegDate(Utils.getString(R.string.today));
                         dataSet.add(time);
-                        Log.d(TAG, "dataSet add time 11 Today getMessage:" + time.getMessage() + " : getMessageNo:" + time.getMessageNo());
                     }
                 }
             }
@@ -1418,7 +1215,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private void senAction() {
         final String message = view.edt_comment.getText().toString();
         if (!TextUtils.isEmpty(message) && message.length() > 0) {
-            Log.d(TAG, "message:" + message);
             view.edt_comment.setText("");
             isSend = false;
             // Add new line for new message, it's may be today
@@ -1438,7 +1234,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                             time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                             time.setRegDate(Utils.getString(R.string.today));
                             dataSet.add(time);
-                            Log.d(TAG, "dataSet add time 12 Today");
                         }
                     }
                 }
@@ -1447,8 +1242,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             // Add new chat before send, and resend if it sent failed
             final ChattingDto newDto = new ChattingDto();
 
-            // please check solution again
-            // long tempMessageNo = dataFromServer.get(dataFromServer.size() - 1).getMessageNo() + 1;
             newDto.setMessageNo(Long.MAX_VALUE);
             newDto.setMessage(message);
             newDto.setUserNo(userID);
@@ -1458,15 +1251,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             newDto.setWriterUser(userID);
             newDto.setHasSent(true);
             newDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(String.valueOf(System.currentTimeMillis())));
-            //final long finalLastId = ChatMessageDBHelper.addSimpleMessage(newDto);
             newDto.setId(new Random().nextInt());
             newDto.isSendding = true;
             addNewChat(newDto, true, false);
             if (addDataFromServer(newDto)) dataFromServer.add(newDto);
 
-            // If send success then update
-
-            // 실제 서버로 메시지 데이터를 보냅니다.
             final boolean isNetWork;
             isNetWork = Utils.isNetworkAvailable();
 
@@ -1479,14 +1268,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     newDto.setUnReadCount(chattingDto.getUnReadCount());
                     String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
                     newDto.setRegDate(time);
-                    /*new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ChatMessageDBHelper.updateMessage(newDto, finalLastId);
-                        }
-                    }).start();*/
+
                     adapterList.notifyDataSetChanged();
-                    Log.d(TAG, "notifyDataSetChanged 1");
                     sendComplete = false;
                 }
 
@@ -1501,12 +1284,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         newDto.setUnReadCount(0);
                         newDto.setHasSent(false);
                     }
-                    /*new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ChatMessageDBHelper.updateMessage(newDto, finalLastId);
-                        }
-                    }).start();*/
+
                     adapterList.notifyDataSetChanged();
 
                 }
@@ -1541,7 +1319,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             long msgNo = chattingDto.getMessageNo();
             for (ChattingDto obj : dataFromServer) {
                 if (msgNo != Long.MAX_VALUE && obj.getMessageNo() == msgNo) {
-                    Log.d(TAG, "addDataFromServer duplicate");
                     flag = false;
                     break;
                 }
@@ -1617,10 +1394,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 String currentTime = System.currentTimeMillis() + "";
                 String time = TimeUtils.convertTimeDeviceToTimeServerDefault(currentTime);
                 chattingDto.setRegDate(time);
-                Log.d(TAG, "addNewRow 6");
-                /*final long lastId = ChatMessageDBHelper.addSimpleMessage(chattingDto);*/
 
-                /** SEND MESSAGE Anderson*/
                 HttpRequest.getInstance().SendChatMsg(roomNo, data + "\n", new SendChatMessage() {
                     @Override
                     public void onSendChatMessageSuccess(final ChattingDto chattingDto1) {
@@ -1630,16 +1404,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         chattingDto.setMessageNo(chattingDto1.getMessageNo());
                         chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_CONTACT);
                         chattingDto.setUnReadCount(chattingDto1.getUnReadCount());
-                        // perform update when send message success
                         String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto1.getRegDate());
                         chattingDto.setRegDate(time);
-
-                        /*new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ChatMessageDBHelper.updateMessage(chattingDto, lastId);
-                            }
-                        }).start();*/
                     }
 
                     @Override
@@ -1699,19 +1465,15 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 } else if (MainActivity.imageUri != null) {
                     ChattingActivity.instance.showProgressDialog();
                 }
-                //called every 300 milliseconds, which could be used to
-                //send messages or some other action
             }
 
             public void onFinish() {
                 try {
-
                     ChattingActivity.instance.dismissProgressDialog();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //After 60000 milliseconds (60 sec) finish current
-                //if you would like to execute something when time finishes
+
                 shareAction();
             }
         }.start();
@@ -1719,10 +1481,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     private void sendAudioV2(String path) {
         List<ChattingDto> integerList = new ArrayList<>();
-        Log.d(TAG, "path:" + path);
         File file = new File(path);
         String filename = path.substring(path.lastIndexOf("/") + 1);
-        Log.d(TAG, "filename:" + filename);
         if (filename.contains(".")) {
             ChattingDto chattingDto = new ChattingDto();
             chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
@@ -1745,7 +1505,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_UPDATE_DISPLAY:
-                    // TODO
                     String text = (String) msg.obj; // get contents
                     if (text == null) text = "";
                     if (view.edt_comment != null)
@@ -1818,13 +1577,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     }
                 }
                 if (flag) {
-                    //add room
                     MessageNotSend obj = new MessageNotSend();
                     obj.roomNo = roomNo;
                     obj.msg = message;
                     list.add(obj);
-                } else {
-                    // update msg
                 }
                 prefs.setMsgNotSend(new Gson().toJson(list));
             } else {
@@ -1947,9 +1703,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         isShowIcon = false;
         if (intent.getAction().equals(Statics.ACTION_RECEIVER_NOTIFICATION)) {
             String gcmDto = intent.getStringExtra(Statics.GCM_DATA_NOTIFICATOON);
-            Log.d(TAG, "ACTION_RECEIVER_NOTIFICATION:" + gcmDto);
         } else if (intent.getAction().equals(Constant.INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT)) {
-            Log.d(TAG, "INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT");
             final long roomNo = intent.getLongExtra(Constant.KEY_INTENT_ROOM_NO, 0);
             if (roomNo != 0 && dataFromServer.size() > 0) {
                 long msgNo = dataFromServer.get(0).getMessageNo();
@@ -1967,9 +1721,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                                 if (chattingDto.getMessageNo() == messageUnreadCountDTO.getMessageNo()) {
                                     if (chattingDto.getUnReadCount() != messageUnreadCountDTO.getUnreadCount()) {
                                         chattingDto.setUnReadCount(messageUnreadCountDTO.getUnreadCount());
-
                                         adapterList.notifyItemChanged(i);
-                                        Log.d(TAG, "adapterList.notifyItemChanged(i);");
                                     }
                                     break;
                                 }
@@ -1988,7 +1740,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 Reload();
             }
         } else if (intent.getAction().equals(Constant.INTENT_FILTER_UPDATE_ROOM_NAME)) {
-            Log.d(TAG, "INTENT_FILTER_UPDATE_ROOM_NAME");
             if (intent != null) {
                 long roomNo = intent.getLongExtra(Statics.ROOM_NO, 0);
                 String roomTitle = intent.getStringExtra(Statics.ROOM_TITLE);
@@ -2003,7 +1754,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
             }
         } else if (intent.getAction().equals(Constant.INTENT_GOTO_UNREAD_ACTIVITY)) {
-            Log.d(TAG, "INTENT_GOTO_UNREAD_ACTIVITY");
             if (intent != null) {
                 try {
                     goToUnreadActivity(intent.getLongExtra(Statics.MessageNo, 0));
@@ -2033,12 +1783,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         ChattingDto time = new ChattingDto();
                         time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                         time.setRegDate(Utils.getString(R.string.today));
-
                         dataSet.add(time);
-                        Log.d(TAG, "dataSet add time 13 Today");
-
                         adapterList.notifyDataSetChanged();
-                        Log.d(TAG, "notifyDataSetChanged 2");
                     }
                 }
             }
@@ -2059,11 +1805,9 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 && dataDto.getAttachFileName() != null
                 && dataDto.getAttachFileName().length() > 0
                 && dataDto.getWriterUser() == Utils.getCurrentId()) {
-            Log.d(TAG, "isSendingFile dont update");
             checkNotification = false;
         }
 
-        Log.d(TAG, "checkNotification:" + checkNotification);
         if (checkNotification) {
             boolean isShow = dataDto.getRoomNo() == roomNo;
 
@@ -2083,22 +1827,22 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 isFromNotification = true;
 
                 if (!TextUtils.isEmpty(dataDto.getMessage()) || dataDto.getAttachNo() != 0) {
-                    Log.d(TAG, "addNewChat 11");
-
                     if (dataDto.getType() != 6) {
                         msgEnd = -1;
                         isShowIcon = false;
                     }
                     adapterList.notifyDataSetChanged();
-                    Log.d(TAG, "notifyDataSetChanged 3");
                     addNewChat(dataDto, true, true);
                 }
 
                 if (CurrentChatListFragment.fragment != null) {
                     CurrentChatListFragment.fragment.updateData(dataDto, false);
                 }
-                Log.d(TAG, "dataFromServer add 1");
-                if (addDataFromServer(dataDto)) dataFromServer.add(dataDto);
+
+                if (addDataFromServer(dataDto)) {
+                    dataFromServer.add(dataDto);
+                }
+
             } else {
                 dataDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dataDto.getRegDate()));
 
@@ -2132,28 +1876,25 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
     }
 
-    private boolean isSendingFile = false;
-
     public void sendAttachFile(int attachNo, long roomNo, final int position, final WatingUpload callBack, final ChattingDto chattingDto) {
         isSendingFile = true;
-        /**SEND ATTACHFILE*/
         HttpRequest.getInstance().SendChatAttachFile(roomNo, attachNo, new SendChatMessage() {
             @Override
             public void onSendChatMessageSuccess(final ChattingDto dto) {
                 isSendingFile = false;
-                Log.d(TAG, "sendAttachFile success");
                 progressBar.setVisibility(View.GONE);
                 dto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dto.getRegDate()));
 
                 if (CurrentChatListFragment.fragment != null) {
                     CurrentChatListFragment.fragment.updateData(dto, false);
                 }
-                Log.d(TAG, "addNewChat 12");
+
                 dto.setLastedMsgAttachType(chattingDto.getLastedMsgAttachType());
                 dto.setLastedMsgType(chattingDto.getLastedMsgType());
                 addNewChat(dto, position, callBack);
-                Log.d(TAG, "dataFromServer add 2");
-                if (addDataFromServer(dto)) dataFromServer.add(dto);
+                if (addDataFromServer(dto)) {
+                    dataFromServer.add(dto);
+                }
             }
 
             @Override
@@ -2214,21 +1955,15 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "index:" + index);
                 if (integerList == null || integerList.size() == 0 || index >= integerList.size())
                     return;
 
                 final int pos = integerList.get(index).getPositionUploadImage();
-
                 RecyclerView.ViewHolder holder = rvMainList.findViewHolderForAdapterPosition(pos);
-                if (holder == null) Log.d(TAG, "holder null: pos:" + pos);
-                else Log.d(TAG, "holder not null");
 
                 ProgressBar progressBar = null;
                 if (holder != null && holder instanceof ChattingSelfFileViewHolder)
                     progressBar = ((ChattingSelfFileViewHolder) holder).getProgressBar();
-                if (progressBar == null) Log.d(TAG, "progressBar null");
-                else Log.d(TAG, "progressBar not null");
 
                 SendTo(integerList.get(index), progressBar, integerList.get(index).getPositionUploadImage(), new WatingUpload() {
                     @Override
@@ -2236,9 +1971,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         int next = index + 1;
                         if (next < integerList.size())
                             sendFileWithQty_v2(integerList, next);
-                        else {
-                            Log.d(TAG, "finish send image");
-                        }
                     }
                 });
             }
@@ -2246,7 +1978,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public void sendFileWithQty(final List<ChattingDto> integerList, final int index) {
-        Log.d(TAG, "index:" + index);
         if (integerList == null || integerList.size() == 0 || index >= integerList.size())
             return;
         SendTo(integerList.get(index), null, integerList.get(index).getPositionUploadImage(), new WatingUpload() {
@@ -2255,13 +1986,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 int next = index + 1;
                 if (next < integerList.size())
                     sendFileWithQty(integerList, next);
-                else Log.d(TAG, "finish send image");
             }
         });
     }
 
     public void SendTo(ChattingDto chattingDto, ProgressBar progressBar, int position, WatingUpload callBack) {
-        Log.d(TAG, "SendTo");
         sendTo++;
 
         if (view != null) {
@@ -2363,14 +2092,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         lastID = 0;
         dataSet.clear();
         adapterList.notifyDataSetChanged();
-        Log.d(TAG, "notifyDataSetChanged 4");
         adapterList.setLoaded();
         progressBar.setVisibility(View.VISIBLE);
-        Log.d(TAG, "URL_GET_CHAT_MSG_SECTION 3");
         HttpRequest.getInstance().GetChatMsgSection(roomNo, 0, 1, new OnGetChatMessage() {
             @Override
             public void OnGetChatMessageSuccess(List<ChattingDto> listNew) {
-                Log.d(TAG, "OnGetChatMessageSuccess");
                 progressBar.setVisibility(View.GONE);
                 isLoaded = true;
                 dataFromServer = listNew;
@@ -2378,7 +2104,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     int userNo = Utils.getCurrentId();
                     long startMsgNo = listNew.get(listNew.size() - 1).getMessageNo();
                     HttpRequest.getInstance().UpdateMessageUnreadCount(roomNo, userNo, startMsgNo);
-                    Log.d(TAG, "initData 3");
                     initData(listNew, 0);
                 } else {
                     initData();
@@ -2408,126 +2133,64 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void loadMoreData() {
-        Log.d(TAG, "loadMoreData");
         if (!isLoading && isLoadMore && dataSet.size() > 3) {
             isLoading = true;
             hasLoadMore = true;
 
             long baseMsgNo = dataFromServer.get(0).getMessageNo();
-            ChattingDto chattingDto2 = dataSet.get(0);
-            chattingDto2.setId(999);
-
             adapterList.notifyItemChanged(0);
 
+            HttpRequest.getInstance().GetChatMsgSection(roomNo, baseMsgNo, 2, new OnGetChatMessage() {
+                @Override
+                public void OnGetChatMessageSuccess(final List<ChattingDto> listNew) {
+                    if (listNew.size() > 0) {
+                        long currentMessageNo = 0;
 
-            List<ChattingDto> localData = ChatMessageDBHelper.getMsgSession(roomNo, baseMsgNo, ChatMessageDBHelper.BEFORE);
-
-            if (Utils.isNetworkAvailable()) {
-                if (localData != null)
-                    localData.clear();
-            } else {
-            }
-
-            if (localData != null && localData.size() > 0) {
-                Log.d(TAG, "loadMoreData offline");
-                long currentMessageNo = 0;
-                for (ChattingDto dto : dataSet) {
-                    if (dto.getMessageNo() > 0) {
-                        currentMessageNo = dto.getMessageNo();
-                        break;
-                    }
-                }
-                Log.d(TAG, "dataFromServer add 3");
-                dataFromServer.addAll(0, localData);
-                Log.d(TAG, "initData 4");
-                dataFromServer = Constant.sortTimeList(dataFromServer);
-                initData(dataFromServer, 0);
-                int currentPosition = 0, length = dataSet.size();
-                for (int i = 0; i < length; i++) {
-                    if (dataSet.get(i).getMessageNo() == currentMessageNo) {
-                        currentPosition = i;
-                        break;
-                    }
-                }
-                adapterList.notifyDataSetChanged();
-                Log.d(TAG, "notifyDataSetChanged 5");
-                layoutManager.scrollToPositionWithOffset(currentPosition, 0);
-                isLoading = false;
-                setFirstItem();
-            } else {
-                Log.d(TAG, "URL_GET_CHAT_MSG_SECTION 4");
-                HttpRequest.getInstance().GetChatMsgSection(roomNo, baseMsgNo, 2, new OnGetChatMessage() {
-                    @Override
-                    public void OnGetChatMessageSuccess(final List<ChattingDto> listNew) {
-                        if (listNew.size() > 0) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    for (ChattingDto chat : listNew) {
-                                        Log.d(TAG, "addMessage 2:");
-                                        addMessage(chat);
-                                    }
-                                }
-                            }).start();
-
-                            long currentMessageNo = 0;
-
-                            for (ChattingDto dto : dataSet) {
-                                if (dto.getMessageNo() > 0) {
-                                    currentMessageNo = dto.getMessageNo();
-                                    break;
-                                }
+                        for (ChattingDto dto : dataSet) {
+                            if (dto.getMessageNo() > 0) {
+                                currentMessageNo = dto.getMessageNo();
+                                break;
                             }
-                            Log.d(TAG, "dataFromServer add 4");
-                            dataFromServer.addAll(0, listNew);
-                            Log.d(TAG, "initData 5");
-                            dataFromServer = Constant.sortTimeList(dataFromServer);
-                            initData(dataFromServer, 0);
-
-                            int currentPosition = 0, length = dataSet.size();
-
-                            for (int i = 0; i < length; i++) {
-                                if (dataSet.get(i).getMessageNo() == currentMessageNo) {
-                                    currentPosition = i;
-                                    break;
-                                }
-                            }
-
-                            adapterList.notifyDataSetChanged();
-                            Log.d(TAG, "notifyDataSetChanged 6");
-                            layoutManager.scrollToPositionWithOffset(currentPosition, 0);
-
-                            isLoading = false;
-                            setFirstItem();
-                        } else {
-                            ChattingDto chattingDto2 = dataSet.get(0);
-                            chattingDto2.setId(0);
-
-                            adapterList.notifyItemChanged(0);
-                            Log.d(TAG, "adapterList.notifyItemChanged(0);");
-                            isLoadMore = false;
-
                         }
-                    }
 
-                    @Override
-                    public void OnGetChatMessageFail(ErrorDto errorDto) {
+                        dataFromServer.addAll(0, listNew);
+                        dataFromServer = Constant.sortTimeList(dataFromServer);
+                        initData(dataFromServer, 0);
 
+                        int currentPosition = 0, length = dataSet.size();
+
+                        for (int i = 0; i < length; i++) {
+                            if (dataSet.get(i).getMessageNo() == currentMessageNo) {
+                                currentPosition = i;
+                                break;
+                            }
+                        }
+
+                        adapterList.notifyDataSetChanged();
+                        layoutManager.scrollToPositionWithOffset(currentPosition, 0);
+
+                        isLoading = false;
+                        setFirstItem();
+                    } else {
                         ChattingDto chattingDto2 = dataSet.get(0);
                         chattingDto2.setId(0);
 
                         adapterList.notifyItemChanged(0);
-                        Log.d(TAG, "OnGetChatMessageFail adapterList.notifyItemChanged(0);");
+                        isLoadMore = false;
+
                     }
-                });
-            }
+                }
+
+                @Override
+                public void OnGetChatMessageFail(ErrorDto errorDto) {
+                    adapterList.notifyItemChanged(0);
+                }
+            });
         } else {
-            Log.d(TAG, "dont loadMoreData");
             if (dataSet != null) {
                 if (dataSet.size() > 0) {
                     dataSet.get(0).setId(0);
                     adapterList.notifyItemChanged(0);
-                    Log.d(TAG, "dataSet.size() > 0 adapterList.notifyItemChanged(0);");
                     isLoading = false;
                 }
             }

@@ -437,22 +437,10 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 if (tempDto != null) {
                     AttachDTO attachDTO = tempDto.getAttachInfo();
                     if (attachDTO != null) {
-//                        String urlDownload = new Prefs().getServerSite() + Urls.URL_DOWNLOAD_THUMBNAIL + "session="
-//                                + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTO.getAttachNo();
-
-
                         String url = String.format("/UI/CrewChat/MobileAttachDownload.aspx?session=%s&no=%s",
                                 new Prefs().getaccesstoken(), tempDto.getAttachNo());
                         String urlDownload = new Prefs().getServerSite() + url;
-//                        Log.d(TAG,"urlDownload:"+urlDownload);
 
-                        String path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + attachDTO.getFileName();
-                        File file = new File(path);
-//                        if (file.exists()) {
-//                            mActivity.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-//                        } else {
-//                            Utils.displayDownloadFileDialog(mActivity, urlDownload, attachDTO.getFileName());
-//                        }
                         Utils.displayDownloadFileDialog(mActivity, urlDownload, attachDTO.getFileName());
                     }
                 }

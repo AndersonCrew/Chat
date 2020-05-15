@@ -107,9 +107,6 @@ public class ChatMessageDBHelper {
         return false;
     }
 
-    /*
-     * Function to delete an message on local database by local ID
-     **/
     public static boolean deleteMessageByLocalRoomNo(long roomNo) {
         try {
             ContentResolver resolver = CrewChatApplication.getInstance()
@@ -123,25 +120,19 @@ public class ChatMessageDBHelper {
         return false;
     }
 
-    /*
-     * Function to update message maybe happen when user is edit message
-     * When message has been sent to server success and received success notification
-     * Then we will update to local database
-     **/
-    public static boolean updateMessage(ChattingDto dto, long id) {
+    public static boolean updateMessage (ChattingDto dto) {
         try {
-            ContentValues values = new ContentValues();
-            values.put(UNREAD_COUNT, dto.getUnReadCount());
-            values.put(ATTACH_NO, dto.getAttachNo());
-            values.put(MESSAGE, dto.getMessage());
-            values.put(MESSAGE_NO, dto.getMessageNo());
-            values.put(REG_DATE, dto.getRegDate());
+            if (isExist(dto)) {
+                ContentValues values = new ContentValues();
+                values.put(UNREAD_COUNT, dto.getUnReadCount());
+                values.put(ATTACH_NO, dto.getAttachNo());
 
-            int hasSentValue = dto.isHasSent() ? 1 : 0;
-            values.put(HAS_SENT, hasSentValue);
+                int hasSentValue = dto.isHasSent() ? 1 : 0;
+                values.put(HAS_SENT, hasSentValue);
 
-            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + dto.getRoomNo() + " AND " + ID + " = " + id, null);
+                ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
+                resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + dto.getRoomNo() + " AND " + MESSAGE_NO + " = " + dto.getMessageNo(), null);
+            } else addMessage(dto);
 
             return true;
         } catch (Exception e) {
@@ -151,30 +142,6 @@ public class ChatMessageDBHelper {
         return false;
     }
 
-    public static long addSimpleMessage(ChattingDto dto) {
-        try {
-            ContentValues values = new ContentValues();
-            values.put(MESSAGE, dto.getMessage());
-            values.put(MESSAGE_NO, dto.getMessageNo());
-            values.put(USER_NO, dto.getUserNo());
-            values.put(TYPE, dto.getType());
-            values.put(ATTACH_FILE_PATH, dto.getAttachFilePath());
-            values.put(ROOM_NO, dto.getRoomNo());
-            values.put(WRITER_USER, dto.getWriterUser());
-            values.put(REG_DATE, dto.getRegDate());
-
-            int hasSent = dto.isHasSent() ? 1 : 0;
-            values.put(HAS_SENT, hasSent);
-
-            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-
-            Uri uri = resolver.insert(AppContentProvider.GET_MESSAGE_CONTENT_URI, values);
-            return ContentUris.parseId(uri);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
 
     /*
      * This function to add one of message line
