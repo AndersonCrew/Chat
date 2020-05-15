@@ -23,7 +23,7 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;

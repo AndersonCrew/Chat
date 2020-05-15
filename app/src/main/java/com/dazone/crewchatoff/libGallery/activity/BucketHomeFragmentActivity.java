@@ -48,7 +48,7 @@ import android.widget.Toast;
 
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.ChattingActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.libGallery.MediaChooser;
 import com.dazone.crewchatoff.libGallery.MediaChooserConstants;
 import com.dazone.crewchatoff.libGallery.fragment.BucketImageFragment;
@@ -62,7 +62,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.dazone.crewchatoff.constant.Statics.CHOOSE_OPTION_IMAGE;
+import static com.dazone.crewchatoff.utils.Statics.CHOOSE_OPTION_IMAGE;
 import static com.dazone.crewchatoff.libGallery.MediaChooserConstants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
 
 public class BucketHomeFragmentActivity extends FragmentActivity {

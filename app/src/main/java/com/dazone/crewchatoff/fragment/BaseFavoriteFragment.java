@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.TestMultiLevelListview.MultilLevelListviewFragment;
 import com.dazone.crewchatoff.activity.MainActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 
 public class BaseFavoriteFragment extends Fragment implements TabLayout.OnTabSelectedListener {
     private View rootView;

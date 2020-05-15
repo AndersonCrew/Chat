@@ -24,7 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.utils.Prefs;
 
 public class WelcomeActivity extends AppCompatActivity {

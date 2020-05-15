@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.base.BaseSingleBackTick;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.fragment.RenameRoomFragment;
 import com.dazone.crewchatoff.interfaces.OnTickCallbackSuccess;
 import com.dazone.crewchatoff.utils.Utils;

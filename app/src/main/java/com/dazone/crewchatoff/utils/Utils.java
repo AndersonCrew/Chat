@@ -36,7 +36,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.customs.AlertDialogView;
 import com.dazone.crewchatoff.database.UserDBHelper;
 import com.dazone.crewchatoff.dto.ChattingDto;
@@ -109,50 +108,6 @@ public class Utils {
         transaction.commit();
     }
 
-/*    public static void replaceFragmentOrAdd(FragmentManager fragmentManager,Fragment fragment, int frameLayout,boolean isSaveStack,String tag) {
-        Fragment fragmentA = fragmentManager.findFragmentByTag(fragment.getId()+"");
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (fragmentA == null) {
-            //not exist
-            if (TextUtils.isEmpty(tag)) {
-                transaction.add(frameLayout, fragment);
-            } else {
-                transaction.add(frameLayout, fragment, tag);
-            }
-
-            if (isSaveStack) {
-                transaction.addToBackStack(null);
-            }
-        }
-        else{
-            //fragment exist
-            if (TextUtils.isEmpty(tag)) {
-                transaction.replace(frameLayout, fragment);
-            } else {
-                transaction.replace(frameLayout, fragment, tag);
-            }
-
-            if (isSaveStack) {
-                transaction.addToBackStack(null);
-            }
-        }
-        transaction.commit();
-    }*/
-
-    public static void addFragmentNotSupportV4ToActivity(android.app.FragmentManager fragmentManager, android.app.Fragment fragment, int frameLayout, boolean isSaveStack, String tag) {
-        android.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (TextUtils.isEmpty(tag)) {
-            transaction.add(frameLayout, fragment);
-        } else {
-            transaction.add(frameLayout, fragment, tag);
-        }
-
-        if (isSaveStack) {
-            transaction.addToBackStack(null);
-        }
-        transaction.commit();
-    }
-
     public static void hideKeyboard(Activity activity) {
         try {
             InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -162,24 +117,6 @@ public class Utils {
         }
     }
 
-    //    public static String getPathFromURI(Uri contentURI, Context context) {
-//        String result;
-//        try {
-//            Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
-//            if (cursor == null) { // Source is Dropbox or other similar local file path
-//                result = contentURI.getPath();
-//            } else {
-//                cursor.moveToFirst();
-//                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-//                result = cursor.getString(idx);
-//                cursor.close();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            result = "";
-//        }
-//        return result;
-//    }
     public static String getPathFromURI(Uri contentUri, Context context) {
 
         String result;
@@ -216,7 +153,7 @@ public class Utils {
             String[] pathParts = uri.getPath().split("/");
             documentID = pathParts[pathParts.length - 1];
         } else {
-            String pathSegments[] = uri.getLastPathSegment().split(":");
+            String[] pathSegments = uri.getLastPathSegment().split(":");
             documentID = pathSegments[pathSegments.length - 1];
         }
         String mediaPath = MediaStore.Images.Media.DATA;
@@ -482,11 +419,8 @@ public class Utils {
 
 
     public static boolean isAudio(String fileType) {
-        if (fileType.equalsIgnoreCase(Statics.AUDIO_MP3) || fileType.equalsIgnoreCase(".wav") || fileType.equalsIgnoreCase(Statics.AUDIO_AMR)
-                || fileType.equalsIgnoreCase(Statics.AUDIO_WMA) || fileType.equalsIgnoreCase(Statics.AUDIO_M4A)) {
-            return true;
-        }
-        return false;
+        return fileType.equalsIgnoreCase(Statics.AUDIO_MP3) || fileType.equalsIgnoreCase(".wav") || fileType.equalsIgnoreCase(Statics.AUDIO_AMR)
+                || fileType.equalsIgnoreCase(Statics.AUDIO_WMA) || fileType.equalsIgnoreCase(Statics.AUDIO_M4A);
     }
 
     public static int getTypeFileAttach(String fileType) {
@@ -559,22 +493,6 @@ public class Utils {
     }
 
     public static boolean checkChatId198(ChattingDto chattingDto) {
-//        boolean check = false;
-//        if (chattingDto != null) {
-//            if (chattingDto.getUserNos().size() > 0) {
-//                for (int i : chattingDto.getUserNos())
-//                    if (i == 198) {
-//                        check = true;
-//                        break;
-//                    }
-//            } else {
-//                check = false;
-//            }
-//        } else {
-//            return false;
-//        }
-//
-//        return check;
         return false;
     }
 
@@ -585,37 +503,7 @@ public class Utils {
         return (int) (dips * context.getResources().getDisplayMetrics().density + 0.5f);
     }
 
-    /**
-     * CHECK CALL VISIBLE
-     */
-    public static boolean isCallVisible(ArrayList<Integer> userNos, ArrayList<TreeUserDTOTemp> treeUserDTOTemps) {
-//        ArrayList<TreeUserDTOTemp> treeUserDTOTemps = AllUserDBHelper.getUser();
 
-        for (int i : userNos) {
-            if (i != UserDBHelper.getUser().Id) {
-                for (TreeUserDTOTemp treeUserDTOTemp : treeUserDTOTemps) {
-                    if (i == treeUserDTOTemp.getUserNo()) {
-                        String phone = !TextUtils.isEmpty(treeUserDTOTemp.getCellPhone().trim()) ?
-                                treeUserDTOTemp.getCellPhone() :
-                                !TextUtils.isEmpty(treeUserDTOTemp.getCompanyPhone().trim()) ?
-                                        treeUserDTOTemp.getCompanyPhone() :
-                                        "";
-
-                        if (!TextUtils.isEmpty(phone)) {
-                            return true;
-                        }
-
-                        break;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * CHECK CALL VISIBLE
-     */
     public static void addCallArray(ArrayList<Integer> userNos, ArrayAdapter<String> arrayAdapter, ArrayList<TreeUserDTOTemp> listUser) {
         for (int i : userNos) {
             if (i != UserDBHelper.getUser().Id) {
@@ -655,16 +543,6 @@ public class Utils {
         context.startActivity(intent);
     }
 
-    /*
-        public static void sendMail(Context context, String emailAddress) {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            String[] recipients = new String[]{emailAddress, "",};
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra(android.content.Intent.EXTRA_EMAIL, recipients);
-            intent.setType("message/rfc822");
-            context.startActivity(Intent.createChooser(intent, "Choose an Email client"));
-        }
-    */
     public static void sendMail(Context context, String eMail) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -674,11 +552,6 @@ public class Utils {
         intent.putExtra(android.content.Intent.EXTRA_EMAIL, recipients);
         intent.setType("message/rfc822");
         context.startActivity(Intent.createChooser(intent, "Choose an Email client"));
-    }
-
-    public static String getCurrentMyName() {
-        String s = "";
-        return s;
     }
 
     public static int getCurrentId() {
@@ -702,10 +575,6 @@ public class Utils {
 
         return UserDBHelper.getUser();
     }
-
-//    public static ArrayList<TreeUserDTOTemp> getUsers() {
-//        return AllUserDBHelper.getUser();
-//    }
 
     /**
      * Remove duplicate item
@@ -734,7 +603,6 @@ public class Utils {
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        //request.setTitle(name);
         int type = getTypeFile(fileType);
         switch (type) {
             case 1:
@@ -768,7 +636,6 @@ public class Utils {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(reference);
                     Cursor c = downloadmanager.query(query);
@@ -797,7 +664,6 @@ public class Utils {
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        //request.setTitle(name);
         int type = getTypeFile(fileType);
         switch (type) {
             case 1:
@@ -831,7 +697,6 @@ public class Utils {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(reference);
                     Cursor c = downloadmanager.query(query);
@@ -847,12 +712,6 @@ public class Utils {
 
         context.registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         callback.onSuccess();
-    }
-
-    public static String getApplicationName(Context context) {
-        ApplicationInfo applicationInfo = context.getApplicationInfo();
-        int stringId = applicationInfo.labelRes;
-        return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
     }
 
     public static int compareVersionNames(String oldVersionName, String newVersionName) {
@@ -896,10 +755,10 @@ public class Utils {
         builder.setView(dialogView);
 
         // Get the custom alert dialog view widgets reference
-        Button btn_positive = (Button) dialogView.findViewById(R.id.btn_yes);
-        Button btn_negative = (Button) dialogView.findViewById(R.id.btn_no);
-        TextView txtTitle = (TextView) dialogView.findViewById(R.id.txt_dialog_title);
-        TextView txtContent = (TextView) dialogView.findViewById(R.id.txt_dialog_content);
+        Button btn_positive = dialogView.findViewById(R.id.btn_yes);
+        Button btn_negative = dialogView.findViewById(R.id.btn_no);
+        TextView txtTitle = dialogView.findViewById(R.id.txt_dialog_title);
+        TextView txtContent = dialogView.findViewById(R.id.txt_dialog_content);
 
         btn_negative.setVisibility(View.GONE);
         btn_positive.setText(okButton);
@@ -907,7 +766,6 @@ public class Utils {
         txtTitle.setText(title);
         txtContent.setText(message);
 
-//        Button btn_neutral = (Button) dialogView.findViewById(R.id.dialog_neutral_btn);
 
         // Create the alert dialog
         final android.app.AlertDialog dialog = builder.create();
@@ -916,23 +774,9 @@ public class Utils {
         btn_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Dismiss the alert dialog
-//                if (clickEvent != null) {
-//                    clickEvent.onCancelClick();
-//                }
                 dialog.cancel();
             }
         });
-
-        // Set cancel/neutral button click listener
-//        btn_neutral.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Dismiss/cancel the alert dialog
-//                dialog.cancel();
-//                tv_message.setText("Cancel button clicked");
-//            }
-//        });
 
         // Display the custom alert dialog on interface
         if (!context.isFinishing()) {
@@ -951,26 +795,21 @@ public class Utils {
         builder.setView(dialogView);
 
         // Get the custom alert dialog view widgets reference
-        Button btn_positive = (Button) dialogView.findViewById(R.id.btn_yes);
-        Button btn_negative = (Button) dialogView.findViewById(R.id.btn_no);
-        TextView txtTitle = (TextView) dialogView.findViewById(R.id.txt_dialog_title);
-        TextView txtContent = (TextView) dialogView.findViewById(R.id.txt_dialog_content);
+        Button btn_positive = dialogView.findViewById(R.id.btn_yes);
+        Button btn_negative = dialogView.findViewById(R.id.btn_no);
+        TextView txtTitle = dialogView.findViewById(R.id.txt_dialog_title);
+        TextView txtContent = dialogView.findViewById(R.id.txt_dialog_content);
 
         btn_negative.setText(noButton);
         btn_positive.setText(okButton);
         txtTitle.setText(title);
         txtContent.setText(message);
 
-//        Button btn_neutral = (Button) dialogView.findViewById(R.id.dialog_neutral_btn);
-
-        // Create the alert dialog
         final android.app.AlertDialog dialog = builder.create();
 
-        // Set positive/yes button click listener
         btn_positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Dismiss the alert dialog
                 if (clickEvent != null) {
                     clickEvent.onOkClick(dialog);
                 }
@@ -978,7 +817,6 @@ public class Utils {
             }
         });
 
-        // Set negative/no button click listener
         btn_negative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -990,43 +828,8 @@ public class Utils {
             }
         });
 
-        // Set cancel/neutral button click listener
-//        btn_neutral.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Dismiss/cancel the alert dialog
-//                dialog.cancel();
-//                tv_message.setText("Cancel button clicked");
-//            }
-//        });
-
-        // Display the custom alert dialog on interface
         dialog.show();
 
-    }
-
-    public static void writeNotificationLog(Bundle extras) {
-//        Log.d("writeNotificationLog", "writeNotificationLog");
-        try {
-            int code = -1;
-            String data = "";
-            if (extras.containsKey("Code")) {
-                code = Integer.parseInt(extras.getString("Code", "0"));
-
-
-                if(extras.containsKey("Data"))
-                    data = extras.getString("Data");
-            }
-            String log = "";
-            if(code > -1){
-                log = String.format("%d - %s", code, data);
-            }else {
-                log = "Emplty!!!";
-            }
-            appendLog(log);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void appendLog(String text) {
@@ -1039,25 +842,16 @@ public class Utils {
             try {
                 logFile.createNewFile();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                Log.d("appendLog", e.getMessage());
                 e.printStackTrace();
             }
         }
         try {
-            //BufferedWriter for performance, true to set append to file flag
             BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
             buf.append(line);
             buf.newLine();
             buf.close();
-//            Log.d("appendLog", "buf.close()");
-//            Log.d("appendLog", filePath);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            Log.d("appendLog", e.getMessage());
             e.printStackTrace();
         }
-
-        Log.d("appendLog", filePath);
     }
 }

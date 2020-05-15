@@ -20,7 +20,7 @@ import com.dazone.crewchatoff.activity.ChattingActivity;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
 import com.dazone.crewchatoff.activity.RoomUserInformationActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.customs.RoundLayoutGroup;
 import com.dazone.crewchatoff.database.ChatRoomDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
@@ -82,25 +82,25 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
     @Override
     protected void setup(View v) {
         view = v;
-        tvUserName = (TextView) v.findViewById(R.id.user_name_tv);
-        tvDate = (TextView) v.findViewById(R.id.date_tv);
-        tvContent = (TextView) v.findViewById(R.id.content_tv);
-        imgAvatar = (ImageView) v.findViewById(R.id.avatar_imv);
-        status_imv_null = (ImageView) v.findViewById(R.id.status_imv_null);
-        layoutAvatar = (RelativeLayout) v.findViewById(R.id.layoutAvatar);
-        ivStatus = (ImageView) v.findViewById(R.id.status_imv);
+        tvUserName = v.findViewById(R.id.user_name_tv);
+        tvDate = v.findViewById(R.id.date_tv);
+        tvContent = v.findViewById(R.id.content_tv);
+        imgAvatar = v.findViewById(R.id.avatar_imv);
+        status_imv_null = v.findViewById(R.id.status_imv_null);
+        layoutAvatar = v.findViewById(R.id.layoutAvatar);
+        ivStatus = v.findViewById(R.id.status_imv);
 
-        imgBadge = (ImageView) v.findViewById(R.id.image_badge);
-        ivLastedAttach = (ImageView) v.findViewById(R.id.iv_lasted_attach);
-        tvTotalUser = (TextView) v.findViewById(R.id.tv_user_total);
+        imgBadge = v.findViewById(R.id.image_badge);
+        ivLastedAttach = v.findViewById(R.id.iv_lasted_attach);
+        tvTotalUser = v.findViewById(R.id.tv_user_total);
 
-        layoutGroupAvatar = (RoundLayoutGroup) v.findViewById(R.id.avatar_group);
-        imgGroupAvatar1 = (ImageView) v.findViewById(R.id.avatar_group_1);
-        imgGroupAvatar2 = (ImageView) v.findViewById(R.id.avatar_group_2);
-        imgGroupAvatar3 = (ImageView) v.findViewById(R.id.avatar_group_3);
-        imgGroupAvatar4 = (ImageView) v.findViewById(R.id.avatar_group_4);
-        tvGroupAvatar = (TextView) v.findViewById(R.id.avatar_group_number);
-        ivNotification = (ImageView) v.findViewById(R.id.iv_notification);
+        layoutGroupAvatar = v.findViewById(R.id.avatar_group);
+        imgGroupAvatar1 = v.findViewById(R.id.avatar_group_1);
+        imgGroupAvatar2 = v.findViewById(R.id.avatar_group_2);
+        imgGroupAvatar3 = v.findViewById(R.id.avatar_group_3);
+        imgGroupAvatar4 = v.findViewById(R.id.avatar_group_4);
+        tvGroupAvatar = v.findViewById(R.id.avatar_group_number);
+        ivNotification = v.findViewById(R.id.iv_notification);
 
         view.setOnCreateContextMenuListener(this);
     }
@@ -215,17 +215,6 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
             name = dto.getRoomTitle();
         }
 
-//        if (name.length() == 0 && dto.getRoomType() == 1) {
-//            if (CrewChatApplication.currentName != null && CrewChatApplication.currentName.length() > 0) {
-//
-//            } else {
-//                CrewChatApplication.currentName = Constant.getUserName(AllUserDBHelper.getUser(), Utils.getCurrentId());
-//            }
-//            String msg = "";
-//            msg = "[Me]" + CrewChatApplication.currentName;
-//            name = msg;
-//        }
-
         // Global value
         roomTitle = name;
         roomNo = dto.getRoomNo();
@@ -237,10 +226,6 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
                 status_imv_null.setImageResource(R.drawable.home_big_status_03);
             if (ivStatus != null)
                 ivStatus.setImageResource(R.drawable.home_big_status_03);
-//            if (dto.getRoomType() == 1) {
-//                tvUserName.setText(name);
-//                tvUserName.setTextColor(ContextCompat.getColor(CrewChatApplication.getInstance(), R.color.black));
-//            }
         } else {
             tvUserName.setTextColor(ContextCompat.getColor(CrewChatApplication.getInstance(), R.color.black));
             tvUserName.setText(name);
@@ -301,7 +286,6 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
             if (dto.getListTreeUser().size() < 2) {
                 layoutGroupAvatar.setVisibility(View.GONE);
                 layoutAvatar.setVisibility(View.VISIBLE);
-//                ImageUtils.showRoundImage(dto.getListTreeUser().get(0), imgAvatar);
                 DrawImageItem obj = dto.getListTreeUser().get(0);
                 String linkIMG = obj.getImageLink();
                 if (linkIMG != null && linkIMG.length() > 0) {
@@ -345,9 +329,6 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
                         url1 = new Prefs().getServerSite() + dto.getListTreeUser().get(0).getAvatarUrl();
                         url2 = new Prefs().getServerSite() + dto.getListTreeUser().get(1).getAvatarUrl();
 
-//                        ImageLoader.getInstance().displayImage(url1, imgGroupAvatar1, Statics.avatarGroupTL);
-//                        ImageLoader.getInstance().displayImage(url2, imgGroupAvatar2, Statics.avatarGroupTR);
-
                         ImageUtils.setImgFromUrl(url1, imgGroupAvatar1);
                         ImageUtils.setImgFromUrl(url2, imgGroupAvatar2);
                         break;
@@ -361,9 +342,6 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
                         url3 = new Prefs().getServerSite() + dto.getListTreeUser().get(1).getAvatarUrl();
                         url4 = new Prefs().getServerSite() + dto.getListTreeUser().get(2).getAvatarUrl();
 
-//                        ImageLoader.getInstance().displayImage(url1, imgGroupAvatar1, Statics.avatarGroupTOP);
-//                        ImageLoader.getInstance().displayImage(url3, imgGroupAvatar3, Statics.avatarGroupBL);
-//                        ImageLoader.getInstance().displayImage(url4, imgGroupAvatar4, Statics.avatarGroupBR);
                         ImageUtils.setImgFromUrl(url1, imgGroupAvatar1);
                         ImageUtils.setImgFromUrl(url3, imgGroupAvatar3);
                         ImageUtils.setImgFromUrl(url4, imgGroupAvatar4);
@@ -382,10 +360,6 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
                         url3 = new Prefs().getServerSite() + dto.getListTreeUser().get(2).getAvatarUrl();
                         url4 = new Prefs().getServerSite() + dto.getListTreeUser().get(3).getAvatarUrl();
 
-//                        ImageLoader.getInstance().displayImage(url1, imgGroupAvatar1, Statics.avatarGroupTL);
-//                        ImageLoader.getInstance().displayImage(url2, imgGroupAvatar2, Statics.avatarGroupTR);
-//                        ImageLoader.getInstance().displayImage(url3, imgGroupAvatar3, Statics.avatarGroupBL);
-//                        ImageLoader.getInstance().displayImage(url4, imgGroupAvatar4, Statics.avatarGroupBR);
                         ImageUtils.setImgFromUrl(url1, imgGroupAvatar1);
                         ImageUtils.setImgFromUrl(url2, imgGroupAvatar2);
                         ImageUtils.setImgFromUrl(url3, imgGroupAvatar3);
@@ -406,18 +380,13 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
                         url2 = new Prefs().getServerSite() + dto.getListTreeUser().get(1).getAvatarUrl();
                         url3 = new Prefs().getServerSite() + dto.getListTreeUser().get(2).getAvatarUrl();
                         url4 = "drawable://" + R.drawable.avatar_group_bg;
-//                        ImageLoader.getInstance().displayImage(url1, imgGroupAvatar1, Statics.avatarGroupTL);
-//                        ImageLoader.getInstance().displayImage(url2, imgGroupAvatar2, Statics.avatarGroupTR);
-//                        ImageLoader.getInstance().displayImage(url3, imgGroupAvatar3, Statics.avatarGroupBL);
-//                        ImageLoader.getInstance().displayImage(url4, imgGroupAvatar4, Statics.avatarGroupBR);
+
                         ImageUtils.setImgFromUrl(url1, imgGroupAvatar1);
                         ImageUtils.setImgFromUrl(url2, imgGroupAvatar2);
                         ImageUtils.setImgFromUrl(url3, imgGroupAvatar3);
                         ImageUtils.setImgFromUrl(url4, imgGroupAvatar4);
                         break;
                 }
-
-
             }
         }
 
@@ -506,7 +475,6 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
                 roomInfo = new Bundle();
                 roomInfo.putInt(Statics.ROOM_NO, (int) roomNo);
                 roomInfo.putString(Statics.ROOM_TITLE, roomTitle);
-//                Log.d(TAG,"roomNo:"+roomNo+" - roomTitle:"+roomTitle);
                 mOnContextMenuSelect.onSelect(Statics.ROOM_RENAME, roomInfo);
 
                 break;

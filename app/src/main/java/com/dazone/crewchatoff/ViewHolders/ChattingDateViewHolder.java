@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.utils.TimeUtils;
@@ -20,7 +20,7 @@ public class ChattingDateViewHolder extends BaseChattingHolder {
 
     @Override
     protected void setup(View v) {
-        time = (TextView) v.findViewById(R.id.time);
+        time = v.findViewById(R.id.time);
     }
 
     @Override
@@ -31,13 +31,10 @@ public class ChattingDateViewHolder extends BaseChattingHolder {
             if (dto.getRegDate().equalsIgnoreCase(Utils.getString(R.string.today))) {
                 time.setText(Utils.getString(R.string.today));
             }
-//            else if (dto.getRegDate().equalsIgnoreCase(Utils.getString(R.string.yesterday))) {
-//                time.setText(Utils.getString(R.string.yesterday));
-//            }
+
             else {
                 time.setText(TimeUtils.displayTimeWithoutOffset(dto.getRegDate()));
             }
         }
-        Log.d(">>>", "ChattingDateViewHolder " + time.getText().toString());
     }
 }

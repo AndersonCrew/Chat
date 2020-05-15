@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.Views.RoundedImageView;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.database.UserDBHelper;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.DrawImageItem;

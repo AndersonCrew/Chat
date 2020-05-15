@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.ChatViewImageActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.AttachDTO;
 import com.dazone.crewchatoff.dto.AttachImageList;
 import com.dazone.crewchatoff.dto.ChattingDto;

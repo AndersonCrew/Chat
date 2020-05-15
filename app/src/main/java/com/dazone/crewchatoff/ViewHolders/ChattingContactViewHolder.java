@@ -3,14 +3,13 @@ package com.dazone.crewchatoff.ViewHolders;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.UserDto;
 import com.dazone.crewchatoff.utils.Constant;
@@ -18,7 +17,6 @@ import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.TimeUtils;
 
 public class ChattingContactViewHolder extends BaseChattingHolder {
-    private String TAG = "ChattingContactViewHolder";
     private TextView tv_contact_name, tv_contact_number;
     private TextView date_tv, tvUnread;
     private LinearLayout lnContact;
@@ -29,11 +27,11 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
 
     @Override
     protected void setup(View v) {
-        tv_contact_name = (TextView) v.findViewById(R.id.tv_contact_name);
-        tv_contact_number = (TextView) v.findViewById(R.id.tv_contact_number);
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
-        date_tv = (TextView) v.findViewById(R.id.date_tv);
-        lnContact = (LinearLayout) v.findViewById(R.id.lnContact);
+        tv_contact_name = v.findViewById(R.id.tv_contact_name);
+        tv_contact_number = v.findViewById(R.id.tv_contact_number);
+        tvUnread = v.findViewById(R.id.text_unread);
+        date_tv = v.findViewById(R.id.date_tv);
+        lnContact = v.findViewById(R.id.lnContact);
     }
 
     @Override
@@ -47,7 +45,6 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
             tv_contact_number.setVisibility(View.GONE);
         }
 
-        //ImageUtils.showRoundImage(userDto.getAvatar(), avatar_imv);
         if (!TextUtils.isEmpty(dto.getLastedMsgDate())) {
             date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getLastedMsgDate(), 0, TimeUtils.KEY_FROM_SERVER));
         } else {
@@ -56,7 +53,6 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
 
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);
-//        tvUnread.setVisibility(dto.getUnReadCount() == 0 ? View.GONE : View.VISIBLE);
         date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +82,6 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:" + phoneNumber));
                 BaseActivity.Instance.startActivity(intent);
-//                BaseActivity.Instance.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }

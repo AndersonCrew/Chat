@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.constant.Statics;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,7 +13,6 @@ import java.util.TimeZone;
 
 public class TimeUtils {
     public static int KEY_FROM_SERVER = 200;
-    public static int KEY_TO_SERVER = 201;
 
     public static String showTimeWithoutTimeZone(long date, String defaultPattern) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(defaultPattern, Locale.getDefault());
@@ -75,7 +73,6 @@ public class TimeUtils {
     }
 
     public static long getTime(String timeString) {
-     //   timeString = "";
         try {
             long time;
             if (timeString.contains("(")) {
@@ -105,7 +102,6 @@ public class TimeUtils {
                     time = Long.valueOf(timeString.substring(0, timeString.indexOf(")")));
                 }
             } else {
-                //  if(!timeString.equals("")&&timeString)
                 time = Long.valueOf(timeString);
             }
 
@@ -130,10 +126,8 @@ public class TimeUtils {
 
         if (task == 0) {
             formatter = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-            //formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         } else {
             formatter = new SimpleDateFormat("aa hh:mm", Locale.getDefault());
-            //formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         }
 
         int type = (int) getTimeForMail(time);
@@ -176,32 +170,6 @@ public class TimeUtils {
     //-5: last Month
     //-1: default
 
-//    public static long getTimeForMail(long time) {
-//        int date = -1;
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTimeInMillis(System.currentTimeMillis());
-//
-//        if (cal.get(Calendar.YEAR) == getYearNote(time)) {
-//            if (cal.get(Calendar.MONTH) == getMonthNote(time)) {
-//                int temp = cal.get(Calendar.DAY_OF_MONTH) - getDateNote(time);
-//                if (cal.get(Calendar.DAY_OF_MONTH) == getDateNote(time)) {
-//                    date = -2;
-//                } else if (temp == 1) {
-//                    date = -3;
-//                } else {
-//                    date = -4;
-//                }
-//            } else if (cal.get(Calendar.MONTH) - 1 == getMonthNote(time)) {
-//                date = -5;
-//            }
-//        } else if (cal.get(Calendar.YEAR) == getYearNote(time) + 1) {
-//            if (cal.get(Calendar.MONTH) == 0 && getMonthNote(time) == 11) {
-//                date = -5;
-//            }
-//        }
-//
-//        return date;
-//    }
     public static long getTimeForMail(long time) {
         int date = -1;
         Calendar cal = Calendar.getInstance();
@@ -286,7 +254,6 @@ public class TimeUtils {
         SimpleDateFormat formatter = new SimpleDateFormat(Statics.DATE_FORMAT_YY_MM_DD);
         String date = formatter.format(new Date(date1));
         String dateTemp = formatter.format(new Date(date2));
-//        Log.d(">>> compareTime", date + " " + dateTemp);
         return date.equalsIgnoreCase(dateTemp);
     }
 

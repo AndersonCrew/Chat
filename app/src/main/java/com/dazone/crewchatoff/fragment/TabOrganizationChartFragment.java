@@ -27,16 +27,11 @@ import java.util.List;
  */
 
 public class TabOrganizationChartFragment extends Fragment {
-    private String TAG = "NewOrganizationChart";
     private RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private AdapterOrganizationChartFragment mAdapter;
     private List<TreeUserDTO> list = new ArrayList<>();
-    private ArrayList<TreeUserDTOTemp> listTemp;
-    private ArrayList<TreeUserDTO> mDepartmentList;
     private ArrayList<TreeUserDTO> temp = new ArrayList<>();
-    private ArrayList<TreeUserDTO> mPersonList = new ArrayList<>();
-    private ArrayList<TreeUserDTO> mSelectedPersonList = new ArrayList<>();
     public static TabOrganizationChartFragment fm;
 
     public TabOrganizationChartFragment() {
@@ -96,19 +91,6 @@ public class TabOrganizationChartFragment extends Fragment {
             mAdapter.updateList(list);
         } else {
             Toast.makeText(getActivity(), "Can not get list user, restart app please", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void convertData(List<TreeUserDTO> treeUserDTOs) {
-        if (treeUserDTOs != null && treeUserDTOs.size() != 0) {
-            for (TreeUserDTO dto : treeUserDTOs) {
-                if (dto.getSubordinates() != null && dto.getSubordinates().size() > 0) {
-                    temp.add(dto);
-                    convertData(dto.getSubordinates());
-                } else {
-                    temp.add(dto);
-                }
-            }
         }
     }
 

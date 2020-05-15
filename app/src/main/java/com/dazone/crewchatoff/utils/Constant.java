@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.dazone.crewchatoff.BuildConfig;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
-import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.TreeUserDTOTemp;
 import com.dazone.crewchatoff.interfaces.AudioGetDuration;
@@ -37,35 +36,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Constant {
-    public final static String ROOT_URL_ANDROID = "http://www.crewcloud.net/android";
-    public final static String PACKGE = "/Package/";
     public static final int ACTIVITY_HANDLER_NEXT_ACTIVITY = 1111;
     public static final int ACTIVITY_HANDLER_START_UPDATE = 1112;
     public static String TAG = "Constant";
-    public static String CALL_CHAT_FRAGMENT = "CALL_CHAT_FRAGMENT";
-    /**
-     * URLS
-     */
-//    public static final String ROOT_URL_UPDATE = "http://www.crewcloud.net";
+
     public static final String ROOT_URL_UPDATE = "http://www.bizsw.co.kr:8080";
 
 
-    /**
-     * PATH SAVE DOWNLOAD
-     */
     public static final String pathDownload = "/CrewChat/";
     public static final String pathDownload_no = "/CrewChat";
 
-    /**
-     * URI IMAGE DEFAULT
-     */
     public static final String UriDefaultAvatar = "drawable://" + R.drawable.avatar_l;
 
-
-    /**
-     * INTENT FILTER
-     */
-    public static final String INTENT_FILTER = "INTENT_FILTER";
     public static final String INTENT_FILTER_SEARCH = "INTENT_FILTER_SEARCH";
     public static final String INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT = "INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT";
     public static final String INTENT_FILTER_ADD_USER = "INTENT_FILTER_ADD_USER";
@@ -75,65 +57,23 @@ public class Constant {
 
 
     public static final String INTENT_FILTER_NOTIFY_ADAPTER = "INTENT_FILTER_NOTIFY_ADAPTER";
-    /**
-     * INTENT RESULT
-     */
+
     public static final int INTENT_RESULT_CREATE_NEW_ROOM = 800;
 
-
-    /**
-     * KEY INTENT
-     */
     public static final String KEY_INTENT_TEXT_SEARCH = "KEY_INTENT_TEXT_SEARCH";
-    public static final String KEY_INTENT_FROM_NOTIFICATION = "KEY_INTENT_FROM_NOTIFICATION";
     public static final String KEY_INTENT_ROOM_NO = "KEY_INTENT_ROOM_NO";
     public static final String KEY_INTENT_ROOM_DTO = "KEY_INTENT_ROOM_DTO";
     public static final String KEY_INTENT_GROUP_NO = "KEY_INTENT_GROUP_NO";
     public static final String KEY_INTENT_USER_NO = "KEY_INTENT_USER_NO";
     public static final String KEY_INTENT_USER_NO_ARRAY = "KEY_INTENT_USER_NO_ARRAY";
-    public static final String KEY_INTENT_USER_DB = "KEY_INTENT_USER_DB";
     public static final String KEY_INTENT_COUNT_MEMBER = "KEY_INTENT_COUNT_MEMBER";
     public static final String KEY_INTENT_CHATTING_DTO = "KEY_INTENT_CHATTING_DTO";
     public static final String KEY_INTENT_UNREAD_TOTAL_COUNT = "KEY_INTENT_UNREAD_TOTAL_COUNT";
-    public static final String KEY_INTENT_USER_STATUS_DTO = "KEY_INTENT_USER_STATUS_DTO";
     public static final String KEY_INTENT_ROOM_TITLE = "KEY_INTENT_ROOM_TITLE";
     public static final String KEY_INTENT_SELECT_USER_RESULT = "KEY_INTENT_SELECT_USER_RESULT";
 
     public static final String Favorites = "Favorites";
 
-    /**
-     * DISPLAY IMAGE OPTION
-     */
-    public static final DisplayImageOptions optionsProfileAvatar = new DisplayImageOptions.Builder()
-            .showImageForEmptyUri(R.drawable.loading)
-            .showImageOnFail(R.drawable.loading)
-            .cacheOnDisk(true).cacheInMemory(true)
-            .imageScaleType(ImageScaleType.NONE_SAFE)
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .considerExifParams(false)
-            .displayer(new RoundedBitmapDisplayer(180))
-            .showImageOnLoading(R.drawable.loading)
-            .build();
-
-
-    /**
-     * DISPLAY IMAGE OPTION SETTING PROFILE
-     */
-    public static final DisplayImageOptions optionsProfileAvatarSetting = new DisplayImageOptions.Builder()
-            .showImageForEmptyUri(R.drawable.loading)
-            .showImageOnFail(R.drawable.loading)
-            .cacheOnDisk(true)
-            .cacheInMemory(true)
-            .imageScaleType(ImageScaleType.NONE_SAFE)
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .considerExifParams(false)
-            .displayer(new RoundedBitmapDisplayer(10))
-            .showImageOnLoading(R.drawable.loading)
-            .build();
-
-    /*
-    * TYPE ACTION
-    * */
     public static final int TYPE_ACTION_FAVORITE = 1009;
     public static final int TYPE_ACTION_ALARM_ON = 1010;
     public static final int TYPE_ACTION_ALARM_OFF = 1011;
@@ -145,36 +85,8 @@ public class Constant {
     public static final int TYPE_ROUNDED_TOP_LEFT = 1002;
     public static final int TYPE_ROUNDED_BOTTOM_RIGHT = 1003;
     public static final int TYPE_ROUNDED_BOTTOM_LEFT = 1004;
-    public static final int TYPE_ROUNDED_LEFT_SIDE = 1005;
     public static final int TYPE_ROUNDED_TOP = 1007;
-    public static final int TYPE_ROUNDED_RIGHT_SIDE = 1006;
 
-
-    /**
-     * FILE TYPES
-     */
-    public static final String IMAGE_JPG = ".jpg";
-    public static final String IMAGE_JPEG = ".jpeg";
-    public static final String IMAGE_PNG = ".png";
-    public static final String IMAGE_GIF = ".gif";
-    public static final String AUDIO_MP3 = ".mp3";
-    public static final String AUDIO_WMA = ".wma";
-    public static final String AUDIO_AMR = ".amr";
-    public static final String VIDEO_MP4 = ".mp4";
-    public static final String FILE_PDF = ".pdf";
-    public static final String FILE_DOCX = ".docx";
-    public static final String FILE_DOC = ".doc";
-    public static final String FILE_XLS = ".xls";
-    public static final String FILE_XLSX = ".xlsx";
-    public static final String FILE_PPTX = ".pptx";
-    public static final String FILE_PPT = ".ppt";
-    public static final String FILE_ZIP = ".zip";
-    public static final String FILE_RAR = ".rar";
-    public static final String FILE_APK = ".apk";
-//____________>SON edit
-    /**
-     * rotation screen
-     */
     public static final int AUTOMATIC = 0;
     public static final int PORTRAIT = 1;
     public static final int LANSCAPE = 2;
@@ -219,19 +131,6 @@ public class Constant {
             iv = R.drawable.home_big_status_03;
         }
         return iv;
-    }
-
-
-    public static List<ChattingDto> addIdUnknow(List<ChattingDto> list, int myId) {
-        for (ChattingDto dto : list) {
-            ArrayList<Integer> UserNos = dto.getUserNos();
-            if (UserNos.size() == 1 && UserNos.get(0) == myId && dto.getRoomType() != 1) {
-                ArrayList<Integer> lst = UserNos;
-                lst.add(dto.getMakeUserNo());
-                dto.setUserNos(lst);
-            }
-        }
-        return list;
     }
 
     public static boolean isAddChattingDto(ChattingDto dto) {
@@ -345,22 +244,6 @@ public class Constant {
             }
         }
 
-//        for (int i = 0; i < lst.size(); i++) {
-//            ChattingDto obj = lst.get(i);
-//            if (obj.getMessageNo() != 0) {
-//                long time_1 = TimeUtils.getTime(obj.getRegDate());
-//                for (int j = 0; j <= i; j++) {
-//                    ChattingDto dto = lst.get(j);
-//                    long time_2 = TimeUtils.getTime(dto.getRegDate());
-//                    if (time_1 < time_2) {
-//                        ChattingDto pp = lst.get(i);
-//                        lst.set(i, lst.get(j));
-//                        lst.set(j, pp);
-//                    }
-//                }
-//            }
-//        }
-
         for (int i = 0; i < lst.size(); i++) {
             for (int j = 0; j <= i; j++) {
                 if (lst.get(i).getMessageNo() <= lst.get(j).getMessageNo()) {
@@ -440,7 +323,6 @@ public class Constant {
                 try {
                     MediaPlayer mp = MediaPlayer.create(context, Uri.parse(path));
                     int d = mp.getDuration() / 1000;
-//                Log.d(TAG, "duration:" + duration);
                     duration = audioFormatDuration(d);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -455,88 +337,6 @@ public class Constant {
             callBack.onComplete(s);
         }
     }
-
-    public static void openFile(Context context, File file) {
-
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(apkUri);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                context.startActivity(intent);
-            } else {
-                String type = Constant.getMimeType(file.getAbsolutePath());
-                Log.d(TAG, "type:" + type);
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(file), type);
-                context.startActivity(intent);
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "Exception");
-            Toast.makeText(context, "No Application available to view this file", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-//    public static void audioPlayer(Activity context, String pathAudio) {
-//        final Dialog dialog = new Dialog(context);
-//        dialog.setCanceledOnTouchOutside(false);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setContentView(R.layout.player);
-//
-//        // Handler
-//        final Handler mHandler = new Handler();
-//        // songProgressBar
-//        final SeekBar songProgressBar = (SeekBar) dialog.findViewById(R.id.songProgressBar);
-//
-//
-//        // MediaPlayer
-//        final MediaPlayer mp = new MediaPlayer();
-//        try {
-//            mp.setDataSource(pathAudio);
-//            mp.prepare();
-//            mp.start();
-//            // songProgressBar
-//            songProgressBar.setProgress(0);
-//            songProgressBar.setMax(mp.getDuration());
-//            mHandler.postDelayed(mUpdateTimeTask, 1000);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        if (mp == null) return;
-//
-//
-//
-//
-//        // btnClose
-//        FrameLayout btnClose = (FrameLayout) dialog.findViewById(R.id.btnClose);
-//        btnClose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mp != null) {
-//                    mp.release();
-//                }
-//                dialog.dismiss();
-//            }
-//        });
-//        // setOnKeyListener dialog
-//        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-//            @Override
-//            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-//                if (keyCode == KeyEvent.KEYCODE_BACK) {
-//                    Log.d("audioPlayer", "KEYCODE_BACK");
-//                }
-//                return true;
-//            }
-//        });
-//
-//        Window window = dialog.getWindow();
-//        window.setGravity(Gravity.CENTER);
-//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-//        dialog.show();
-//    }
 
     public static String getUnreadText(Context context, int count) {
         String s = "";

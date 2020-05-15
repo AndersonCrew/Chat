@@ -106,26 +106,6 @@ public class WebSocketClient {
 
                     // Read HTTP response status line.
                     readLine(stream);
-//                    StatusLine statusLine = parseStatusLine(readLine(stream));
-//                    if (statusLine == null) {
-//                        throw new HttpException("Received no reply from server.");
-//                    } else if (statusLine.getStatusCode() != HttpStatus.SC_SWITCHING_PROTOCOLS) {
-//                        throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
-//                    }
-
-                    // Read HTTP response headers.
-                    String line;
-                    while (!TextUtils.isEmpty(line = readLine(stream))) {
-//                        Header header = parseHeader(line);
-//                        if (header.getName().equals("Sec-WebSocket-Accept")) {
-//                            String expected = expectedKey(secretKey);
-//                            if (expected == null) {
-//                                throw new Exception("SHA-1 algorithm not found");
-//                            } else if (!expected.equals(header.getValue())) {
-//                                throw new Exception("Invalid Sec-WebSocket-Accept, expected: " + expected + ", got: " + header.getValue());
-//                            }
-//                        }
-                    }
 
                     mListener.onConnect();
 
@@ -153,41 +133,6 @@ public class WebSocketClient {
         mThread.start();
     }
 
-    public void disconnect() {
-        if (mSocket != null) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mSocket != null) {
-                        try {
-                            mSocket.close();
-                        } catch (IOException ex) {
-                            Log.d(TAG, "Error while disconnecting", ex);
-                            mListener.onError(ex);
-                        }
-                        mSocket = null;
-                    }
-                    mConnected = false;
-                }
-            });
-        }
-    }
-
-
-//    private String getResponse(InputStream is) throws IOException {
-//        StringBuilder builder = new StringBuilder();
-//        InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-//        BufferedReader reader = new BufferedReader(isr);
-//
-//        String line;
-//
-//        while ((line = reader.readLine()) != null) {
-//            builder.append(line);
-//        }
-//
-//        return builder.toString();
-//    }
-
     public void send(String data) {
         sendFrame(mParser.frame(data));
     }
@@ -195,21 +140,6 @@ public class WebSocketClient {
     public void send(byte[] data) {
         sendFrame(mParser.frame(data));
     }
-
-    public boolean isConnected() {
-        return mConnected;
-    }
-
-//    private StatusLine parseStatusLine(String line) {
-//        if (TextUtils.isEmpty(line)) {
-//            return null;
-//        }
-//        return BasicLineParser.parseStatusLine(line, new BasicLineParser());
-//    }
-//
-//    private Header parseHeader(String line) {
-//        return BasicLineParser.parseHeader(line, new BasicLineParser());
-//    }
 
     // Can't use BufferedReader because it buffers past the HTTP data.
     private String readLine(HybiParser.HappyDataInputStream reader) throws IOException {
@@ -230,19 +160,6 @@ public class WebSocketClient {
         }
         return string.toString();
     }
-
-//    private String expectedKey(String secret) {
-//        //concatenate, SHA1-hash, base64-encode
-//        try {
-//            final String GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-//            final String secretGUID = secret + GUID;
-//            MessageDigest md = MessageDigest.getInstance("SHA-1");
-//            byte[] digest = md.digest(secretGUID.getBytes());
-//            return Base64.encodeToString(digest, Base64.DEFAULT).trim();
-//        } catch (NoSuchAlgorithmException e) {
-//            return null;
-//        }
-//    }
 
     private String createSecret() {
         byte[] nonce = new byte[16];

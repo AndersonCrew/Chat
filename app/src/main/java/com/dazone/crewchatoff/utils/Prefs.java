@@ -3,7 +3,6 @@ package com.dazone.crewchatoff.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.interfaces.Urls;
 
 import java.io.Serializable;
@@ -86,10 +85,6 @@ public class Prefs implements Serializable {
         putStringValue(CrewChatFileServerIP, key);
     }
 
-    public String getCrewChatFileServerIP() {
-        return getStringValue(CrewChatFileServerIP, Urls.HOST_STATUS);
-    }
-
     public void setFILE_SERVER_PORT(int key) {
         putIntValue(FILE_SERVER_PORT, key);
     }
@@ -121,14 +116,6 @@ public class Prefs implements Serializable {
 
     public String getIMAGE_LIST() {
         return getStringValue(IMAGE_LIST, "");
-    }
-
-    public void setSERVER_VERSION(String key) {
-        putStringValue(SERVER_VERSION, key);
-    }
-
-    public String getSERVER_VERSION() {
-        return getStringValue(SERVER_VERSION, "");
     }
 
     public void putRoomId(int companyNo) {

@@ -8,7 +8,6 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,13 +15,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.BelongDepartmentDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.ErrorDto;
@@ -32,9 +29,6 @@ import com.dazone.crewchatoff.interfaces.OnGetUserCallBack;
 import com.dazone.crewchatoff.utils.*;
 
 import java.util.ArrayList;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ProfileUserActivity extends AppCompatActivity implements View.OnClickListener {
     String TAG = "ProfileUserActivity";

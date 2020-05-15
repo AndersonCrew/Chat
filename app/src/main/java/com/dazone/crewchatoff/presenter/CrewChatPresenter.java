@@ -8,7 +8,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.Prefs;
@@ -118,12 +118,10 @@ public class CrewChatPresenter implements CompoundButton.OnCheckedChangeListener
             case Constant.AUTOMATIC:
                 tv.setText(context.getString(R.string.automatic));
                 break;
-            case Constant.PORTRAIT:
-                tv.setText(context.getString(R.string.portrait));
-                break;
             case Constant.LANSCAPE:
                 tv.setText(context.getString(R.string.landscape));
                 break;
+            case Constant.PORTRAIT:
             default:
                 tv.setText(context.getString(R.string.portrait));
         }

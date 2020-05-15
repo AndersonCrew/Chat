@@ -13,15 +13,14 @@ import android.view.animation.TranslateAnimation;
 import android.widget.*;
 
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.constant.Statics;
-import com.dazone.crewchatoff.interfaces.OnClickViewCallback;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.utils.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
-import static com.dazone.crewchatoff.constant.Statics.CHOOSE_OPTION_IMAGE;
+import static com.dazone.crewchatoff.utils.Statics.CHOOSE_OPTION_IMAGE;
 
 
 public class RotateImageActivity extends Activity implements View.OnClickListener {

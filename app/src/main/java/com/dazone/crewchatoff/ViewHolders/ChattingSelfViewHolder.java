@@ -3,13 +3,9 @@ package com.dazone.crewchatoff.ViewHolders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -31,7 +27,7 @@ import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.RelayActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.adapter.ChattingAdapter;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.database.ChatMessageDBHelper;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.ErrorDto;
@@ -49,8 +45,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.dazone.crewchatoff.fragment.ChattingFragment.sendComplete;
 
 public class ChattingSelfViewHolder extends BaseChattingHolder {
     private TextView date_tv, content_tv;

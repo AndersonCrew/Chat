@@ -19,8 +19,6 @@ import java.util.List;
 
 public class TabCurrentChatFragment extends ListFragment<ChattingDto> implements OnGetCurrentChatCallBack {
     public static TabCurrentChatFragment fragment;
-    String TAG = "TabCurrentChatFragment";
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

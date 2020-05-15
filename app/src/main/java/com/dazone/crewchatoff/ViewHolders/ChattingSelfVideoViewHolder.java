@@ -1,6 +1,7 @@
 package com.dazone.crewchatoff.ViewHolders;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
@@ -19,7 +20,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -43,7 +43,7 @@ import com.dazone.crewchatoff.activity.ChattingActivity;
 import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.RelayActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.AttachDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.ErrorDto;
@@ -84,13 +84,13 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
 
     @Override
     protected void setup(View v) {
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
-        progressDownloading = (ProgressBar) v.findViewById(R.id.progress_downloading);
-        date_tv = (TextView) v.findViewById(R.id.date_tv);
-        chatting_imv = (ImageView) v.findViewById(R.id.chatting_imv);
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
-        ivPlayBtn = (ImageView) v.findViewById(R.id.iv_play_btn);
-        tvDuration = (TextView) v.findViewById(R.id.tv_duration);
+        progressBar = v.findViewById(R.id.progressBar);
+        progressDownloading = v.findViewById(R.id.progress_downloading);
+        date_tv = v.findViewById(R.id.date_tv);
+        chatting_imv = v.findViewById(R.id.chatting_imv);
+        tvUnread = v.findViewById(R.id.text_unread);
+        ivPlayBtn = v.findViewById(R.id.iv_play_btn);
+        tvDuration = v.findViewById(R.id.tv_duration);
         overLayView = v.findViewById(R.id.overlay_movie);
         overLayView.setOnClickListener(this);
         overLayView.setOnCreateContextMenuListener(this);
@@ -98,6 +98,7 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
 
     boolean isLoaded =  false;
 
+    @SuppressLint("HandlerLeak")
     protected final android.os.Handler mHandler = new android.os.Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
@@ -140,23 +141,15 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
             }
             Log.d(TAG, "fileName:" + fileName);
 
-            // Check local file is exist and get thumbnail image
             final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + Constant.pathDownload, fileName);
 
             if (file.exists()) {
-                // Thread to get meta data
                 new Async_Get_Bitmap(file).execute();
                 isLoaded = true;
             }
         }
 
         if (dto.getmType() == Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO) {
-            /*file_name_tv.setText(dto.getAttachFileName());
-            file_size_tv.setText(Utils.readableFileSize(new Long(dto.getAttachFileSize())));
-            file_receive_tv.setVisibility(View.GONE);
-            *//** Set IMAGE FILE TYPE *//*
-            String fileType = Utils.getFileType(dto.getAttachFileName());
-            ImageUtils.imageFileType(file_thumb, fileType);*/
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setProgress(0);
             ChattingFragment.instance.SendTo(dto, progressBar, getAdapterPosition(), null);
@@ -170,7 +163,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
 
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);
-//        tvUnread.setVisibility(dto.getUnReadCount() == 0 ? View.GONE : View.VISIBLE);
         date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,10 +185,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         overLayView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                Log.d(TAG,"onLongClick:"+new Gson().toJson(dto));
-//                if (!TextUtils.isEmpty(url)) {
-//                    Utils.displayDownloadFileDialog(BaseActivity.Instance, url, fileName);
-//                }
                 MessageNo = dto.getMessageNo();
                 v.showContextMenu();
                 return true;
@@ -229,7 +217,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
             bitmap = ThumbnailUtils.createVideoThumbnail(file.getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
             // Get duration
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            //use one of overloaded setDataSource() functions to set your data source
 
             try {
                 Uri uri = Uri.fromFile(file);
@@ -342,50 +329,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         }
     }
 
-    /*  private void playVideoStreaming() {
-          if (ChattingActivity.instance != null) {
-              if (ChattingActivity.instance.checkPermissionsReadExternalStorage()) {
-                  Log.d(TAG, "playVideoStreaming");
-                  if (tempDto != null) {
-                      AttachDTO attachDTO = tempDto.getAttachInfo();
-                      if (attachDTO != null) {
-                          String url = new Prefs().getServerSite() + Urls.URL_DOWNLOAD + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTO.getAttachNo();
-
-                          Log.d(TAG, "url:" + url);
-                          new WebClientAsyncTask(mActivity, progressDownloading, url, fileName, new OnDownloadFinish() {
-                              @Override
-                              public void onFinish(File file) {
-                                  if (file == null || file.length() <= 0) {
-                                      Toast.makeText(CrewChatApplication.getInstance(), "download fail", Toast.LENGTH_SHORT).show();
-                                  } else {
-                                      Log.d(TAG, "onFinish file:" + file.length());
-                                      try {
-                                          galleryAddPic(file.getPath());
-                                      } catch (Exception e) {
-                                          e.printStackTrace();
-                                      }
-
-                                      try {
-                                          getVideoMeta(file);
-                                      } catch (Exception e) {
-                                          e.printStackTrace();
-                                      }
-
-                                  }
-                              }
-                          }).execute();
-
-                      }
-                  }
-
-              } else {
-                  ChattingActivity.instance.setPermissionsReadExternalStorage();
-              }
-          } else {
-              Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
-          }
-
-      }*/
     private void playVideoStreaming() {
         if (ChattingActivity.instance != null) {
             if (ChattingActivity.instance.checkPermissionsReadExternalStorage()) {
@@ -422,7 +365,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
                             String url = new Prefs().getServerSite() + Urls.URL_DOWNLOAD + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTO.getAttachNo();
                             Log.d("playVideoStreaming", "url:" + url);
                             // Check local data
-                            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + Constant.pathDownload, fileName);
                             new WebClientAsyncTask(mActivity, progressDownloading, url, fileName, new OnDownloadFinish() {
                                 @Override
                                 public void onFinish(File file) {
@@ -442,7 +384,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
                                         }
 
                                     }
-                                    Log.d("playVideoStreaming", TAG);
                                     try {
                                         galleryAddPic(file.getPath());
                                     } catch (Exception e) {
@@ -521,13 +462,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
     void actionDownload() {
         if (!TextUtils.isEmpty(url)) {
             String path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + fileName;
-            File file = new File(path);
-//            if (file.isFile()) {
-////                        Toast.makeText(mActivity, "file exist", Toast.LENGTH_LONG).show();
-//                mActivity.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-//            } else {
-//                Utils.displayDownloadFileDialog(BaseActivity.Instance, url, fileName);
-//            }
             Utils.displayDownloadFileDialog(BaseActivity.Instance, url, fileName);
         }
     }
@@ -546,11 +480,7 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
-        if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-
-        return true;
+        return ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
     public void DownloadImage(final Context context, final String url, final String name, final Intent shareIntent, final File file) {
         String mimeType;
@@ -564,7 +494,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        //request.setTitle(name);
         int type = getTypeFile(fileType);
         switch (type) {
             case 1:
@@ -598,7 +527,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(reference);
                     Cursor c = downloadmanager.query(query);
@@ -627,8 +555,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
             String path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + fileName;
             File file = new File(path);
             if (file.isFile()) {
-//                        Toast.makeText(mActivity, "file exist", Toast.LENGTH_LONG).show();
-//                mActivity.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
                 shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(CrewChatApplication.getInstance(), BuildConfig.APPLICATION_ID + ".provider", file));
                 mActivity.startActivity(Intent.createChooser(shareIntent, "Share video using"));
             } else {
@@ -704,8 +630,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         void onFinish(File file);
     }
 
-    // Download video first, then play it
-
     private static class WebClientAsyncTask extends AsyncTask<Void, Void, Void> {
         private final WeakReference<Activity> mWeakActivity;
         private String mUrl = "";
@@ -725,8 +649,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-            Activity activity = mWeakActivity.get();
             mProgressBar.setVisibility(View.VISIBLE);
         }
 
@@ -742,7 +664,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
                 urlConnection = (HttpURLConnection) apkUrl.openConnection();
                 inputStream = urlConnection.getInputStream();
                 bufferedInputStream = new BufferedInputStream(inputStream);
-//                Log.d(TAG, "mName:" + mName);
                 outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + Constant.pathDownload, this.mName);
 
                 if (outputFile.exists()) outputFile.delete();
@@ -802,7 +723,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mProgressBar.setVisibility(View.GONE);
-            Activity activity = mWeakActivity.get();
             mDownloadCallback.onFinish(outputFile);
 
         }

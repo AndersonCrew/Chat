@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.base.BaseSingleBackActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.eventbus.NotifyAdapterOgr;
 import com.dazone.crewchatoff.eventbus.RotationAction;
 import com.dazone.crewchatoff.presenter.CrewChatPresenter;

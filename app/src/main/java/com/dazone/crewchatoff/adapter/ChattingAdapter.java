@@ -24,7 +24,7 @@ import com.dazone.crewchatoff.ViewHolders.ChattingSelfViewHolder;
 import com.dazone.crewchatoff.ViewHolders.ChattingViewHolder4;
 import com.dazone.crewchatoff.ViewHolders.ChattingViewHolder5;
 import com.dazone.crewchatoff.ViewHolders.ChattingViewHolder6;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
 
 import java.util.Collections;

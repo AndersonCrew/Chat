@@ -1,4 +1,4 @@
-package com.dazone.crewchatoff.constant;
+package com.dazone.crewchatoff.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,8 +31,6 @@ public interface Statics {
 
     String START_NOTIFICATION_HOUR = "start_notification_time_hour";
     String START_NOTIFICATION_MINUTES = "start_notification_time_minutes";
-    String IS_FIRST_SHARE = "is_first_share";
-    String VALUE_CODE_SHARE = "value_code_share";
     String END_NOTIFICATION_HOUR = "end_notification_time_hour";
     String END_NOTIFICATION_MINUTES = "end_notification_time_minutes";
 

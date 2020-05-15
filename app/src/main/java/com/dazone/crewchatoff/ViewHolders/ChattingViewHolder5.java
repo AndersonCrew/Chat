@@ -28,12 +28,11 @@ public class ChattingViewHolder5 extends BaseChattingHolder {
 
     @Override
     protected void setup(View v) {
-        tv_5 = (TextView) v.findViewById(R.id.tv_5);
+        tv_5 = v.findViewById(R.id.tv_5);
     }
 
     @Override
     public void bindData(final ChattingDto dto) {
-        String listUser = "";
         String s = dto.getMessage().trim();
         if (s.startsWith("{") && dto.getType() == 5) {
             Msg msg = new Gson().fromJson(s, Msg.class);

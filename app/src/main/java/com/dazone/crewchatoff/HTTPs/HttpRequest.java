@@ -7,9 +7,8 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.activity.MainActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.*;
-import com.dazone.crewchatoff.dto.userfavorites.FavoriteChatRoomDto;
 import com.dazone.crewchatoff.interfaces.*;
 import com.dazone.crewchatoff.utils.*;
 import com.google.gson.Gson;
@@ -19,8 +18,6 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.*;
-
-import static com.dazone.crewchatoff.utils.Utils.getApplicationName;
 
 public class HttpRequest {
     public static String TAG = ">>>HttpRequest";

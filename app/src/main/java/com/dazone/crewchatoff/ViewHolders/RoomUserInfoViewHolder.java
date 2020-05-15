@@ -14,7 +14,7 @@ import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.ImageUtils;
@@ -32,9 +32,6 @@ public class RoomUserInfoViewHolder extends ItemViewHolder<TreeUserDTO> {
     private ImageView ivUserStatus;
     private TextView name, position;
     private RelativeLayout relAvatar;
-    private String roomTitle = "";
-    private long roomNo = -1;
-    private boolean isTwoUser = false;
 
     private TextView tvWorkPhone, tvPersonalPhone;
     int myId = Utils.getCurrentId();
@@ -47,14 +44,14 @@ public class RoomUserInfoViewHolder extends ItemViewHolder<TreeUserDTO> {
 
     @Override
     protected void setup(View view) {
-        avatar = (ImageView) view.findViewById(R.id.avatar);
-        folderIcon = (ImageView) view.findViewById(R.id.ic_folder);
-        ivUserStatus = (ImageView) view.findViewById(R.id.status_imv);
-        relAvatar = (RelativeLayout) view.findViewById(R.id.relAvatar);
-        name = (TextView) view.findViewById(R.id.name);
-        position = (TextView) view.findViewById(R.id.position);
-        tvWorkPhone = (TextView) view.findViewById(R.id.tv_work_phone);
-        tvPersonalPhone = (TextView) view.findViewById(R.id.tv_personal_phone);
+        avatar = view.findViewById(R.id.avatar);
+        folderIcon = view.findViewById(R.id.ic_folder);
+        ivUserStatus = view.findViewById(R.id.status_imv);
+        relAvatar = view.findViewById(R.id.relAvatar);
+        name = view.findViewById(R.id.name);
+        position = view.findViewById(R.id.position);
+        tvWorkPhone = view.findViewById(R.id.tv_work_phone);
+        tvPersonalPhone = view.findViewById(R.id.tv_personal_phone);
     }
 
     @Override
@@ -74,7 +71,6 @@ public class RoomUserInfoViewHolder extends ItemViewHolder<TreeUserDTO> {
 
         if (treeUserDTO.getType() == 2) {
             int status = treeUserDTO.getStatus();
-            //Utils.printLogs("User name ="+treeUserDTO.getName()+" status ="+status);
             if (treeUserDTO.getId() == myId) {
                 ivUserStatus.setImageResource(R.drawable.home_status_me);
             } else if (status == Statics.USER_LOGIN) {
@@ -104,7 +100,6 @@ public class RoomUserInfoViewHolder extends ItemViewHolder<TreeUserDTO> {
         }
 
         name.setText(nameString);
-       /* position.setText(namePosition);*/
         setDutyOrPosition(position,nameDuty,namePosition);
 
         final String companyNumber = treeUserDTO.getCompanyNumber().trim();
@@ -148,25 +143,5 @@ public class RoomUserInfoViewHolder extends ItemViewHolder<TreeUserDTO> {
         boolean isEnable = false;
         isEnable = CrewChatApplication.getInstance().getPrefs().getBooleanValue(Statics.IS_ENABLE_ENTER_VIEW_DUTY_KEY, isEnable);
         return isEnable;
-    }
-    private void doColorSpanForSecondString(String firstString, String lastString, TextView txtSpan) {
-        String changeString = (lastString != null ? lastString : "");
-        String totalString;
-
-        if (TextUtils.isEmpty(firstString) || TextUtils.isEmpty(lastString)) {
-            totalString = firstString + changeString;
-            Spannable spanText = new SpannableString(totalString);
-            spanText.setSpan(new ForegroundColorSpan(CrewChatApplication.getInstance().getResources()
-                    .getColor(R.color.gray)), String.valueOf(firstString + 3)
-                    .length(), totalString.length(), 0);
-            txtSpan.setText(spanText);
-        } else {
-            totalString = firstString + " / " + changeString;
-            Spannable spanText = new SpannableString(totalString);
-            spanText.setSpan(new ForegroundColorSpan(CrewChatApplication.getInstance().getResources()
-                    .getColor(R.color.gray)), String.valueOf(firstString + " / ")
-                    .length(), totalString.length(), 0);
-            txtSpan.setText(spanText);
-        }
     }
 }

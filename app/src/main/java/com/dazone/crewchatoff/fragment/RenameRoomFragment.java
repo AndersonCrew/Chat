@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.RenameRoomActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.ErrorDto;
 import com.dazone.crewchatoff.interfaces.BaseHTTPCallBack;
 import com.dazone.crewchatoff.interfaces.OnTickCallback;
@@ -25,7 +25,6 @@ import com.dazone.crewchatoff.interfaces.OnTickCallbackSuccess;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 
 public class RenameRoomFragment extends BaseFragment {
-    String TAG="RenameRoomFragment";
     private View rootView;
     private TextView tvRemainCharacterCount;
     private EditText et_title;

@@ -48,7 +48,7 @@ import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.UnreadActivity;
 import com.dazone.crewchatoff.adapter.ChattingAdapter;
 import com.dazone.crewchatoff.adapter.EndlessRecyclerOnScrollListener;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.customs.AudioPlayer;
 import com.dazone.crewchatoff.customs.EmojiView;
 import com.dazone.crewchatoff.database.AllUserDBHelper;

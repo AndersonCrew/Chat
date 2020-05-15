@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import android.text.TextUtils;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.UserDto;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 

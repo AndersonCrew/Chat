@@ -8,7 +8,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.LoginActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.ErrorDto;
 import com.dazone.crewchatoff.interfaces.OAUTHUrls;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
@@ -24,17 +24,11 @@ import java.util.Map;
 
 public class WebServiceManager<T> {
     private int CREWCHAT_SOCKET_TIMEOUT_MS = 4000;
-    private Map<String, String> mHeaders;
 
-    private Request.Priority mPriority;
 
     public WebServiceManager() {
     }
 
-    WebServiceManager(Map<String, String> headers, Request.Priority priority) {
-        mHeaders = headers;
-        mPriority = priority;
-    }
 
     public void doJsonObjectRequest(int requestMethod, final String url, final JSONObject bodyParam, final RequestListener<String> listener) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethod, url, bodyParam, new Response.Listener<JSONObject>() {

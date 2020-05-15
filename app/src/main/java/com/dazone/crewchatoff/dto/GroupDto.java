@@ -1,6 +1,6 @@
 package com.dazone.crewchatoff.dto;
 
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 
 import java.util.List;
 

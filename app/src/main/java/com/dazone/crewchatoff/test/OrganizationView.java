@@ -20,7 +20,7 @@ import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.Tree.Org_tree;
 import com.dazone.crewchatoff.adapter.AdapterOrganizationChartFragment;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.database.DepartmentDBHelper;
 import com.dazone.crewchatoff.dto.BelongDepartmentDTO;
 import com.dazone.crewchatoff.dto.TreeUserDTOTemp;

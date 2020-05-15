@@ -1,7 +1,6 @@
 package com.dazone.crewchatoff.socket;
 
 import android.app.NotificationManager;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,8 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.ProgressBar;
 
-import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.AttachDTO;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.Prefs;
@@ -33,18 +31,10 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-import static com.dazone.crewchatoff.constant.Statics.CHOOSE_OPTION_IMAGE;
+import static com.dazone.crewchatoff.utils.Statics.CHOOSE_OPTION_IMAGE;
 
 public class NetClient {
 
-    private static NotificationCompat.Builder notificationBuilder;
-    private static NotificationManager notificationManager;
-    private static Integer notificationIDUpload = 200;
-    private static int sdk = android.os.Build.VERSION.SDK_INT;
-
-    /**
-     * Maximum size of buffer
-     */
     private Socket socket = null;
     private OutputStream out = null;
     private InputStream in = null;

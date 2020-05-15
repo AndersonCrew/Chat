@@ -1,6 +1,6 @@
 package com.dazone.crewchatoff.HTTPs;
 
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.StatusDto;
 import com.dazone.crewchatoff.dto.StatusItemDto;
 import com.dazone.crewchatoff.utils.Prefs;

@@ -10,7 +10,7 @@ public class ProgressViewHolder extends ItemViewHolder {
 
     public ProgressViewHolder(View v) {
         super(v);
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        progressBar = v.findViewById(R.id.progressBar);
     }
 
     @Override

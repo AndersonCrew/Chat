@@ -34,7 +34,7 @@ import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.Tree.Org_tree;
 import com.dazone.crewchatoff.adapter.AdapterOrganizationCompanyTab;
 import com.dazone.crewchatoff.adapter.CompanySearchAdapter;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.DepartmentDBHelper;
 import com.dazone.crewchatoff.database.FavoriteGroupDBHelper;
@@ -52,19 +52,16 @@ import com.dazone.crewchatoff.eventbus.NotifyAdapterOgr;
 import com.dazone.crewchatoff.interfaces.BaseHTTPCallbackWithJson;
 import com.dazone.crewchatoff.interfaces.IGetListDepart;
 import com.dazone.crewchatoff.interfaces.IGetListOrganization;
-import com.dazone.crewchatoff.interfaces.OnGetStatusCallback;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.Prefs;
 import com.dazone.crewchatoff.utils.TimeUtils;
 import com.dazone.crewchatoff.utils.Utils;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;

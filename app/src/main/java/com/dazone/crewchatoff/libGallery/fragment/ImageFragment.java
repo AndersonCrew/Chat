@@ -33,7 +33,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.libGallery.MediaChooserConstants;
 import com.dazone.crewchatoff.libGallery.MediaModel;
 import com.dazone.crewchatoff.libGallery.adapter.GridViewAdapter;
@@ -46,7 +46,6 @@ import java.util.List;
 
 
 public class ImageFragment extends Fragment {
-    private String TAG = "ImageFragment";
     private ArrayList<String> mSelectedItems = new ArrayList<String>();
     private ArrayList<MediaModel> mGalleryModelList;
     private GridView mImageGridView;

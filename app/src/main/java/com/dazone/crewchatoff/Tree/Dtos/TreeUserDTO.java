@@ -3,7 +3,7 @@ package com.dazone.crewchatoff.Tree.Dtos;
 
 import android.text.TextUtils;
 
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.DataDto;
 import com.dazone.crewchatoff.dto.DrawImageItem;
 import com.google.gson.annotations.SerializedName;

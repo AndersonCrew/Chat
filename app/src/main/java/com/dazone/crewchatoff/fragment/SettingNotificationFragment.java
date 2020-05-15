@@ -12,7 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.ErrorDto;
 import com.dazone.crewchatoff.interfaces.OnSetNotification;
 import com.dazone.crewchatoff.interfaces.Urls;

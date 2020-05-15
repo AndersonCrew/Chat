@@ -11,7 +11,7 @@ import com.dazone.crewchatoff.ViewHolders.ItemViewHolder;
 
 import com.dazone.crewchatoff.ViewHolders.ProgressViewHolder;
 import com.dazone.crewchatoff.ViewHolders.TransferMsgViewHolder;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
 
 import com.dazone.crewchatoff.fragment.TabCurrentChatFragment;

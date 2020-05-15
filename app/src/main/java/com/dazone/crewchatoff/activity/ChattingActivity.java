@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -36,7 +35,7 @@ import android.widget.Toast;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.base.BaseSingleStatusActivity;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.ChatMessageDBHelper;
 import com.dazone.crewchatoff.database.ChatRoomDBHelper;
@@ -52,7 +51,6 @@ import com.dazone.crewchatoff.fragment.CompanyFragment;
 import com.dazone.crewchatoff.fragment.CurrentChatListFragment;
 import com.dazone.crewchatoff.fragment.RecentFavoriteFragment;
 import com.dazone.crewchatoff.interfaces.BaseHTTPCallBack;
-import com.dazone.crewchatoff.interfaces.OnFilterMessage;
 import com.dazone.crewchatoff.interfaces.OnGetChatRoom;
 import com.dazone.crewchatoff.interfaces.SendChatMessage;
 import com.dazone.crewchatoff.libGallery.MediaChooser;
@@ -74,7 +72,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.dazone.crewchatoff.constant.Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO;
+import static com.dazone.crewchatoff.utils.Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO;
 
 public class ChattingActivity extends BaseSingleStatusActivity implements View.OnClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     public static void toActivity(Context context, long roomNo, long myId, ChattingDto tempDto) {
@@ -343,22 +341,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             /** ADD FRAGMENT TO ACTIVITY */
             Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        try {
-            CrewChatApplication.activityResumed();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        CrewChatApplication.activityPaused();
     }
 
     @Override

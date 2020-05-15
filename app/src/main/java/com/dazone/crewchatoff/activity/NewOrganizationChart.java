@@ -26,7 +26,7 @@ import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.Tree.Org_tree;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.adapter.AdapterOrganizationChart;
-import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.Statics;
 import com.dazone.crewchatoff.dto.BelongDepartmentDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.ErrorDto;
@@ -53,7 +53,6 @@ public class NewOrganizationChart extends AppCompatActivity {
     private AdapterOrganizationChart mAdapter;
     private List<TreeUserDTO> list = new ArrayList<>();
     private ArrayList<TreeUserDTOTemp> listTemp;
-    private ArrayList<TreeUserDTO> mDepartmentList;
     private ArrayList<TreeUserDTO> temp = new ArrayList<>();
     private ArrayList<TreeUserDTO> mPersonList = new ArrayList<>();
     private ArrayList<TreeUserDTO> mSelectedPersonList = new ArrayList<>();
