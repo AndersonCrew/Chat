@@ -690,10 +690,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 chattingDto.setLastedMsgAttachType(dto.getLastedMsgAttachType());
                 chattingDto.setAttachFileName(dto.getAttachFileName());
                 chattingDto.setLastedMsgDate(dto.getRegDate());
-
-                if (isAddUnread) {
-                    chattingDto.setUnReadCount(chattingDto.getUnReadCount() + 1);
-                }
                 isContains = true;
                 break;
             }
