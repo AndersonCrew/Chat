@@ -44,7 +44,7 @@ public class CurrentChatAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
 
     @Override
     public int getItemCount() {
-        if (mDataSet.size() == 0 && !CurrentChatListFragment.fragment.isFirstTime) {
+        if (mDataSet.size() == 0) {
             return 1;
         }
 

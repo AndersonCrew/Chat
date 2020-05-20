@@ -491,9 +491,8 @@ public class CompanyFragment extends Fragment {
                     if (MultilLevelListviewFragment.instanceNew != null)
                         MultilLevelListviewFragment.instanceNew.initDB();
 
-                } else {
-                    Log.d(TAG, "TREE NULL");
                 }
+
                 boolean flag = new Prefs().isDataComplete();
                 if (flag) {
                     getListAllUser_Mod();

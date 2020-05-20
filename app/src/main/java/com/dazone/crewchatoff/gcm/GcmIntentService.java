@@ -1,12 +1,15 @@
 package com.dazone.crewchatoff.gcm;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,7 +62,6 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
 
 public class GcmIntentService extends IntentService {
-    String TAG = ">>>GcmIntentService";
     String channelId = "channel-01";
 
     public GcmIntentService() {
@@ -73,8 +75,6 @@ public class GcmIntentService extends IntentService {
     ChattingDto chattingDto;
     private Prefs prefs;
     private NotificationCompat.Builder mBuilder;
-    //public static NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.getApplicationContext());
-    //  private NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
     boolean isEnableN, isEnableSound, isEnableVibrate, isEnableTime, isPCVersion;
 
     @Override
@@ -90,6 +90,7 @@ public class GcmIntentService extends IntentService {
         isEnableTime = prefs.getBooleanValue(Statics.ENABLE_TIME, false);
         isPCVersion = prefs.getBooleanValue(Statics.ENABLE_NOTIFICATION_WHEN_USING_PC_VERSION, true);
 
+
         if (extras != null) { // Check enable notification and current time avaiable [on time table]
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
                 //TODO sendNotification("Send error",extras.toString());
@@ -100,30 +101,23 @@ public class GcmIntentService extends IntentService {
                     Code = Integer.parseInt(extras.getString("Code", "0"));
                     switch (Code) {
                         case 1:
-                            Log.d("TAG", "Case 1 ###");
                             receiveCode1(extras);
                             break;
                         case 2:
-                            Log.d("TAG", "Case 2 ###");
                             receiveCode2(extras);
                             break;
                         case 3:
-                            Log.d("TAG", "Case 3 ###");
                             chatDeleteMember(extras);
                             break;
                         case 4:
-                            Log.d("TAG", "Case 4 ###");
                             break;
                         case 5:
-                            Log.d("TAG", "Case 5 ###");
                             receiveCode5(extras);
                             break;
                         case 8:
-                            Log.d("TAG", "Case 8 ###");
                             receiveCode8(extras);
                             break;
                         default:
-                            Log.d("TAG", "Case 0 ###");
                             break;
                     }
                 }
@@ -185,10 +179,6 @@ public class GcmIntentService extends IntentService {
 
                     final long roomNo = chattingDto.getRoomNo();
                     final long unreadCount = bundleDto.getUnreadTotalCount();
-                    // Update unreadTotalCount to database in new thread, hihi
-
-                    Log.d(TAG, "roomNo:" + roomNo);
-                    Log.d(TAG, "unreadCount:" + unreadCount);
 
                     ShortcutBadger.applyCount(this, (int) unreadCount); //for 1.1.4
 
@@ -196,40 +186,6 @@ public class GcmIntentService extends IntentService {
                     chattingDto.setRegDate(currentTime);
                     chattingDto.setLastedMsgDate(currentTime);
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ChatRoomDBHelper.updateUnreadTotalCountChatRoom(roomNo, unreadCount);
-                            ChatRoomDBHelper.updateChatRoom(chattingDto.getRoomNo(), chattingDto.getLastedMsg(), chattingDto.getLastedMsgType(), chattingDto.getLastedMsgAttachType(), chattingDto.getLastedMsgDate(), chattingDto.getUnreadTotalCount(), chattingDto.getUnReadCount(), chattingDto.getWriterUserNo());
-                        }
-                    }).start();
-
-                    /*// When user receive a notification we will store in to database
-                    // If chatting1 Fragment is visible then store this message to database, else get from ChattingFragment
-                    if (ChattingFragment.instance != null) {
-                        if (ChattingFragment.instance.roomNo == roomNo && ChattingFragment.instance.isVisible) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d(TAG, "addMessage 3");
-                                    ChatMessageDBHelper.addMessage(chattingDto);
-                                }
-                            }).start();
-                        }
-                    } else {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                final List<ChattingDto> listChatMessage = ChatMessageDBHelper.getMsgSession(chattingDto.getRoomNo(), 0, ChatMessageDBHelper.FIRST);
-                                if (listChatMessage != null && listChatMessage.size() > 0) {
-                                    Log.d(TAG, "addMessage 3 with ChattingFragment null & listChatMessage != null");
-                                    ChatMessageDBHelper.addMessage(chattingDto);
-                                } else {
-                                    Log.d(TAG, "dont add because listChatMessage no data");
-                                }
-                            }
-                        }).start();
-                    }*/
 
                     if (chattingDto.getWriterUserNo() != Utils.getCurrentId()) {
                         Intent myIntent = new Intent(this, ChattingActivity.class);
@@ -266,20 +222,6 @@ public class GcmIntentService extends IntentService {
                                 }
                             }
                         }
-                    }
-
-                    if (CurrentChatListFragment.fragment != null) {
-                        if (ChattingFragment.instance != null && ChattingFragment.instance.isVisible && ChattingFragment.instance.roomNo == roomNo) {
-                            chattingDto.setLastedMsgDate(TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate()));
-                            CurrentChatListFragment.fragment.isUpdate = true;
-                            CurrentChatListFragment.fragment.updateDataSet(chattingDto);
-
-                        } else {
-                            chattingDto.setLastedMsgDate(TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate()));
-                            CurrentChatListFragment.fragment.isUpdate = true;
-                            CurrentChatListFragment.fragment.updateDataSet(chattingDto);
-                        }
-
                     }
 
                     // Just send notification
@@ -320,14 +262,9 @@ public class GcmIntentService extends IntentService {
 
 
                         /** Send Broadcast */
-                        if ((CurrentChatListFragment.fragment != null && CurrentChatListFragment.fragment.isActive) || (ChattingFragment.instance != null && ChattingFragment.instance.isActive)) {
-                            Intent intentBroadcast = new Intent(Constant.INTENT_FILTER_ADD_USER);
-                            intentBroadcast.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
-                            sendBroadcast(intentBroadcast);
-                        } else if (CurrentChatListFragment.fragment != null) {
-                            CurrentChatListFragment.fragment.isUpdate = true;
-                            CurrentChatListFragment.fragment.reloadDataSet();
-                        }
+                        Intent intentBroadcast = new Intent(Constant.INTENT_FILTER_ADD_USER);
+                        intentBroadcast.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
+                        sendBroadcast(intentBroadcast);
                     }
                 }
             }
@@ -379,13 +316,6 @@ public class GcmIntentService extends IntentService {
 
                 // Update unreadTotalCount to database in new thread, hihi
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ChatRoomDBHelper.updateUnreadTotalCountChatRoom(roomNo, unReadTotalCount);
-                    }
-                }).start();
-
                 ShortcutBadger.applyCount(this, unReadTotalCount); //for 1.1.4
 
                 Constant.cancelAllNotification(CrewChatApplication.getInstance(), (int) roomNo);
@@ -394,15 +324,6 @@ public class GcmIntentService extends IntentService {
                 intent.putExtra(Constant.KEY_INTENT_UNREAD_TOTAL_COUNT, unReadTotalCount);
                 intent.putExtra(Constant.KEY_INTENT_USER_NO, userNo);
                 sendBroadcast(intent);
-
-                if (CurrentChatListFragment.fragment != null) {
-
-                    boolean flag = CurrentChatListFragment.fragment.active();
-                    if (!flag) {
-                        CurrentChatListFragment.fragment.updateReadMsgWhenOnPause(roomNo, unReadTotalCount, userNo);
-                    }
-                }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -637,7 +558,6 @@ public class GcmIntentService extends IntentService {
         intent.putExtra(Statics.GCM_DATA_NOTIFICATOON, new Gson().toJson(dto));
         intent.putExtra(Statics.GCM_NOTIFY, isNotify);
         sendBroadcast(intent);
-        Log.d(TAG, "sendBroadcastToActivity ACTION_RECEIVER_NOTIFICATION");
         EventBus.getDefault().post(new ReceiveMessage(dto));
     }
 

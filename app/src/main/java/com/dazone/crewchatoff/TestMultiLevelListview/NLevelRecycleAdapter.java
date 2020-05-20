@@ -371,7 +371,6 @@ public class NLevelRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         switch (holder.getItemViewType()) {
             case TYPE_USER:
-
                 if (dto != null) {
                     UserViewHolder holder2 = ((UserViewHolder) holder);
                     bindUserData(holder2, dto);
@@ -403,7 +402,6 @@ public class NLevelRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                 break;
             case TYPE_EMPPY:
-
                 EmptyViewHolder holderEmppty = ((EmptyViewHolder) holder);
                 LinearLayout.LayoutParams paramsEmpty = (LinearLayout.LayoutParams) holderEmppty.noData.getLayoutParams();
                 paramsEmpty.weight = 1.0f;

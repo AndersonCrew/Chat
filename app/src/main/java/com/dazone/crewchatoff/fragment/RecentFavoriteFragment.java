@@ -55,7 +55,6 @@ import java.util.List;
 public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements OnGetCurrentChatCallBack {
     String TAG = "RecentFavoriteFragment";
     private View rootView;
-    public boolean isUpdate = false;
     TextView tvNodata;
     public static RecentFavoriteFragment instance;
 
@@ -168,27 +167,16 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recent_favorite, container, false);
 
-        progressBar = (LinearLayout) rootView.findViewById(R.id.progressBar);
+        progressBar = rootView.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         Log.d(TAG, "VISIBLE 1");
-        rvMainList = (RecyclerView) rootView.findViewById(R.id.rv_main);
+        rvMainList = rootView.findViewById(R.id.rv_main);
 
-        tvNodata = (TextView) rootView.findViewById(R.id.tvNodata);
-        etInputSearch = (EditText) rootView.findViewById(R.id.inputSearch);
+        tvNodata = rootView.findViewById(R.id.tvNodata);
+        etInputSearch = rootView.findViewById(R.id.inputSearch);
         etInputSearch.setImeOptions(etInputSearch.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-
-//        etInputSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    Log.d(TAG, "hasFocus 2");
-//                } else {
-//                    Log.d(TAG, "not hasFocus 2");
-//                }
-//            }
-//        });
         etInputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -218,14 +206,7 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
         return rootView;
     }
 
-    public void updateUnRead(int finalPos) {
-
-        adapterList.notifyItemChanged(finalPos);
-    }
-
-    // update data after read msg
     public void updateRoomUnread(long roomNo) {
-
         for (ChattingDto chattingDto : dataSet) {
             if (chattingDto.getRoomNo() == roomNo) {
                 chattingDto.setUnReadCount(0);
@@ -249,16 +230,8 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-
         if (isVisibleToUser && !isActive) {
             isActive = true;
-
-        }
-
-        if (isVisibleToUser) {
-            if (getActivity() != null && getActivity() instanceof MainActivity) {
-//                ((MainActivity) getActivity()).hidePAB();
-            }
         }
     }
 
@@ -278,9 +251,9 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     void hideLoading(){
         if (progressBar != null) progressBar.setVisibility(View.GONE);
     }
+
     @Override
     protected void initList() {
-//        init();
         showLoading();
     }
 
@@ -293,11 +266,9 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     }
 
     public void getData(final List<ChattingDto> lst) {
-
         rvMainList.setVisibility(View.VISIBLE);
         hideLoading();
         dataSet = lst;
-        Log.d(TAG, "updateList from list chat:" + dataSet.size());
         adapterList.updateData(dataSet);
         if (tvNodata != null) {
             tvNodata.setVisibility(View.VISIBLE);
@@ -322,8 +293,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
             if (roomNo == a.getRoomNo()) {
                 a.setRoomTitle(roomTitle);
                 adapterList.notifyDataSetChanged();
-                Log.d(TAG, "adapterList.notifyDataSetChanged 4");
-                Log.d(TAG, "RENAME_ROOM");
                 break;
             }
 
@@ -347,7 +316,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
                 }
 
                 chattingDto.setUserNos(chattingDTOUserNos);
-                Log.d(TAG, "insert 3");
                 adapterList.notifyItemChanged(dataSet.indexOf(chattingDto));
                 break;
             }
@@ -374,7 +342,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
                 }
 
                 chattingDto.setUserNos(chattingDTOUserNos);
-                Log.d(TAG, "insert 3");
                 adapterList.notifyItemChanged(dataSet.indexOf(chattingDto));
                 break;
             }
@@ -387,18 +354,13 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case Statics.RENAME_ROOM:
-
                     if (data != null) {
                         final int roomNo = data.getIntExtra(Statics.ROOM_NO, 0);
                         final String roomTitle = data.getStringExtra(Statics.ROOM_TITLE);
-                        // Update current chat list
-
                         for (ChattingDto a : dataSet) {
                             if (roomNo == a.getRoomNo()) {
                                 a.setRoomTitle(roomTitle);
                                 adapterList.notifyDataSetChanged();
-                                Log.d(TAG, "adapterList.notifyDataSetChanged 5");
-                                Log.d(TAG, "RENAME_ROOM");
                                 break;
                             }
 
@@ -444,7 +406,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
                         if (chat.getRoomNo() == roomNo) {
                             dataSet.remove(chat);
                             adapterList.notifyDataSetChanged();
-                            Log.d(TAG, "adapterList.notifyDataSetChanged 6");
                             break;
                         }
                     }
@@ -493,7 +454,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     };
 
     public void updateSTTOffline() {
-        Log.d(TAG, "updateSTTOffline");
         if (dataSet != null) {
             if (dataSet.size() > 0) {
                 ArrayList<TreeUserDTOTemp> lst = listOfUsers;
@@ -506,7 +466,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
                                 int stt = obj.getStatus();
                                 int uN = obj.getUserNo();
                                 if (userNo == uN) {
-                                    Log.d(TAG, "userNo:" + userNo + " userName:" + userName + " stt:" + stt);
                                     dto.setStatus(stt);
                                     break;
                                 }
@@ -583,7 +542,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
                     }
                 }
                 adapterList.notifyDataSetChanged();
-                Log.d(TAG, "adapterList.notifyDataSetChanged 11");
             }
         }
     }
