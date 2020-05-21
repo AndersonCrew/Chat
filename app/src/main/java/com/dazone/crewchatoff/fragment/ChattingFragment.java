@@ -1194,25 +1194,16 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             view.edt_comment.setText("");
             isSend = false;
             // Add new line for new message, it's may be today
-            String date = "";
-            if (dataSet != null) {
-                if (dataSet.size() > 2) {
-                    date = dataSet.get(dataSet.size() - 1).getRegDate();
-                } else if (dataSet.size() > 1) {
-                    date = dataSet.get(1).getRegDate();
-                }
 
-                if (!TextUtils.isEmpty(date)) {
-                    if (!date.equalsIgnoreCase(Utils.getString(R.string.today))) {
-                        long isTime = TimeUtils.getTimeForMail(TimeUtils.getTime(date));
-                        if (isTime != -2) {
-                            ChattingDto time = new ChattingDto();
-                            time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                            time.setRegDate(Utils.getString(R.string.today));
-                            dataSet.add(time);
-                        }
-                    }
-                }
+            if (dataSet.size() <= 0) {
+                initData();
+            }
+
+            if (dataSet.size() < 2) {
+                ChattingDto time = new ChattingDto();
+                time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                time.setRegDate(Utils.getString(R.string.today));
+                dataSet.add(time);
             }
 
             // Add new chat before send, and resend if it sent failed
@@ -1265,7 +1256,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
                 }
             });
-            adapterList.notifyDataSetChanged();
+
+
             if (dataSet != null) {
                 scrollEndList(dataSet.size());
             }

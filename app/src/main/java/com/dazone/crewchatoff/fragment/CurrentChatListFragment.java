@@ -381,10 +381,8 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         super.onResume();
         isActive = true;
         registerGCMReceiver();
-        if (isUpdate) {
-            isUpdate = false;
-            adapterList.updateData(dataSet);
-        }
+        if(listOfUsers !=null)
+            getChatList(listOfUsers);
 
         Prefs prefs = CrewChatApplication.getInstance().getPrefs();
         int roomNo = prefs.getRoomId();
@@ -461,9 +459,23 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 }
             } else if (intent.getAction().equals(Constant.INTENT_FILTER_UPDATE_ROOM_NAME)) {
                 updateRoomRename(intent);
+            } else if(intent.getAction().equals(Constant.INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT)) {
+                long roomNo = intent.getLongExtra(Constant.KEY_INTENT_ROOM_NO, 0);
+                int unReadTotalCount = intent.getIntExtra(Constant.KEY_INTENT_UNREAD_TOTAL_COUNT, 0);
+                updateUnReadCount(roomNo, unReadTotalCount);
             }
         }
     };
+
+    private void updateUnReadCount(long roomNo, int unReadCount) {
+        for (ChattingDto a : dataSet) {
+            if (roomNo == a.getRoomNo()) {
+                a.setUnReadCount(unReadCount);
+                adapterList.notifyItemChanged(dataSet.indexOf(a));
+                break;
+            }
+        }
+    }
 
     void updateRoomRename(Intent data) {
         if (data != null) {
