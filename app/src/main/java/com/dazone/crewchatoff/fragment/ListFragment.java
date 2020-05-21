@@ -2,6 +2,7 @@ package com.dazone.crewchatoff.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -102,8 +103,17 @@ public abstract class ListFragment<T> extends Fragment {
         mInputSearch.addTextChangedListener(mWatcher);
 
         setupRecyclerView();
+        changeStatusBarColor();
         initList();
         return v;
+    }
+
+    private void changeStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        }
     }
 
     public void setTimer(String timer) {

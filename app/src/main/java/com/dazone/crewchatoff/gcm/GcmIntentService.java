@@ -187,7 +187,6 @@ public class GcmIntentService extends IntentService {
 
                     final long roomNo = chattingDto.getRoomNo();
                     final long unreadCount = bundleDto.getUnreadTotalCount();
-                    // Update unreadTotalCount to database in new thread, hihi
 
                     Log.d(TAG, "roomNo:" + roomNo);
                     Log.d(TAG, "unreadCount:" + unreadCount);
@@ -205,33 +204,6 @@ public class GcmIntentService extends IntentService {
                             ChatRoomDBHelper.updateChatRoom(chattingDto.getRoomNo(), chattingDto.getLastedMsg(), chattingDto.getLastedMsgType(), chattingDto.getLastedMsgAttachType(), chattingDto.getLastedMsgDate(), chattingDto.getUnreadTotalCount(), chattingDto.getUnReadCount(), chattingDto.getWriterUserNo());
                         }
                     }).start();
-
-                    /*// When user receive a notification we will store in to database
-                    // If chatting1 Fragment is visible then store this message to database, else get from ChattingFragment
-                    if (ChattingFragment.instance != null) {
-                        if (ChattingFragment.instance.roomNo == roomNo && ChattingFragment.instance.isVisible) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d(TAG, "addMessage 3");
-                                    ChatMessageDBHelper.addMessage(chattingDto);
-                                }
-                            }).start();
-                        }
-                    } else {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                final List<ChattingDto> listChatMessage = ChatMessageDBHelper.getMsgSession(chattingDto.getRoomNo(), 0, ChatMessageDBHelper.FIRST);
-                                if (listChatMessage != null && listChatMessage.size() > 0) {
-                                    Log.d(TAG, "addMessage 3 with ChattingFragment null & listChatMessage != null");
-                                    ChatMessageDBHelper.addMessage(chattingDto);
-                                } else {
-                                    Log.d(TAG, "dont add because listChatMessage no data");
-                                }
-                            }
-                        }).start();
-                    }*/
 
                     if (chattingDto.getWriterUserNo() != Utils.getCurrentId()) {
                         Intent myIntent = new Intent(this, ChattingActivity.class);
@@ -268,20 +240,6 @@ public class GcmIntentService extends IntentService {
                                 }
                             }
                         }
-                    }
-
-                    if (CurrentChatListFragment.fragment != null) {
-                        if (ChattingFragment.instance != null && ChattingFragment.instance.isVisible && ChattingFragment.instance.roomNo == roomNo) {
-                            chattingDto.setLastedMsgDate(TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate()));
-                            CurrentChatListFragment.fragment.isUpdate = true;
-                            CurrentChatListFragment.fragment.updateDataSet(chattingDto);
-
-                        } else {
-                            chattingDto.setLastedMsgDate(TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate()));
-                            CurrentChatListFragment.fragment.isUpdate = true;
-                            CurrentChatListFragment.fragment.updateDataSet(chattingDto);
-                        }
-
                     }
 
                     // Just send notification
