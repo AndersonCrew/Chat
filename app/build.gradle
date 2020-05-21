@@ -25,7 +25,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 10420
-        versionName "2.7.3"
+        versionName "2.7.4"
         multiDexEnabled true
     }
 

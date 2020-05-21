@@ -63,7 +63,6 @@ import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
 
 public class GcmIntentService extends IntentService {
     String channelId = "channel-01";
-
     public GcmIntentService() {
         super("GcmIntentService");
     }

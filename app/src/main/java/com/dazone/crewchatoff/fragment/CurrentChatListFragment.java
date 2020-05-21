@@ -110,7 +110,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
 
     private void getDataFromClient() {
-        dataSet.clear();
         if (Utils.isNetworkAvailable()) {
             getDataFromServer();
         } else {
@@ -504,6 +503,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             @Override
             public void OnGetChatListSuccess(List<ChattingDto> list) {
                 hideLoading();
+                List<ChattingDto> listChat = ChatRoomDBHelper.getChatRooms();
                 Collections.sort(list, new Comparator<ChattingDto>() {
                     public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
                         return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());

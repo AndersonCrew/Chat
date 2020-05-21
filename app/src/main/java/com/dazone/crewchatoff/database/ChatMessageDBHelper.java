@@ -120,7 +120,7 @@ public class ChatMessageDBHelper {
         return false;
     }
 
-    public static boolean updateMessage (ChattingDto dto) {
+    public static boolean updateMessage(ChattingDto dto) {
         try {
             if (isExist(dto)) {
                 ContentValues values = new ContentValues();
@@ -146,7 +146,7 @@ public class ChatMessageDBHelper {
     /*
      * This function to add one of message line
      **/
-    public static boolean addMessage(ChattingDto dto) {
+    private static boolean addMessage(ChattingDto dto) {
         if (CrewChatApplication.CrewChatLocalDatabase) {
             Log.d(TAG, "addMessage");
             try {

@@ -261,7 +261,6 @@ public class ChatRoomDBHelper {
 
     public static boolean updateChatRoomNotification(long roomNo, boolean isNotification) {
         try {
-
             ContentResolver resolver = CrewChatApplication.getInstance()
                     .getApplicationContext().getContentResolver();
 
