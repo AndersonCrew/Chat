@@ -1204,6 +1204,19 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                 time.setRegDate(Utils.getString(R.string.today));
                 dataSet.add(time);
+            } else if(dataSet.size() > 2) {
+                String date = dataSet.get(dataSet.size() - 1).getRegDate();
+                if (!TextUtils.isEmpty(date)) {
+                    if (!date.equalsIgnoreCase(Utils.getString(R.string.today))) {
+                        long isTime = TimeUtils.getTimeForMail(TimeUtils.getTime(date));
+                        if (isTime != -2) {
+                            ChattingDto time = new ChattingDto();
+                            time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                            time.setRegDate(Utils.getString(R.string.today));
+                            dataSet.add(time);
+                        }
+                    }
+                }
             }
 
             // Add new chat before send, and resend if it sent failed
