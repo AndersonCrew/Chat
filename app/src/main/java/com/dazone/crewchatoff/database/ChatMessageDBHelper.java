@@ -347,6 +347,22 @@ public class ChatMessageDBHelper {
         return mesArray;
     }
 
+    public static boolean updateUnreadCountByMesssageNo(long roomNo, int unreadCount, long messageNo) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(UNREAD_COUNT, unreadCount);
+
+            ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
+            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + roomNo + " AND " + MESSAGE_NO + " = " + messageNo, null);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public static boolean clearMessages() {
         try {
             ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();

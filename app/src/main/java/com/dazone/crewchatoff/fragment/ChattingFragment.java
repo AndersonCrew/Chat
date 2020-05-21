@@ -1658,6 +1658,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         List<MessageUnreadCountDTO> list = new Gson().fromJson(result, listType);
 
                         for (final MessageUnreadCountDTO messageUnreadCountDTO : list) {
+                            ChatMessageDBHelper.updateUnreadCountByMesssageNo(roomNo, messageUnreadCountDTO.getUnreadCount(), messageUnreadCountDTO.getMessageNo());
                             for (int i = dataSet.size() - 1; i > -1; i--) {
                                 final ChattingDto chattingDto = dataSet.get(i);
 
