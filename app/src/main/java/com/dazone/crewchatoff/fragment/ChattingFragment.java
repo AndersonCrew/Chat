@@ -187,8 +187,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
                 getFirstDB();
 
-            } else if (msg.what == WHAT_CODE_EMPTY) {
-                initData();
             }
 
             if (!isSendingFile) {
@@ -260,9 +258,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             getOnlineData(roomNo, listChatMessage);
         } else {
             progressBar.setVisibility(View.GONE);
-            if (listChatMessage != null && listChatMessage.size() == 0) {
-                initData();
-            }
         }
     }
 
@@ -1214,7 +1209,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     private void initData(List<ChattingDto> list, final int firstOpen) {
         dataSet.clear();
-        List<UserDto> userDtos = new ArrayList<>();
+        /*List<UserDto> userDtos = new ArrayList<>();
         if (userNos != null && userNos.size() > 0)
             for (int id : userNos) {
                 TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(listTemp, id);
@@ -1224,7 +1219,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         if (userDtos.size() > 0) {
             dataSet.add(new GroupDto(userDtos));
-        }
+        }*/
 
         for (int i = 0; i < list.size(); i++) {
             ChattingDto chattingDto = list.get(i);
@@ -1336,25 +1331,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         });
     }
 
-    public void initData() {
-        List<UserDto> userDtos = new ArrayList<>();
-        if (userNos != null && userNos.size() > 0) {
-            for (int id : userNos) {
-                TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(listTemp, id);
-
-                if (treeUserDTOTemp != null) {
-                    userDtos.add(new UserDto(String.valueOf(treeUserDTOTemp.getUserNo()), treeUserDTOTemp.getName(), treeUserDTOTemp.getAvatarUrl()));
-                }
-            }
-        }
-
-        if (userDtos.size() > 0) {
-            ChattingDto group = new GroupDto(userDtos);
-            dataSet.add(group);
-            Log.d(TAG, "dataSet add 10 group");
-        }
-    }
-
     public void addLineToday() {
         // Add new line for new message, it's may be today
         String date = "";
@@ -1389,16 +1365,12 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             // Add new line for new message, it's may be today
             // Add new line for new message, it's may be today
 
-            if (dataSet.size() <= 0) {
-                initData();
-            }
-
-            if (dataSet.size() < 2) {
+            if (dataSet.size() <= 2) {
                 ChattingDto time = new ChattingDto();
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                 time.setRegDate(Utils.getString(R.string.today));
                 dataSet.add(time);
-            } else if (dataSet.size() > 2) {
+            } else {
                 String date = dataSet.get(dataSet.size() - 1).getRegDate();
                 if (!TextUtils.isEmpty(date)) {
                     if (!date.equalsIgnoreCase(Utils.getString(R.string.today))) {
@@ -2340,11 +2312,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 isLoaded = true;
                 dataFromServer = listNew;
                 if (listNew.size() > 0) {
-                    int userNo = Utils.getCurrentId();
-                    long startMsgNo = listNew.get(listNew.size() - 1).getMessageNo();
                     initData(listNew, 0);
-                } else {
-                    initData();
                 }
 
             }
@@ -2353,7 +2321,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             public void OnGetChatMessageFail(ErrorDto errorDto) {
                 progressBar.setVisibility(View.GONE);
                 isLoaded = true;
-                initData();
             }
         });
     }

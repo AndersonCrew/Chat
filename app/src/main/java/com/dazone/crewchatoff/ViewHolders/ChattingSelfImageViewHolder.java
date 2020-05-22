@@ -101,13 +101,12 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
     @Override
     protected void setup(View v) {
-        //progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
-        progressBarImageLoading = (ProgressBar) v.findViewById(R.id.progressbar_image_loading);
-        date_tv = (TextView) v.findViewById(R.id.date_tv);
-        chatting_imv = (ImageView) v.findViewById(R.id.chatting_imv);
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
-        lnSendFail = (LinearLayout) v.findViewById(R.id.ln_send_failed);
-        progressBarSending = (ProgressBar) v.findViewById(R.id.progressbar_sending);
+        progressBarImageLoading = v.findViewById(R.id.progressbar_image_loading);
+        date_tv = v.findViewById(R.id.date_tv);
+        chatting_imv = v.findViewById(R.id.chatting_imv);
+        tvUnread = v.findViewById(R.id.text_unread);
+        lnSendFail = v.findViewById(R.id.ln_send_failed);
+        progressBarSending = v.findViewById(R.id.progressbar_sending);
         chatting_imv.setOnCreateContextMenuListener(this);
     }
 
@@ -133,7 +132,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
     @Override
     public void bindData(final ChattingDto dto) {
-//        Log.d(TAG,new Gson().toJson(dto));
         tempDto = dto;
         MessageNo = dto.getMessageNo();
         try {
@@ -157,7 +155,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
             WindowManager windowmanager = (WindowManager) mActivity.getSystemService(Context.WINDOW_SERVICE);
             windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
             int deviceWidth = displayMetrics.widthPixels;
-            int deviceHeight = displayMetrics.heightPixels;
             if (deviceWidth > 1000) {
                 ratio = 3.6f;
             }
@@ -175,23 +172,18 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
         switch (dto.getmType()) {
             case Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE:
-                //url = "file://" + dto.getAttachFilePath();
-                // Clear cache resource before load new image
                 chatting_imv.setImageBitmap(null);
                 chatting_imv.destroyDrawingCache();
                 String imagePath = dto.getAttachFilePath(); // photoFile is a File type.
 
                 try {
-                    //First decode with inJustDecodeBounds=true to check dimensions
                     final BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inJustDecodeBounds = false;
                     options.inPreferredConfig = Bitmap.Config.RGB_565;
                     Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath, options);
-                    // Calculate inSampleSize, Raw height and width of image
                     int height = options.outHeight;
                     int width = options.outWidth;
 
-//                    Log.d(TAG, "height:" + height + " width:" + width);
                     int reqWidth, reqHeight;
                     if (width > 180) {
                         reqWidth = (int) (180 * ratio);
@@ -211,15 +203,10 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
                 // End scale image
                 dto.setRoomNo(CrewChatApplication.currentRoomNo);
-                //progressBar.setVisibility(View.VISIBLE);
-                //progressBar.setProgress(0);
                 progressBarImageLoading.setVisibility(View.VISIBLE);
 
-                // problem viewHolder on low network, send failed --> need add to queue
                 String oldPath = chatting_imv.getTag() != null ? chatting_imv.getTag().toString() : null;
                 String newPath = dto.getAttachFilePath();
-
-                // problem here --> if (oldPath == null || !oldPath.equals(newPath) ) {
 
                 if (oldPath == null || !oldPath.equals(newPath)) {
                     chatting_imv.setTag(dto.getAttachFilePath());
@@ -239,8 +226,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
                 try {
                     if (dto.getAttachNo() != 0) {
-
-                        //   final String urlTemp = new Prefs().getServerSite() + Urls.URL_DOWNLOAD_THUMBNAIL + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + dto.getAttachNo();
                         final String urlT = String.format("/UI/CrewChat/MobileThumbnailImage.aspx?session=%s&no=%s",
                                 new Prefs().getaccesstoken(), dto.getAttachNo());
                         final String fullUrl = new Prefs().getServerSite() + urlT;
@@ -277,52 +262,18 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                                         int dstWidth = (int) (srcWidth * ratio) / 2;
                                         int dstHeight = (int) (srcHeight * ratio) / 2;
                                         Bitmap bitmap = createScaledBitmap(resource, dstWidth, dstHeight, true);
-
-                                        //  Bitmap putImage = createScaledBitmap(resource, dstWidth, dstHeight, true);
                                         chatting_imv.setImageBitmap(bitmap);
-                                        // hide loading indicator
                                         if (progressBarImageLoading != null)
                                             progressBarImageLoading.setVisibility(View.GONE);
                                     }
                                 });
-                        // Picasso.with(CrewChatApplication.getInstance()).load(fullUrl).placeholder(R.drawable.error_loading_image).into(chatting_imv);
-                       /* Glide
-                                .with(CrewChatApplication.getInstance())
-                                .load(fullUrl)
-                                .placeholder(R.drawable.error_loading_image)
-                                .into(chatting_imv);*/
-                       /* if (progressBarImageLoading != null){
-                            progressBarImageLoading.setVisibility(View.GONE);
-                        }*/
-                        // Glide.get(mActivity).clearDiskCache();
-                       /* RequestOptions requestOptions = new RequestOptions();
-                        requestOptions.placeholder(R.drawable.ic_placeholder);
-                        requestOptions.error(R.drawable.ic_error);*/
-//
                     } else {
                         ImageUtils.showImage(url, chatting_imv);
                     }
 
-
-                    /*if (!TextUtils.isEmpty(url)) {
-                        String temp = url.replace("D:", "");
-                        url = temp.replaceAll("\\\\", File.separator);
-                        //ImageLoader.getInstance().displayImage(url, chatting_imv, Statics.options2);
-                        ImageUtils.showImage(url, chatting_imv);
-                    } else {
-                        if (dto.getAttachNo() != 0) {
-                            String urlTemp = new Prefs().getServerSite() + Urls.URL_DOWNLOAD_THUMBNAIL + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + dto.getAttachNo();
-                            ImageLoader.getInstance().displayImage(urlTemp, chatting_imv, Statics.options2);
-                            Utils.printLogs("Show thumbnail = "+urlTemp);
-                        } else {
-                            ImageUtils.showImage(url, chatting_imv);
-                        }
-                    }*/
-
                     chatting_imv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                            Log.d(TAG,"chatting_imv");
                             try {
                                 ChattingFragment.instance.ViewImageFull(dto);
                             } catch (Exception e) {
@@ -404,7 +355,9 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         mnUnread.setOnMenuItemClickListener(this);
 
     }
+
     private ProgressDialog mProgressDialog = null;
+
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
@@ -642,11 +595,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
-        if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-
-        return true;
+        return ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     void actionToMe(final long MessageNo) {
