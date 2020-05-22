@@ -36,7 +36,6 @@ public class Urls {
     public static final String URL_ADD_USER_CHAT = "AddChatRoomUser";
     public static final String URL_GET_USER_UNRED = "GetCheckMessageUserList";
 
-
     public static final String URL_GET_USER = "/UI/WebService/WebServiceCenter.asmx/GetUser";
     public static final String URL_GET_ALL_USER_BE_LONGS = "/UI/WebService/WebServiceCenter.asmx/GetAllUsersWithBelongs";
     public static final String URL_GET_ALL_USER_BE_LONGS_MOD = "/UI/WebService/WebServiceCenter.asmx/GetAllUsersWithBelongs_Mod";

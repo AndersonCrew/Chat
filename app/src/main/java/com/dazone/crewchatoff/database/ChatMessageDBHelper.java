@@ -151,6 +151,24 @@ public class ChatMessageDBHelper {
         return false;
     }
 
+    public static boolean updateUnReadCount(ChattingDto dto, long roomNo, long messageNo, int unReadCount) {
+        try {
+
+            if(isExist(dto)) {
+                ContentValues values = new ContentValues();
+                values.put(UNREAD_COUNT, unReadCount);
+
+                ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
+                resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + roomNo + " AND " + MESSAGE_NO + " = " + messageNo, null);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public static long addSimpleMessage(ChattingDto dto) {
         try {
             ContentValues values = new ContentValues();
