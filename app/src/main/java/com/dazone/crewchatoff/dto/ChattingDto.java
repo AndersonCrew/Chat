@@ -337,7 +337,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     }
 
     public String getMessage() {
-        return Message;
+        return "[" + getMessageNo() + "] - " + Message;
     }
 
     public void setMessage(String message) {
