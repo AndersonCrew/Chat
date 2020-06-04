@@ -1,6 +1,8 @@
 package com.dazone.crewchatoff.utils;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
@@ -52,33 +54,9 @@ public class CrewChatApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        //ShortcutBadger.removeCount(this);
-  /*      try {
-            File file = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory
-            ();
-
-            if (file.canWrite()) {
-                String currentPath = "/data/data/" + getPackageName() + "/databases/crewMessagedbname";
-                String copyPath = "ChatMessageTbl.db";
-                File currentDB = new File(currentPath);
-                File backupDB = new File(file, copyPath);
-
-                if (currentDB.exists()) {
-                    FileChannel src = new FileInputStream(currentDB).getChannel();
-                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                    dst.transferFrom(src, 0, src.size());
-                    src.close();
-                    dst.close();
-                }
-            }
-        } catch (Exception e) {
-
-        }*/
         isAddUser = true;
         _instance = this;
         init();
-        //mPrefs.setCountBadge(0);
         imageLoader.init(new ImageLoaderConfiguration.Builder(getApplicationContext())
                 .threadPoolSize(5)
                 .denyCacheImageMultipleSizesInMemory()
@@ -96,7 +74,6 @@ public class CrewChatApplication extends MultiDexApplication {
 
             // Thread to Load data from local
             loadStaticLocalData();
-            Log.d(TAG, "loadStaticLocalData");
             // Thread to Update status from server
             if (listUsers != null) {
                 updateAllAppInfo();
@@ -105,93 +82,21 @@ public class CrewChatApplication extends MultiDexApplication {
             isLoggedIn = false;
         }
 
-        Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
-        {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
-            public void uncaughtException (Thread thread, Throwable e)
-            {
-                handleUncaughtException (thread, e);
+            public void uncaughtException(Thread thread, Throwable e) {
+                handleUncaughtException(thread, e);
             }
         });
     }
 
-    public void handleUncaughtException (Thread thread, Throwable e)
-    {
-        Log.d(">>>", "handleUncaughtException: " + e.getMessage());
+    public void handleUncaughtException(Thread thread, Throwable e) {
         e.printStackTrace(); // not all Android versions will print the stack trace automatically
         System.exit(1); // kill off the crashed app
     }
 
     public void syncData() {
         CrewChatApplication.isLoggedIn = true;
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                getDepartmentFromServer();
-//                getListUserFromServer();
-//                getFavoriteGroupFromServer();
-//            }
-//        }).start();
-    }
-
-    private void getListUserFromServer() {
-        Log.d(TAG, "URL_GET_ALL_USER_BE_LONGS 3");
-//        HttpRequest.getInstance().GetListOrganize(new IGetListOrganization() {
-//            @Override
-//            public void onGetListSuccess(final ArrayList<TreeUserDTOTemp> treeUserDTOs) {
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        AllUserDBHelper.addUser(treeUserDTOs);
-//                        Log.d(TAG, "addUser 3");
-//                    }
-//                }).start();
-//            }
-//
-//            @Override
-//            public void onGetListFail(ErrorDto dto) {
-//            }
-//        });
-    }
-
-    private void getDepartmentFromServer() {
-        Log.d(TAG, "URL_GET_DEPARTMENT 2");
-//        HttpRequest.getInstance().GetListDepart(new IGetListDepart() {
-//            @Override
-//            public void onGetListDepartSuccess(final ArrayList<TreeUserDTO> treeUserDTOs) {
-//                // Get department
-//                temp.clear();
-//                convertData(treeUserDTOs);
-//
-//                // sort data by order
-//                Collections.sort(temp, new Comparator<TreeUserDTO>() {
-//                    @Override
-//                    public int compare(TreeUserDTO r1, TreeUserDTO r2) {
-//                        if (r1.getmSortNo() > r2.getmSortNo()) {
-//                            return 1;
-//                        } else if (r1.getmSortNo() == r2.getmSortNo()) {
-//                            return 0;
-//                        } else {
-//                            return -1;
-//                        }
-//                    }
-//                });
-//
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        DepartmentDBHelper.addDepartment(temp);
-//                    }
-//                }).start();
-//
-//                CrewChatApplication.listDeparts = temp;
-//            }
-//
-//            @Override
-//            public void onGetListDepartFail(ErrorDto dto) {
-//
-//            }
-//        });
     }
 
     private ArrayList<TreeUserDTO> temp = new ArrayList<>();
@@ -209,46 +114,8 @@ public class CrewChatApplication extends MultiDexApplication {
         }
     }
 
-    private void getFavoriteGroupFromServer() {
-        // Get main favorite group and data
-
-//        HttpRequest.getInstance().getFavotiteGroupAndData(new BaseHTTPCallbackWithJson() {
-//            @Override
-//            public void onHTTPSuccess(String json) {
-//                Type listType = new TypeToken<ArrayList<FavoriteGroupDto>>() {
-//                }.getType();
-//                // Add data from local before get all from local database --> it may perform slow
-//                final ArrayList<FavoriteGroupDto> listFromServer = new Gson().fromJson(json, listType);
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        FavoriteGroupDBHelper.addGroups(listFromServer);
-//                    }
-//                }).start();
-//
-//            }
-//
-//            @Override
-//            public void onHTTPFail(ErrorDto errorDto) {
-//            }
-//        });
-    }
-
     public void loadStaticLocalData() {
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                listUsers = AllUserDBHelper.getUser();
-//                listDeparts = DepartmentDBHelper.getDepartments();
-//                currentId = Utils.getCurrentId();
-//                listFavoriteGroup = FavoriteGroupDBHelper.getFavoriteGroup();
-//                listFavoriteTop = FavoriteUserDBHelper.getFavoriteTop();
-//                currentUser = UserDBHelper.getUser();
-////                currentName=Constant.getUserName(AllUserDBHelper.getUser(),Utils.getCurrentId());
-//
-//            }
-//        }).start();
     }
 
     protected void attachBaseContext(Context base) {
@@ -264,86 +131,7 @@ public class CrewChatApplication extends MultiDexApplication {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // Update user status
-//                updateStatus(listUsers, currentId);
-                // Update user status string
-//                updateStatusString(listUsers);
-            }
-        }).start();
-    }
 
-    /* Get all status string of user */
-    private void updateStatusString(final List<TreeUserDTOTemp> users) {
-        HttpRequest.getInstance().getAllUserInfo(new OnGetUserInfo() {
-            @Override
-            public void OnSuccess(final ArrayList<UserInfoDto> userInfo) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (TreeUserDTOTemp sItem : users) {
-                            for (UserInfoDto u : userInfo) {
-                                if (sItem.getUserNo() == u.getUserNo()) {
-                                    AllUserDBHelper.updateStatusString(sItem.getDBId(), u.getStateMessage());
-                                }
-                            }
-                        }
-
-                    }
-                }).start();
-            }
-
-            @Override
-            public void OnFail(ErrorDto errorDto) {
-            }
-        });
-    }
-
-    /*Get all status of user */
-    private void updateStatus(final List<TreeUserDTOTemp> users, final int currentID) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final StatusDto status = new GetUserStatus().getStatusOfUsers(new Prefs().getHOST_STATUS(), companyNo);
-
-                // Need to improve it
-                if (status != null) {
-                    for (final TreeUserDTOTemp u : users) {
-                        boolean isUpdate = false;
-                        for (final StatusItemDto sItem : status.getItems()) {
-                            if (sItem.getUserID().equals(u.getUserID())) {
-                                // Thread to update status
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Log.d(TAG, "updateStatus 1");
-                                        AllUserDBHelper.updateStatus(u.getDBId(), sItem.getStatus());
-                                    }
-                                }).start();
-
-                                isUpdate = true;
-                                break;
-                            }
-                        }
-
-                        if (!isUpdate) {
-                            if (u.getUserNo() == currentID) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        UserDBHelper.updateStatus(u.getUserNo(), Statics.USER_LOGOUT);
-                                    }
-                                }).start();
-                            }
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d(TAG, "updateStatus 2");
-                                    AllUserDBHelper.updateStatus(u.getDBId(), Statics.USER_LOGOUT);
-                                }
-                            }).start();
-                        }
-                    }
-                }
             }
         }).start();
     }
@@ -446,22 +234,6 @@ public class CrewChatApplication extends MultiDexApplication {
         return _data.get(key);
     }
 
-    public static void activityResumed() {
-        try {
-            activityVisible = true;
-        } catch (NullPointerException e) {
-            // don't know why
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void activityPaused() {
-        activityVisible = false;
-    }
-
-    private static boolean activityVisible;
     public static long currentRoomNo = 0;
     public static long currentNotification = 0;
 
@@ -488,5 +260,11 @@ public class CrewChatApplication extends MultiDexApplication {
             listFavoriteTop = null;
         }
     }
+
+    public String getTimeServer() {
+        Date date = new Date(System.currentTimeMillis() - getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0));
+        return TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
+    }
+
 
 }

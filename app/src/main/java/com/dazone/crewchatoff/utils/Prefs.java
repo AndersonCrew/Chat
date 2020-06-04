@@ -123,14 +123,6 @@ public class Prefs implements Serializable {
         return getStringValue(IMAGE_LIST, "");
     }
 
-    public void setSERVER_VERSION(String key) {
-        putStringValue(SERVER_VERSION, key);
-    }
-
-    public String getSERVER_VERSION() {
-        return getStringValue(SERVER_VERSION, "");
-    }
-
     public void putRoomId(int companyNo) {
         putIntValue(UD_ROOM_ID, companyNo);
     }
@@ -152,7 +144,6 @@ public class Prefs implements Serializable {
     public Prefs() {
         prefs = CrewChatApplication.getInstance().getApplicationContext().getSharedPreferences(SHAREDPREFERENCES_NAME, Context.MODE_PRIVATE);
     }
-
 
     public void setDDSServer(String key) {
         putStringValue(DDS_SERVER, key);
@@ -226,10 +217,6 @@ public class Prefs implements Serializable {
         return getStringValue(FULL_NAME, "");
     }
 
-    public String getUserName() {
-        return getStringValue(USER_NAME, "");
-    }
-
     public void putaccesstoken(String accesstoken) {
         putStringValue(ACCESSTOKEN, accesstoken);
     }
@@ -242,20 +229,6 @@ public class Prefs implements Serializable {
         return getIntValue(USERNO, -1);
     }
 
-    public void putScaleImageMode(int mode) {
-        putIntValue(Statics.IMAGE_SIZE_MODE, mode);
-    }
-
-    public int getScaleImageMode() {
-        return getIntValue(Statics.IMAGE_SIZE_MODE, Statics.MODE_ORIGINAL);
-    }
-    public void putIdMessage(long idMess) {
-        putLongValue(Statics.ID_MESS, idMess);
-    }
-
-    public long getIdMessage() {
-        return getLongValue(Statics.ID_MESS, Statics.MODE_ORIGINAL);
-    }
     public String getaccesstoken() {
         return getStringValue(ACCESSTOKEN, "");
     }
@@ -292,26 +265,6 @@ public class Prefs implements Serializable {
         return prefs.getLong(KEY, defvalue);
     }
 
-    public void putFloatValue(String KEY, float value) {
-        prefs.edit().putFloat(KEY, value).apply();
-    }
-
-    public void putintrocount(int introcount) {
-        putIntValue(INTRO_COUNT, introcount);
-    }
-
-    public int getintrocount() {
-        return getIntValue(INTRO_COUNT, 0);
-    }
-
-    public float getFloatValue(String KEY, float defvalue) {
-        return prefs.getFloat(KEY, defvalue);
-    }
-
-    public void removeValue(String KEY) {
-        prefs.edit().remove(KEY).apply();
-    }
-
     public void clear() {
         prefs.edit().clear().apply();
     }
@@ -337,12 +290,4 @@ public class Prefs implements Serializable {
         return getStringValue(EMAIL, "");
     }
 
-    public void setCountBadge(int count) {
-        putIntValue(BADGE, count);
-
-    }
-
-    public int getCountBadge() {
-        return getIntValue(BADGE, 0);
-    }
 }

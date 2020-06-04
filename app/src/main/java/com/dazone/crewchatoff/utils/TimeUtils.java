@@ -74,8 +74,15 @@ public class TimeUtils {
         }
     }
 
+    public static Date convertStringToDate(String timeString) {
+        try {
+            return new Date(getTime(timeString));
+        } catch (Exception e) {
+            return new Date();
+        }
+    }
+
     public static long getTime(String timeString) {
-     //   timeString = "";
         try {
             long time;
             if (timeString.contains("(")) {
@@ -105,7 +112,6 @@ public class TimeUtils {
                     time = Long.valueOf(timeString.substring(0, timeString.indexOf(")")));
                 }
             } else {
-                //  if(!timeString.equals("")&&timeString)
                 time = Long.valueOf(timeString);
             }
 

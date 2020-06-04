@@ -90,11 +90,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -1356,6 +1359,9 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void senAction() {
+        Date dod = new Date(Calendar.getInstance().getTimeInMillis() - CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0));
+        SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
+        Toast.makeText(mActivity, formatter.format(dod), Toast.LENGTH_SHORT).show();
         final String message = view.edt_comment.getText().toString();
         if (!TextUtils.isEmpty(message) && message.length() > 0) {
             Log.d(TAG, "message:" + message);

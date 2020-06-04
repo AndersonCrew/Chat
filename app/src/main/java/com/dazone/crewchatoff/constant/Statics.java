@@ -267,4 +267,6 @@ public interface Statics {
     int STANDARD = 0;
     int HIGH = 1;
     int ORIGINAL = 2;
+
+    String TIME_SERVER_MILI = "TIME_SERVER_MILI";
 }

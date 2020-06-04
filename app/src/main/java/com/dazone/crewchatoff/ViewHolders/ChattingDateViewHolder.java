@@ -31,13 +31,9 @@ public class ChattingDateViewHolder extends BaseChattingHolder {
             if (dto.getRegDate().equalsIgnoreCase(Utils.getString(R.string.today))) {
                 time.setText(Utils.getString(R.string.today));
             }
-//            else if (dto.getRegDate().equalsIgnoreCase(Utils.getString(R.string.yesterday))) {
-//                time.setText(Utils.getString(R.string.yesterday));
-//            }
             else {
                 time.setText(TimeUtils.displayTimeWithoutOffset(dto.getRegDate()));
             }
         }
-        Log.d(">>>", "ChattingDateViewHolder " + time.getText().toString());
     }
 }

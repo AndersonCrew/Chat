@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.dazone.crewchatoff.utils.Utils.getApplicationName;
@@ -573,12 +574,13 @@ public class HttpRequest {
         final String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_SEND_CHAT);
+        params.put("command", "" + Urls.URL_SEND_CHAT_TIME);
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params2.put("roomNo", RoomNo);
         params2.put("message", message);
+        params2.put("regDate", CrewChatApplication.getInstance().getTimeServer());
         Gson gson = new Gson();
         String js = gson.toJson(params2);
         params.put("reqJson", js);
@@ -605,12 +607,13 @@ public class HttpRequest {
         final String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<Object, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_SEND_ATTACH_FILE);
+        params.put("command", "" + Urls.URL_SEND_ATTACH_FILE_TIME);
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params2.put("roomNo", RoomNo);
         params2.put("attachNo", attachNo);
+        params2.put("regDate", CrewChatApplication.getInstance().getTimeServer());
 
         Gson gson = new Gson();
         String js = gson.toJson(params2);
@@ -664,12 +667,12 @@ public class HttpRequest {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_GET_MESSAGE_UNREAD_COUNT);
+        params.put("command", "" + Urls.URL_GET_MESSAGE_UNREAD_COUNT_TIME);
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params2.put("roomNo", roomNo);
-        params2.put("startMsgNo", startMsgNo);
+        params2.put("baseDate", CrewChatApplication.getInstance().getTimeServer());
         Gson gson = new Gson();
         String js = gson.toJson(params2);
         params.put("reqJson", js);
@@ -695,13 +698,13 @@ public class HttpRequest {
         final String url = root_link + Urls.URL_ROOT_2;
         final Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_UPDATE_MESSAGE_UNREAD_COUNT);
+        params.put("command", "" + Urls.URL_UPDATE_MESSAGE_UNREAD_COUNT_TIME);
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params2.put("roomNo", roomNo);
         params2.put("userNo", userNo);
-        params2.put("startMsgNo", startMsgNo);
+        params2.put("baseDate", CrewChatApplication.getInstance().getTimeServer());
         Gson gson = new Gson();
         final String js = gson.toJson(params2);
         params.put("reqJson", js);
@@ -751,13 +754,13 @@ public class HttpRequest {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_GET_CHAT_MSG_SECTION);
+        params.put("command", "" + Urls.URL_GET_CHAT_MSG_SECTION_TIME);
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params2.put("roomNo", roomNo);
-        params2.put("baseMsgNo", baseMsgNo);
         params2.put("getType", type);
+        params2.put("baseDate", CrewChatApplication.getInstance().getTimeServer());
         Gson gson = new Gson();
         String js = gson.toJson(params2);
         params.put("reqJson", js);
@@ -1518,6 +1521,29 @@ public class HttpRequest {
                 if (baseHTTPCallBack != null) {
                     baseHTTPCallBack.onHTTPFail(error);
                 }
+            }
+        });
+    }
+
+    public void getServerTime(final ITimeServer listener) {
+        String url = root_link + Urls.URL_ROOT_2;
+        Map<String, String> params = new HashMap<>();
+        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
+        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
+        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
+        params.put("command", "GetServerDate");
+        params.put("reqJson", "");
+        WebServiceManager webServiceManager = new WebServiceManager();
+        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
+            @Override
+            public void onSuccess(String response) {
+                Date dateServer = TimeUtils.convertStringToDate(response);
+                listener.onGetTimeSuccess(dateServer.getTime());
+            }
+
+            @Override
+            public void onFailure(ErrorDto error) {
+                Log.d("A", error.message);
             }
         });
     }

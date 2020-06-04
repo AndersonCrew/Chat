@@ -52,7 +52,6 @@ import com.dazone.crewchatoff.fragment.CompanyFragment;
 import com.dazone.crewchatoff.fragment.CurrentChatListFragment;
 import com.dazone.crewchatoff.fragment.RecentFavoriteFragment;
 import com.dazone.crewchatoff.interfaces.BaseHTTPCallBack;
-import com.dazone.crewchatoff.interfaces.OnFilterMessage;
 import com.dazone.crewchatoff.interfaces.OnGetChatRoom;
 import com.dazone.crewchatoff.interfaces.SendChatMessage;
 import com.dazone.crewchatoff.libGallery.MediaChooser;
@@ -70,6 +69,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -124,7 +124,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             e.printStackTrace();
         }
         if (subtitle.length() > 0) {
-            Log.d(TAG, "setStatus 2");
             setStatus(subtitle);
         }
     }
@@ -132,11 +131,11 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
         instance = this;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        getTimeServer();
         if (CompanyFragment.instance != null)
             treeUserDTOTempArrayList = CompanyFragment.instance.getUser();
         if (treeUserDTOTempArrayList == null || treeUserDTOTempArrayList.size() == 0)
@@ -209,6 +208,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         }
         Log.d(TAG, "finish onCreate");
     }
+
     /**
      * RECEIVE DATA FROM INTENT
      */
@@ -277,9 +277,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     }
 
                     subTitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, String.valueOf(roomSize));
-                    Log.d(TAG, "getChatRoomInfo:" + roomSize);
                 }
-                Log.d(TAG, "setupTitleRoom 2");
+
                 setupTitleRoom(chatRoomDTO.getUserNos(), chatRoomDTO.getRoomTitle(), subTitle);
 
                 // May be update unread count
@@ -296,11 +295,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             }
         });
     }
-    /**
-     * Setup TITLE ROOM
-     */
+
     public void updateRoomName(String title) {
-        Log.d(TAG, "updateRoomName");
         setTitle(title);
         roomTitle = title;
     }
@@ -325,7 +321,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         }
         this.roomTitle = title;
         setTitle(title);
-        Log.d(TAG, "setStatus 1");
         setStatus(status);
     }
 
@@ -335,30 +330,9 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         if (bundle != null) {
             roomNo = bundle.getLong(Constant.KEY_INTENT_ROOM_NO, 0);
             getChatRoomInfo();
-            /** Setup FRAGMENT*/
-
-
             fragment = new ChattingFragment().newInstance(roomNo, userNos, this);
-
-            /** ADD FRAGMENT TO ACTIVITY */
             Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        try {
-            CrewChatApplication.activityResumed();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        CrewChatApplication.activityPaused();
     }
 
     @Override
@@ -369,12 +343,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private void addFragment() {
-        /** Setup FRAGMENT*/
-        // 채팅방 내부 Fragment 값을 설정하고 가져옵니다.
         fragment = new ChattingFragment().newInstance(roomNo, userNos, this);
-
-        /** ADD FRAGMENT TO ACTIVITY */
-        // 채팅방 내부 Fragment 로 이동합니다.
         Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
     }
 
@@ -1212,5 +1181,9 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         } catch (Exception e) {
 
         }
+    }
+
+    private void getTimeServer() {
+
     }
 }

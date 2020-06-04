@@ -19,11 +19,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.eventbus.CloseScreen;
 import com.dazone.crewchatoff.eventbus.ReloadListMessage;
 import com.dazone.crewchatoff.eventbus.RotationAction;
+import com.dazone.crewchatoff.interfaces.ITimeServer;
 import com.dazone.crewchatoff.services.NetworkStateReceiver;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
@@ -32,6 +34,9 @@ import com.dazone.crewchatoff.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.dazone.crewchatoff.fragment.ChattingFragment.sendComplete;
 
@@ -80,6 +85,14 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     protected void onResume() {
         super.onResume();
         Instance = this;
+
+        HttpRequest.getInstance().getServerTime(new ITimeServer() {
+            @Override
+            public void onGetTimeSuccess(long mili) {
+                long calTime = new Date(System.currentTimeMillis()).getTime() - mili;
+                CrewChatApplication.getInstance().getPrefs().putLongValue(Statics.TIME_SERVER_MILI, calTime);
+            }
+        });
     }
 
     public void showProgressDialog() {
