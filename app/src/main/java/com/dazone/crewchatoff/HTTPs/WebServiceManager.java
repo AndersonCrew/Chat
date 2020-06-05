@@ -61,7 +61,6 @@ public class WebServiceManager<T> {
                     } else {
                         ErrorDto errorDto = new Gson().fromJson(json.getString("error"), ErrorDto.class);
                         if (errorDto == null) {
-
                             errorDto = new ErrorDto();
                             errorDto.message = Utils.getString(R.string.no_network_error);
                         } else {

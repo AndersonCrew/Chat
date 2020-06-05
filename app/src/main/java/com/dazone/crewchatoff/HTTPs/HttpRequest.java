@@ -663,7 +663,7 @@ public class HttpRequest {
         });
     }
 
-    public void GetMessageUnreadCount(long roomNo, long startMsgNo, final OnGetMessageUnreadCountCallBack callBack) {
+    public void GetMessageUnreadCount(long roomNo, String baseDate, final OnGetMessageUnreadCountCallBack callBack) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
@@ -672,7 +672,7 @@ public class HttpRequest {
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params2.put("roomNo", roomNo);
-        params2.put("baseDate", CrewChatApplication.getInstance().getTimeServer());
+        params2.put("baseDate", baseDate);
         Gson gson = new Gson();
         String js = gson.toJson(params2);
         params.put("reqJson", js);
@@ -694,7 +694,7 @@ public class HttpRequest {
     /**
      * UPDATE MESSAGE UNREAD COUNT
      */
-    public void UpdateMessageUnreadCount(long roomNo, int userNo, long startMsgNo) {
+    public void UpdateMessageUnreadCount(long roomNo, int userNo, String baseDate) {
         final String url = root_link + Urls.URL_ROOT_2;
         final Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
@@ -704,7 +704,7 @@ public class HttpRequest {
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params2.put("roomNo", roomNo);
         params2.put("userNo", userNo);
-        params2.put("baseDate", CrewChatApplication.getInstance().getTimeServer());
+        params2.put("baseDate", baseDate);
         Gson gson = new Gson();
         final String js = gson.toJson(params2);
         params.put("reqJson", js);
@@ -750,7 +750,7 @@ public class HttpRequest {
         });
     }
 
-    public void GetChatMsgSection(long roomNo, long baseMsgNo, int type, final OnGetChatMessage onGetChatMessage) {
+    public void GetChatMsgSection(long roomNo, int type, String baseDate, final OnGetChatMessage onGetChatMessage) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> params2 = new HashMap<>();
@@ -760,7 +760,7 @@ public class HttpRequest {
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params2.put("roomNo", roomNo);
         params2.put("getType", type);
-        params2.put("baseDate", CrewChatApplication.getInstance().getTimeServer());
+        params2.put("baseDate", baseDate);
         Gson gson = new Gson();
         String js = gson.toJson(params2);
         params.put("reqJson", js);
