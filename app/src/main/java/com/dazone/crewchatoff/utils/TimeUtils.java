@@ -211,8 +211,6 @@ public class TimeUtils {
     public static long getTimeForMail(long time) {
         int date = -1;
         Calendar cal = Calendar.getInstance();
-//        cal.setTimeInMillis(System.currentTimeMillis());
-
         Calendar cal1 = Calendar.getInstance();
         cal1.setTimeInMillis(time);
 

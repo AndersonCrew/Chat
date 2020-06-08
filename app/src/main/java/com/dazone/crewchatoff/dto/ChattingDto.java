@@ -1,18 +1,22 @@
 package com.dazone.crewchatoff.dto;
 
+import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.utils.TimeUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by david on 12/24/15.
  */
-public class ChattingDto extends DataDto implements DrawImageItem, Serializable,Cloneable {
-    public Object clone()throws CloneNotSupportedException{
+public class ChattingDto extends DataDto implements DrawImageItem, Serializable, Cloneable {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
     private long time = 0;
     private UserDto user;
 
@@ -73,7 +77,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     @SerializedName("UnreadTotalCount")
     private int UnreadTotalCount;
     private int RoomType;
-    public boolean isSendding=false;
+    public boolean isSendding = false;
 
     @SerializedName("Notification")
     private boolean Notification = true;
@@ -85,7 +89,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     private boolean cbChoose = false;
     private int status = 0;
     private int positionUploadImage;
-    private int temp=0;
+    private int temp = 0;
 
     public int getTemp() {
         return temp;
@@ -337,7 +341,8 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     }
 
     public String getMessage() {
-        return "[" + getMessageNo() + "] - " + Message;
+        Date date = TimeUtils.convertStringToDate(getRegDate());
+        return Message != null && Message.contains("*") ? Message : "*[" + TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS) + "] - " + Message;
     }
 
     public void setMessage(String message) {

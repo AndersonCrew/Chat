@@ -54,6 +54,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -193,7 +194,8 @@ public class GcmIntentService extends IntentService {
 
                     ShortcutBadger.applyCount(this, (int) unreadCount); //for 1.1.4
 
-                    String currentTime = System.currentTimeMillis() + "";
+                    Date date = new Date(System.currentTimeMillis());
+                    String currentTime = TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
                     chattingDto.setRegDate(currentTime);
                     chattingDto.setLastedMsgDate(currentTime);
 
