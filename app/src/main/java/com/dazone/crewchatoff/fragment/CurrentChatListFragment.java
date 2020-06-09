@@ -803,7 +803,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     }
 
     public void updateWhenAddUser(long roomNo, ArrayList<Integer> userNosAdd) {
-        for (ChattingDto chattingDto : dataSet) {
+        /*for (ChattingDto chattingDto : dataSet) {
             if (chattingDto.getRoomNo() == roomNo) {
                 ArrayList<Integer> chattingDTOUserNos = chattingDto.getUserNos();
 
@@ -825,7 +825,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 adapterList.notifyItemChanged(dataSet.indexOf(chattingDto));
                 break;
             }
-        }
+        }*/
     }
 
     private void countDataFromServer(boolean isHaveData) {

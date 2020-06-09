@@ -20,20 +20,15 @@ public class ChattingDateViewHolder extends BaseChattingHolder {
 
     @Override
     protected void setup(View v) {
-        time = (TextView) v.findViewById(R.id.time);
+        time = v.findViewById(R.id.time);
     }
 
     @Override
     public void bindData(ChattingDto dto) {
-        if (TextUtils.isEmpty(dto.getRegDate())) {
-            time.setText(TimeUtils.showTimeWithoutTimeZone(dto.getTime(), Statics.DATE_FORMAT_YYYY_MM_DD));
-        } else {
-            if (dto.getRegDate().equalsIgnoreCase(Utils.getString(R.string.today))) {
-                time.setText(Utils.getString(R.string.today));
-            }
-            else {
-                time.setText(TimeUtils.displayTimeWithoutOffset(dto.getRegDate()));
-            }
-        }
+        if(TimeUtils.checkDateIsToday(dto.getRegDate())) {
+            time.setText(Utils.getString(R.string.today));
+        } else if(TimeUtils.checkDateIsYesterday(dto.getRegDate())) {
+            time.setText(Utils.getString(R.string.yesterday));
+        } else time.setText(TimeUtils.showTimeWithoutTimeZone(dto.getTime(), Statics.DATE_FORMAT_YYYY_MM_DD));
     }
 }

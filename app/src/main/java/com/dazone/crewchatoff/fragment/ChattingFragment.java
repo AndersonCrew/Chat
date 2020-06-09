@@ -93,11 +93,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -177,13 +181,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 mPrefs.putBooleanValue(Statics.IS_FIRST_SHARE, true);
                 Bundle args = msg.getData();
                 List<ChattingDto> chattingDtoList = (ArrayList<ChattingDto>) args.getSerializable(ADD_NEW_DATA);
-                // prepare this
-                boolean hasInit = false;
-                if (msg.arg1 == WHAT_CODE_HAS_INIT) {
-                    hasInit = true;
-                }
 
-                addData(chattingDtoList, hasInit);
+                addData(chattingDtoList);
                 if (layoutManager != null) {
                     scrollToEndList();
                 }
@@ -272,7 +271,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         dataFromServer = listChatMessage;
         if (listChatMessage != null && listChatMessage.size() > 0) {
-            initData(listChatMessage, 1);
+            initData(listChatMessage);
         }
         if (Utils.isNetworkAvailable()) {
             getOnlineData(roomNo, listChatMessage);
@@ -390,23 +389,14 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public ChattingFragment newInstance(long roomNo, ArrayList<Integer> userNos, Activity activity) {
-        ChattingFragment fragment = new ChattingFragment();
-        fragment.setActivity(activity);
+        if (instance == null)
+            instance = new ChattingFragment();
+        instance.setActivity(activity);
         Bundle args = new Bundle();
         args.putLong(Constant.KEY_INTENT_ROOM_NO, roomNo);
         args.putIntegerArrayList(Constant.KEY_INTENT_USER_NO_ARRAY, userNos);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public ChattingFragment newInstance(TreeUserDTO dto1, ChattingDto chattingDto1, Activity activity) {
-        ChattingFragment fragment = new ChattingFragment();
-        fragment.setActivity(activity);
-        Bundle args = new Bundle();
-        args.putSerializable(Statics.TREE_USER_PC, dto1);
-        args.putSerializable(Statics.CHATTING_DTO, chattingDto1);
-        fragment.setArguments(args);
-        return fragment;
+        instance.setArguments(args);
+        return instance;
     }
 
     @Override
@@ -615,7 +605,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public void addNewRowFromChattingActivity(ChattingDto chattingDto) {
-        addLineToday();
+        addLineToday(chattingDto);
         dataSet.add(chattingDto);
         Log.d(TAG, ": dataSet.size()" + dataSet.size());
         notifyItemInserted();
@@ -1147,115 +1137,52 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (callBack != null) callBack.onFinish();
     }
 
-    private void addData(List<ChattingDto> list, boolean hasInit) {
+    private void addData(List<ChattingDto> list) {
         for (int i = 0; i < list.size(); i++) {
             ChattingDto chattingDto = list.get(i);
-            if (i == 0) {
-                long isTime = TimeUtils.getTimeForMail(TimeUtils.getTime(chattingDto.getRegDate()));
-                if (isTime == -2) {
-                    if (!hasInit) {
-                        ChattingDto time = new ChattingDto();
-                        dataSet.add(time);
-                        time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                        time.setRegDate(Utils.getString(R.string.today));
-                    } else {
-                        if (dataSet.size() > 0) {
-                            long noTemp = TimeUtils.getTime((dataSet.get(dataSet.size() - 1).getRegDate()));
-                            long noTemp2 = TimeUtils.getTime((chattingDto.getRegDate()));
-                            if (!TimeUtils.compareTime(noTemp, noTemp2)) {
-                                ChattingDto time = new ChattingDto();
-                                dataSet.add(time);
-                                time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                                time.setRegDate(Utils.getString(R.string.today));
-                            }
-                        }
-                    }
 
-                    addNewChat(chattingDto, false, false);
-                } else {
+            if (i == 0 && dataSet.size() <= 0) {
+                ChattingDto time = new ChattingDto();
+                dataSet.add(time);
+                time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
+                time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
+            } else {
+                String date2 = i != 0 ? list.get(i - 1).getRegDate() : dataSet.get(dataSet.size() - 1).getRegDate();
+                if (!TimeUtils.checkBetweenDate(chattingDto.getRegDate(), date2)) {
                     ChattingDto time = new ChattingDto();
                     dataSet.add(time);
                     time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                    time.setTime(TimeUtils.getTime(list.get(0).getRegDate()));
-                    addNewChat(chattingDto, false, false);
-                }
-            } else {
-                long noTemp = TimeUtils.getTime((list.get(i - 1).getRegDate()));
-                long noTemp2 = TimeUtils.getTime((chattingDto.getRegDate()));
-                long isTime = TimeUtils.getTimeForMail(noTemp2);
-                if (TimeUtils.compareTime(noTemp, noTemp2)) {
-                    addNewChat(chattingDto, false, false);
-                } else {
-                    if (isTime == -2) {
-                        if (!hasInit) {
-                            ChattingDto time = new ChattingDto();
-                            dataSet.add(time);
-                            time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                            time.setRegDate(Utils.getString(R.string.today));
-                        }
-                    } else {
-                        ChattingDto time2 = new ChattingDto();
-                        dataSet.add(time2);
-                        time2.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                        time2.setRegDate(chattingDto.getRegDate());
-                    }
-                    addNewChat(chattingDto, false, false);
+                    time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
+                    time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(list.get(i - 1).getRegDate())).getTime() - 100 + ""));
                 }
             }
+
+            addNewChat(chattingDto, false, false);
         }
     }
 
-    private void initData(List<ChattingDto> list, final int firstOpen) {
+    private void initData(List<ChattingDto> list) {
         dataSet.clear();
         for (int i = 0; i < list.size(); i++) {
             ChattingDto chattingDto = list.get(i);
             if (i == 0) {
-                long isTime = TimeUtils.getTimeForMail(TimeUtils.getTime(chattingDto.getRegDate()));
-                if (isTime == -2) {
-                    ChattingDto time = new ChattingDto();
-                    dataSet.add(time);
-                    Log.d(TAG, "dataSet add time 6 Today");
-                    time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                    time.setRegDate(Utils.getString(R.string.today));
-                    Log.d(TAG, "addNewChat 5:" + chattingDto.getMessage());
-                    addNewChat(chattingDto, false, false);
-                } else {
-                    ChattingDto time = new ChattingDto();
-                    dataSet.add(time);
-                    Log.d(TAG, "dataSet add time 7");
-                    time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                    time.setTime(TimeUtils.getTime(list.get(0).getRegDate()));
-                    Log.d(TAG, "addNewChat 6:" + chattingDto.getMessage());
-                    addNewChat(chattingDto, false, false);
-                }
+                ChattingDto time = new ChattingDto();
+                dataSet.add(time);
+                time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
+                time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
             } else {
-                long noTemp = TimeUtils.getTime((list.get(i - 1).getRegDate()));
-                long noTemp2 = TimeUtils.getTime((chattingDto.getRegDate()));
-                long isTime = TimeUtils.getTimeForMail(noTemp2);
-                if (TimeUtils.compareTime(noTemp, noTemp2)) {
-                    // 동일한 날짜 일 경우
-                    Log.d(TAG, "addNewChat 7:" + chattingDto.getMessage());
-                    addNewChat(chattingDto, false, false);
-                } else {
-                    // 날짜가 틀려졌을 경우
-                    if (isTime == -2) {
-                        ChattingDto time = new ChattingDto();
-                        dataSet.add(time);
-
-                        Log.d(TAG, "dataSet add time 8 Today");
-                        time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                        time.setRegDate(Utils.getString(R.string.today));
-                    } else {
-                        ChattingDto time2 = new ChattingDto();
-                        dataSet.add(time2);
-                        Log.d(TAG, "dataSet add time 9 Today getMessage:" + time2.getMessage() + " : getMessageNo:" + time2.getMessageNo());
-                        time2.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                        time2.setRegDate(chattingDto.getRegDate());
-                    }
-                    Log.d(TAG, "addNewChat 8:" + chattingDto.getMessage());
-                    addNewChat(chattingDto, false, false);
+                if (!TimeUtils.checkBetweenDate(chattingDto.getRegDate(), list.get(i - 1).getRegDate())) {
+                    ChattingDto time = new ChattingDto();
+                    dataSet.add(time);
+                    time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                    time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
+                    time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
                 }
             }
+
+            addNewChat(chattingDto, false, false);
         }
 
         // Scroll to bottom
@@ -1267,24 +1194,16 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         }
     }
 
-    public void addLineToday() {
+    public void addLineToday(ChattingDto chattingDto) {
         // Add new line for new message, it's may be today
-        String date = "";
         if (dataSet != null) {
-            if (dataSet.size() > 2) {
-                date = dataSet.get(dataSet.size() - 1).getRegDate();
-            } else if (dataSet.size() > 1) {
-                date = dataSet.get(1).getRegDate();
-            }
-            if (!TextUtils.isEmpty(date)) {
-                if (!date.equalsIgnoreCase(Utils.getString(R.string.today))) {
-                    long isTime = TimeUtils.getTimeForMail(TimeUtils.getTime(date));
-                    if (isTime != -2) {
-                        ChattingDto time = new ChattingDto();
-                        time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                        time.setRegDate(Utils.getString(R.string.today));
-                        dataSet.add(time);
-                    }
+            if (dataSet.get(dataSet.size() - 1) != null && dataSet.get(dataSet.size() - 1).getRegDate() != null) {
+                if (TimeUtils.checkDateIsToday(dataSet.get(dataSet.size() - 1).getRegDate())) {
+                    ChattingDto time = new ChattingDto();
+                    time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                    time.setTime(System.currentTimeMillis());
+                    time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
+                    dataSet.add(time);
                 }
             }
         }
@@ -1299,20 +1218,17 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             if (dataSet.size() < 2) {
                 ChattingDto time = new ChattingDto();
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                time.setRegDate(Utils.getString(R.string.today));
+                time.setTime(System.currentTimeMillis());
+                time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                 dataSet.add(time);
             } else {
                 String date = dataSet.get(dataSet.size() - 1).getRegDate();
-                if (!TextUtils.isEmpty(date)) {
-                    if (!date.equalsIgnoreCase(Utils.getString(R.string.today))) {
-                        long isTime = TimeUtils.getTimeForMail(TimeUtils.getTime(date));
-                        if (isTime != -2) {
-                            ChattingDto time = new ChattingDto();
-                            time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                            time.setRegDate(Utils.getString(R.string.today));
-                            dataSet.add(time);
-                        }
-                    }
+                if (date != null && !TimeUtils.checkDateIsToday(date)) {
+                    ChattingDto time = new ChattingDto();
+                    time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                    time.setTime(System.currentTimeMillis());
+                    time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
+                    dataSet.add(time);
                 }
             }
 
@@ -1338,7 +1254,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             HttpRequest.getInstance().SendChatMsg(roomNo, message, new SendChatMessage() {
                 @Override
                 public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
-                    Log.d("HOANG ANH GIA LAI", "\nmessage" + chattingDto.getRegDate());
                     isSend = true;
                     newDto.setHasSent(true);
                     newDto.setMessageNo(chattingDto.getMessageNo());
@@ -1346,8 +1261,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     newDto.setRegDate(chattingDto.getRegDate());
                     adapterList.notifyDataSetChanged();
                     sendComplete = false;
-
-                    Log.d("HOANG ANH GIA LAI", "\nmessage");
                 }
 
                 @Override
@@ -1875,25 +1788,21 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (dataSet.size() < 2) {
             ChattingDto time = new ChattingDto();
             time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-            time.setRegDate(Utils.getString(R.string.today));
+            time.setTime(System.currentTimeMillis());
+            time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
             dataSet.add(time);
         } else {
             String date = dataSet.get(dataSet.size() - 1).getRegDate();
-            if (!TextUtils.isEmpty(date)) {
-                if (!date.equalsIgnoreCase(Utils.getString(R.string.today))) {
-                    long isTime = TimeUtils.getTimeForMail(TimeUtils.getTime(date));
-                    if (isTime != -2) {
-                        ChattingDto time = new ChattingDto();
-                        time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                        time.setRegDate(Utils.getString(R.string.today));
-                        dataSet.add(time);
-                    }
-                }
+            if (date != null && !TimeUtils.checkDateIsToday(date)) {
+                ChattingDto time = new ChattingDto();
+                time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                time.setTime(System.currentTimeMillis());
+                time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(baseDate)).getTime() - 100 + ""));
+                dataSet.add(time);
             }
         }
 
         boolean checkNotification = true;
-
         if (dataSet != null) {
             for (ChattingDto chattingDto : dataSet) {
                 if (chattingDto.getMessageNo() == dataDto.getMessageNo()) {
@@ -2188,30 +2097,14 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public void Reload() {
-        str_lastID = "";
-        lastID = 0;
-        dataSet.clear();
-        adapterList.notifyDataSetChanged();
-        adapterList.setLoaded();
         progressBar.setVisibility(View.VISIBLE);
-        HttpRequest.getInstance().GetChatMsgSection(roomNo, 0, CrewChatApplication.getInstance().getTimeServer(), new OnGetChatMessage() {
-            @Override
-            public void OnGetChatMessageSuccess(List<ChattingDto> listNew) {
-                progressBar.setVisibility(View.GONE);
-                isLoaded = true;
-                dataFromServer = listNew;
-                if (listNew.size() > 0) {
-                    initData(listNew, 0);
-                }
+        final List<ChattingDto> listChatMessage = ChatMessageDBHelper.getMsgSession(roomNo, 0, ChatMessageDBHelper.FIRST);
 
-            }
-
-            @Override
-            public void OnGetChatMessageFail(ErrorDto errorDto) {
-                progressBar.setVisibility(View.GONE);
-                isLoaded = true;
-            }
-        });
+        if (Utils.isNetworkAvailable()) {
+            getOnlineData(roomNo, listChatMessage);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     public static boolean isShowIcon = false;
@@ -2256,9 +2149,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 }
 
                 dataFromServer.addAll(0, localData);
-                Log.d(TAG, "initData 4");
                 dataFromServer = Constant.sortTimeList(dataFromServer);
-                initData(dataFromServer, 0);
+                initData(dataFromServer);
                 int currentPosition = 0, length = dataSet.size();
                 for (int i = 0; i < length; i++) {
                     if (dataSet.get(i).getMessageNo() == currentMessageNo) {
@@ -2294,7 +2186,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                             }
                             dataFromServer.addAll(0, listNew);
                             dataFromServer = Constant.sortTimeList(dataFromServer);
-                            initData(dataFromServer, 0);
+                            initData(dataFromServer);
 
                             int currentPosition = 0, length = dataSet.size();
 
@@ -2342,7 +2234,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private void refFreshData() {
         try {
             dataFromServer = Constant.sortTimeList(dataFromServer);
-            initData(dataFromServer, 0);
+            initData(dataFromServer);
             adapterList.notifyDataSetChanged();
         } catch (Exception e) {
         }

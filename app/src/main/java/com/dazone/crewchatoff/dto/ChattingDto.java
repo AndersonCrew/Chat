@@ -147,20 +147,6 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
                 '}';
     }
 
-    public String toStringListChat() {
-        return "{" +
-                "\"ModDate\":\"" + Moddate + "\"" +
-                ",\"UnReadCount\":" + UnReadCount +
-                ",\"RoomNo\":" + RoomNo +
-                ",\"LastedMsgDate\":\"" + LastedMsgDate + "\"" +
-                ",\"MakeUserNo\":" + MakeUserNo +
-                ",\"LastedMsg\":\"" + LastedMsg + "\"" +
-                ",\"UserNos\":" + UserNos +
-                ",\"RoomTitle\":\"" + RoomTitle + "\"" +
-                ",\"IsOne\"=" + IsOne +
-                '}';
-    }
-
     public int getRoomType() {
         return RoomType;
     }
@@ -341,8 +327,9 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     }
 
     public String getMessage() {
-        Date date = TimeUtils.convertStringToDate(getRegDate());
-        return Message != null && Message.contains("*") ? Message : "*[" + TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS) + "] - " + Message;
+       /* Date date = TimeUtils.convertStringToDate(getRegDate());
+        return Message != null && Message.contains("*") ? Message : "*[" + TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS) + "] - " + Message;*/
+       return Message;
     }
 
     public void setMessage(String message) {

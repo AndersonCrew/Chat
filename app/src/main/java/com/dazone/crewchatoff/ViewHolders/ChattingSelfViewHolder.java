@@ -47,8 +47,11 @@ import com.dazone.crewchatoff.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.dazone.crewchatoff.fragment.ChattingFragment.sendComplete;
 
@@ -235,6 +238,9 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
         if (dto.getMessage() != null) {
             String message = dto.getMessage();
+            Date date = new Date(TimeUtils.getTime(dto.getRegDate()));
+            SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
+            String dateStr = "[ " + formatter.format(date.getTime()) + " ] - ";
             try {
                 Spanned msg;
                 if (dto.getType() == Constant.APPROVAL) {
@@ -267,7 +273,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 } else {
                     content_tv.setAutoLinkMask(Linkify.ALL);
                     content_tv.setLinksClickable(true);
-                    content_tv.setText(dto.getMessage());
+                    content_tv.setText(dateStr + dto.getMessage());
                 }
 
 
@@ -432,5 +438,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
     private boolean checkNullOrEmpty(String msg) {
         return msg != null && !msg.equals(" ") && !TextUtils.isEmpty(msg);
     }
+
 
 }

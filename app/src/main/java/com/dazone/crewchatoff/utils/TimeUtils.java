@@ -40,6 +40,44 @@ public class TimeUtils {
         return "/Date(" + getTime(regDate) + ")/";
     }
 
+    /**
+     * @param regDate with format "/Date(1450746095000)/"
+     * @return Today hh:mm aa || yesterday hh:mm aa || yyyy-MM-dd hh:mm aa
+     */
+    public static boolean checkDateIsToday(String regDate) {
+        try {
+            Date date = new Date(getTime(regDate));
+            Date currentDate = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat(Statics.DATE_FORMAT_YYYY_MM_DD, Locale.getDefault());
+            return formatter.format(date).equals(formatter.format(currentDate));
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    public static boolean checkDateIsYesterday(String regDate) {
+        try {
+            Date date = new Date(getTime(regDate));
+            Date currentDate = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat(Statics.DATE_FORMAT_YYYY_MM_DD, Locale.getDefault());
+            SimpleDateFormat formatterDay = new SimpleDateFormat(Statics.DATE_FORMAT_DD, Locale.getDefault());
+            return formatter.format(date).equals(formatter.format(currentDate)) && Integer.parseInt(formatterDay.format(date)) - Integer.parseInt(formatterDay.format(currentDate)) == 1;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    public static boolean checkBetweenDate(String regDate1, String regDate2) {
+        try {
+            Date date1 = new Date(getTime(regDate1));
+            Date date2 = new Date(getTime(regDate2));
+            SimpleDateFormat formatter = new SimpleDateFormat(Statics.DATE_FORMAT_YYYY_MM_DD, Locale.getDefault());
+            return formatter.format(date1).equals(formatter.format(date2));
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
 
     /**
      * @param context    application context
@@ -182,32 +220,6 @@ public class TimeUtils {
     //-5: last Month
     //-1: default
 
-//    public static long getTimeForMail(long time) {
-//        int date = -1;
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTimeInMillis(System.currentTimeMillis());
-//
-//        if (cal.get(Calendar.YEAR) == getYearNote(time)) {
-//            if (cal.get(Calendar.MONTH) == getMonthNote(time)) {
-//                int temp = cal.get(Calendar.DAY_OF_MONTH) - getDateNote(time);
-//                if (cal.get(Calendar.DAY_OF_MONTH) == getDateNote(time)) {
-//                    date = -2;
-//                } else if (temp == 1) {
-//                    date = -3;
-//                } else {
-//                    date = -4;
-//                }
-//            } else if (cal.get(Calendar.MONTH) - 1 == getMonthNote(time)) {
-//                date = -5;
-//            }
-//        } else if (cal.get(Calendar.YEAR) == getYearNote(time) + 1) {
-//            if (cal.get(Calendar.MONTH) == 0 && getMonthNote(time) == 11) {
-//                date = -5;
-//            }
-//        }
-//
-//        return date;
-//    }
     public static long getTimeForMail(long time) {
         int date = -1;
         Calendar cal = Calendar.getInstance();
