@@ -173,21 +173,6 @@ public class WebSocketClient {
         }
     }
 
-
-//    private String getResponse(InputStream is) throws IOException {
-//        StringBuilder builder = new StringBuilder();
-//        InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-//        BufferedReader reader = new BufferedReader(isr);
-//
-//        String line;
-//
-//        while ((line = reader.readLine()) != null) {
-//            builder.append(line);
-//        }
-//
-//        return builder.toString();
-//    }
-
     public void send(String data) {
         sendFrame(mParser.frame(data));
     }
@@ -199,17 +184,6 @@ public class WebSocketClient {
     public boolean isConnected() {
         return mConnected;
     }
-
-//    private StatusLine parseStatusLine(String line) {
-//        if (TextUtils.isEmpty(line)) {
-//            return null;
-//        }
-//        return BasicLineParser.parseStatusLine(line, new BasicLineParser());
-//    }
-//
-//    private Header parseHeader(String line) {
-//        return BasicLineParser.parseHeader(line, new BasicLineParser());
-//    }
 
     // Can't use BufferedReader because it buffers past the HTTP data.
     private String readLine(HybiParser.HappyDataInputStream reader) throws IOException {
@@ -230,19 +204,6 @@ public class WebSocketClient {
         }
         return string.toString();
     }
-
-//    private String expectedKey(String secret) {
-//        //concatenate, SHA1-hash, base64-encode
-//        try {
-//            final String GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-//            final String secretGUID = secret + GUID;
-//            MessageDigest md = MessageDigest.getInstance("SHA-1");
-//            byte[] digest = md.digest(secretGUID.getBytes());
-//            return Base64.encodeToString(digest, Base64.DEFAULT).trim();
-//        } catch (NoSuchAlgorithmException e) {
-//            return null;
-//        }
-//    }
 
     private String createSecret() {
         byte[] nonce = new byte[16];

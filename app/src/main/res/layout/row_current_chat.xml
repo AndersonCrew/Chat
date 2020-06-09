@@ -117,10 +117,6 @@
                     style="@style/default_avatar_medium"
                     android:src="@drawable/avatar_l" />
 
-                <!--<ImageView-->
-                <!--android:id="@+id/avatar_imv"-->
-                <!--style="@style/default_avatar_medium"/>-->
-
                 <ImageView
                     android:id="@+id/status_imv"
                     android:layout_width="wrap_content"

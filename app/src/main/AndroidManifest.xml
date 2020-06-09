@@ -123,9 +123,9 @@
 
         <activity
             android:name="com.dazone.crewchatoff.activity.ChattingActivity"
-            android:configChanges="orientation|screenSize"
             android:fitsSystemWindows="true"
             android:label="@string/app_name"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity

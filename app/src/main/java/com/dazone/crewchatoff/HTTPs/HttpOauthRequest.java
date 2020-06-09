@@ -278,7 +278,6 @@ public class HttpOauthRequest {
         Log.d(TAG, "add CrewChatFileServerIP:" + CrewChatFileServerIP);
         Log.d(TAG, "add CrewChatFileServerPort:" + CrewChatFileServerPort);
 
-//                Urls.HOST_STATUS = userDto.CrewDDSServer;
         new Prefs().setHOST_STATUS(CrewDDSServerIP);
         new Prefs().setDDS_SERVER_PORT(CrewDDSServerPort);
         new Prefs().setFILE_SERVER_PORT(CrewChatFileServerPort);

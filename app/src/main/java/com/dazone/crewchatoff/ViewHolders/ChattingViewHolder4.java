@@ -36,8 +36,8 @@ public class ChattingViewHolder4 extends BaseChattingHolder {
 
     @Override
     protected void setup(View v) {
-        tv_4 = (TextView) v.findViewById(R.id.tv_4);
-        iv_cancel = (ImageView) v.findViewById(R.id.iv_cancel);
+        tv_4 = v.findViewById(R.id.tv_4);
+        iv_cancel = v.findViewById(R.id.iv_cancel);
 
     }
 
@@ -76,7 +76,7 @@ public class ChattingViewHolder4 extends BaseChattingHolder {
                             iv_cancel.setVisibility(View.GONE);
                             // update list
                             if (ChattingFragment.instance != null) {
-                                ChattingFragment.instance.isShowIcon = false;
+                                ChattingFragment.isShowIcon = false;
                                 ChattingFragment.instance.Reload();
                             }
                             if (ChattingActivity.instance != null) {
@@ -100,7 +100,7 @@ public class ChattingViewHolder4 extends BaseChattingHolder {
             tv_4.setText(s);
         }
         if (ChattingFragment.instance != null) {
-            if (ChattingFragment.instance.isShowIcon && ChattingFragment.msgEnd == dto.getMessageNo()) {
+            if (ChattingFragment.isShowIcon && ChattingFragment.msgEnd == dto.getMessageNo()) {
                 iv_cancel.setVisibility(View.VISIBLE);
             } else {
                 iv_cancel.setVisibility(View.GONE);

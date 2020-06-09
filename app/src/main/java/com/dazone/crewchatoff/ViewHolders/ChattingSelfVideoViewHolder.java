@@ -84,13 +84,13 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
 
     @Override
     protected void setup(View v) {
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
-        progressDownloading = (ProgressBar) v.findViewById(R.id.progress_downloading);
-        date_tv = (TextView) v.findViewById(R.id.date_tv);
-        chatting_imv = (ImageView) v.findViewById(R.id.chatting_imv);
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
-        ivPlayBtn = (ImageView) v.findViewById(R.id.iv_play_btn);
-        tvDuration = (TextView) v.findViewById(R.id.tv_duration);
+        progressBar = v.findViewById(R.id.progressBar);
+        progressDownloading = v.findViewById(R.id.progress_downloading);
+        date_tv = v.findViewById(R.id.date_tv);
+        chatting_imv = v.findViewById(R.id.chatting_imv);
+        tvUnread = v.findViewById(R.id.text_unread);
+        ivPlayBtn = v.findViewById(R.id.iv_play_btn);
+        tvDuration = v.findViewById(R.id.tv_duration);
         overLayView = v.findViewById(R.id.overlay_movie);
         overLayView.setOnClickListener(this);
         overLayView.setOnCreateContextMenuListener(this);
@@ -546,11 +546,7 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;
         }
-        if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-
-        return true;
+        return ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
     public void DownloadImage(final Context context, final String url, final String name, final Intent shareIntent, final File file) {
         String mimeType;

@@ -27,14 +27,9 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
     public EmojiView mEmojiView;
 
     public LinearLayout selection_lnl, linearEmoji;
-    private Context mContext;
-    private Prefs mPrefs;
 
     public ChatInputView(Context context) {
         super(context);
-        this.mContext = context;
-        mPrefs = CrewChatApplication.getInstance().getPrefs();
-
         setupView();
     }
 
@@ -100,7 +95,6 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
         int viewID = v.getId();
 
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-
         switch (viewID) {
             case R.id.plus_imv:
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);

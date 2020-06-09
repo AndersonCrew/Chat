@@ -189,15 +189,11 @@ public class GcmIntentService extends IntentService {
                     final long roomNo = chattingDto.getRoomNo();
                     final long unreadCount = bundleDto.getUnreadTotalCount();
 
-                    Log.d(TAG, "roomNo:" + roomNo);
-                    Log.d(TAG, "unreadCount:" + unreadCount);
-
                     ShortcutBadger.applyCount(this, (int) unreadCount); //for 1.1.4
 
-                    Date date = new Date(System.currentTimeMillis());
-                    String currentTime = TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
+                    String currentTime = TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + "");
                     chattingDto.setRegDate(currentTime);
-                    chattingDto.setLastedMsgDate(currentTime);
+                    chattingDto.setLastedMsgDate(System.currentTimeMillis() + "");
 
                     new Thread(new Runnable() {
                         @Override

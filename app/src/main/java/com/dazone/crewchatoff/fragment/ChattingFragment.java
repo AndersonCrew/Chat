@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -36,6 +37,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +70,7 @@ import com.dazone.crewchatoff.dto.TreeUserDTOTemp;
 import com.dazone.crewchatoff.dto.UserDto;
 import com.dazone.crewchatoff.eventbus.ReceiveMessage;
 import com.dazone.crewchatoff.eventbus.ReloadListMessage;
+import com.dazone.crewchatoff.interfaces.ILayoutChange;
 import com.dazone.crewchatoff.interfaces.OnGetChatMessage;
 import com.dazone.crewchatoff.interfaces.OnGetMessageUnreadCountCallBack;
 import com.dazone.crewchatoff.interfaces.SendChatMessage;
@@ -90,14 +93,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -105,7 +105,7 @@ import static com.dazone.crewchatoff.activity.MainActivity.mSelectedImage;
 import static com.dazone.crewchatoff.activity.MainActivity.type;
 import static com.dazone.crewchatoff.database.ChatMessageDBHelper.addMessage;
 
-public class ChattingFragment extends ListFragment<ChattingDto> implements View.OnClickListener, EmojiView.EventListener, View.OnLayoutChangeListener, View.OnKeyListener, TextView.OnEditorActionListener {
+public class ChattingFragment extends ListFragment<ChattingDto> implements View.OnClickListener, EmojiView.EventListener, View.OnKeyListener, TextView.OnEditorActionListener {
     private String TAG = ChattingFragment.class.getName();
     public long roomNo;
     private ArrayList<Integer> userNos;
@@ -147,6 +147,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private Handler handlerTimer = new Handler();
     private int timeDelay = 1000;
     private int timerCount = -1;
+
     private Runnable updateTimer = new Runnable() {
         @Override
         public void run() {
@@ -235,6 +236,23 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         }
 
         Constant.cancelAllNotification(CrewChatApplication.getInstance(), (int) roomNo);
+
+        setiLayoutChange(new ILayoutChange() {
+            @Override
+            public void onKeyBoardShow() {
+                rvMainList.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rvMainList.smoothScrollToPosition(dataSet.size());
+                    }
+                }, 300);
+            }
+
+            @Override
+            public void onKeyBoardHide() {
+
+            }
+        });
     }
 
     private boolean isGetValueEnterAuto() {
@@ -2108,20 +2126,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         view.edt_comment.setText(view.edt_comment.getText().append(headPhoneString2).toString());
         view.edt_comment.setSelection(view.edt_comment.getText().length());
-    }
-
-    @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                               int oldLeft,
-                               int oldTop, int oldRight, int oldBottom) {
-        if (bottom < oldBottom) {
-            rvMainList.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    rvMainList.scrollToPosition(dataSet.size());
-                }
-            }, 100);
-        }
     }
 
     public class SendToServer extends AsyncTask<Void, Void, Integer> {

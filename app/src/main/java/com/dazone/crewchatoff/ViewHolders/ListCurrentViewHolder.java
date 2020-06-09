@@ -293,6 +293,7 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                 } else { // Logout state
                     ivStatus.setImageResource(R.drawable.home_big_status_03);
                 }
+
                 if (dto.getRoomType() == 1) {
                     ivStatus.setImageResource(R.drawable.home_status_me);
                 }

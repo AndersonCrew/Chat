@@ -2,10 +2,12 @@ package com.dazone.crewchatoff.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -22,11 +26,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.adapter.PullUpLoadMoreRCVAdapter;
+import com.dazone.crewchatoff.interfaces.ILayoutChange;
 import com.dazone.crewchatoff.utils.Utils;
 
 import java.util.ArrayList;
@@ -44,7 +50,7 @@ public abstract class ListFragment<T> extends Fragment {
     public ImageView ivScrollDown;
     protected LinearLayout progressBar;
     protected LinearLayout recycler_footer;
-    protected RelativeLayout list_content_rl;
+    protected RelativeLayout list_content_rl, rlMain;
     protected TextView no_item_found;
     protected SwipeRefreshLayout swipeRefreshLayout;
     protected String str_lastID = "";
@@ -82,6 +88,7 @@ public abstract class ListFragment<T> extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list, container, false);
         lnNoData = v.findViewById(R.id.lnNoData);
+        rlMain = v.findViewById(R.id.rlMain);
         progressBar = v.findViewById(R.id.progressBar);
         rvMainList = v.findViewById(R.id.rv_main);
         rlNewMessage = v.findViewById(R.id.rl_new_message);
@@ -102,11 +109,32 @@ public abstract class ListFragment<T> extends Fragment {
 
         mInputSearch.addTextChangedListener(mWatcher);
 
+        rlMain.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
+
         setupRecyclerView();
         changeStatusBarColor();
         initList();
         return v;
     }
+
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            Rect rect = new Rect();
+            getActivity().getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+
+            int screenHeight = getActivity().getWindowManager().getDefaultDisplay().getHeight();
+            int keypadHeight = screenHeight - rect.bottom;
+
+            if (keypadHeight > screenHeight * 0.15) {
+                if (iLayoutChange != null)
+                    iLayoutChange.onKeyBoardShow();
+            } else {
+                if (iLayoutChange != null)
+                    iLayoutChange.onKeyBoardHide();
+            }
+        }
+    };
 
     private void changeStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -228,5 +256,11 @@ public abstract class ListFragment<T> extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    private ILayoutChange iLayoutChange;
+
+    public void setiLayoutChange(ILayoutChange iLayoutChange) {
+        this.iLayoutChange = iLayoutChange;
     }
 }

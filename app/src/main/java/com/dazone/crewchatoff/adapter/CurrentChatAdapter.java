@@ -14,7 +14,6 @@ import com.dazone.crewchatoff.fragment.CurrentChatListFragment;
 import java.util.List;
 
 public class CurrentChatAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
-    String TAG = "CurrentChatAdapter";
     private CurrentChatListFragment.OnContextMenuSelect mOnContextMenuSelect;
 
     public CurrentChatAdapter(Context context, List<ChattingDto> myDataSet, RecyclerView recyclerView, CurrentChatListFragment.OnContextMenuSelect callback) {

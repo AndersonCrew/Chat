@@ -761,12 +761,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         protected void onPostExecute(String status) {
             super.onPostExecute(status);
             callback.finishStatus();
-
         }
     }
 
     void getStatusPersonal() {
-
         StatusDto status = new GetUserStatus().getStatusOfUsers(new Prefs().getHOST_STATUS(), new Prefs().getCompanyNo());
         if (status != null) {
             for (TreeUserDTOTemp u : listOfUsers) {

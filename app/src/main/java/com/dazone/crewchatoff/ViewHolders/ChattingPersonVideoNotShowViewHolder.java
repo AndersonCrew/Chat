@@ -83,17 +83,17 @@ public class ChattingPersonVideoNotShowViewHolder extends BaseChattingHolder imp
 
     @Override
     protected void setup(View v) {
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
-        progressDownloading = (ProgressBar) v.findViewById(R.id.progress_downloading);
-        date_tv = (TextView) v.findViewById(R.id.date_tv);
-        chatting_imv = (ImageView) v.findViewById(R.id.chatting_imv);
-        avatar_imv = (ImageView) v.findViewById(R.id.avatar_imv);
-        tvDuration = (TextView) v.findViewById(R.id.tv_duration);
+        progressBar = v.findViewById(R.id.progressBar);
+        progressDownloading = v.findViewById(R.id.progress_downloading);
+        date_tv = v.findViewById(R.id.date_tv);
+        chatting_imv = v.findViewById(R.id.chatting_imv);
+        avatar_imv = v.findViewById(R.id.avatar_imv);
+        tvDuration = v.findViewById(R.id.tv_duration);
 
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
+        tvUnread = v.findViewById(R.id.text_unread);
 
 
-        ivPlayBtn = (ImageView) v.findViewById(R.id.iv_play_btn);
+        ivPlayBtn = v.findViewById(R.id.iv_play_btn);
         ivPlayBtn.setOnClickListener(this);
         overLayView = v.findViewById(R.id.overlay_movie);
         overLayView.setOnClickListener(this);
