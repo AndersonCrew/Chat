@@ -1296,7 +1296,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             view.edt_comment.setText("");
             isSend = false;
 
-            if (dataSet.size() <= 2) {
+            if (dataSet.size() < 2) {
                 ChattingDto time = new ChattingDto();
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                 time.setRegDate(Utils.getString(R.string.today));
@@ -1872,7 +1872,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         HttpRequest.getInstance().UpdateMessageUnreadCount(roomNo, userID, baseDate);
 
-        if (dataSet.size() <= 2) {
+        if (dataSet.size() < 2) {
             ChattingDto time = new ChattingDto();
             time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
             time.setRegDate(Utils.getString(R.string.today));
