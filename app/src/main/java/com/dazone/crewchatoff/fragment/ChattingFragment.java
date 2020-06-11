@@ -1144,7 +1144,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                 time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
                 time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
-            } else if (list.size() > 1 && dataSet.size() > 1) {
+            } else if (dataSet.size() > 1) {
                 String date1 = chattingDto.getRegDate();
                 String date2 = dataSet.size() == 1 ? dataSet.get(0).getRegDate() : dataSet.get(dataSet.size() - 1).getRegDate();
 
@@ -2009,7 +2009,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             view.selection_lnl.setVisibility(View.GONE);
         }
 
-        new SendToServer(chattingDto, progressBar, position, callBack).execute();
+        new SendToServer(chattingDto, progressBar, position, callBack).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
     }
 
     @Override

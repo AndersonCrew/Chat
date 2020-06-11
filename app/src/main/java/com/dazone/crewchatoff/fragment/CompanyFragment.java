@@ -250,6 +250,7 @@ public class CompanyFragment extends Fragment {
             moddate = TimeUtils.showTimeWithoutTimeZone(calendar.getTimeInMillis(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
             new Prefs().setModdate_deppartment(moddate);
         }
+
         HttpRequest.getInstance().GetListDepart_Mod(moddate, new IGetListDepart() {
             @Override
             public void onGetListDepartSuccess(final ArrayList<TreeUserDTO> treeUserDTOs) {
@@ -459,30 +460,23 @@ public class CompanyFragment extends Fragment {
                     // Just get data from server and store to local data, not show dialog
                     saveDataToLocal(groups);
                 }
-                Log.d(TAG, "finish convert list FavoriteGroupDto");
             } else if (msg.what == 4) { // update status
-                Log.d(TAG, "update status");
                 Bundle args = msg.getData();
                 ArrayList<TreeUserDTOTemp> users = args.getParcelableArrayList("listUsers");
                 updateStatus(users);
             } else if (msg.what == CODE_BUILD_TREE_OFFLINE) {
-                Log.d(TAG, "CODE_BUILD_TREE_OFFLINE");
                 isOnline = false;
                 buildTree(mDepartmentList, isOnline);
             } else if (msg.what == GET_USER_COMPLETE) {
-                Log.d(TAG, "GET_USER_COMPLETE");
                 listTemp = (ArrayList<TreeUserDTOTemp>) msg.obj;
                 getListDepartment();
             } else if (msg.what == GET_DEPARTMENT_COMPLETE) {
-                Log.d(TAG, "GET_DEPARTMENT_COMPLETE");
                 isOnline = true;
                 buildTree((ArrayList<TreeUserDTO>) msg.obj, isOnline);
             } else if (msg.what == CREATE_TREE) {
-                Log.d(TAG, "CREATE_TREE");
                 TreeUserDTO dto = (TreeUserDTO) msg.obj;
                 if (dto != null) {
                     list = dto.getSubordinates();
-                    Log.d(TAG, "mAdapter.updateList(list)");
                     mAdapter.updateList(list);
                     isLoad = true;
                     if (CurrentChatListFragment.fragment != null)
@@ -494,8 +488,6 @@ public class CompanyFragment extends Fragment {
                     if (MultilLevelListviewFragment.instanceNew != null)
                         MultilLevelListviewFragment.instanceNew.initDB();
 
-                } else {
-                    Log.d(TAG, "TREE NULL");
                 }
                 boolean flag = new Prefs().isDataComplete();
                 if (flag) {
@@ -504,16 +496,13 @@ public class CompanyFragment extends Fragment {
                 new Prefs().setDataComplete(true);
                 progressBar.setVisibility(View.GONE);
             } else if (msg.what == GET_DATA_OFFLINE_COMPLETE) {
-                Log.d(TAG, "GET_DATA_OFFLINE_COMPLETE");
                 boolean flag = new Prefs().isDataComplete();
                 if (listTemp != null && listTemp.size() > 0 && mDepartmentList != null && mDepartmentList.size() > 0 && flag) {
                     mHandler.obtainMessage(CODE_BUILD_TREE_OFFLINE).sendToTarget();
                 } else {
-                    Log.d(TAG, "listTemp == 0");
                     getListAllUser();
                 }
             } else if (msg.what == GET_USER_MOD_COMPLETE) {
-                Log.d(TAG, "GET_USER_MOD_COMPLETE");
                 getListDepartment_Mod();
             } else if (msg.what == GET_MOD_DEPARTMENT_COMPLETE) {
                 if (!isBuild) {
@@ -673,9 +662,6 @@ public class CompanyFragment extends Fragment {
     private ArrayList<TreeUserDTO> mPersonList = new ArrayList<>();
 
     private void buildTree(final ArrayList<TreeUserDTO> treeUserDTOs, final boolean isFromServer) {
-        Log.d(TAG, "listTemp:" + listTemp.size());
-        Log.d(TAG, "mDepartmentList:" + treeUserDTOs.size());
-        Log.d(TAG, "buildTree");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -685,7 +671,6 @@ public class CompanyFragment extends Fragment {
                         mDepartmentList.clear();
                         mDepartmentList.addAll(temp);
                         new TinyDB(CrewChatApplication.getInstance()).putListObject("depart", mDepartmentList);
-                        Log.d(TAG, "mDepartmentList:" + mDepartmentList.size());
                     } else {
                         temp.clear();
                         temp.addAll(treeUserDTOs);

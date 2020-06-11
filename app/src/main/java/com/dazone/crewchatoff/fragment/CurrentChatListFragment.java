@@ -89,7 +89,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         if (CompanyFragment.instance != null) listOfUsers = CompanyFragment.instance.getUser();
         if (listOfUsers == null) listOfUsers = new ArrayList<>();
 
-        // If list user is not null, load data from client at first
         if (listOfUsers != null && listOfUsers.size() > 0) {
             treeUserDTOTempList = listOfUsers;
             getDataFromClient(listOfUsers);
@@ -592,7 +591,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 List<ChattingDto> listChat = ChatRoomDBHelper.getChatRooms();
                 int localSize = listChat.size();
                 int severSize = list.size();
-                Log.d(TAG, "Collections.sort 4");
                 Collections.sort(list, new Comparator<ChattingDto>() {
                     public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
                         return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
@@ -626,7 +624,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                                 }
                             }
                             chattingDto.setListTreeUser(list1);
-                            Log.d(TAG, "add 3");
                             if (Constant.isAddChattingDto(chattingDto) && chattingDto.getListTreeUser() != null && chattingDto.getListTreeUser().size() > 0)
                                 dataSet.add(chattingDto);
 
