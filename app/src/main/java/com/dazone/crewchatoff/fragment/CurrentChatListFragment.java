@@ -144,8 +144,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             countDataFromServer(true);
             adapterList.notifyDataSetChanged();
             updateFavoriteList();
-
-
         }
 
         if (Utils.isNetworkAvailable()) {
@@ -590,7 +588,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         HttpRequest.getInstance().GetChatList(new OnGetChatList() {
             @Override
             public void OnGetChatListSuccess(List<ChattingDto> list) {
-
                 hideLoading();
                 List<ChattingDto> listChat = ChatRoomDBHelper.getChatRooms();
                 int localSize = listChat.size();
@@ -803,7 +800,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     }
 
     public void updateWhenAddUser(long roomNo, ArrayList<Integer> userNosAdd) {
-        /*for (ChattingDto chattingDto : dataSet) {
+        for (ChattingDto chattingDto : dataSet) {
             if (chattingDto.getRoomNo() == roomNo) {
                 ArrayList<Integer> chattingDTOUserNos = chattingDto.getUserNos();
 
@@ -825,7 +822,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 adapterList.notifyItemChanged(dataSet.indexOf(chattingDto));
                 break;
             }
-        }*/
+        }
     }
 
     private void countDataFromServer(boolean isHaveData) {

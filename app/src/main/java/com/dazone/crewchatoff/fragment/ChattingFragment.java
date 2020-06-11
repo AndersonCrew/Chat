@@ -1140,21 +1140,22 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private void addData(List<ChattingDto> list) {
         for (int i = 0; i < list.size(); i++) {
             ChattingDto chattingDto = list.get(i);
-
-            if (i == 0 && dataSet.size() <= 0) {
+            if(list.size() == 1 && dataSet.size() <= 0) {
                 ChattingDto time = new ChattingDto();
                 dataSet.add(time);
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                 time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
                 time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
-            } else {
-                String date2 = i != 0 ? list.get(i - 1).getRegDate() : dataSet.get(dataSet.size() - 1).getRegDate();
-                if (!TimeUtils.checkBetweenDate(chattingDto.getRegDate(), date2)) {
+            } else if(list.size() > 1 && dataSet.size() > 1) {
+                String date1 = chattingDto.getRegDate();
+                String date2 = dataSet.size() == 1 ? dataSet.get(0).getRegDate() : dataSet.get(dataSet.size() - 1).getRegDate();
+
+                if (!TimeUtils.checkBetweenDate(date1, date2)) {
                     ChattingDto time = new ChattingDto();
                     dataSet.add(time);
                     time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                     time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
-                    time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(list.get(i - 1).getRegDate())).getTime() - 100 + ""));
+                    time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
                 }
             }
 

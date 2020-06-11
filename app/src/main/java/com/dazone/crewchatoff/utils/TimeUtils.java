@@ -47,7 +47,7 @@ public class TimeUtils {
     public static boolean checkDateIsToday(String regDate) {
         try {
             Date date = new Date(getTime(regDate));
-            Date currentDate = new Date();
+            Date currentDate = new Date(System.currentTimeMillis());
             SimpleDateFormat formatter = new SimpleDateFormat(Statics.DATE_FORMAT_YYYY_MM_DD, Locale.getDefault());
             return formatter.format(date).equals(formatter.format(currentDate));
         } catch (Exception ex) {
