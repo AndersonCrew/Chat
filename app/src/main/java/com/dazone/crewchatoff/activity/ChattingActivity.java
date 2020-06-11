@@ -457,7 +457,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
                         chattingDto.setAttachFilePath(path);
                         chattingDto.setRoomNo(chattingDto.getRoomNo());
-                        chattingDto.setRegDate(chattingDto.getRegDate());
+                        chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                         chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
 
 
@@ -507,6 +507,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             chattingDto.setAttachFilePath(path);
                             chattingDto.setAttachFileName(filename);
                             chattingDto.setAttachFileSize((int) file.length());
+                            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                             ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                             Log.d(TAG, "addNewRow 2");
                         }
@@ -526,6 +527,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             chattingDto.setAttachFilePath(path);
                             chattingDto.setAttachFileName(filename);
                             chattingDto.setAttachFileSize((int) file.length());
+                            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                             ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                             Log.d(TAG, "addNewRow 3");
                         }
@@ -553,6 +555,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         AttachDTO attachInfo = new AttachDTO();
                         attachInfo.setFileName(filename);
                         chattingDto.setAttachInfo(attachInfo);
+                        chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
 
                         ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                         Log.d(TAG, "addNewRow 4");
@@ -606,6 +609,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                                     chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
                                     chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
                                     chattingDto.setAttachFileSize((int) file.length());
+                                    chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                                     ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                                     Log.d(TAG, "addNewRow 5");
 
@@ -655,16 +659,9 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                                     dto.setMessageNo(chattingDto.getMessageNo());
                                     dto.setmType(Statics.CHATTING_VIEW_TYPE_CONTACT);
                                     dto.setUnReadCount(chattingDto.getUnReadCount());
-                                    // perform update when send message success
                                     String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
                                     dto.setRegDate(time);
                                     ChattingFragment.instance.addNewRowFromChattingActivity(dto);
-                                    /*new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ChatMessageDBHelper.updateMessage(dto, lastId);
-                                        }
-                                    }).start();*/
 
                                 }
 
@@ -787,7 +784,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     ChattingDto chattingDto = new ChattingDto();
 
                     if (intent.getAction().equals(MediaChooser.IMAGE_SELECTED_ACTION_FROM_MEDIA_CHOOSER)) {
-                        Log.d(TAG, "IMAGE_SELECTED_ACTION_FROM_MEDIA_CHOOSER");
                         chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
                     } else {
                         chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
@@ -795,10 +791,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
                     chattingDto.setAttachFilePath(path);
                     chattingDto.setRoomNo(chattingDto.getRoomNo());
-                    chattingDto.setRegDate(chattingDto.getRegDate());
+                    chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                     ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-                    Log.d(TAG, "addNewRow 7");
-                    Log.d(TAG, "dataSet:" + ChattingFragment.instance.dataSet.size());
 
                     chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
                     chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);

@@ -580,10 +580,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private void sendAudio() {
         List<ChattingDto> integerList = new ArrayList<>();
         String path = Constant.getFilename(currentFormat, fileAudioName);
-        Log.d(TAG, "path:" + path);
         File file = new File(path);
         String filename = path.substring(path.lastIndexOf("/") + 1);
-        Log.d(TAG, "filename:" + filename);
         if (filename.contains(".")) {
             //ChattingDto chattingDto = this.chattingDto;
             ChattingDto chattingDto = new ChattingDto();
@@ -593,6 +591,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
             chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
             chattingDto.setAttachFileSize((int) file.length());
+            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
 
             addNewRowFromChattingActivity(chattingDto);
 
@@ -607,7 +606,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     public void addNewRowFromChattingActivity(ChattingDto chattingDto) {
         addLineToday(chattingDto);
         dataSet.add(chattingDto);
-        Log.d(TAG, ": dataSet.size()" + dataSet.size());
         notifyItemInserted();
         scrollToEndList();
     }
@@ -1140,13 +1138,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private void addData(List<ChattingDto> list) {
         for (int i = 0; i < list.size(); i++) {
             ChattingDto chattingDto = list.get(i);
-            if(list.size() == 1 && dataSet.size() <= 0) {
+            if (list.size() == 1 && dataSet.size() <= 0) {
                 ChattingDto time = new ChattingDto();
                 dataSet.add(time);
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                 time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
                 time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
-            } else if(list.size() > 1 && dataSet.size() > 1) {
+            } else if (list.size() > 1 && dataSet.size() > 1) {
                 String date1 = chattingDto.getRegDate();
                 String date2 = dataSet.size() == 1 ? dataSet.get(0).getRegDate() : dataSet.get(dataSet.size() - 1).getRegDate();
 
@@ -1196,16 +1194,21 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public void addLineToday(ChattingDto chattingDto) {
-        // Add new line for new message, it's may be today
-        if (dataSet != null) {
-            if (dataSet.get(dataSet.size() - 1) != null && dataSet.get(dataSet.size() - 1).getRegDate() != null) {
-                if (TimeUtils.checkDateIsToday(dataSet.get(dataSet.size() - 1).getRegDate())) {
-                    ChattingDto time = new ChattingDto();
-                    time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                    time.setTime(System.currentTimeMillis());
-                    time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
-                    dataSet.add(time);
-                }
+        if (dataSet.size() < 2) {
+            ChattingDto time = new ChattingDto();
+            time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+            time.setTime(System.currentTimeMillis());
+            time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
+            dataSet.add(time);
+        } else {
+            String date1 = chattingDto.getRegDate();
+            String date2 = dataSet.size() == 1 ? dataSet.get(0).getRegDate() : dataSet.get(dataSet.size() - 1).getRegDate();
+            if (!TimeUtils.checkBetweenDate(date1, date2)) {
+                ChattingDto time = new ChattingDto();
+                dataSet.add(time);
+                time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
+                time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
+                time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
             }
         }
     }
@@ -1259,7 +1262,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     newDto.setHasSent(true);
                     newDto.setMessageNo(chattingDto.getMessageNo());
                     newDto.setUnReadCount(chattingDto.getUnReadCount());
-                    newDto.setRegDate(chattingDto.getRegDate());
+                    //newDto.setRegDate(chattingDto.getRegDate());
                     adapterList.notifyDataSetChanged();
                     sendComplete = false;
                 }
@@ -1340,6 +1343,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 chattingDto.setAttachFilePath(path);
                 chattingDto.setAttachFileName(filename);
                 chattingDto.setAttachFileSize((int) file.length());
+                chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                 ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
 
                 chattingDto.setPositionUploadImage(ChattingFragment.instance.dataSet.size() - 1);
@@ -1433,6 +1437,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                                 chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
                                 chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
                                 chattingDto.setAttachFileSize((int) file.length());
+                                chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                                 addNewRowFromChattingActivity(chattingDto);
 
                                 chattingDto.setPositionUploadImage(dataSet.size() - 1);
@@ -1473,7 +1478,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
             public void onFinish() {
                 try {
-
                     ChattingActivity.instance.dismissProgressDialog();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1487,10 +1491,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     private void sendAudioV2(String path) {
         List<ChattingDto> integerList = new ArrayList<>();
-        Log.d(TAG, "path:" + path);
         File file = new File(path);
         String filename = path.substring(path.lastIndexOf("/") + 1);
-        Log.d(TAG, "filename:" + filename);
         if (filename.contains(".")) {
             ChattingDto chattingDto = new ChattingDto();
             chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
@@ -1499,6 +1501,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
             chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
             chattingDto.setAttachFileSize((int) file.length());
+            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
             addNewRowFromChattingActivity(chattingDto);
             chattingDto.setPositionUploadImage(dataSet.size() - 1);
             integerList.add(chattingDto);
@@ -1893,7 +1896,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             @Override
             public void onSendChatMessageSuccess(final ChattingDto dto) {
                 isSendingFile = false;
-                Log.d(TAG, "sendAttachFile success");
                 progressBar.setVisibility(View.GONE);
                 dto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dto.getRegDate()));
 
@@ -1901,11 +1903,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     dto.setUnReadCount(0);
                     CurrentChatListFragment.fragment.updateData(dto);
                 }
-                Log.d(TAG, "addNewChat 12");
+
                 dto.setLastedMsgAttachType(chattingDto.getLastedMsgAttachType());
                 dto.setLastedMsgType(chattingDto.getLastedMsgType());
                 addNewChat(dto, position, callBack);
-                Log.d(TAG, "dataFromServer add 2");
                 if (addDataFromServer(dto)) dataFromServer.add(dto);
             }
 
@@ -1967,21 +1968,15 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "index:" + index);
                 if (integerList == null || integerList.size() == 0 || index >= integerList.size())
                     return;
 
                 final int pos = integerList.get(index).getPositionUploadImage();
 
                 RecyclerView.ViewHolder holder = rvMainList.findViewHolderForAdapterPosition(pos);
-                if (holder == null) Log.d(TAG, "holder null: pos:" + pos);
-                else Log.d(TAG, "holder not null");
-
                 ProgressBar progressBar = null;
                 if (holder != null && holder instanceof ChattingSelfFileViewHolder)
                     progressBar = ((ChattingSelfFileViewHolder) holder).getProgressBar();
-                if (progressBar == null) Log.d(TAG, "progressBar null");
-                else Log.d(TAG, "progressBar not null");
 
                 SendTo(integerList.get(index), progressBar, integerList.get(index).getPositionUploadImage(), new WatingUpload() {
                     @Override
@@ -1989,9 +1984,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         int next = index + 1;
                         if (next < integerList.size())
                             sendFileWithQty_v2(integerList, next);
-                        else {
-                            Log.d(TAG, "finish send image");
-                        }
                     }
                 });
             }
@@ -1999,7 +1991,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public void sendFileWithQty(final List<ChattingDto> integerList, final int index) {
-        Log.d(TAG, "index:" + index);
         if (integerList == null || integerList.size() == 0 || index >= integerList.size())
             return;
         SendTo(integerList.get(index), null, integerList.get(index).getPositionUploadImage(), new WatingUpload() {
@@ -2008,15 +1999,12 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 int next = index + 1;
                 if (next < integerList.size())
                     sendFileWithQty(integerList, next);
-                else Log.d(TAG, "finish send image");
             }
         });
     }
 
     public void SendTo(ChattingDto chattingDto, ProgressBar progressBar, int position, WatingUpload callBack) {
-        Log.d(TAG, "SendTo");
         sendTo++;
-
         if (view != null) {
             view.selection_lnl.setVisibility(View.GONE);
         }
