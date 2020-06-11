@@ -73,7 +73,7 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(final String response) {
-                new ExportUserList(response, iGetListOrganization).execute();
+                new ExportUserList(response, iGetListOrganization).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
 
             @Override
@@ -97,7 +97,7 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(final String response) {
-                new ExportUserList(response, iGetListOrganization).execute();
+                new ExportUserList(response, iGetListOrganization).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
 
             @Override
@@ -145,7 +145,7 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(final String response) {
-                new ExportDepartmentList(response, iGetListDepart).execute();
+                new ExportDepartmentList(response, iGetListDepart).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
 
             @Override
@@ -167,7 +167,7 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(final String response) {
-                new ExportDepartmentList(response, iGetListDepart).execute();
+                new ExportDepartmentList(response, iGetListDepart).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
 
             @Override

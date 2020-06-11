@@ -79,11 +79,11 @@ public class GalleryCache {
 			if (!isScrolling && !mCurrentTasks.contains(imageKey)) {
 				if (mainActivity instanceof VideoFragment) {
 					BitmapLoaderTask task = new BitmapLoaderTask(imageKey, ((VideoFragment) mainActivity).getAdapter());
-					task.execute();
+					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 				} else if (mainActivity instanceof BucketVideoFragment) {
 					BitmapLoaderTask task = new BitmapLoaderTask(imageKey, ((BucketVideoFragment) mainActivity).getAdapter());
-					task.execute();
+					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			}
 		}

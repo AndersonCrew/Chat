@@ -138,7 +138,7 @@ public class ChattingPersonVideoNotShowViewHolder extends BaseChattingHolder imp
             if (file.exists()) {
                 isLoaded = true;
                 // Thread to get meta data
-                new Async_Get_Bitmap(file).execute();
+                new Async_Get_Bitmap(file).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
 
         }
@@ -410,7 +410,7 @@ public class ChattingPersonVideoNotShowViewHolder extends BaseChattingHolder imp
                                         BaseActivity.Instance.startActivity(intent);
                                     }
                                 }
-                            }).execute();
+                            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                         }
                     }

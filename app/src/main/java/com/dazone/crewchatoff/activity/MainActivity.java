@@ -334,7 +334,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            new Async_DownloadApkFile(MainActivity.this, "CrewChat").execute();
+                            new Async_DownloadApkFile(MainActivity.this, "CrewChat").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             dialog.dismiss();
                         }
                     });

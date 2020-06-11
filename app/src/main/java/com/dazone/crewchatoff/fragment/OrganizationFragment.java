@@ -50,7 +50,7 @@ public class OrganizationFragment extends BaseFragment implements IGetListDepart
         if (TextUtils.isEmpty(treeUser)) {
             Log.d(TAG, "URL_GET_DEPARTMENT 6");
         } else {
-            new Loading().execute();
+            new Loading().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         return rootView;
     }
@@ -79,7 +79,7 @@ public class OrganizationFragment extends BaseFragment implements IGetListDepart
     @Override
     public void onGetListDepartSuccess(ArrayList<TreeUserDTO> treeUserDTOs) {
         Loading loading = new Loading(treeUserDTOs);
-        loading.execute();
+        loading.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

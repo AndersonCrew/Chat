@@ -213,7 +213,7 @@ public class HttpOauthRequest {
                                     Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }).execute();
+                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
                         FileServerNotIP(userDto, subDomain, password, userID, CrewDDSServerIP, CrewDDSServerPort,
                                 CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
@@ -247,7 +247,7 @@ public class HttpOauthRequest {
                     Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
                 }
             }
-        }).execute();
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void _httpSuccess(UserDto userDto, String subDomain, String password, String userID, String CrewDDSServerIP, int CrewDDSServerPort,
@@ -352,7 +352,7 @@ public class HttpOauthRequest {
                                     Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }).execute();
+                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
                         SessionFileServerNotIP(userDto, CrewDDSServerIP, CrewDDSServerPort, CrewChatFileServerIP, CrewChatFileServerPort, baseHTTPCallBack, CrewChatLocalDatabase);
                     }
@@ -385,7 +385,7 @@ public class HttpOauthRequest {
                     Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
                 }
             }
-        }).execute();
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void _checkSessionSuccess(UserDto userDto, String CrewDDSServerIP, int CrewDDSServerPort, String CrewChatFileServerIP,
@@ -478,7 +478,7 @@ public class HttpOauthRequest {
                                     Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }).execute();
+                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
                         FileServerNotIP(userDto, subDomain, "", userID, CrewDDSServerIP, CrewDDSServerPort,
                                 CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);

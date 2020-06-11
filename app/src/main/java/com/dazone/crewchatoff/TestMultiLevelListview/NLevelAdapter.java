@@ -175,7 +175,7 @@ public class NLevelAdapter extends BaseAdapter {
 	class NLevelFilter {
 
 		public void filter() {
-			new AsyncFilter().execute();
+			new AsyncFilter().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		
 		class AsyncFilter extends AsyncTask<Void, Void, ArrayList<NLevelListItem>> {

@@ -521,7 +521,7 @@ public class NLevelRecycleAdapter extends RecyclerView.Adapter<RecyclerView.View
     class NLevelFilter {
 
         public void filter() {
-            new AsyncFilter().execute();
+            new AsyncFilter().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         // Filter user when receive text string

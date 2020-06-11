@@ -226,7 +226,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                         public void onComplete(String duration) {
                             tvDuration.setText(duration);
                         }
-                    }).execute();
+                    }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
                     tvDuration.setText("");
                 }
@@ -275,7 +275,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                         public void onError() {
                             Toast.makeText(BaseActivity.Instance, "Can not open this file", Toast.LENGTH_SHORT).show();
                         }
-                    }).execute();
+                    }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             } else {
                 setPermissionsRandW();

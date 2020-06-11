@@ -202,7 +202,7 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
         ImageUtils.showCycleImageFromLink(prefs.getServerSite() + prefs.getAvatarUrl(), imgAvatar, R.dimen.common_avatar);
         tvUserName.setText(prefs.getFullName());
         tvDate.setText(TimeUtils.displayTimeWithoutOffset(this, TimeUtils.convertTimeDeviceToTimeServerDefault(regDate), 0, TimeUtils.KEY_FROM_SERVER));
-        new LoadbitMap().execute();
+        new LoadbitMap().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     class LoadbitMap extends AsyncTask<Void, Integer, String> {
@@ -334,7 +334,7 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
                 break;
 
             case R.id.iv_tick:
-                new AsyncClickTick().execute();
+                new AsyncClickTick().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 break;
         }
     }

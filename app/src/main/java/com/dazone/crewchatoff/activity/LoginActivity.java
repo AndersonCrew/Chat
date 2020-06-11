@@ -652,7 +652,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
 
                             @Override
                             public void onOkClick(DialogInterface alertDialog) {
-                                new WebClientAsyncTask(activity).execute();
+                                new WebClientAsyncTask(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             }
 
                             @Override

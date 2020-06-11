@@ -145,7 +145,7 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
 
             if (file.exists()) {
                 // Thread to get meta data
-                new Async_Get_Bitmap(file).execute();
+                new Async_Get_Bitmap(file).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 isLoaded = true;
             }
         }
@@ -342,50 +342,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         }
     }
 
-    /*  private void playVideoStreaming() {
-          if (ChattingActivity.instance != null) {
-              if (ChattingActivity.instance.checkPermissionsReadExternalStorage()) {
-                  Log.d(TAG, "playVideoStreaming");
-                  if (tempDto != null) {
-                      AttachDTO attachDTO = tempDto.getAttachInfo();
-                      if (attachDTO != null) {
-                          String url = new Prefs().getServerSite() + Urls.URL_DOWNLOAD + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTO.getAttachNo();
-
-                          Log.d(TAG, "url:" + url);
-                          new WebClientAsyncTask(mActivity, progressDownloading, url, fileName, new OnDownloadFinish() {
-                              @Override
-                              public void onFinish(File file) {
-                                  if (file == null || file.length() <= 0) {
-                                      Toast.makeText(CrewChatApplication.getInstance(), "download fail", Toast.LENGTH_SHORT).show();
-                                  } else {
-                                      Log.d(TAG, "onFinish file:" + file.length());
-                                      try {
-                                          galleryAddPic(file.getPath());
-                                      } catch (Exception e) {
-                                          e.printStackTrace();
-                                      }
-
-                                      try {
-                                          getVideoMeta(file);
-                                      } catch (Exception e) {
-                                          e.printStackTrace();
-                                      }
-
-                                  }
-                              }
-                          }).execute();
-
-                      }
-                  }
-
-              } else {
-                  ChattingActivity.instance.setPermissionsReadExternalStorage();
-              }
-          } else {
-              Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
-          }
-
-      }*/
     private void playVideoStreaming() {
         if (ChattingActivity.instance != null) {
             if (ChattingActivity.instance.checkPermissionsReadExternalStorage()) {
@@ -454,7 +410,7 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
                                         e.printStackTrace();
                                     }
                                 }
-                            }).execute();
+                            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                         }
                     }

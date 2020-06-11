@@ -368,7 +368,7 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
                     tv_size.setText(size + " KB");
                 }
             }
-        }).execute();
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         Log.d(TAG, "type:" + type);
         Log.d(TAG, "size:" + strSize);
 

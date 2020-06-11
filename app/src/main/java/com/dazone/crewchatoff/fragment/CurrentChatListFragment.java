@@ -724,7 +724,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     CompanyFragment.instance.updateListStatus(listOfUsers);
                 }
             }
-        }).execute();
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     interface onStatus {
