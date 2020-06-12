@@ -1039,25 +1039,39 @@ public class Utils {
             try {
                 logFile.createNewFile();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 Log.d("appendLog", e.getMessage());
                 e.printStackTrace();
             }
         }
         try {
-            //BufferedWriter for performance, true to set append to file flag
             BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
             buf.append(line);
             buf.newLine();
             buf.close();
-//            Log.d("appendLog", "buf.close()");
-//            Log.d("appendLog", filePath);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             Log.d("appendLog", e.getMessage());
             e.printStackTrace();
         }
+    }
 
-        Log.d("appendLog", filePath);
+    public static List<ChattingDto> checkExist(ChattingDto chattingDto, List<ChattingDto> list) {
+        List<ChattingDto> tempList = new ArrayList<>();
+        tempList.addAll(list);
+        boolean isExist = false;
+        for(int i = 0; i < list.size(); i++) {
+            if(chattingDto.getMessageNo() == list.get(i).getMessageNo()){
+                tempList.remove(i);
+                tempList.add(chattingDto);
+                isExist = true;
+                break;
+            }
+        }
+
+        if(!isExist) {
+            list.add(chattingDto);
+        }
+
+        return  tempList;
     }
 }

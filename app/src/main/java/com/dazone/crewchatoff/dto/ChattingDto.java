@@ -5,9 +5,12 @@ import com.dazone.crewchatoff.utils.TimeUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Created by david on 12/24/15.
@@ -90,6 +93,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     private int status = 0;
     private int positionUploadImage;
     private int temp = 0;
+    private String date;
 
     public int getTemp() {
         return temp;
@@ -105,6 +109,11 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
 
     public void setPositionUploadImage(int positionUploadImage) {
         this.positionUploadImage = positionUploadImage;
+    }
+
+    public void setDate() {
+        Date date = TimeUtils.convertStringToDate(getRegDate());
+        this.date = new SimpleDateFormat(Statics.DATE_FORMAT_YYYY_MM_DD, Locale.getDefault()).format(date.getTime());
     }
 
     @Override
@@ -327,9 +336,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     }
 
     public String getMessage() {
-       /* Date date = TimeUtils.convertStringToDate(getRegDate());
-        return Message != null && Message.contains("*") ? Message : "*[" + TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS) + "] - " + Message;*/
-       return Message;
+        return Message;
     }
 
     public void setMessage(String message) {
@@ -350,6 +357,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
 
     public void setRegDate(String regDate) {
         RegDate = regDate;
+        setDate();
     }
 
     public AttachDTO getAttachInfo() {

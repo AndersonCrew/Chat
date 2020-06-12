@@ -53,9 +53,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -191,9 +194,6 @@ public class GcmIntentService extends IntentService {
                     final long unreadCount = bundleDto.getUnreadTotalCount();
 
                     ShortcutBadger.applyCount(this, (int) unreadCount); //for 1.1.4
-
-                    String currentTime = TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + "");
-                    chattingDto.setRegDate(currentTime);
                     chattingDto.setLastedMsgDate(System.currentTimeMillis() + "");
 
                     new Thread(new Runnable() {

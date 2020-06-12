@@ -18,6 +18,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -258,6 +259,25 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                                         chatting_imv.setImageBitmap(bitmap);
                                         if (progressBarImageLoading != null)
                                             progressBarImageLoading.setVisibility(View.GONE);
+                                        Log.d("A", "A");
+                                    }
+
+                                    @Override
+                                    public void onLoadStarted(Drawable placeholder) {
+                                        super.onLoadStarted(placeholder);
+                                        Log.d("A", "A");
+                                    }
+
+                                    @Override
+                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                        super.onLoadFailed(e, errorDrawable);
+                                        Log.d("A", "A");
+                                    }
+
+                                    @Override
+                                    public void onStart() {
+                                        super.onStart();
+                                        Log.d("A", "A");
                                     }
                                 });
                     } else {

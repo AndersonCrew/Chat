@@ -590,6 +590,8 @@ public class HttpRequest {
             public void onSuccess(String response) {
                 Log.d(TAG, "SendChatMsg onSuccess");
                 ChattingDto chattingDto = new Gson().fromJson(response, ChattingDto.class);
+                SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
+                String date = formatter.format(new Date(TimeUtils.getTime(chattingDto.getRegDate())));
                 if (sendChatMessage != null)
                     sendChatMessage.onSendChatMessageSuccess(chattingDto);
             }

@@ -345,22 +345,6 @@ public class Constant {
             }
         }
 
-//        for (int i = 0; i < lst.size(); i++) {
-//            ChattingDto obj = lst.get(i);
-//            if (obj.getMessageNo() != 0) {
-//                long time_1 = TimeUtils.getTime(obj.getRegDate());
-//                for (int j = 0; j <= i; j++) {
-//                    ChattingDto dto = lst.get(j);
-//                    long time_2 = TimeUtils.getTime(dto.getRegDate());
-//                    if (time_1 < time_2) {
-//                        ChattingDto pp = lst.get(i);
-//                        lst.set(i, lst.get(j));
-//                        lst.set(j, pp);
-//                    }
-//                }
-//            }
-//        }
-
         for (int i = 0; i < lst.size(); i++) {
             for (int j = 0; j <= i; j++) {
                 if (lst.get(i).getMessageNo() <= lst.get(j).getMessageNo()) {
