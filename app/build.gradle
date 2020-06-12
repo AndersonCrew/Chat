@@ -102,5 +102,7 @@ android {
 
         /*implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:" + rootProject.coroutines_core_version
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:" + rootProject.coroutines_core_version*/
+
+
     }
 }

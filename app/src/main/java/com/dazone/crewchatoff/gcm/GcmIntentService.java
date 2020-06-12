@@ -159,6 +159,7 @@ public class GcmIntentService extends IntentService {
                     chattingDto.setAttachFileType(bundleDto.getAttachFileType());
                     chattingDto.setAttachFilePath(bundleDto.getAttachFilePath());
                     chattingDto.setAttachFileSize(bundleDto.getAttachFileSize());
+                    chattingDto.setRegDate(bundleDto.getRegDate());
 
                     AttachDTO attachInfo = new AttachDTO();
                     attachInfo.setType(bundleDto.getAttachFileType());

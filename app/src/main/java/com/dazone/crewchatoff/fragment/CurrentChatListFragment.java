@@ -444,6 +444,8 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 RecentFavoriteFragment.instance.updateRenameRoom(roomNo, roomTitle);
             }
         }
+
+        updateStatus();
     }
 
     @Override
@@ -713,8 +715,13 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                             }
                         }
                     }
-                    adapterList.notifyDataSetChanged();
-                    Log.d(TAG, "adapterList.notifyDataSetChanged 3");
+                    rvMainList.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapterList.notifyDataSetChanged();
+                        }
+                    }, 100);
+
 
                     if (RecentFavoriteFragment.instance != null) {
                         RecentFavoriteFragment.instance.updateSTT(listOfUsers);
@@ -760,7 +767,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
     void getStatusPersonal() {
         StatusDto status = new GetUserStatus().getStatusOfUsers(new Prefs().getHOST_STATUS(), new Prefs().getCompanyNo());
-        if (status != null) {
+        if (status != null && listOfUsers != null) {
             for (TreeUserDTOTemp u : listOfUsers) {
                 for (StatusItemDto sItem : status.getItems()) {
                     if (sItem.getUserID().equals(u.getUserID())) {

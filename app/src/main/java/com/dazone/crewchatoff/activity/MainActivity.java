@@ -600,8 +600,10 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     @Override
     public void onPageSelected(final int position) {
         if (position != TAB_CHAT) {
-            if (CurrentChatListFragment.fragment != null)
+            if (CurrentChatListFragment.fragment != null) {
                 CurrentChatListFragment.fragment.justHide();
+                CurrentChatListFragment.fragment.updateStatus();
+            }
         }
 
         MainActivity.CURRENT_TAB = position;

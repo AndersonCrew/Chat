@@ -964,7 +964,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         });
 
-        notifyItemInserted();
+        rvMainList.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemInserted();
+            }
+        }, 100);
+
 
         if (layoutManager.findLastCompletelyVisibleItemPosition() == dataSet.size() - 2) {
             int b = dataSet.size() - 1;
@@ -1781,13 +1787,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void processReceivingMessage(ChattingDto dataDto) {
-        // Add new line for new message, it's may be today
-        String baseDate = CrewChatApplication.getInstance().getTimeServer();
-        if (dataFromServer != null && dataFromServer.size() > 0) {
-            baseDate = dataFromServer.get(dataFromServer.size() - 1).getRegDate();
-        }
-
-        HttpRequest.getInstance().UpdateMessageUnreadCount(roomNo, userID, baseDate);
+        HttpRequest.getInstance().UpdateMessageUnreadCount(roomNo, userID, dataDto.getRegDate());
 
         if (dataSet.size() < 2) {
             ChattingDto time = new ChattingDto();
@@ -1801,7 +1801,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 ChattingDto time = new ChattingDto();
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                 time.setTime(System.currentTimeMillis());
-                time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(baseDate)).getTime() - 100 + ""));
+                time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(dataDto.getRegDate())).getTime() - 100 + ""));
                 dataSet.add(time);
             }
         }
@@ -1844,7 +1844,14 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         msgEnd = -1;
                         isShowIcon = false;
                     }
-                    adapterList.notifyDataSetChanged();
+
+                    rvMainList.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapterList.notifyDataSetChanged();
+                        }
+                    }, 100);
+
                     addNewChat(dataDto, true, true);
                 }
 
@@ -1852,10 +1859,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     dataDto.setUnReadCount(0);
                     CurrentChatListFragment.fragment.updateData(dataDto);
                 }
+
                 if (addDataFromServer(dataDto)) dataFromServer.add(dataDto);
+
             } else {
                 dataDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dataDto.getRegDate()));
-
                 if (CurrentChatListFragment.fragment != null) {
                     dataDto.setUnReadCount(0);
                     CurrentChatListFragment.fragment.updateData(dataDto);

@@ -1,22 +1,26 @@
 package com.dazone.crewchatoff.HTTPs;
 
+import android.util.Log;
+
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.StatusDto;
 import com.dazone.crewchatoff.dto.StatusItemDto;
 import com.dazone.crewchatoff.utils.Prefs;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class GetUserStatus {
-
 	public StatusDto getStatusOfUsers(String domain, int companyNo) {
 		StatusDto status = new StatusDto();
 
@@ -24,11 +28,11 @@ public class GetUserStatus {
 			String command = "idstatus";
 			String id = companyNo + "_*";
 
-			Socket socket = new Socket(domain, new Prefs().getDDS_SERVER_PORT());
+			InetAddress serverAddr = InetAddress.getByName(domain);
+			Socket socket = new Socket(serverAddr, new Prefs().getDDS_SERVER_PORT());
 			InputStream input = socket.getInputStream();
 			Reader reader = new InputStreamReader(input);
 			BufferedReader bufferedReader = new BufferedReader(reader);
-			bufferedReader.readLine();
 
 			OutputStream output = socket.getOutputStream();
 			Writer writer = new OutputStreamWriter(output);
@@ -48,10 +52,8 @@ public class GetUserStatus {
 			input.close();
 
 			socket.close();
-
 			list = list.substring(list.indexOf(",") + 1);
 			String[] users = list.split("/");
-
 			for (String user : users) {
 				String[] infos = user.split(",");
 				String userId = infos[0].replace(id.replace("*", ""), "");
@@ -71,7 +73,6 @@ public class GetUserStatus {
 					e.printStackTrace();
 				}
 			}
-
 			status.setItems(mapUsers);
 
 			return status;

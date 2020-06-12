@@ -16,6 +16,7 @@ public class NotificationBundleDto {
     private int AttachFileSize;
     private boolean ShowNotification;
     private int MessageType;
+    private String RegDate;
 
     public int getMessageType() {
         return MessageType;
@@ -23,6 +24,14 @@ public class NotificationBundleDto {
 
     public void setMessageType(int messageType) {
         MessageType = messageType;
+    }
+
+    public String getRegDate() {
+        return RegDate;
+    }
+
+    public void setRegDate(String regDate) {
+        RegDate = regDate;
     }
 
     public int getAttachNo() {
