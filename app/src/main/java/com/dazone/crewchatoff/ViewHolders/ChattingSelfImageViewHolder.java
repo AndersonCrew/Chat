@@ -1,6 +1,7 @@
 package com.dazone.crewchatoff.ViewHolders;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
@@ -110,6 +111,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         chatting_imv.setOnCreateContextMenuListener(this);
     }
 
+    @SuppressLint("HandlerLeak")
     protected final android.os.Handler mHandler = new android.os.Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
@@ -122,13 +124,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         }
     };
     int getUnReadCount;
-
-    private byte[] bitmapToByte(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        return byteArray;
-    }
 
     @Override
     public void bindData(final ChattingDto dto) {
@@ -233,12 +228,10 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                         Glide.with(CrewChatApplication.getInstance())
                                 .load(fullUrl)
                                 .asBitmap()
-                                //.override(100, 130)
                                 .placeholder(R.drawable.error_loading_image)
                                 .listener(new RequestListener<String, Bitmap>() {
                                     @Override
                                     public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-                                        // call callback when loading error
                                         if (progressBarImageLoading != null)
                                             progressBarImageLoading.setVisibility(View.GONE);
                                         return false;
@@ -312,19 +305,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         }
     }
 
-
-    private static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
-            return 90;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
-            return 180;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            return 270;
-        }
-
-        return 0;
-    }
-
     long MessageNo;
 
     void actionRelay() {
@@ -337,15 +317,11 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         Resources res = CrewChatApplication.getInstance().getResources();
         MenuItem open = menu.add(0, Statics.MENU_OPEN, 0, res.getString(R.string.open));
-        //MenuItem copy = menu.add(0,Statics.MENU_COPY, 0, res.getString(R.string.copy));
         MenuItem download = menu.add(0, Statics.MENU_DOWNLOAD, 0, res.getString(R.string.download));
-        //MenuItem delete = menu.add(0, Statics.MENU_DELETE, 0, res.getString(R.string.delete));
         MenuItem share = menu.add(0, Statics.MENU_SHARE, 0, res.getString(R.string.share));
 
         open.setOnMenuItemClickListener(this);
-        //copy.setOnMenuItemClickListener(this);
         download.setOnMenuItemClickListener(this);
-        //delete.setOnMenuItemClickListener(this);
         share.setOnMenuItemClickListener(this);
         MenuItem mnRelay = menu.add(0, Statics.MENU_RELAY, 0, res.getString(R.string.relay));
         mnRelay.setOnMenuItemClickListener(this);
@@ -390,22 +366,11 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 if (tempDto != null) {
                     AttachDTO attachDTO = tempDto.getAttachInfo();
                     if (attachDTO != null) {
-//                        String urlDownload = new Prefs().getServerSite() + Urls.URL_DOWNLOAD_THUMBNAIL + "session="
-//                                + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTO.getAttachNo();
-
-
                         String url = String.format("/UI/CrewChat/MobileAttachDownload.aspx?session=%s&no=%s",
                                 new Prefs().getaccesstoken(), tempDto.getAttachNo());
                         String urlDownload = new Prefs().getServerSite() + url;
-//                        Log.d(TAG,"urlDownload:"+urlDownload);
 
                         String path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + attachDTO.getFileName();
-                        File file = new File(path);
-//                        if (file.exists()) {
-//                            mActivity.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-//                        } else {
-//                            Utils.displayDownloadFileDialog(mActivity, urlDownload, attachDTO.getFileName());
-//                        }
                         Utils.displayDownloadFileDialog(mActivity, urlDownload, attachDTO.getFileName());
                     }
                 }
@@ -444,37 +409,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                     }
 
                 }
-
-//                ImageLoader.getInstance().loadImage(url, new SimpleImageLoadingListener() {
-//                    @Override
-//                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//
-//                        /** SAVE FILE */
-//                        String path = Utils.saveFile(loadedImage);
-//                        Uri screenshotUri = Uri.parse("file:///" + path);
-//                        try {
-//                            final Intent intent = ShareCompat.IntentBuilder.from(mActivity)
-//                                    .setType("image/*")
-//                                    .setText("....")
-//                                    .setSubject("Share image via...")
-//                                    .setStream(screenshotUri)
-//                                    .setChooserTitle("Share.")
-//                                    .createChooserIntent()
-//                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-//                                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//                            mActivity.startActivity(intent);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                        super.onLoadingFailed(imageUri, view, failReason);
-//                    }
-//                });
-
                 break;
             case Statics.MENU_RELAY:
                 actionRelay();
@@ -502,7 +436,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        //request.setTitle(name);
         int type = getTypeFile(fileType);
         switch (type) {
             case 1:
@@ -536,7 +469,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(reference);
                     Cursor c = downloadmanager.query(query);
@@ -602,7 +534,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         if (MainActivity.myRoom != Statics.MYROOM_DEFAULT) {
             sendMsgToMe(MessageNo);
         } else {
-            // create roomNo
             HttpRequest.getInstance().CreateOneUserChatRoom(Utils.getCurrentId(), new ICreateOneUserChatRom() {
                 @Override
                 public void onICreateOneUserChatRomSuccess(ChattingDto chattingDto) {
@@ -620,5 +551,4 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
             });
         }
     }
-    // Define function show menu context here
 }

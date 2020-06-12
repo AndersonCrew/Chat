@@ -98,7 +98,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 vh = new ChattingGroupViewHolderNew(v);
                 break;
             case Statics.CHATTING_VIEW_TYPE_SELF_IMAGE:
-
             case Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_image, parent, false);
                 vh = new ChattingSelfImageViewHolder(mActivity, v);
@@ -136,7 +135,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 break;
 
             case Statics.CHATTING_VIEW_TYPE_SELF_VIDEO:
-
             case Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_video, parent, false);
                 vh = new ChattingSelfVideoViewHolder(mActivity, v);

@@ -602,7 +602,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         if (position != TAB_CHAT) {
             if (CurrentChatListFragment.fragment != null) {
                 CurrentChatListFragment.fragment.justHide();
-                CurrentChatListFragment.fragment.updateStatus();
+                CurrentChatListFragment.fragment.getUserStatus();
             }
         }
 

@@ -444,8 +444,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 RecentFavoriteFragment.instance.updateRenameRoom(roomNo, roomTitle);
             }
         }
-
-        updateStatus();
     }
 
     @Override
@@ -698,6 +696,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             }
         }
 
+        getUserStatus();
+    }
+
+    public void getUserStatus() {
         new getStatus(new onStatus() {
             @Override
             public void finishStatus() {

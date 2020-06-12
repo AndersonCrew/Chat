@@ -959,8 +959,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         Collections.sort(dataSet, new Comparator<ChattingDto>() {
             @Override
             public int compare(ChattingDto o1, ChattingDto o2) {
+                Date date1 = new Date(TimeUtils.getTime(o1.getRegDate()));
+                Date date2 = new Date(TimeUtils.getTime(o2.getRegDate()));
                 return (o1.getMessageNo() == 0 || o2.getMessageNo() == 0 || (o1.getMessageNo() == o2.getMessageNo())) ? 0 :
-                        o1.getMessageNo() < o2.getMessageNo() ? -1 : 1;
+                        date1.getTime() < date2.getTime() ? -1 : 1;
             }
         });
 
