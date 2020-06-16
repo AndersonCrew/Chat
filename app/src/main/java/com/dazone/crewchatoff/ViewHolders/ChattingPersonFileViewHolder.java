@@ -27,8 +27,7 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
     private TextView user_name_tv;
     private TextView tvUnread;
     private ImageView avatar_imv;
-    private ImageView ivFile;
-    private TextView tvDuration, file_name_tv;
+    private TextView tvDuration;
     private LinearLayout layoutNotAudio, layoutAudio;
 
     public ChattingPersonFileViewHolder(View v) {
@@ -38,15 +37,13 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
     @Override
     protected void setup(View v) {
         super.setup(v);
-        ivFile = (ImageView) v.findViewById(R.id.file_thumb);
-        user_name_tv = (TextView) v.findViewById(R.id.user_name_tv);
-        avatar_imv = (ImageView) v.findViewById(R.id.avatar_imv);
-        tvUnread = (TextView) v.findViewById(R.id.text_unread);
+        user_name_tv = v.findViewById(R.id.user_name_tv);
+        avatar_imv = v.findViewById(R.id.avatar_imv);
+        tvUnread = v.findViewById(R.id.text_unread);
 
-        tvDuration = (TextView) v.findViewById(R.id.tvDuration);
-        layoutNotAudio = (LinearLayout) v.findViewById(R.id.layoutNotAudio);
-        layoutAudio = (LinearLayout) v.findViewById(R.id.layoutAudio);
-        file_name_tv = (TextView) v.findViewById(R.id.file_name_tv);
+        tvDuration = v.findViewById(R.id.tvDuration);
+        layoutNotAudio = v.findViewById(R.id.layoutNotAudio);
+        layoutAudio = v.findViewById(R.id.layoutAudio);
     }
 
     @Override
@@ -59,8 +56,6 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
         if (_fileName == null || _fileName.trim().length() == 0)
             _fileName = dto.getAttachFileName();
         if (_fileName == null) _fileName = "";
-//        if (file_name_tv != null) file_name_tv.setText(_fileName);
-//        Log.d(TAG, "_fileName:" + _fileName);
         String fileType = Utils.getFileType(_fileName);
         ImageUtils.imageFileType(file_thumb, fileType);
 
@@ -68,7 +63,6 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
         ImageUtils.showRoundImage(dto, avatar_imv);
         String strUnReadCount = String.valueOf(dto.getUnReadCount());
         tvUnread.setText(strUnReadCount);
-//        tvUnread.setVisibility(dto.getUnReadCount() == 0 ? View.GONE : View.VISIBLE);
         tvUnread.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,12 +72,10 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
                 BaseActivity.Instance.sendBroadcast(intent);
             }
         });
-//        avatar_imv.setTag(dto.getUserNo());
         avatar_imv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-//                    int userNo = (int) v.getTag();
                     int userNo = dto.getUserNo();
                     Intent intent = new Intent(BaseActivity.Instance, ProfileUserActivity.class);
                     intent.putExtra(Constant.KEY_INTENT_USER_NO, userNo);
@@ -100,7 +92,6 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
             if (layoutNotAudio != null) layoutNotAudio.setVisibility(View.GONE);
             if (layoutAudio != null) layoutAudio.setVisibility(View.VISIBLE);
 
-            // settext tvDuration
             if (tvDuration != null) {
                 AttachDTO attachDTO = dto.getAttachInfo();
                 if (attachDTO != null) {
@@ -110,8 +101,6 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
                     if (!file.exists()) {
                         path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Statics.AUDIO_RECORDER_FOLDER_ROOT + "/" + fileName;
                     }
-                    // ex: path = /storage/emulated/0/CrewChat/Audio/17_09_26_08_58_35.mp3
-                    // Log.d(TAG, "path:" + path);
                     new Constant.audioGetDuration(BaseActivity.Instance, path, new AudioGetDuration() {
                         @Override
                         public void onComplete(String duration) {

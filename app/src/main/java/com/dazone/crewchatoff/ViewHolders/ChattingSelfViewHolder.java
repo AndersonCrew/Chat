@@ -229,18 +229,23 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
         tempDto = dto;
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);
-        if (!TextUtils.isEmpty(dto.getLastedMsgDate())) {
+
+
+        /*if (!TextUtils.isEmpty(dto.getLastedMsgDate())) {
             date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getLastedMsgDate(), 0, TimeUtils.KEY_FROM_SERVER));
         } else {
             date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getRegDate(), 0, TimeUtils.KEY_FROM_SERVER));
-        }
+        }*/
+
+        long regDate = new Date(TimeUtils.getTime(dto.getRegDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
+        date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
 
         if (dto.getMessage() != null) {
             String message = dto.getMessage();
-            Date date = new Date(TimeUtils.getTime(dto.getRegDate()));
+            long regDateContent = new Date(TimeUtils.getTime(dto.getRegDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
             SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
-            String dateStr = "[ " + formatter.format(date.getTime()) + " ] - ";
+            String dateStr = "[ " + formatter.format(regDateContent) + " ] - ";
             try {
                 Spanned msg;
                 if (dto.getType() == Constant.APPROVAL) {

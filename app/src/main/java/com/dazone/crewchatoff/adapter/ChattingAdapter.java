@@ -26,6 +26,7 @@ import com.dazone.crewchatoff.ViewHolders.ChattingViewHolder5;
 import com.dazone.crewchatoff.ViewHolders.ChattingViewHolder6;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
+import com.dazone.crewchatoff.interfaces.ILoadImage;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
     private Activity mActivity;
-    String TAG = "ChattingAdapter";
+    private ILoadImage iLoadImage;
     private Comparator<ChattingDto> mComparator = new Comparator<ChattingDto>() {
         @Override
         public int compare(ChattingDto t1, ChattingDto t2) {
@@ -49,9 +50,10 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
         }
     };
 
-    public ChattingAdapter(Context context, Activity activity, List<ChattingDto> mDataSet, RecyclerView view) {
+    public ChattingAdapter(Context context, Activity activity, List<ChattingDto> mDataSet, RecyclerView view, ILoadImage loadImage) {
         super(context, mDataSet, view);
         mActivity = activity;
+        this.iLoadImage = loadImage;
     }
 
     @Override
@@ -100,7 +102,7 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
             case Statics.CHATTING_VIEW_TYPE_SELF_IMAGE:
             case Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_image, parent, false);
-                vh = new ChattingSelfImageViewHolder(mActivity, v);
+                vh = new ChattingSelfImageViewHolder(mActivity, v, iLoadImage);
                 break;
             case Statics.CHATTING_VIEW_TYPE_SELF_FILE:
             case Statics.CHATTING_VIEW_TYPE_SELECT_FILE:
@@ -109,11 +111,11 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 break;
             case Statics.CHATTING_VIEW_TYPE_PERSON_IMAGE:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_person_image, parent, false);
-                vh = new ChattingPersonImageViewHolder(mActivity, v);
+                vh = new ChattingPersonImageViewHolder(mActivity, v, iLoadImage);
                 break;
             case Statics.CHATTING_VIEW_TYPE_PERSON_IMAGE_NOT_SHOW:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_person_image_not_show, parent, false);
-                vh = new ChattingSelfImageViewHolder(mActivity, v);
+                vh = new ChattingSelfImageViewHolder(mActivity, v, iLoadImage);
                 break;
             case Statics.CHATTING_VIEW_TYPE_PERSON_FILE:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_person_file, parent, false);

@@ -174,10 +174,8 @@ public class TimeUtils {
 
         if (task == 0) {
             formatter = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
-            //formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         } else {
             formatter = new SimpleDateFormat("aa hh:mm", Locale.getDefault());
-            //formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         }
 
         int type = (int) getTimeForMail(time);

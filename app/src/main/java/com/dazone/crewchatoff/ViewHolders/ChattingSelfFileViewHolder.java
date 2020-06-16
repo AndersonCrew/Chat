@@ -70,6 +70,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.dazone.crewchatoff.utils.Utils.getString;
@@ -143,10 +144,8 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             progressBar.setProgress(0);
 
         } else {
-            if (TextUtils.isEmpty(dto.getRegDate())) {
-                date_tv.setText(TimeUtils.showTimeWithoutTimeZone(dto.getTime(), Statics.DATE_FORMAT_YY_MM_DD_DD_H_M));
-            } else
-                date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getRegDate(), 0, TimeUtils.KEY_FROM_SERVER));
+            long regDate = new Date(TimeUtils.getTime(dto.getRegDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
+            date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
             /** Set IMAGE FILE TYPE */
             _fileName = dto.getAttachInfo().getFileName();

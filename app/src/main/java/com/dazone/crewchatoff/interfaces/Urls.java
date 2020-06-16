@@ -18,14 +18,8 @@ public class Urls {
     public static final String URL_UPDATE_MESSAGE_UNREAD_COUNT_TIME = "UpdateMessageUnreadCount_Time";
     public static final String URL_GET_MESSAGE_UNREAD_COUNT_TIME = "GetMessageUnreadCount_Time";
 
-
-    public static final String URL_SEND_CHAT = "SendChatMsg";
-    public static final String URL_SEND_ATTACH_FILE = "SendChatAttachFile";
-    public static final String URL_GET_CHAT_MSG_SECTION = "GetChatMsgSection";
-    public static final String URL_UPDATE_MESSAGE_UNREAD_COUNT = "UpdateMessageUnreadCount";
-    public static final String URL_GET_MESSAGE_UNREAD_COUNT = "GetMessageUnreadCount";
     public static final String URL_GET_CHAT_ROOM = "GetChatRoom";
-    public static final String URL_GET_CHAT_LIST = "GetChatListData";
+    public static final String URL_GET_CHAT_LIST_TIME = "GetChatListData_Time";
     public static final String URL_DELETE_LIST = "DeleteChatRoomUser";
     public static final String URL_GET_USERS_STATUS = "GetAllUserInfo";
 

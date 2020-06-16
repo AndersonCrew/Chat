@@ -28,7 +28,7 @@ public class ChattingViewHolder5 extends BaseChattingHolder {
 
     @Override
     protected void setup(View v) {
-        tv_5 = (TextView) v.findViewById(R.id.tv_5);
+        tv_5 = v.findViewById(R.id.tv_5);
     }
 
     @Override

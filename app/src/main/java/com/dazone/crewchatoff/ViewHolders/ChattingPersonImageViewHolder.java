@@ -12,6 +12,7 @@ import com.dazone.crewchatoff.activity.ProfileUserActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
+import com.dazone.crewchatoff.interfaces.ILoadImage;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.ImageUtils;
 
@@ -20,8 +21,8 @@ public class ChattingPersonImageViewHolder extends ChattingSelfImageViewHolder {
     private TextView tvUnread;
     private ImageView avatar_imv;
 
-    public ChattingPersonImageViewHolder(Activity activity, View v) {
-        super(activity, v);
+    public ChattingPersonImageViewHolder(Activity activity, View v, ILoadImage iLoadImage) {
+        super(activity, v, iLoadImage);
     }
 
     @Override

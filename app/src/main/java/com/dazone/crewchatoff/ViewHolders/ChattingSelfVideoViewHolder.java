@@ -58,6 +58,7 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.dazone.crewchatoff.utils.Utils.getString;
@@ -151,26 +152,16 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         }
 
         if (dto.getmType() == Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO) {
-            /*file_name_tv.setText(dto.getAttachFileName());
-            file_size_tv.setText(Utils.readableFileSize(new Long(dto.getAttachFileSize())));
-            file_receive_tv.setVisibility(View.GONE);
-            *//** Set IMAGE FILE TYPE *//*
-            String fileType = Utils.getFileType(dto.getAttachFileName());
-            ImageUtils.imageFileType(file_thumb, fileType);*/
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setProgress(0);
             ChattingFragment.instance.SendTo(dto, progressBar, getAdapterPosition(), null);
         } else {
-            if (TextUtils.isEmpty(dto.getRegDate())) {
-                date_tv.setText(TimeUtils.showTimeWithoutTimeZone(dto.getTime(), Statics.DATE_FORMAT_YY_MM_DD_DD_H_M));
-            } else {
-                date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getRegDate(), 0, TimeUtils.KEY_FROM_SERVER));
-            }
+            long regDate = new Date(TimeUtils.getTime(dto.getRegDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
+            date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
         }
 
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);
-//        tvUnread.setVisibility(dto.getUnReadCount() == 0 ? View.GONE : View.VISIBLE);
         date_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,10 +184,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         overLayView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                Log.d(TAG,"onLongClick:"+new Gson().toJson(dto));
-//                if (!TextUtils.isEmpty(url)) {
-//                    Utils.displayDownloadFileDialog(BaseActivity.Instance, url, fileName);
-//                }
                 MessageNo = dto.getMessageNo();
                 v.showContextMenu();
                 return true;

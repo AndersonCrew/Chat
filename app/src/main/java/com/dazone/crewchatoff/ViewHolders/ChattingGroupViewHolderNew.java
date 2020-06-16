@@ -18,8 +18,8 @@ public class ChattingGroupViewHolderNew extends BaseChattingHolder {
 
     @Override
     protected void setup(View v) {
-        group_name = (TextView) v.findViewById(R.id.group_name);
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        group_name = v.findViewById(R.id.group_name);
+        progressBar = v.findViewById(R.id.progressBar);
     }
 
     @Override

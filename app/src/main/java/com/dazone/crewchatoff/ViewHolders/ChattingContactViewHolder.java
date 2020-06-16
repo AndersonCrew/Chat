@@ -17,6 +17,8 @@ import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.TimeUtils;
 
+import java.util.Date;
+
 public class ChattingContactViewHolder extends BaseChattingHolder {
     private TextView tv_contact_name, tv_contact_number;
     private TextView date_tv, tvUnread;
@@ -46,11 +48,8 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
             tv_contact_number.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(dto.getLastedMsgDate())) {
-            date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getLastedMsgDate(), 0, TimeUtils.KEY_FROM_SERVER));
-        } else {
-            date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getRegDate(), 0, TimeUtils.KEY_FROM_SERVER));
-        }
+        long regDate = new Date(TimeUtils.getTime(dto.getRegDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
+        date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);

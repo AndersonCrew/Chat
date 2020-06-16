@@ -149,6 +149,8 @@ public class GcmIntentService extends IntentService {
             if (userNo == Utils.getCurrentId()) {
                 try {
                     NotificationBundleDto bundleDto = new Gson().fromJson(extras.getString("Data"), NotificationBundleDto.class);
+                    SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
+                    String date = formatter.format(new Date(TimeUtils.getTime(bundleDto.getRegDate())));
 
                     chattingDto = new ChattingDto();
                     chattingDto.setRoomNo(bundleDto.getRoomNo());
@@ -194,7 +196,7 @@ public class GcmIntentService extends IntentService {
                     final long unreadCount = bundleDto.getUnreadTotalCount();
 
                     ShortcutBadger.applyCount(this, (int) unreadCount); //for 1.1.4
-                    chattingDto.setLastedMsgDate(System.currentTimeMillis() + "");
+                    chattingDto.setLastedMsgDate(System.currentTimeMillis() + prefs.getLongValue(Statics.TIME_SERVER_MILI, 0) + "");
 
                     new Thread(new Runnable() {
                         @Override

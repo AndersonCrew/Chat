@@ -41,6 +41,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class CurrentChatListFragment extends ListFragment<ChattingDto> implements OnGetCurrentChatCallBack {
@@ -115,8 +116,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         TreeUserDTOTemp treeUserDTOTemp1;
         ArrayList<ChattingDto> listChat = ChatRoomDBHelper.getChatRooms();
         Collections.sort(listChat, new Comparator<ChattingDto>() {
-            public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
+            public int compare(ChattingDto o1, ChattingDto o2) {
+                Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
+                Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
+                return date1.compareTo(date2);
             }
         });
 
@@ -368,12 +371,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     List<TreeUserDTOTemp> list1;
                     TreeUserDTOTemp treeUserDTOTemp1;
                     Collections.sort(list, new Comparator<ChattingDto>() {
-                        public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                            if (chattingDto1.getLastedMsgDate() == null || chattingDto2.getLastedMsgDate() == null) {
-                                return -1;
-                            }
-
-                            return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
+                        public int compare(ChattingDto o1, ChattingDto o2) {
+                            Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
+                            Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
+                            return date1.compareTo(date2);
                         }
                     });
 
@@ -405,12 +406,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         } else {
             // Sort by date
             Collections.sort(dataSet, new Comparator<ChattingDto>() {
-                public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                    if (chattingDto1.getLastedMsgDate() == null || chattingDto2.getLastedMsgDate() == null) {
-                        return -1;
-                    }
-
-                    return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
+                public int compare(ChattingDto o1, ChattingDto o2) {
+                    Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
+                    Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
+                    return date1.compareTo(date2);
                 }
             });
 
@@ -592,8 +591,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 int localSize = listChat.size();
                 int severSize = list.size();
                 Collections.sort(list, new Comparator<ChattingDto>() {
-                    public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                        return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
+                    public int compare(ChattingDto o1, ChattingDto o2) {
+                        Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
+                        Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
+                        return date1.compareTo(date2);
                     }
                 });
 
@@ -660,8 +661,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     }
 
                     Collections.sort(dataSet, new Comparator<ChattingDto>() {
-                        public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                            return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
+                        public int compare(ChattingDto o1, ChattingDto o2) {
+                            Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
+                            Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
+                            return date1.compareTo(date2);
                         }
                     });
 
@@ -903,12 +906,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             });
         } else {
             Collections.sort(dataSet, new Comparator<ChattingDto>() {
-                public int compare(ChattingDto chattingDto1, ChattingDto chattingDto2) {
-                    if (chattingDto1.getLastedMsgDate() == null || chattingDto2.getLastedMsgDate() == null) {
-                        return -1;
-                    }
-
-                    return chattingDto2.getLastedMsgDate().compareToIgnoreCase(chattingDto1.getLastedMsgDate());
+                public int compare(ChattingDto o1, ChattingDto o2) {
+                    Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
+                    Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
+                    return date1.compareTo(date2);
                 }
             });
 

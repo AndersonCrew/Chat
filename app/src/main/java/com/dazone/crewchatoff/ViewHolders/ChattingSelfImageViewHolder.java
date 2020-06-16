@@ -18,6 +18,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -63,6 +64,7 @@ import com.dazone.crewchatoff.dto.ErrorDto;
 import com.dazone.crewchatoff.fragment.ChattingFragment;
 import com.dazone.crewchatoff.interfaces.ICreateOneUserChatRom;
 import com.dazone.crewchatoff.interfaces.IF_Relay;
+import com.dazone.crewchatoff.interfaces.ILoadImage;
 import com.dazone.crewchatoff.interfaces.Urls;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
@@ -77,6 +79,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.graphics.Bitmap.createScaledBitmap;
@@ -95,10 +98,12 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
     private float ratio = 1.8f;
     private Bitmap destBitmap = null;
     String TAG = "ChattingSelfImageViewHolder";
+    private ILoadImage iLoadImage;
 
-    public ChattingSelfImageViewHolder(Activity activity, View v) {
+    public ChattingSelfImageViewHolder(Activity activity, View v, ILoadImage iLoadImage) {
         super(v);
         mActivity = activity;
+        this.iLoadImage = iLoadImage;
     }
 
     @Override
@@ -211,14 +216,11 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 break;
 
             default:
-                // Clear cache resource before load new image
                 chatting_imv.setImageBitmap(null);
                 chatting_imv.destroyDrawingCache();
-                if (TextUtils.isEmpty(dto.getRegDate())) {
-                    date_tv.setText(TimeUtils.showTimeWithoutTimeZone(dto.getTime(), Statics.DATE_FORMAT_YY_MM_DD_DD_H_M));
-                } else {
-                    date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getRegDate(), 0, TimeUtils.KEY_FROM_SERVER));
-                }
+
+                long regDate = new Date(TimeUtils.getTime(dto.getRegDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
+                date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
                 try {
                     if (dto.getAttachNo() != 0) {
@@ -240,8 +242,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
                                     @Override
                                     public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                        // call callback when loading success
-
                                         return false;
                                     }
                                 })
@@ -259,25 +259,8 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                                         chatting_imv.setImageBitmap(bitmap);
                                         if (progressBarImageLoading != null)
                                             progressBarImageLoading.setVisibility(View.GONE);
-                                        Log.d("A", "A");
-                                    }
-
-                                    @Override
-                                    public void onLoadStarted(Drawable placeholder) {
-                                        super.onLoadStarted(placeholder);
-                                        Log.d("A", "A");
-                                    }
-
-                                    @Override
-                                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                                        super.onLoadFailed(e, errorDrawable);
-                                        Log.d("A", "A");
-                                    }
-
-                                    @Override
-                                    public void onStart() {
-                                        super.onStart();
-                                        Log.d("A", "A");
+                                        if(iLoadImage != null)
+                                            iLoadImage.onLoaded();
                                     }
                                 });
                     } else {

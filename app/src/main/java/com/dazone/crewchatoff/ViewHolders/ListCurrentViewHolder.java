@@ -40,6 +40,7 @@ import com.dazone.crewchatoff.utils.TimeUtils;
 import com.dazone.crewchatoff.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -262,11 +263,14 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
         String tempTimeString = dto.getLastedMsgDate();
 
         if (!TextUtils.isEmpty(tempTimeString)) {
-            if (Locale.getDefault().getLanguage().toUpperCase().equalsIgnoreCase("KO")) {
+           /* if (Locale.getDefault().getLanguage().toUpperCase().equalsIgnoreCase("KO")) {
                 tvDate.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getLastedMsgDate(), 1, TimeUtils.KEY_FROM_SERVER));
             } else {
                 tvDate.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), dto.getLastedMsgDate(), 0, TimeUtils.KEY_FROM_SERVER));
-            }
+            }*/
+
+            long regDate = new Date(TimeUtils.getTime(dto.getLastedMsgDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
+            tvDate.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
         }
 
         if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0) {

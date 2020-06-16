@@ -66,6 +66,7 @@ import com.dazone.crewchatoff.dto.UserDto;
 import com.dazone.crewchatoff.eventbus.ReceiveMessage;
 import com.dazone.crewchatoff.eventbus.ReloadListMessage;
 import com.dazone.crewchatoff.interfaces.ILayoutChange;
+import com.dazone.crewchatoff.interfaces.ILoadImage;
 import com.dazone.crewchatoff.interfaces.OnGetChatMessage;
 import com.dazone.crewchatoff.interfaces.OnGetMessageUnreadCountCallBack;
 import com.dazone.crewchatoff.interfaces.SendChatMessage;
@@ -88,6 +89,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -95,6 +97,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -136,6 +139,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private Handler handlerTimer = new Handler();
     private int timeDelay = 1000;
     private int timerCount = -1;
+    private boolean hasLoadedImageFirst = false;
 
     private Runnable updateTimer = new Runnable() {
         @Override
@@ -267,7 +271,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     });
 
 
-
                     HttpRequest.getInstance().UpdateMessageUnreadCount(roomNo, userID, listNew.get(listNew.size() - 1).getRegDate());
                     if (CurrentChatListFragment.fragment != null) {
                         CurrentChatListFragment.fragment.updateRoomUnread(roomNo);
@@ -357,8 +360,28 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         });
 
-        adapterList = new ChattingAdapter(mContext, mActivity, dataSet, rvMainList);
+        adapterList = new ChattingAdapter(mContext, mActivity, dataSet, rvMainList, new ILoadImage() {
+            @Override
+            public void onLoaded() {
+                rvMainList.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!hasLoadedImageFirst)
+                            rvMainList.smoothScrollToPosition(dataSet.size());
+                    }
+                }, 500);
+
+            }
+        });
+
         rvMainList.setLayoutManager(layoutManager);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hasLoadedImageFirst = true;
+            }
+        }, 5000);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -619,10 +642,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         dialog.setContentView(R.layout.dialog_record_layout);
         recordTouch = 0;
         isFlag = false;
+
         // tvDuration
         tvDurationDialog = dialog.findViewById(R.id.tvDuration);
+
         // ivRecord
         final ImageView ivRecord = dialog.findViewById(R.id.ivRecord);
+
         // btnClose
         FrameLayout btnClose = dialog.findViewById(R.id.btnClose);
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -632,6 +658,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 dialog.dismiss();
             }
         });
+
         // btnSendRecord
         final Button btnSendRecord = dialog.findViewById(R.id.btnSendRecord);
         btnSendRecord.setEnabled(false);
@@ -686,6 +713,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public void addNewChat(ChattingDto chattingDto, boolean isUpdate, boolean fromGCM) {
+        SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
+        String date = formatter.format(new Date(TimeUtils.getTime(chattingDto.getRegDate())));
         UserDto user = null;
         switch (chattingDto.getType()) {
             case ChatMessageType.Normal:
@@ -1052,7 +1081,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (dataSet.size() < 2) {
             ChattingDto time = new ChattingDto();
             time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-            time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0) + ""));
+            time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100);
             time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
             dataSet.add(time);
         } else {
@@ -1062,7 +1091,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 ChattingDto time = new ChattingDto();
                 dataSet.add(time);
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime());
+                time.setTime(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100);
                 time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(chattingDto.getRegDate())).getTime() - 100 + ""));
             }
         }
@@ -1077,7 +1106,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             if (dataSet.size() < 2) {
                 ChattingDto time = new ChattingDto();
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                time.setTime(System.currentTimeMillis());
+                time.setTime(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0));
                 time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0) + ""));
                 dataSet.add(time);
             } else {
@@ -1085,7 +1114,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 if (date != null && !TimeUtils.checkDateIsToday(date)) {
                     ChattingDto time = new ChattingDto();
                     time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                    time.setTime(System.currentTimeMillis());
+                    time.setTime(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0));
                     time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0) + ""));
                     dataSet.add(time);
                 }
@@ -1116,8 +1145,18 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     newDto.setHasSent(true);
                     newDto.setMessageNo(chattingDto.getMessageNo());
                     newDto.setUnReadCount(chattingDto.getUnReadCount());
-                    //newDto.setRegDate(chattingDto.getRegDate());
+                    newDto.setRegDate(chattingDto.getRegDate());
                     if (addDataFromServer(newDto)) dataFromServer.add(newDto);
+
+                    Collections.sort(dataSet, new Comparator<ChattingDto>() {
+                        @Override
+                        public int compare(ChattingDto o1, ChattingDto o2) {
+                            Date date1 = new Date(TimeUtils.getTime(o1.getRegDate()));
+                            Date date2 = new Date(TimeUtils.getTime(o2.getRegDate()));
+                            return date1.compareTo(date2);
+                        }
+                    });
+
                     adapterList.notifyDataSetChanged();
                     sendComplete = false;
                 }
@@ -1460,7 +1499,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (dataSet.size() < 2) {
             ChattingDto time = new ChattingDto();
             time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-            time.setTime(System.currentTimeMillis());
+            time.setTime(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0));
             time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0) + ""));
             dataSet.add(time);
         } else {
@@ -1468,7 +1507,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             if (date != null && !TimeUtils.checkDateIsToday(date)) {
                 ChattingDto time = new ChattingDto();
                 time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
-                time.setTime(System.currentTimeMillis());
+                time.setTime(new Date(TimeUtils.getTime(dataDto.getRegDate())).getTime() - 100);
                 time.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(new Date(TimeUtils.getTime(dataDto.getRegDate())).getTime() - 100 + ""));
                 dataSet.add(time);
             }
@@ -1503,11 +1542,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             dataDto.setCheckFromServer(true);
 
             if (roomNo == dataDto.getRoomNo()) {
-                dataDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dataDto.getRegDate()));
                 isFromNotification = true;
-
                 if (!TextUtils.isEmpty(dataDto.getMessage()) || dataDto.getAttachNo() != 0) {
-
                     if (dataDto.getType() != 6) {
                         msgEnd = -1;
                         isShowIcon = false;
@@ -1776,6 +1812,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     private void loadMoreData() {
         if (!isLoading && isLoadMore && dataSet.size() > 3) {
+            hasLoadedImageFirst = true;
             isLoading = true;
             hasLoadMore = true;
 

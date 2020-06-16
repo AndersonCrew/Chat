@@ -585,6 +585,10 @@ public class HttpRequest {
         String js = gson.toJson(params2);
         params.put("reqJson", js);
         WebServiceManager webServiceManager = new WebServiceManager();
+
+        SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
+        String date = formatter.format(new Date(TimeUtils.getTime(CrewChatApplication.getInstance().getTimeServer())));
+
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
@@ -771,11 +775,20 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-                Type listType = new TypeToken<List<ChattingDto>>() {
-                }.getType();
-                List<ChattingDto> list = new Gson().fromJson(response, listType);
-                if (onGetChatMessage != null)
-                    onGetChatMessage.OnGetChatMessageSuccess(list);
+                try {
+                    Type listType = new TypeToken<List<ChattingDto>>() {
+                    }.getType();
+                    List<ChattingDto> list = new Gson().fromJson(response, listType);
+                    if (onGetChatMessage != null)
+                        onGetChatMessage.OnGetChatMessageSuccess(list);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    if (onGetChatMessage != null) {
+                        ErrorDto errorDto = new ErrorDto();
+                        errorDto.message = "Cannot parse data from server" + response;
+                        onGetChatMessage.OnGetChatMessageFail(errorDto);
+                    }
+                }
             }
 
             @Override
@@ -822,7 +835,7 @@ public class HttpRequest {
     public void GetChatList(final OnGetChatList onGetChatList) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
-        params.put("command", "" + Urls.URL_GET_CHAT_LIST);
+        params.put("command", "" + Urls.URL_GET_CHAT_LIST_TIME);
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
@@ -863,9 +876,9 @@ public class HttpRequest {
     }
 
     /*
-    * Notification setting function
-    * Type InsertDevice, Update Device
-    * */
+     * Notification setting function
+     * Type InsertDevice, Update Device
+     * */
 
     public void setNotification(String command, String deviceId, Map<String, Object> notificationParams, final OnSetNotification callback) {
         String url = root_link + Urls.URL_ROOT_2;
@@ -931,8 +944,8 @@ public class HttpRequest {
     }
 
     /*
-    * Function to add an user to favorite group
-    * */
+     * Function to add an user to favorite group
+     * */
 
     public void insertFavoriteUser(long groupNo, long UserNo, final BaseHTTPCallbackWithJson baseHTTPCallBack) {
         String url = root_link + Urls.URL_ROOT_2;
@@ -969,9 +982,9 @@ public class HttpRequest {
         });
     }
 
-     /*
-    * Function to add an user to favorite group
-    * */
+    /*
+     * Function to add an user to favorite group
+     * */
 
     public void deleteFavoriteUser(long groupNo, long UserNo, final BaseHTTPCallbackWithJson baseHTTPCallBack) {
         String url = root_link + Urls.URL_ROOT_2;
@@ -1009,8 +1022,8 @@ public class HttpRequest {
     }
 
     /*
-    * Function to get all favorite group and data
-    * */
+     * Function to get all favorite group and data
+     * */
 
     public void getFavotiteGroupAndData(final BaseHTTPCallbackWithJson baseHTTPCallBack) {
 
