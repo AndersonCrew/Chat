@@ -119,7 +119,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             public int compare(ChattingDto o1, ChattingDto o2) {
                 Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
                 Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
-                return date1.compareTo(date2);
+                return date2.compareTo(date1);
             }
         });
 
@@ -374,7 +374,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                         public int compare(ChattingDto o1, ChattingDto o2) {
                             Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
                             Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
-                            return date1.compareTo(date2);
+                            return date2.compareTo(date1);
                         }
                     });
 
@@ -409,7 +409,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 public int compare(ChattingDto o1, ChattingDto o2) {
                     Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
                     Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
-                    return date1.compareTo(date2);
+                    return date2.compareTo(date1);
                 }
             });
 
@@ -594,7 +594,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     public int compare(ChattingDto o1, ChattingDto o2) {
                         Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
                         Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
-                        return date1.compareTo(date2);
+                        return date2.compareTo(date1);
                     }
                 });
 
@@ -664,7 +664,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                         public int compare(ChattingDto o1, ChattingDto o2) {
                             Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
                             Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
-                            return date1.compareTo(date2);
+                            return date2.compareTo(date1);
                         }
                     });
 
@@ -909,7 +909,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 public int compare(ChattingDto o1, ChattingDto o2) {
                     Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
                     Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
-                    return date1.compareTo(date2);
+                    return date2.compareTo(date1);
                 }
             });
 

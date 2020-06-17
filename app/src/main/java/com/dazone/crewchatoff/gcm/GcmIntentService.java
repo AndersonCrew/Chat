@@ -196,7 +196,7 @@ public class GcmIntentService extends IntentService {
                     final long unreadCount = bundleDto.getUnreadTotalCount();
 
                     ShortcutBadger.applyCount(this, (int) unreadCount); //for 1.1.4
-                    chattingDto.setLastedMsgDate(System.currentTimeMillis() + prefs.getLongValue(Statics.TIME_SERVER_MILI, 0) + "");
+                    chattingDto.setLastedMsgDate(bundleDto.getRegDate());
 
                     new Thread(new Runnable() {
                         @Override

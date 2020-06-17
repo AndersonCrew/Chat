@@ -713,8 +713,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public void addNewChat(ChattingDto chattingDto, boolean isUpdate, boolean fromGCM) {
-        SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
-        String date = formatter.format(new Date(TimeUtils.getTime(chattingDto.getRegDate())));
         UserDto user = null;
         switch (chattingDto.getType()) {
             case ChatMessageType.Normal:
@@ -872,8 +870,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         if (isUpdate) {
             if (CurrentChatListFragment.fragment != null) {
-                chattingDto.setUnReadCount(0);
-                CurrentChatListFragment.fragment.updateData(chattingDto);
+                try {
+                    ChattingDto dt = (ChattingDto) chattingDto.clone();
+                    dt.setUnReadCount(0);
+                    CurrentChatListFragment.fragment.updateData(dt);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -1032,8 +1035,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         }
 
         if (CurrentChatListFragment.fragment != null) {
-            chattingDto.setUnReadCount(0);
-            CurrentChatListFragment.fragment.updateData(chattingDto);
+            try {
+                ChattingDto dt = (ChattingDto) chattingDto.clone();
+                dt.setUnReadCount(0);
+                CurrentChatListFragment.fragment.updateData(dt);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
         }
 
         chattingDto.setUser(user);
@@ -1098,6 +1106,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void senAction() {
+        int timeToday = 0;
         final String message = view.edt_comment.getText().toString();
         if (!TextUtils.isEmpty(message) && message.length() > 0) {
             view.edt_comment.setText("");
@@ -1112,6 +1121,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             } else {
                 String date = dataSet.get(dataSet.size() - 1).getRegDate();
                 if (date != null && !TimeUtils.checkDateIsToday(date)) {
+                    timeToday = 100;
                     ChattingDto time = new ChattingDto();
                     time.setmType(Statics.CHATTING_VIEW_TYPE_DATE);
                     time.setTime(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0));
@@ -1130,7 +1140,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             newDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
             newDto.setWriterUser(userID);
             newDto.setHasSent(true);
-            newDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0) + ""));
+            newDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() - mPrefs.getLongValue(Statics.TIME_SERVER_MILI, 0)+ timeToday + ""));
             newDto.setId(new Random().nextInt());
             newDto.isSendding = true;
             addNewChat(newDto, true, false);
@@ -1560,8 +1570,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 }
 
                 if (CurrentChatListFragment.fragment != null) {
-                    dataDto.setUnReadCount(0);
-                    CurrentChatListFragment.fragment.updateData(dataDto);
+                    try {
+                        ChattingDto dt = (ChattingDto) dataDto.clone();
+                        dt.setUnReadCount(0);
+                        CurrentChatListFragment.fragment.updateData(dt);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 if (addDataFromServer(dataDto)) dataFromServer.add(dataDto);
@@ -1569,8 +1584,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             } else {
                 dataDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dataDto.getRegDate()));
                 if (CurrentChatListFragment.fragment != null) {
-                    dataDto.setUnReadCount(0);
-                    CurrentChatListFragment.fragment.updateData(dataDto);
+                    try {
+                        ChattingDto dt = (ChattingDto) dataDto.clone();
+                        dt.setUnReadCount(0);
+                        CurrentChatListFragment.fragment.updateData(dt);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -1611,8 +1631,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 dto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dto.getRegDate()));
 
                 if (CurrentChatListFragment.fragment != null) {
-                    dto.setUnReadCount(0);
-                    CurrentChatListFragment.fragment.updateData(dto);
+                    try {
+                        ChattingDto dt = (ChattingDto) dto.clone();
+                        dt.setUnReadCount(0);
+                        CurrentChatListFragment.fragment.updateData(dt);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 dto.setLastedMsgAttachType(chattingDto.getLastedMsgAttachType());
