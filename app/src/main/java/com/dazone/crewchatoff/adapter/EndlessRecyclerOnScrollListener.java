@@ -1,6 +1,5 @@
 package com.dazone.crewchatoff.adapter;
 
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 public abstract class EndlessRecyclerOnScrollListener extends
@@ -20,6 +19,8 @@ public abstract class EndlessRecyclerOnScrollListener extends
         } else if (dy > 0) {
             onScrolledDown();
         }
+
+
     }
     public void onScrolledUp() {}
 

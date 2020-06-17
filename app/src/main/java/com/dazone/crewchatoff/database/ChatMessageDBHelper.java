@@ -355,9 +355,6 @@ public class ChatMessageDBHelper {
             }
             cursor.close();
         }
-        if (mesArray != null && mesArray.size() > 0) {
-            mesArray = Constant.sortTimeList(mesArray);
-        }
 
         return mesArray;
     }

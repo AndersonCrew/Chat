@@ -85,7 +85,7 @@ public class Constant {
      * KEY INTENT
      */
     public static final String KEY_INTENT_TEXT_SEARCH = "KEY_INTENT_TEXT_SEARCH";
-    public static final String KEY_INTENT_FROM_NOTIFICATION = "KEY_INTENT_FROM_NOTIFICATION";
+    public static final String KEY_INTENT_BASE_DATE = "KEY_INTENT_BASE_DATE";
     public static final String KEY_INTENT_ROOM_NO = "KEY_INTENT_ROOM_NO";
     public static final String KEY_INTENT_ROOM_DTO = "KEY_INTENT_ROOM_DTO";
     public static final String KEY_INTENT_GROUP_NO = "KEY_INTENT_GROUP_NO";
@@ -333,33 +333,6 @@ public class Constant {
                 return false;
         }
         return true;
-    }
-
-    public static List<ChattingDto> sortTimeList(List<ChattingDto> lst) {
-
-        for (int i = 0; i < lst.size(); i++) {
-            ChattingDto obj = lst.get(i);
-            if (obj.getMessageNo() == 0) {
-                lst.remove(i);
-                i--;
-            }
-        }
-
-        for (int i = 0; i < lst.size(); i++) {
-            for (int j = 0; j <= i; j++) {
-                if (lst.get(i).getMessageNo() <= lst.get(j).getMessageNo()) {
-                    ChattingDto pp = lst.get(i);
-                    lst.set(i, lst.get(j));
-                    lst.set(j, pp);
-                }
-            }
-        }
-
-        List<ChattingDto> chattingDtoList = new ArrayList<>();
-        for (ChattingDto dto : lst) {
-            chattingDtoList.add(dto);
-        }
-        return chattingDtoList;
     }
 
     public static String get_department_name(TreeUserDTO index, List<TreeUserDTO> listTemp_3) {

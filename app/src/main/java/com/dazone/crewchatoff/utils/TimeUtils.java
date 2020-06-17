@@ -14,11 +14,9 @@ import java.util.TimeZone;
 
 public class TimeUtils {
     public static int KEY_FROM_SERVER = 200;
-    public static int KEY_TO_SERVER = 201;
 
     public static String showTimeWithoutTimeZone(long date, String defaultPattern) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(defaultPattern, Locale.getDefault());
-        //simpleDateFormat.setTimeZone(TimeZone.getDefault());
         return simpleDateFormat.format(new Date(date));
     }
 

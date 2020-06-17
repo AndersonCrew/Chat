@@ -52,6 +52,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class Utils {
@@ -1073,5 +1074,15 @@ public class Utils {
         }
 
         return  tempList;
+    }
+
+    public static int getPosition (ChattingDto dto, List<ChattingDto> list) {
+        for(ChattingDto chattingDto : list) {
+            if(chattingDto.getMessageNo() == dto.getMessageNo()){
+                return list.indexOf(chattingDto);
+            }
+        }
+
+        return 0;
     }
 }

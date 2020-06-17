@@ -332,13 +332,12 @@ public class GcmIntentService extends IntentService {
                 long userNo = 0;
                 if (extras.containsKey("UserNo")) {
                     userNo = Long.parseLong(extras.getString("UserNo", "0"));
-                }
-
+                } 
+                
 
                 final long roomNo = object.getLong("RoomNo");
+                final String baseDate = object.getString("BaseDate");
                 final int unReadTotalCount = object.getInt("UnreadTotalCount");
-
-                // Update unreadTotalCount to database in new thread, hihi
 
                 new Thread(new Runnable() {
                     @Override
@@ -354,6 +353,7 @@ public class GcmIntentService extends IntentService {
                 intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
                 intent.putExtra(Constant.KEY_INTENT_UNREAD_TOTAL_COUNT, unReadTotalCount);
                 intent.putExtra(Constant.KEY_INTENT_USER_NO, userNo);
+                intent.putExtra(Constant.KEY_INTENT_BASE_DATE, baseDate);
                 sendBroadcast(intent);
 
                 if (CurrentChatListFragment.fragment != null) {
