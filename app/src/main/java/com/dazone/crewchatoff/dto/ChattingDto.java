@@ -20,7 +20,6 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
         return super.clone();
     }
 
-    private long time = 0;
     private UserDto user;
 
     @SerializedName("RoomNo")
@@ -119,7 +118,6 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     @Override
     public String toString() {
         return "ChattingDto{" +
-                "time=" + time +
                 ", user=" + user +
                 ", RoomNo=" + RoomNo +
                 ", MakeUserNo=" + MakeUserNo +
@@ -203,14 +201,6 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
 
     public void setmType(int mType) {
         this.mType = mType;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
     }
 
     public int getType() {

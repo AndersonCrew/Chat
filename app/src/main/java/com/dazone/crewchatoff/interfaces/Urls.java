@@ -19,7 +19,7 @@ public class Urls {
     public static final String URL_GET_MESSAGE_UNREAD_COUNT_TIME = "GetMessageUnreadCount_Time";
 
     public static final String URL_GET_CHAT_ROOM = "GetChatRoom";
-    public static final String URL_GET_CHAT_LIST_TIME = "GetChatListData_Time";
+    public static final String URL_GET_CHAT_LIST = "GetChatListData";
     public static final String URL_DELETE_LIST = "DeleteChatRoomUser";
     public static final String URL_GET_USERS_STATUS = "GetAllUserInfo";
 

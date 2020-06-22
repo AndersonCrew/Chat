@@ -835,7 +835,7 @@ public class HttpRequest {
     public void GetChatList(final OnGetChatList onGetChatList) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
-        params.put("command", "" + Urls.URL_GET_CHAT_LIST_TIME);
+        params.put("command", "" + Urls.URL_GET_CHAT_LIST);
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
@@ -1540,7 +1540,7 @@ public class HttpRequest {
         });
     }
 
-    public void getServerTime(final ITimeServer listener) {
+    public void getServerTime() {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
         params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
@@ -1552,8 +1552,8 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-                Date dateServer = TimeUtils.convertStringToDate(response);
-                listener.onGetTimeSuccess(dateServer.getTime());
+                long calTime = System.currentTimeMillis() - TimeUtils.getTime(response);
+                CrewChatApplication.getInstance().getPrefs().putLongValue(Statics.TIME_SERVER_MILI, calTime);
             }
 
             @Override

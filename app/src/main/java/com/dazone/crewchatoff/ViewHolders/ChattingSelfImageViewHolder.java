@@ -219,7 +219,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 chatting_imv.setImageBitmap(null);
                 chatting_imv.destroyDrawingCache();
 
-                long regDate = new Date(TimeUtils.getTime(dto.getRegDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
+                long regDate = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
                 date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
                 try {

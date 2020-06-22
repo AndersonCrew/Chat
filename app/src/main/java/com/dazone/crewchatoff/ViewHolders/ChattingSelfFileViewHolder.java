@@ -144,7 +144,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             progressBar.setProgress(0);
 
         } else {
-            long regDate = new Date(TimeUtils.getTime(dto.getRegDate()) + CrewChatApplication.getInstance().getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0)).getTime();
+            long regDate = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
             date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
             /** Set IMAGE FILE TYPE */

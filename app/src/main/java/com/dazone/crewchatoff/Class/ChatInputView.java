@@ -93,7 +93,6 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
     @Override
     public void onClick(View v) {
         int viewID = v.getId();
-
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         switch (viewID) {
             case R.id.plus_imv:

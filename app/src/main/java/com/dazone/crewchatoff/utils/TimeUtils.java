@@ -299,7 +299,6 @@ public class TimeUtils {
         SimpleDateFormat formatter = new SimpleDateFormat(Statics.DATE_FORMAT_YY_MM_DD);
         String date = formatter.format(new Date(date1));
         String dateTemp = formatter.format(new Date(date2));
-//        Log.d(">>> compareTime", date + " " + dateTemp);
         return date.equalsIgnoreCase(dateTemp);
     }
 

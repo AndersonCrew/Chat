@@ -56,13 +56,12 @@
 
         <ImageView
             android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginRight="@dimen/dimen_3_6"
-            android:paddingBottom="@dimen/dimen_4_8"
-            android:paddingLeft="@dimen/dimen_5_10"
-            android:paddingTop="@dimen/dimen_4_8"
+            android:paddingLeft="10dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:src="@drawable/message_send_ic" />
 
         <Button
