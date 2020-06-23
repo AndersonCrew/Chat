@@ -69,25 +69,13 @@ public class CrewChatApplication extends MultiDexApplication {
         // Check session here
         if (Utils.checkStringValue(mPrefs.getaccesstoken()) && !mPrefs.getBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, false)) {
             isLoggedIn = true;
-
             syncData();
-
-            // Thread to Load data from local
             loadStaticLocalData();
-            // Thread to Update status from server
-            if (listUsers != null) {
-                updateAllAppInfo();
-            }
         } else {
             isLoggedIn = false;
         }
 
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable e) {
-                handleUncaughtException(thread, e);
-            }
-        });
+        Thread.setDefaultUncaughtExceptionHandler((thread, e) -> handleUncaughtException(thread, e));
     }
 
     public void handleUncaughtException(Thread thread, Throwable e) {
@@ -127,15 +115,6 @@ public class CrewChatApplication extends MultiDexApplication {
         return _instance;
     }
 
-    public void updateAllAppInfo() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();
-    }
-
     private static void init() {
         mPrefs = new Prefs();
 
@@ -144,7 +123,6 @@ public class CrewChatApplication extends MultiDexApplication {
         int versionCode = BuildConfig.VERSION_CODE;
 
         if (old_version < versionCode) {
-            // upgrade
             mPrefs.putIntValue(Statics.VERSION_CODE, versionCode);
         }
 

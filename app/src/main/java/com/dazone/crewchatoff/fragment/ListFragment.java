@@ -213,13 +213,10 @@ public abstract class ListFragment<T> extends Fragment {
     public void showSearchInput() {
         if (this.mInputSearch != null) {
             this.mInputSearch.setVisibility(View.VISIBLE);
-            this.mInputSearch.post(new Runnable() {
-                @Override
-                public void run() {
-                    mInputSearch.requestFocus();
-                    InputMethodManager img = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    img.showSoftInput(mInputSearch, InputMethodManager.SHOW_IMPLICIT);
-                }
+            this.mInputSearch.post(() -> {
+                mInputSearch.requestFocus();
+                InputMethodManager img = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                img.showSoftInput(mInputSearch, InputMethodManager.SHOW_IMPLICIT);
             });
         }
     }
@@ -248,7 +245,6 @@ public abstract class ListFragment<T> extends Fragment {
 
     protected abstract void initAdapter();
 
-    //protected abstract void addMoreItem();
     protected abstract void initList();
 
     @Override

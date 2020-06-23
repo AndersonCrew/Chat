@@ -283,7 +283,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         });
 
-        viewModel.getChatListFirst(roomNo, userID);
+        //viewModel.getChatListFirst(roomNo, userID);
     }
 
     private boolean isGetValueEnterAuto() {
@@ -382,7 +382,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         }, 500));
 
-        rvMainList.setLayoutManager(layoutManager);
 
         initViewModel();
     }
@@ -1207,6 +1206,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         isActive = true;
         registerGCMReceiver();
         CrewChatApplication.currentRoomNo = roomNo;
+        viewModel.getChatListFirst(roomNo, userID);
     }
 
     private final static int MSG_UPDATE_DISPLAY = 2;
@@ -1383,6 +1383,9 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     private void unregisterGCMReceiver() {
         try {
+            if (EventBus.getDefault().isRegistered(this)) {
+                EventBus.getDefault().unregister(this);
+            }
             getActivity().unregisterReceiver(mReceiverNewAssignTask);
         } catch (Exception e) {
             e.printStackTrace();

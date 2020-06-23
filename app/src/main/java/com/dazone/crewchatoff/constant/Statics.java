@@ -109,6 +109,7 @@ public interface Statics {
     String DATE_FORMAT_YYYY_MM_DD_AM_PM_HH_MM = "yyyy-MM-dd aa hh:mm";
 
     String yyyy_MM_dd_HH_mm_ss_SSS = "yyyy-MM-dd HH:mm:ss.SSS";
+    String yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
 
 
     int CHATTING_VIEW_TYPE_PERSON = 0;

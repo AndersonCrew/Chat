@@ -150,38 +150,35 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
         builderSingle.setAdapter(
                 arrayAdapter,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                enableText();
-                                int sdk = android.os.Build.VERSION.SDK_INT;
-                                if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                                    android.text.ClipboardManager clipboard = (android.text.ClipboardManager) CrewChatApplication.getInstance().getSystemService(Context.CLIPBOARD_SERVICE);
-                                    clipboard.setText(content);
-                                } else {
-                                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) CrewChatApplication.getInstance().getSystemService(Context.CLIPBOARD_SERVICE);
-                                    android.content.ClipData clip = android.content.ClipData.newPlainText("Copy", content);
-                                    clipboard.setPrimaryClip(clip);
-                                }
-                                break;
-                            case 1:
-                                enableText();
-                                reLay(MessageNo);
-                                Log.d(TAG, "reLay");
-                                break;
-                            case 2:
-                                enableText();
-                                toMe(MessageNo);
-                                Log.d(TAG, "toMe");
-                                break;
-                            case 3:
-                                enableText();
-                                actionUnread();
-                                Log.d(TAG, "actionUnread");
-                                break;
-                        }
+                (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            enableText();
+                            int sdk = Build.VERSION.SDK_INT;
+                            if (sdk < Build.VERSION_CODES.HONEYCOMB) {
+                                android.text.ClipboardManager clipboard = (android.text.ClipboardManager) CrewChatApplication.getInstance().getSystemService(Context.CLIPBOARD_SERVICE);
+                                clipboard.setText(content);
+                            } else {
+                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) CrewChatApplication.getInstance().getSystemService(Context.CLIPBOARD_SERVICE);
+                                android.content.ClipData clip = android.content.ClipData.newPlainText("Copy", content);
+                                clipboard.setPrimaryClip(clip);
+                            }
+                            break;
+                        case 1:
+                            enableText();
+                            reLay(MessageNo);
+                            Log.d(TAG, "reLay");
+                            break;
+                        case 2:
+                            enableText();
+                            toMe(MessageNo);
+                            Log.d(TAG, "toMe");
+                            break;
+                        case 3:
+                            enableText();
+                            actionUnread();
+                            Log.d(TAG, "actionUnread");
+                            break;
                     }
                 });
         AlertDialog dialog = builderSingle.create();
@@ -237,9 +234,9 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
         if (dto.getMessage() != null) {
             String message = dto.getMessage();
-           /* long regDateContent = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
-            SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
-            String dateStr = "[ " + formatter.format(regDateContent) + " ] - ";*/
+            long regDateContent = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
+            SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss, Locale.getDefault());
+            String dateStr = "[ " + formatter.format(regDateContent) + " ] - ";
             try {
                 Spanned msg;
                 if (dto.getType() == Constant.APPROVAL) {
@@ -272,7 +269,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 } else {
                     content_tv.setAutoLinkMask(Linkify.ALL);
                     content_tv.setLinksClickable(true);
-                    content_tv.setText(dto.getMessage());
+                    content_tv.setText(dateStr + dto.getMessage());
                 }
 
 
@@ -281,12 +278,9 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
             }
         }
 
-        date_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "tvUnread");
-                actionUnread();
-            }
+        date_tv.setOnClickListener(v -> {
+            Log.d(TAG, "tvUnread");
+            actionUnread();
         });
         if (dto.getUnReadCount() == 0) {
             tvUnread.setVisibility(View.INVISIBLE);
@@ -339,41 +333,44 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
         // Set event listener for failed message
         if (btnResend != null) {
             btnResend.setTag(dto.getId());
-            btnResend.setOnClickListener(v -> {
-                // sendComplete=true;
-                boolean flag = ChattingFragment.isSend;
-                if (flag && !dto.isSendding) {
-                    btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.icon_loadding));
-                    dto.isSendding = true;
-                    Log.d(TAG, "btnResend:" + dto.getMessage());
-                    final Integer localId = (Integer) v.getTag();
-                    for (int i = 0; i <= mAdapter.getData().size() - 1; i++) {
-                        if (dto.getId() == mAdapter.getData().get(i).getId()) {
-                            HttpRequest.getInstance().SendChatMsg(dto.getRoomNo(), mAdapter.getData().get(i).getMessage(), new SendChatMessage() {
-                                @Override
-                                public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
-                                    dto.setHasSent(true);
-                                    dto.setMessageNo(chattingDto.getMessageNo());
-                                    dto.setUnReadCount(chattingDto.getUnReadCount());
-                                    String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
-                                    dto.setRegDate(time);
-                                    new Thread(() -> ChatMessageDBHelper.updateMessage(dto, localId)).start();
-                                    EventBus.getDefault().post(new ReloadListMessage());
-                                    dto.isSendding = false;
-                                    btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
-                                }
+            btnResend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // sendComplete=true;
+                    boolean flag = ChattingFragment.isSend;
+                    if (flag && !dto.isSendding) {
+                        btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.icon_loadding));
+                        dto.isSendding = true;
+                        Log.d(TAG, "btnResend:" + dto.getMessage());
+                        final Integer localId = (Integer) v.getTag();
+                        for (int i = 0; i <= mAdapter.getData().size() - 1; i++) {
+                            if (dto.getId() == mAdapter.getData().get(i).getId()) {
+                                HttpRequest.getInstance().SendChatMsg(dto.getRoomNo(), mAdapter.getData().get(i).getMessage(), new SendChatMessage() {
+                                    @Override
+                                    public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
+                                        dto.setHasSent(true);
+                                        dto.setMessageNo(chattingDto.getMessageNo());
+                                        dto.setUnReadCount(chattingDto.getUnReadCount());
+                                        String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
+                                        dto.setRegDate(time);
+                                        new Thread(() -> ChatMessageDBHelper.updateMessage(dto, localId)).start();
+                                        EventBus.getDefault().post(new ReloadListMessage());
+                                        dto.isSendding = false;
+                                        btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
+                                    }
 
-                                @Override
-                                public void onSendChatMessageFail(ErrorDto errorDto, String url) {
-                                    EventBus.getDefault().post(new ReloadListMessage());
-                                    dto.isSendding = false;
-                                    btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
-                                }
-                            });
+                                    @Override
+                                    public void onSendChatMessageFail(ErrorDto errorDto, String url) {
+                                        EventBus.getDefault().post(new ReloadListMessage());
+                                        dto.isSendding = false;
+                                        btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
+                                    }
+                                });
+                            }
                         }
+                    } else {
+                        Log.d(TAG, "wait finish send: dto.isSendding:" + dto.isSendding + " msg:" + dto.getMessage());
                     }
-                } else {
-                    Log.d(TAG, "wait finish send: dto.isSendding:" + dto.isSendding + " msg:" + dto.getMessage());
                 }
             });
         }

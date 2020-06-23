@@ -197,9 +197,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     roomSize = userNos.size();
                 }
                 subTitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, String.valueOf(roomSize));
-                Log.d(TAG, "onCreate:" + roomSize);
             }
-            Log.d(TAG, "setupTitleRoom 1:" + roomTitle);
             setupTitleRoom(mDto.getUserNos(), roomTitle, subTitle);
         }
 
@@ -207,7 +205,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         if (!isFinishing()) {
             addFragment();
         }
-        Log.d(TAG, "finish onCreate");
     }
 
     /**
