@@ -669,69 +669,6 @@ public class HttpRequest {
         });
     }
 
-    public void GetMessageUnreadCount(long roomNo, String baseDate, final OnGetMessageUnreadCountCallBack callBack) {
-        String url = root_link + Urls.URL_ROOT_2;
-        Map<String, String> params = new HashMap<>();
-        Map<String, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_GET_MESSAGE_UNREAD_COUNT_TIME);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-        params2.put("roomNo", roomNo);
-        params2.put("baseDate", baseDate);
-        Gson gson = new Gson();
-        String js = gson.toJson(params2);
-        params.put("reqJson", js);
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-                callBack.onHTTPSuccess(response);
-            }
-
-            @Override
-            public void onFailure(ErrorDto error) {
-                callBack.onHTTPFail(error);
-            }
-        });
-    }
-
-
-    /**
-     * UPDATE MESSAGE UNREAD COUNT
-     */
-    public void UpdateMessageUnreadCount(long roomNo, int userNo, String baseDate) {
-        final String url = root_link + Urls.URL_ROOT_2;
-        final Map<String, String> params = new HashMap<>();
-        Map<String, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_UPDATE_MESSAGE_UNREAD_COUNT_TIME);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-        params2.put("roomNo", roomNo);
-        params2.put("userNo", userNo);
-        params2.put("baseDate", baseDate);
-        Gson gson = new Gson();
-        final String js = gson.toJson(params2);
-        params.put("reqJson", js);
-
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-                Log.d(TAG, "UpdateMessageUnreadCount response:" + response);
-            }
-
-            @Override
-            public void onFailure(ErrorDto error) {
-                Log.d(TAG, "UpdateMessageUnreadCount response ErrorDto");
-            }
-        });
-    }
-
-    /**
-     * GET USER By UserNo
-     */
     public void GetUser(int userNo, final OnGetUserCallBack callBack) {
         String url = root_link + Urls.URL_GET_USER;
         Map<String, String> params = new HashMap<>();
@@ -752,49 +689,6 @@ public class HttpRequest {
             public void onFailure(ErrorDto error) {
                 if (callBack != null)
                     callBack.onHTTPFail(error);
-            }
-        });
-    }
-
-    public void GetChatMsgSection(long roomNo, int type, String baseDate, final OnGetChatMessage onGetChatMessage) {
-        String url = root_link + Urls.URL_ROOT_2;
-        Map<String, String> params = new HashMap<>();
-        Map<String, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_GET_CHAT_MSG_SECTION_TIME);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-        params2.put("roomNo", roomNo);
-        params2.put("getType", type);
-        params2.put("baseDate", baseDate);
-        Gson gson = new Gson();
-        String js = gson.toJson(params2);
-        params.put("reqJson", js);
-
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-                try {
-                    Type listType = new TypeToken<List<ChattingDto>>() {
-                    }.getType();
-                    List<ChattingDto> list = new Gson().fromJson(response, listType);
-                    if (onGetChatMessage != null)
-                        onGetChatMessage.OnGetChatMessageSuccess(list);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    if (onGetChatMessage != null) {
-                        ErrorDto errorDto = new ErrorDto();
-                        errorDto.message = "Cannot parse data from server" + response;
-                        onGetChatMessage.OnGetChatMessageFail(errorDto);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(ErrorDto error) {
-                if (onGetChatMessage != null)
-                    onGetChatMessage.OnGetChatMessageFail(error);
             }
         });
     }

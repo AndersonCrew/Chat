@@ -341,6 +341,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         super.onDestroy();
         instance = null;
         this.unregisterReceiver(imageBroadcastReceiver);
+        ChattingFragment.instance = null;
     }
 
     private void addFragment() {
@@ -405,10 +406,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         }
                     }
                     setTitle(getGroupTitleName(userNos));
-                    if (ChattingFragment.instance != null) {
-                        ChattingFragment.instance.Reload();
-                        ChattingFragment.instance.isShowIcon = true;
-                    }
+
                     if (CurrentChatListFragment.fragment != null) {
                         CurrentChatListFragment.fragment.updateWhenAddUser(roomNo, lstNew);
                     }

@@ -339,49 +339,41 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
         // Set event listener for failed message
         if (btnResend != null) {
             btnResend.setTag(dto.getId());
-            btnResend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // sendComplete=true;
-                    boolean flag = ChattingFragment.isSend;
-                    if (flag && !dto.isSendding) {
-                        btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.icon_loadding));
-                        dto.isSendding = true;
-                        Log.d(TAG, "btnResend:" + dto.getMessage());
-                        final Integer localId = (Integer) v.getTag();
-                        for (int i = 0; i <= mAdapter.getData().size() - 1; i++) {
-                            if (dto.getId() == mAdapter.getData().get(i).getId()) {
-                                HttpRequest.getInstance().SendChatMsg(dto.getRoomNo(), mAdapter.getData().get(i).getMessage(), new SendChatMessage() {
-                                    @Override
-                                    public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
-                                        dto.setHasSent(true);
-                                        dto.setMessageNo(chattingDto.getMessageNo());
-                                        dto.setUnReadCount(chattingDto.getUnReadCount());
-                                        String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
-                                        dto.setRegDate(time);
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                ChatMessageDBHelper.updateMessage(dto, localId);
-                                            }
-                                        }).start();
-                                        EventBus.getDefault().post(new ReloadListMessage());
-                                        dto.isSendding = false;
-                                        btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
-                                    }
+            btnResend.setOnClickListener(v -> {
+                // sendComplete=true;
+                boolean flag = ChattingFragment.isSend;
+                if (flag && !dto.isSendding) {
+                    btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.icon_loadding));
+                    dto.isSendding = true;
+                    Log.d(TAG, "btnResend:" + dto.getMessage());
+                    final Integer localId = (Integer) v.getTag();
+                    for (int i = 0; i <= mAdapter.getData().size() - 1; i++) {
+                        if (dto.getId() == mAdapter.getData().get(i).getId()) {
+                            HttpRequest.getInstance().SendChatMsg(dto.getRoomNo(), mAdapter.getData().get(i).getMessage(), new SendChatMessage() {
+                                @Override
+                                public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
+                                    dto.setHasSent(true);
+                                    dto.setMessageNo(chattingDto.getMessageNo());
+                                    dto.setUnReadCount(chattingDto.getUnReadCount());
+                                    String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
+                                    dto.setRegDate(time);
+                                    new Thread(() -> ChatMessageDBHelper.updateMessage(dto, localId)).start();
+                                    EventBus.getDefault().post(new ReloadListMessage());
+                                    dto.isSendding = false;
+                                    btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
+                                }
 
-                                    @Override
-                                    public void onSendChatMessageFail(ErrorDto errorDto, String url) {
-                                        EventBus.getDefault().post(new ReloadListMessage());
-                                        dto.isSendding = false;
-                                        btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
-                                    }
-                                });
-                            }
+                                @Override
+                                public void onSendChatMessageFail(ErrorDto errorDto, String url) {
+                                    EventBus.getDefault().post(new ReloadListMessage());
+                                    dto.isSendding = false;
+                                    btnResend.setImageDrawable(CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
+                                }
+                            });
                         }
-                    } else {
-                        Log.d(TAG, "wait finish send: dto.isSendding:" + dto.isSendding + " msg:" + dto.getMessage());
                     }
+                } else {
+                    Log.d(TAG, "wait finish send: dto.isSendding:" + dto.isSendding + " msg:" + dto.getMessage());
                 }
             });
         }

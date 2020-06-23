@@ -325,7 +325,6 @@ public class GcmIntentService extends IntentService {
     private void receiveCode5(Bundle extras) {
         if (extras.containsKey("Data")) {
             try {
-                /** Get RoomNo */
                 String objExtra = extras.getString("Data", "");
                 JSONObject object = new JSONObject(objExtra);
 
@@ -338,15 +337,6 @@ public class GcmIntentService extends IntentService {
                 final long roomNo = object.getLong("RoomNo");
                 final String baseDate = object.getString("BaseDate");
                 final int unReadTotalCount = object.getInt("UnreadTotalCount");
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ChatRoomDBHelper.updateUnreadTotalCountChatRoom(roomNo, unReadTotalCount);
-                    }
-                }).start();
-
-                ShortcutBadger.applyCount(this, unReadTotalCount); //for 1.1.4
 
                 Constant.cancelAllNotification(CrewChatApplication.getInstance(), (int) roomNo);
                 Intent intent = new Intent(Constant.INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT);

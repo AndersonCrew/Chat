@@ -291,7 +291,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     }
     @Override
     protected void initList() {
-//        init();
         showLoading();
     }
 
@@ -304,7 +303,6 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
     }
 
     public void getData(final List<ChattingDto> lst) {
-
         rvMainList.setVisibility(View.VISIBLE);
         hideLoading();
         dataSet = lst;

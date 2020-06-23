@@ -84,25 +84,22 @@ public class WebServiceManager<T> {
                     listener.onFailure(errorDto);
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                ErrorDto errorDto = new ErrorDto();
-                if (null != error) {
-                    listener.onFailure(errorDto);
-                }
+        }, error -> {
+            ErrorDto errorDto = new ErrorDto();
+            if (null != error) {
+                listener.onFailure(errorDto);
+            }
 
-                if (null != error && null != error.networkResponse
-                        && error.networkResponse.statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                    errorDto.unAuthentication = true;
-                    listener.onFailure(errorDto);
-                } else if ((null != error && null != error.networkResponse)
-                        && (error.networkResponse.statusCode == 500 || error.networkResponse.statusCode == 405)) {
-                    listener.onFailure(errorDto);
-                } else {
-                    errorDto.message = Utils.getString(R.string.no_network_error);
-                    listener.onFailure(errorDto);
-                }
+            if (null != error && null != error.networkResponse
+                    && error.networkResponse.statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                errorDto.unAuthentication = true;
+                listener.onFailure(errorDto);
+            } else if ((null != error && null != error.networkResponse)
+                    && (error.networkResponse.statusCode == 500 || error.networkResponse.statusCode == 405)) {
+                listener.onFailure(errorDto);
+            } else {
+                errorDto.message = Utils.getString(R.string.no_network_error);
+                listener.onFailure(errorDto);
             }
         });
 

@@ -60,6 +60,15 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     dependencies {
         implementation fileTree(include: ['*.jar'], dir: 'libs')
         implementation project(':multi-level-listview')
@@ -103,6 +112,15 @@ android {
         /*implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:" + rootProject.coroutines_core_version
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:" + rootProject.coroutines_core_version*/
 
+        //Retrofit
+        implementation 'com.squareup.okhttp3:okhttp:' + rootProject.okhttp3
+        implementation 'com.squareup.okhttp3:logging-interceptor:' + rootProject.okhttp3
+        implementation 'com.squareup.retrofit2:retrofit:' + rootProject.retrofit2
+        implementation 'com.squareup.retrofit2:converter-gson:' + rootProject.retrofit2
+        implementation 'com.squareup.retrofit2:adapter-rxjava2:' + rootProject.retrofit2
 
+        //rx android
+        implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+        implementation 'io.reactivex.rxjava2:rxjava:2.1.3'
     }
 }

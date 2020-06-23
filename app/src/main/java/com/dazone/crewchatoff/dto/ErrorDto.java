@@ -22,8 +22,9 @@ public class ErrorDto {
         return message;
     }
 
-    public void setMessage(String message) {
+    public ErrorDto setMessage(String message) {
         this.message = message;
+        return this;
     }
 
     public int getCode() {

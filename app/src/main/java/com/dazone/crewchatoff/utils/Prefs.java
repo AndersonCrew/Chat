@@ -86,10 +86,6 @@ public class Prefs implements Serializable {
         putStringValue(CrewChatFileServerIP, key);
     }
 
-    public String getCrewChatFileServerIP() {
-        return getStringValue(CrewChatFileServerIP, Urls.HOST_STATUS);
-    }
-
     public void setFILE_SERVER_PORT(int key) {
         putIntValue(FILE_SERVER_PORT, key);
     }
