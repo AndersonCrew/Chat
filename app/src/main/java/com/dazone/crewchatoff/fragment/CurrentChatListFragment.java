@@ -85,6 +85,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
     ArrayList<TreeUserDTOTemp> listOfUsers = null;
 
+
     public void init() {
         myId = new Prefs().getUserNo();
         if (CompanyFragment.instance != null) listOfUsers = CompanyFragment.instance.getUser();
@@ -203,12 +204,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
                                         dataSet.remove(i);
 
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                ChatRoomDBHelper.deleteChatRoom(roomNo);
-                                            }
-                                        }).start();
+                                        new Thread(() -> ChatRoomDBHelper.deleteChatRoom(roomNo)).start();
 
                                         adapterList.notifyDataSetChanged();
                                         break;
@@ -277,12 +273,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                             RecentFavoriteFragment.instance.updateRenameRoom(roomNo, roomTitle);
                         }
                         // Start new thread to update local database
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ChatRoomDBHelper.updateChatRoom(roomNo, roomTitle);
-                            }
-                        }).start();
+                        new Thread(() -> ChatRoomDBHelper.updateChatRoom(roomNo, roomTitle)).start();
                     }
                     break;
 
@@ -368,12 +359,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     dataSet.clear();
                     List<TreeUserDTOTemp> list1;
                     TreeUserDTOTemp treeUserDTOTemp1;
-                    Collections.sort(list, new Comparator<ChattingDto>() {
-                        public int compare(ChattingDto o1, ChattingDto o2) {
-                            Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
-                            Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
-                            return date2.compareTo(date1);
-                        }
+                    Collections.sort(list, (o1, o2) -> {
+                        Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
+                        Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
+                        return date2.compareTo(date1);
                     });
 
                     for (ChattingDto chattingDto : list) {
@@ -403,12 +392,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             });
         } else {
             // Sort by date
-            Collections.sort(dataSet, new Comparator<ChattingDto>() {
-                public int compare(ChattingDto o1, ChattingDto o2) {
-                    Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
-                    Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
-                    return date2.compareTo(date1);
-                }
+            Collections.sort(dataSet, (o1, o2) -> {
+                Date date1 = new Date(TimeUtils.getTime(o1.getLastedMsgDate()));
+                Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
+                return date2.compareTo(date1);
             });
 
             adapterList.notifyDataSetChanged();
@@ -441,6 +428,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 RecentFavoriteFragment.instance.updateRenameRoom(roomNo, roomTitle);
             }
         }
+
+        if(!isFirstTime) {
+            init();
+        }
     }
 
     @Override
@@ -471,12 +462,9 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     dto.setUnReadCount(0);
                 }
                 final int finalPos = pos;
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "update unread");
-                        adapterList.notifyItemChanged(finalPos);
-                    }
+                getActivity().runOnUiThread(() -> {
+                    Log.d(TAG, "update unread");
+                    adapterList.notifyItemChanged(finalPos);
                 });
                 break;
             }
@@ -523,13 +511,9 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
                         // Notify database
                         final int finalPos = pos;
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (adapterList != null) {
-                                    Log.d(TAG, "insert 1");
-                                    adapterList.notifyItemChanged(finalPos);
-                                }
+                        getActivity().runOnUiThread(() -> {
+                            if (adapterList != null) {
+                                adapterList.notifyItemChanged(finalPos);
                             }
                         });
 
@@ -568,12 +552,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     }
 
     private void storeListChatRoomToLocal(final ChattingDto data) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ChatRoomDBHelper.addChatRoom(data);
-            }
-        }).start();
+        new Thread(() -> ChatRoomDBHelper.addChatRoom(data)).start();
     }
 
     public void getDataFromServer() {
@@ -904,7 +883,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 Date date2 = new Date(TimeUtils.getTime(o2.getLastedMsgDate()));
                 return date2.compareTo(date1);
             });
-
 
 
             adapterList.updateData(dataSet);

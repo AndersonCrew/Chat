@@ -36,6 +36,7 @@ public class ChatMessageDBHelper {
     public static final String TYPE = "type";
     public static final String ATTACH_NO = "attach_no";
     public static final String REG_DATE = "reg_date";
+    public static final String STR_REG_DATE = "str_reg_date";
     public static final String UNREAD_COUNT = "unread_count";
     public static final String IS_CHECK_FROM_SERVER = "is_check_from_server";
     public static final String ATTACH_FILE_NAME = "attach_file_name";
@@ -65,6 +66,7 @@ public class ChatMessageDBHelper {
             + TYPE + " integer DEFAULT 0, "
             + ATTACH_NO + " integer DEFAULT 0, "
             + REG_DATE + " text, "
+            + STR_REG_DATE + " text, "
             + UNREAD_COUNT + " integer DEFAULT 0, "
             + IS_CHECK_FROM_SERVER + " integer DEFAULT 0, "
             + ATTACH_FILE_NAME + " text, "
@@ -128,6 +130,7 @@ public class ChatMessageDBHelper {
             values.put(MESSAGE, dto.getMessage());
             values.put(MESSAGE_NO, dto.getMessageNo());
             values.put(REG_DATE, dto.getRegDate());
+            values.put(STR_REG_DATE, dto.getStrRegDate());
 
             int hasSentValue = dto.isHasSent() ? 1 : 0;
             values.put(HAS_SENT, hasSentValue);
@@ -192,6 +195,7 @@ public class ChatMessageDBHelper {
                     values.put(MESSAGE, dto.getMessage());
                     values.put(TYPE, dto.getType());
                     values.put(REG_DATE, dto.getRegDate());
+                    values.put(STR_REG_DATE, dto.getStrRegDate());
                     values.put(UNREAD_COUNT, dto.getUnReadCount());
 
                     int isCheck = 0;
@@ -286,6 +290,7 @@ public class ChatMessageDBHelper {
         chattingDto.setAttachNo(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_NO))));
 
         chattingDto.setRegDate(cursor.getString(cursor.getColumnIndex(REG_DATE)));
+        chattingDto.setStrRegDate(cursor.getString(cursor.getColumnIndex(STR_REG_DATE)));
         chattingDto.setUnReadCount(Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNREAD_COUNT))));
 
         String isCheckFromServer = cursor.getString(cursor.getColumnIndex(IS_CHECK_FROM_SERVER));

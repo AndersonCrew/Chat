@@ -41,7 +41,6 @@ class ChattingViewModel : BaseViewModel() {
         val dispo: Disposable = listObservable
                 .subscribeOn(Schedulers.io())
                 .subscribe { list ->
-                    Log.d("A", list.size.toString())
                     if (!list.isNullOrEmpty()) {
                         listChatting.postValue(list)
                     }
@@ -49,9 +48,9 @@ class ChattingViewModel : BaseViewModel() {
                     if (Utils.isNetworkAvailable()) {
                         val listChatMessage = ChatMessageDBHelper.getMsgSession(roomNo, 0, ChatMessageDBHelper.FIRST)
                         var baseDate = CrewChatApplication.getInstance().timeServer
-                        var mesType = 2
+                        var mesType = 1
                         if (listChatMessage.size > 0) {
-                            baseDate = TimeUtils.showTimeWithoutTimeZone(TimeUtils.getTime(listChatMessage[listChatMessage.size - 1].regDate), Statics.yyyy_MM_dd_HH_mm_ss_SSS)
+                            baseDate = listChatMessage[listChatMessage.size - 1].strRegDate
                             mesType = ChatMessageDBHelper.AFTER
                         }
 
@@ -94,12 +93,11 @@ class ChattingViewModel : BaseViewModel() {
                             val list = Gson().fromJson<List<ChattingDto>>(data, listType)
                             if (type == ChatMessageDBHelper.BEFORE) {
                                 listChattingLoadmore.postValue(list)
-                            } else if (!list.isNullOrEmpty() && type == ChatMessageDBHelper.AFTER) {
+                            } else if (!list.isNullOrEmpty()) {
                                 listChatting.postValue(list)
 
                                 //Update MessageUnreadCount
-                                val baseDate = TimeUtils.showTimeWithoutTimeZone(TimeUtils.getTime(list.get(list.size - 1).regDate), Statics.yyyy_MM_dd_HH_mm_ss_SSS)
-                                updateMessageUnReadCount(roomNo, userID, baseDate)
+                                updateMessageUnReadCount(roomNo, userID, list[0].strRegDate)
                                 CurrentChatListFragment.fragment?.updateRoomUnread(roomNo)
                                 RecentFavoriteFragment.instance?.updateRoomUnread(roomNo)
                             }
@@ -110,8 +108,6 @@ class ChattingViewModel : BaseViewModel() {
                 }, {
                     showError(ErrorDto().setMessage("Cannot fetch message form Server!"))
                 }))
-
-
     }
 
     fun updateMessageUnReadCount(roomNo: Long, userNo: Int, baseDate: String) {

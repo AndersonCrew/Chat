@@ -235,7 +235,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
         if (dto.getMessage() != null) {
             String message = dto.getMessage();
             long regDateContent = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
-            SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss, Locale.getDefault());
+            SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
             String dateStr = "[ " + formatter.format(regDateContent) + " ] - ";
             try {
                 Spanned msg;
@@ -269,7 +269,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 } else {
                     content_tv.setAutoLinkMask(Linkify.ALL);
                     content_tv.setLinksClickable(true);
-                    content_tv.setText(dateStr + dto.getMessage());
+                    content_tv.setText(dto.getStrRegDate() + " - " + dto.getMessage());
                 }
 
 

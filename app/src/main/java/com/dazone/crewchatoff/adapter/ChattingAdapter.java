@@ -35,19 +35,16 @@ import java.util.List;
 public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
     private Activity mActivity;
     private ILoadImage iLoadImage;
-    private Comparator<ChattingDto> mComparator = new Comparator<ChattingDto>() {
-        @Override
-        public int compare(ChattingDto t1, ChattingDto t2) {
-            if (t1.isHasSent() && !t2.isHasSent()) {
-                return -1;
-            }
-
-            if (!t1.isHasSent() && t2.isHasSent()) {
-                return 1;
-            }
-
-            return 0;
+    private Comparator<ChattingDto> mComparator = (t1, t2) -> {
+        if (t1.isHasSent() && !t2.isHasSent()) {
+            return -1;
         }
+
+        if (!t1.isHasSent() && t2.isHasSent()) {
+            return 1;
+        }
+
+        return 0;
     };
 
     public ChattingAdapter(Context context, Activity activity, List<ChattingDto> mDataSet, RecyclerView view, ILoadImage loadImage) {

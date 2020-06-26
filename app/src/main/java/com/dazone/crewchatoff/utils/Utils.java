@@ -1083,6 +1083,6 @@ public class Utils {
             }
         }
 
-        return 0;
+        return list.size() - 1;
     }
 }

@@ -17,6 +17,15 @@ public class NotificationBundleDto {
     private boolean ShowNotification;
     private int MessageType;
     private String RegDate;
+    private String strRegDate;
+
+    public String getStrRegDate() {
+        return strRegDate;
+    }
+
+    public void setStrRegDate(String strRegDate) {
+        this.strRegDate = strRegDate;
+    }
 
     public int getMessageType() {
         return MessageType;

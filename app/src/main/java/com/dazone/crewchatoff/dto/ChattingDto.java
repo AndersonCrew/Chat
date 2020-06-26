@@ -87,12 +87,23 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     @SerializedName("Favorite")
     private boolean Favorite = false;
 
+    @SerializedName("strRegDate")
+    private String strRegDate;
+
     private boolean hasSent = true;
     private boolean cbChoose = false;
     private int status = 0;
     private int positionUploadImage;
     private int temp = 0;
     private String date;
+
+    public String getStrRegDate() {
+        return strRegDate;
+    }
+
+    public void setStrRegDate(String strRegDate) {
+        this.strRegDate = strRegDate;
+    }
 
     public int getTemp() {
         return temp;
@@ -139,6 +150,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
                 ", mType=" + mType +
                 ", AttachNo=" + AttachNo +
                 ", RegDate='" + RegDate + '\'' +
+                ", StrRegDate='" + strRegDate + '\'' +
                 ", UnReadCount=" + UnReadCount +
                 ", AttachInfo=" + AttachInfo +
                 ", list=" + list +

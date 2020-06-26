@@ -149,8 +149,6 @@ public class GcmIntentService extends IntentService {
             if (userNo == Utils.getCurrentId()) {
                 try {
                     NotificationBundleDto bundleDto = new Gson().fromJson(extras.getString("Data"), NotificationBundleDto.class);
-                    SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
-                    String date = formatter.format(new Date(TimeUtils.getTime(bundleDto.getRegDate())));
 
                     chattingDto = new ChattingDto();
                     chattingDto.setRoomNo(bundleDto.getRoomNo());
@@ -165,6 +163,7 @@ public class GcmIntentService extends IntentService {
                     chattingDto.setAttachFilePath(bundleDto.getAttachFilePath());
                     chattingDto.setAttachFileSize(bundleDto.getAttachFileSize());
                     chattingDto.setRegDate(bundleDto.getRegDate());
+                    chattingDto.setStrRegDate(bundleDto.getStrRegDate());
 
                     AttachDTO attachInfo = new AttachDTO();
                     attachInfo.setType(bundleDto.getAttachFileType());
@@ -336,6 +335,7 @@ public class GcmIntentService extends IntentService {
 
                 final long roomNo = object.getLong("RoomNo");
                 final String baseDate = object.getString("BaseDate");
+                final String strBaseDate = object.getString("strBaseDate");
                 final int unReadTotalCount = object.getInt("UnreadTotalCount");
 
                 Constant.cancelAllNotification(CrewChatApplication.getInstance(), (int) roomNo);
@@ -343,7 +343,7 @@ public class GcmIntentService extends IntentService {
                 intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
                 intent.putExtra(Constant.KEY_INTENT_UNREAD_TOTAL_COUNT, unReadTotalCount);
                 intent.putExtra(Constant.KEY_INTENT_USER_NO, userNo);
-                intent.putExtra(Constant.KEY_INTENT_BASE_DATE, baseDate);
+                intent.putExtra(Constant.KEY_INTENT_BASE_DATE, strBaseDate);
                 sendBroadcast(intent);
 
                 if (CurrentChatListFragment.fragment != null) {

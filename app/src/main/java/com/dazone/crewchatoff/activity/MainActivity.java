@@ -186,26 +186,23 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                 setupTab();
                 setupViewPager();
             }
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (Intent.ACTION_SEND.equals(action) && type != null) {
-                        if ("text/plain".equals(type)) {
-                            // handleSendText(intent);
-                        } else if (type.startsWith("video/")) {
-                            handleSendVideo(intent);
-                        } else if (type.startsWith("audio/")) {
-                            handleSendAudio(intent);
-                        } else if (type.startsWith("text/")) {
-                            handleSendContact(intent);
-                        } else {
-                            handleSendFile(intent);
-                        }
-                    } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-                        handleSendMultipleFile(intent);
+            mHandler.postDelayed(() -> {
+                if (Intent.ACTION_SEND.equals(action) && type != null) {
+                    if ("text/plain".equals(type)) {
+                        // handleSendText(intent);
+                    } else if (type.startsWith("video/")) {
+                        handleSendVideo(intent);
+                    } else if (type.startsWith("audio/")) {
+                        handleSendAudio(intent);
+                    } else if (type.startsWith("text/")) {
+                        handleSendContact(intent);
                     } else {
-                        // Handle other intents, such as being started from the home screen
+                        handleSendFile(intent);
                     }
+                } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+                    handleSendMultipleFile(intent);
+                } else {
+                    // Handle other intents, such as being started from the home screen
                 }
             }, 1500);
         } else {
@@ -516,7 +513,9 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     protected void onResume() {
         super.onResume();
         mViewPager.setCurrentItem(new Prefs().getIntValue("PAGE", 0));
-        Log.d(TAG, "mViewPager:" + mViewPager.getCurrentItem());
+        /*if(CompanyFragment.instance != null) {
+            CompanyFragment.instance.initDB();
+        }*/
     }
 
     @Override

@@ -157,6 +157,11 @@ public class CompanyFragment extends Fragment {
         super.onCreate(savedInstanceState);
         instance = this;
         intentFilterSearch = new IntentFilter(Constant.INTENT_FILTER_SEARCH);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         initDB();
     }
 
@@ -230,16 +235,13 @@ public class CompanyFragment extends Fragment {
         mDepartmentList = new ArrayList<>();
         listTemp = new ArrayList<>();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listTemp = AllUserDBHelper.getUser_v2();
-                mDepartmentList = DepartmentDBHelper.getDepartments_v2();
-                if (listTemp == null) listTemp = new ArrayList<>();
-                if (mDepartmentList == null) mDepartmentList = new ArrayList<>();
-                isBuild = true;
-                mHandler.obtainMessage(GET_DATA_OFFLINE_COMPLETE).sendToTarget();
-            }
+        new Thread(() -> {
+            listTemp = AllUserDBHelper.getUser_v2();
+            mDepartmentList = DepartmentDBHelper.getDepartments_v2();
+            if (listTemp == null) listTemp = new ArrayList<>();
+            if (mDepartmentList == null) mDepartmentList = new ArrayList<>();
+            isBuild = true;
+            mHandler.obtainMessage(GET_DATA_OFFLINE_COMPLETE).sendToTarget();
         }).start();
     }
 

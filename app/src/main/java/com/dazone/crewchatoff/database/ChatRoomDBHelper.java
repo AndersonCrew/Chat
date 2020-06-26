@@ -41,6 +41,7 @@ public class ChatRoomDBHelper {
     public static final String TYPE = "type";
     public static final String ATTACH_NO = "attach_no";
     public static final String REG_DATE = "reg_date";
+    public static final String STR_REG_DATE = "str_reg_date";
     public static final String UNREAD_COUNT = "unread_count";
     public static final String IS_CHECK_FROM_SERVER = "is_check_from_server";
     public static final String ATTACH_FILE_NAME = "attach_file_name";
@@ -75,6 +76,7 @@ public class ChatRoomDBHelper {
             + TYPE + " integer, "
             + ATTACH_NO + " integer, "
             + REG_DATE + " text, "
+            + STR_REG_DATE + " text, "
             + UNREAD_COUNT + " integer, "
             + IS_CHECK_FROM_SERVER + " integer, "
             + ATTACH_FILE_NAME + " text, "
@@ -118,6 +120,7 @@ public class ChatRoomDBHelper {
                 values.put(TYPE, dto.getType());
                 values.put(ATTACH_NO, dto.getAttachNo());
                 values.put(REG_DATE, dto.getRegDate());
+                values.put(STR_REG_DATE, dto.getStrRegDate());
                 values.put(UNREAD_COUNT, dto.getUnReadCount());
                 int isCheck = 0;
                 if (dto.isCheckFromServer()) {
@@ -209,22 +212,6 @@ public class ChatRoomDBHelper {
         return false;
     }
 
-    public static int getUnreadCount(long roomNo) {
-        String[] columns = new String[]{"*"};
-        ContentResolver resolver = CrewChatApplication.getInstance()
-                .getApplicationContext().getContentResolver();
-        Cursor cursor = resolver.query(
-                AppContentProvider.GET_CHAT_ROOM_CONTENT_URI, columns, ROOM_NO + "=" + roomNo,
-                null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int unReadCount = Integer.parseInt(cursor.getString(cursor.getColumnIndex(UNREAD_TOTAL_COUNT)));
-            cursor.close();
-            return unReadCount;
-        }
-        return 0;
-    }
-
     public static boolean deleteChatRoom(long roomNo) {
         try {
             ContentResolver resolver = CrewChatApplication.getInstance()
@@ -252,7 +239,6 @@ public class ChatRoomDBHelper {
             return true;
 
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
 
@@ -282,7 +268,6 @@ public class ChatRoomDBHelper {
 
     public static boolean updateChatRoomFavorite(long roomNo, boolean isFavorite) {
         try {
-
             ContentResolver resolver = CrewChatApplication.getInstance()
                     .getApplicationContext().getContentResolver();
 
@@ -293,10 +278,8 @@ public class ChatRoomDBHelper {
             return true;
 
         } catch (Exception e) {
-            // TODO: handle exception
             e.printStackTrace();
         }
-
         return false;
     }
 
@@ -353,87 +336,7 @@ public class ChatRoomDBHelper {
 
                         chattingDto.setMsgUserNo(parseInt(cursor.getString(cursor.getColumnIndex(LASTED_MSG_USER_NO))));
                         chattingDto.setRegDate(cursor.getString(cursor.getColumnIndex(REG_DATE)));
-                        chattingDto.setUnReadCount(parseInt(cursor.getString(cursor.getColumnIndex(UNREAD_COUNT))));
-                        chattingDto.setCheckFromServer(parseInt(cursor.getString(cursor.getColumnIndex(IS_CHECK_FROM_SERVER))) == 1);
-                        chattingDto.setAttachFileName(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_NAME)));
-                        chattingDto.setAttachFileType(parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_TYPE))));
-                        chattingDto.setAttachFilePath(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_PATH)));
-                        chattingDto.setAttachFileSize(parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_SIZE))));
-                        chattingDto.setUnreadTotalCount(parseInt(cursor.getString(cursor.getColumnIndex(UNREAD_TOTAL_COUNT))));
-
-                        boolean isFavorite = parseInt(cursor.getString(cursor.getColumnIndex(IS_FAVORITE))) == 1;
-                        chattingDto.setFavorite(isFavorite);
-
-                        boolean isNotification = parseInt(cursor.getString(cursor.getColumnIndex(IS_NOTIFICATION))) == 1;
-                        chattingDto.setNotification(isNotification);
-                        chattingDto.setRoomType(parseInt(cursor.getString(cursor.getColumnIndex(ROOM_TYPE))));
-                        mesArray.add(chattingDto);
-                    }
-
-                } finally {
-                    cursor.close();
-                }
-
-            }
-            cursor.close();
-        }
-        return mesArray;
-    }
-
-    /*
-    * This function to get all chat list, short by time
-    * */
-    public static ArrayList<ChattingDto> getFavoriteChatRooms() {
-
-        ArrayList<ChattingDto> mesArray = new ArrayList<>();
-        String[] columns = new String[]{"*"};
-        ContentResolver resolver = CrewChatApplication.getInstance()
-                .getApplicationContext().getContentResolver();
-        Cursor cursor = resolver.query(
-                AppContentProvider.GET_CHAT_ROOM_CONTENT_URI, columns, IS_FAVORITE + " = " + 1,
-                null, null);
-        if (cursor != null) {
-            if (cursor.getCount() > 0) {
-                try {
-                    while (cursor.moveToNext()) {
-                        ChattingDto chattingDto = new ChattingDto();
-
-                        chattingDto.setId(parseInt(cursor.getString(cursor.getColumnIndex(ID))));
-
-                        chattingDto.setRoomNo(parseInt(cursor.getString(cursor.getColumnIndex(ROOM_NO))));
-                        chattingDto.setMakeUserNo(parseInt(cursor.getString(cursor.getColumnIndex(MAKE_USER_NO))));
-                        chattingDto.setModdate(cursor.getString(cursor.getColumnIndex(MOD_DATE)));
-                        boolean is_one = cursor.getInt(cursor.getColumnIndex(IS_ONE)) == 1;
-                        chattingDto.setOne(is_one);
-
-                        String roomTitle = cursor.getString(cursor.getColumnIndex(ROOM_TITLE));
-                        chattingDto.setRoomTitle(roomTitle);
-                        chattingDto.setLastedMsg(cursor.getString(cursor.getColumnIndex(LASTED_MSG)));
-                        chattingDto.setLastedMsgDate(cursor.getString(cursor.getColumnIndex(LASTED_MSG_DATE)));
-
-                        String sUserNos = cursor.getString(cursor.getColumnIndex(USER_NOS));
-                        if (sUserNos != null) {
-                            String[] elements = sUserNos.split(",");
-                            ArrayList<Integer> userNosLList = new ArrayList<>();
-                            for (String temp : elements) {
-                                userNosLList.add(parseInt(temp.trim()));
-                            }
-                            chattingDto.setUserNos(userNosLList);
-                        }
-
-                        chattingDto.setLastedMsgType(parseInt(cursor.getString(cursor.getColumnIndex(LASTED_MSG_TYPE))));
-                        chattingDto.setLastedMsgAttachType(parseInt(cursor.getString(cursor.getColumnIndex(LASTED_MSG_ATTACH_TYPE))));
-
-                        chattingDto.setWriterUser(parseInt(cursor.getString(cursor.getColumnIndex(WRITER_USER))));
-                        chattingDto.setWriterUserNo(parseInt(cursor.getString(cursor.getColumnIndex(WRITER_USER_NO))));
-                        chattingDto.setMessageNo(parseInt(cursor.getString(cursor.getColumnIndex(MESSAGE_NO))));
-                        chattingDto.setUserNo(parseInt(cursor.getString(cursor.getColumnIndex(USER_NO))));
-                        chattingDto.setMessage(cursor.getString(cursor.getColumnIndex(MESSAGE)));
-                        chattingDto.setType(parseInt(cursor.getString(cursor.getColumnIndex(TYPE))));
-                        chattingDto.setAttachNo(parseInt(cursor.getString(cursor.getColumnIndex(ATTACH_NO))));
-
-                        chattingDto.setMsgUserNo(parseInt(cursor.getString(cursor.getColumnIndex(LASTED_MSG_USER_NO))));
-                        chattingDto.setRegDate(cursor.getString(cursor.getColumnIndex(REG_DATE)));
+                        chattingDto.setStrRegDate(cursor.getString(cursor.getColumnIndex(STR_REG_DATE)));
                         chattingDto.setUnReadCount(parseInt(cursor.getString(cursor.getColumnIndex(UNREAD_COUNT))));
                         chattingDto.setCheckFromServer(parseInt(cursor.getString(cursor.getColumnIndex(IS_CHECK_FROM_SERVER))) == 1);
                         chattingDto.setAttachFileName(cursor.getString(cursor.getColumnIndex(ATTACH_FILE_NAME)));
@@ -463,13 +366,12 @@ public class ChatRoomDBHelper {
 
     public static boolean clearChatRooms() {
         try {
-
             ContentResolver resolver = CrewChatApplication.getInstance()
                     .getApplicationContext().getContentResolver();
             resolver.delete(AppContentProvider.GET_CHAT_ROOM_CONTENT_URI, null, null);
             return true;
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
         return false;
     }

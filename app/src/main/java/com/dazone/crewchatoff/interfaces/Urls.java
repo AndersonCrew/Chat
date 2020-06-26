@@ -10,8 +10,6 @@ public class Urls {
     public static final String URL_FORWARD_CHAT_MSG_USER = "ForwardChatMsgUser";
     public static final String URL_FORWARD_CHAT_MSG_ROOM = "ForwardChatMsgChatRoom";
 
-
-
     public static final String URL_SEND_CHAT_TIME = "SendChatMsg_Time";
     public static final String URL_SEND_ATTACH_FILE_TIME = "SendChatAttachFile_Time";
     public static final String URL_GET_CHAT_MSG_SECTION_TIME = "GetChatMsgSection_Time";

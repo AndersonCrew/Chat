@@ -100,7 +100,6 @@ public interface Statics {
     int DATABASE_VERSION = 39;
     String DATABASE_NAME = "crewchatoffline.db";
 
-    String DATE_FORMAT_YY_MM_DD_DD_H_M = "yy-MM-dd-EEEEEEE hh:mm aa";
     String yy_MM_dd_hh_mm_aa = "yy_MM_dd_HH_mm_ss";
     String DATE_FORMAT_YY_MM_DD = "yy-MM-dd";
     String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
@@ -109,7 +108,6 @@ public interface Statics {
     String DATE_FORMAT_YYYY_MM_DD_AM_PM_HH_MM = "yyyy-MM-dd aa hh:mm";
 
     String yyyy_MM_dd_HH_mm_ss_SSS = "yyyy-MM-dd HH:mm:ss.SSS";
-    String yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
 
 
     int CHATTING_VIEW_TYPE_PERSON = 0;
