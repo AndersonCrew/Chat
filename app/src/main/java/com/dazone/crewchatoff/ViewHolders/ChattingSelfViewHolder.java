@@ -58,12 +58,14 @@ import static com.dazone.crewchatoff.fragment.ChattingFragment.sendComplete;
 public class ChattingSelfViewHolder extends BaseChattingHolder {
     private TextView date_tv, content_tv;
     private TextView tvUnread;
-    private RelativeLayout layoutMain;
+    private LinearLayout layoutMain;
     private ProgressBar progressBarSending;
     private LinearLayout lnSendFailed;
     private ImageView btnResend, btnDelete;
     private ChattingAdapter mAdapter;
     String TAG = "ChattingSelfViewHolder";
+    private LinearLayout llDate;
+    private TextView tvDate;
 
     public void setAdapter(ChattingAdapter adapter) {
         this.mAdapter = adapter;
@@ -88,6 +90,9 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
         btnResend = v.findViewById(R.id.btn_resend);
         btnDelete = v.findViewById(R.id.btn_delete);
+
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
     }
 
     void reLay(long MessageNo) {
@@ -185,12 +190,9 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
         if (arrayAdapter.getCount() > 0) {
             dialog.show();
         }
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                enableText();
-                Log.d(TAG, "onDismiss");
-            }
+        dialog.setOnDismissListener(dialogInterface -> {
+            enableText();
+            Log.d(TAG, "onDismiss");
         });
 
         Button b = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
@@ -217,6 +219,9 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
     @Override
     public void bindData(final ChattingDto dto) {
+
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
 
         try {
             getUnReadCount = dto.getUnReadCount();
@@ -269,7 +274,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 } else {
                     content_tv.setAutoLinkMask(Linkify.ALL);
                     content_tv.setLinksClickable(true);
-                    content_tv.setText(dto.getStrRegDate() + " - " + dto.getMessage());
+                    content_tv.setText(dateStr + dto.getMessage());
                 }
 
 
@@ -377,42 +382,39 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
 
         if (btnDelete != null) {
-            btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // delete or call callback
-                    if (ChatMessageDBHelper.deleteMessage(dto.getMessageNo())) {
-                        if (mAdapter != null && mAdapter.getData() != null) {
-                            mAdapter.getData().remove(dto);
-                            int before = getAdapterPosition() - 1;
-                            if (before >= 0) {
-                                Log.d(TAG, "msg before:" + mAdapter.getData().get(before).getMessage());
-                                if (mAdapter.getData().get(before).getmType() == Statics.CHATTING_VIEW_TYPE_DATE) {
-                                    int after = getAdapterPosition();
-                                    boolean isRemove = false;
-                                    ChattingDto obj = null;
-                                    try {
-                                        obj = mAdapter.getData().get(after);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    if (obj == null) {
-                                        // remove
-                                        Log.d(TAG, "obj = null");
-                                        isRemove = true;
-                                    } else {
-                                        Log.d(TAG, "obj != null -> mType: " + obj.getmType() + " msg:" + obj.getMessage());
-                                        if (obj.getmType() == Statics.CHATTING_VIEW_TYPE_DATE) {
-                                            // remove
-                                            isRemove = true;
-                                        }
-                                    }
-                                    if (isRemove) mAdapter.getData().remove(before);
+            btnDelete.setOnClickListener(v -> {
+                // delete or call callback
+                if (ChatMessageDBHelper.deleteMessage(dto.getMessageNo())) {
+                    if (mAdapter != null && mAdapter.getData() != null) {
+                        mAdapter.getData().remove(dto);
+                        int before = getAdapterPosition() - 1;
+                        if (before >= 0) {
+                            Log.d(TAG, "msg before:" + mAdapter.getData().get(before).getMessage());
+                            if (mAdapter.getData().get(before).getmType() == Statics.CHATTING_VIEW_TYPE_DATE) {
+                                int after = getAdapterPosition();
+                                boolean isRemove = false;
+                                ChattingDto obj = null;
+                                try {
+                                    obj = mAdapter.getData().get(after);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
+
+                                if (obj == null) {
+                                    // remove
+                                    Log.d(TAG, "obj = null");
+                                    isRemove = true;
+                                } else {
+                                    Log.d(TAG, "obj != null -> mType: " + obj.getmType() + " msg:" + obj.getMessage());
+                                    if (obj.getmType() == Statics.CHATTING_VIEW_TYPE_DATE) {
+                                        // remove
+                                        isRemove = true;
+                                    }
+                                }
+                                if (isRemove) mAdapter.getData().remove(before);
                             }
-                            mAdapter.notifyDataSetChanged();
                         }
+                        mAdapter.notifyDataSetChanged();
                     }
                 }
             });

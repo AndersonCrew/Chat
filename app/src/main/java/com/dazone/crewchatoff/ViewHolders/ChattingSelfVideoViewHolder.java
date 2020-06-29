@@ -1,6 +1,7 @@
 package com.dazone.crewchatoff.ViewHolders;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
@@ -32,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,6 +79,8 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
     private String fileName = "";
     private String timeStrPublic = "";
     private Bitmap bitmapPublic = null;
+    private LinearLayout llDate;
+    private TextView tvDate;
 
     public ChattingSelfVideoViewHolder(Activity activity, View v) {
         super(v);
@@ -93,12 +97,16 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         ivPlayBtn = v.findViewById(R.id.iv_play_btn);
         tvDuration = v.findViewById(R.id.tv_duration);
         overLayView = v.findViewById(R.id.overlay_movie);
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
+
         overLayView.setOnClickListener(this);
         overLayView.setOnCreateContextMenuListener(this);
     }
 
     boolean isLoaded =  false;
 
+    @SuppressLint("HandlerLeak")
     protected final android.os.Handler mHandler = new android.os.Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
@@ -125,6 +133,9 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         MessageNo = dto.getMessageNo();
         tempDto = dto;
 
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
+
         try {
             getUnReadCount = dto.getUnReadCount();
         } catch (Exception e) {
@@ -133,7 +144,6 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
         AttachDTO attachDTO = dto.getAttachInfo();
 
         if (attachDTO != null) {
-
             url = new Prefs().getServerSite() + Urls.URL_DOWNLOAD + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTO.getAttachNo();
             fileName = attachDTO.getFileName();
             if (fileName == null) {
@@ -162,32 +172,23 @@ public class ChattingSelfVideoViewHolder extends BaseChattingHolder implements V
 
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);
-        date_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "tvUnread");
-                actionUnread();
-            }
+        date_tv.setOnClickListener(v -> {
+            Log.d(TAG, "tvUnread");
+            actionUnread();
         });
         if (dto.getUnReadCount() == 0) {
             tvUnread.setVisibility(View.GONE);
         } else {
             tvUnread.setVisibility(View.VISIBLE);
-            tvUnread.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "tvUnread");
-                    actionUnread();
-                }
+            tvUnread.setOnClickListener(v -> {
+                Log.d(TAG, "tvUnread");
+                actionUnread();
             });
         }
-        overLayView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                MessageNo = dto.getMessageNo();
-                v.showContextMenu();
-                return true;
-            }
+        overLayView.setOnLongClickListener(v -> {
+            MessageNo = dto.getMessageNo();
+            v.showContextMenu();
+            return true;
         });
     }
 

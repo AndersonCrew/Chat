@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,13 +19,15 @@ import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.ImageUtils;
 import com.dazone.crewchatoff.utils.Prefs;
+import com.dazone.crewchatoff.utils.Utils;
 
 public class ChattingPersonViewHolder extends ChattingSelfViewHolder {
     private TextView user_name_tv;
     private TextView tvUnread;
     private ImageView avatar_imv;
     private Context mContext;
-    private View v;
+    private LinearLayout llDate;
+    private TextView tvDate;
 
     public ChattingPersonViewHolder(View v) {
         super(v);
@@ -38,11 +41,18 @@ public class ChattingPersonViewHolder extends ChattingSelfViewHolder {
         user_name_tv = v.findViewById(R.id.user_name_tv);
         avatar_imv = v.findViewById(R.id.avatar_imv);
         tvUnread = v.findViewById(R.id.text_unread);
+
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
     }
 
     @Override
     public void bindData(final ChattingDto dto) {
         super.bindData(dto);
+
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
+
         user_name_tv.setText(dto.getName() != null ? dto.getName() : "");
         String url = "";
 

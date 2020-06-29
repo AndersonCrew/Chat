@@ -95,7 +95,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     private int status = 0;
     private int positionUploadImage;
     private int temp = 0;
-    private String date;
+    private boolean isHeader;
 
     public String getStrRegDate() {
         return strRegDate;
@@ -121,9 +121,13 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
         this.positionUploadImage = positionUploadImage;
     }
 
-    public void setDate() {
-        Date date = TimeUtils.convertStringToDate(getRegDate());
-        this.date = new SimpleDateFormat(Statics.DATE_FORMAT_YYYY_MM_DD, Locale.getDefault()).format(date.getTime());
+
+    public boolean isHeader() {
+        return isHeader;
+    }
+
+    public void setHeader(boolean header) {
+        isHeader = header;
     }
 
     @Override
@@ -359,7 +363,6 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
 
     public void setRegDate(String regDate) {
         RegDate = regDate;
-        setDate();
     }
 
     public AttachDTO getAttachInfo() {

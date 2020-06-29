@@ -4,10 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="end"
-    android:orientation="horizontal"
-    android:paddingRight="10dp">
+    android:orientation="vertical">
 
-    <LinearLayout style="@style/lnl_chat_right_style">
+    <include android:id="@+id/llDate"
+        android:visibility="gone"
+        layout="@layout/row_chatting_date" />
+
+    <LinearLayout
+        style="@style/lnl_chat_right_style"
+        android:layout_marginRight="10dp">
 
         <include
             layout="@layout/row_video_thumbnail_view"

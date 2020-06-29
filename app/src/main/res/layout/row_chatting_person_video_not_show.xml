@@ -2,33 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/margin_left_avatart_and_text"
-    android:paddingRight="@dimen/margin_left_avatart_and_text">
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/avatar_imv"
-        style="@style/chatting_avatar_small"
-        android:visibility="visible" />
-
+    <include android:id="@+id/llDate"
+        android:visibility="gone"
+        layout="@layout/row_chatting_date" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_left_avatart_and_text"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/margin_left_avatart_and_text"
+        android:paddingRight="@dimen/margin_left_avatart_and_text">
+
+        <ImageView
+            android:id="@+id/avatar_imv"
+            style="@style/chatting_avatar_small"
+            android:visibility="visible" />
 
         <LinearLayout
-            style="@style/lnl_chat_left_style">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_left_avatart_and_text"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/lnl_chat_left_style">
 
 
-            <include
+                <include
                     layout="@layout/row_video_thumbnail_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-            <ProgressBar
+                <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
@@ -38,22 +45,25 @@
                     android:progressDrawable="@drawable/progressbar"
                     android:visibility="gone" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/date_tv"
-                    style="@style/tv_chat_time_style" />
+                    <TextView
+                        android:id="@+id/date_tv"
+                        style="@style/tv_chat_time_style" />
 
-                <TextView
-                    android:id="@+id/text_unread"
-                    style="@style/tv_unread"
-                    android:layout_marginLeft="@dimen/margin_normal"
-                    android:textColor="@color/text_unread" />
+                    <TextView
+                        android:id="@+id/text_unread"
+                        style="@style/tv_unread"
+                        android:layout_marginLeft="@dimen/margin_normal"
+                        android:textColor="@color/text_unread" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
+        </LinearLayout>
     </LinearLayout>
+
+
 </LinearLayout>

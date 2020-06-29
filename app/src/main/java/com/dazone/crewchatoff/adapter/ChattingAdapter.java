@@ -27,24 +27,23 @@ import com.dazone.crewchatoff.ViewHolders.ChattingViewHolder6;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.interfaces.ILoadImage;
+import com.dazone.crewchatoff.utils.TimeUtils;
+import com.dazone.crewchatoff.utils.Utils;
 
+import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
     private Activity mActivity;
     private ILoadImage iLoadImage;
-    private Comparator<ChattingDto> mComparator = (t1, t2) -> {
-        if (t1.isHasSent() && !t2.isHasSent()) {
-            return -1;
-        }
-
-        if (!t1.isHasSent() && t2.isHasSent()) {
-            return 1;
-        }
-
-        return 0;
+    private ViewGroup parent;
+    private Comparator<ChattingDto> mComparator = (o1, o2) -> {
+        Date date1 = new Date(TimeUtils.getTime(o1.getRegDate()));
+        Date date2 = new Date(TimeUtils.getTime(o2.getRegDate()));
+        return date1.compareTo(date2);
     };
 
     public ChattingAdapter(Context context, Activity activity, List<ChattingDto> mDataSet, RecyclerView view, ILoadImage loadImage) {
@@ -55,16 +54,12 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        this.parent = parent;
         RecyclerView.ViewHolder vh = null;
         View v;
 
         Collections.sort(mDataSet, mComparator);
-
         switch (viewType) {
-            case Statics.CHATTING_VIEW_TYPE_DATE:
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_date, parent, false);
-                vh = new ChattingDateViewHolder(v);
-                break;
             case Statics.CHATTING_VIEW_TYPE_SELF:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self, parent, false);
                 ChattingSelfViewHolder tempVh = new ChattingSelfViewHolder(v);
@@ -128,11 +123,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 vh = new ChattingContactViewHolder(v);
                 break;
 
-            case Statics.CHATTING_VIEW_TYPE_EMPTY:
-                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_empty, parent, false);
-                vh = new ChattingDateViewHolder(v);
-                break;
-
             case Statics.CHATTING_VIEW_TYPE_SELF_VIDEO:
             case Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self_video, parent, false);
@@ -166,6 +156,12 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
         if (getItemViewType(position) != Statics.CHATTING_VIEW_TYPE_EMPTY) {
             final ChattingDto item = mDataSet.get(position);
             BaseChattingHolder viewHolder = (BaseChattingHolder) holder;
+            if (position == 0) {
+                mDataSet.get(position).setHeader(true);
+            } else {
+                mDataSet.get(position).setHeader(!TimeUtils.checkBetweenDate(mDataSet.get(position).getRegDate(), mDataSet.get(position - 1).getRegDate()));
+            }
+
             viewHolder.bindData(item);
         }
     }

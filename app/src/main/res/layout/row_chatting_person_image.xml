@@ -2,87 +2,101 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/margin_left_avatart_and_text"
-    android:paddingRight="@dimen/margin_left_avatart_and_text"
-    android:paddingTop="@dimen/margin_left_avatart_and_text">
+    android:orientation="vertical"
+    >
 
-    <ImageView
-        android:id="@+id/avatar_imv"
-        style="@style/chatting_avatar_small" />
+    <include
+        android:id="@+id/llDate"
+        android:visibility="gone"
+        layout="@layout/row_chatting_date"/>
 
     <LinearLayout
-        android:id="@+id/ln_send_failed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="6dp"
-        android:visibility="visible">
+        android:paddingLeft="@dimen/margin_left_avatart_and_text"
+        android:paddingRight="@dimen/margin_left_avatart_and_text"
+        android:paddingTop="@dimen/margin_left_avatart_and_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:background="?android:attr/selectableItemBackground"
-            android:id="@+id/btn_resend"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/chat_ic_refresh" />
-
-        <ImageView
-            android:id="@+id/btn_delete"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="@dimen/margin_left_avatart_and_text"
-            android:src="@drawable/chat_ic_delete" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_left_avatart_and_text"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/user_name_tv"
-            style="@style/tv_chat_name_style" />
+            android:id="@+id/avatar_imv"
+            style="@style/chatting_avatar_small" />
 
         <LinearLayout
-            style="@style/lnl_chat_left_style">
+            android:id="@+id/ln_send_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            android:visibility="visible">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <ImageView
+                android:background="?android:attr/selectableItemBackground"
+                android:id="@+id/btn_resend"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/chat_ic_refresh" />
 
-                <ImageView
-                    android:id="@+id/chatting_imv"
-                    style="@style/chatting_image"
-                    android:src="@drawable/chatting1" />
+            <ImageView
+                android:id="@+id/btn_delete"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="@dimen/margin_left_avatart_and_text"
+                android:src="@drawable/chat_ic_delete" />
 
-                <ProgressBar
-                    android:id="@+id/progressbar_image_loading"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/date_tv"
-                    style="@style/tv_chat_time_style" />
-
-                <TextView
-                    android:id="@+id/text_unread"
-                    style="@style/tv_unread"
-                    android:layout_marginLeft="@dimen/margin_normal"
-                    android:textColor="@color/text_unread" />
-            </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_left_avatart_and_text"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/user_name_tv"
+                style="@style/tv_chat_name_style" />
+
+            <LinearLayout
+                style="@style/lnl_chat_left_style">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/chatting_imv"
+                        style="@style/chatting_image"
+                        android:src="@drawable/chatting1" />
+
+                    <ProgressBar
+                        android:id="@+id/progressbar_image_loading"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/date_tv"
+                        style="@style/tv_chat_time_style" />
+
+                    <TextView
+                        android:id="@+id/text_unread"
+                        style="@style/tv_unread"
+                        android:layout_marginLeft="@dimen/margin_normal"
+                        android:textColor="@color/text_unread" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
+
+
 </LinearLayout>

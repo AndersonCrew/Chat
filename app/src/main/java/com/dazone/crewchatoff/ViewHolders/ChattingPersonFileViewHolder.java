@@ -29,6 +29,8 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
     private ImageView avatar_imv;
     private TextView tvDuration;
     private LinearLayout layoutNotAudio, layoutAudio;
+    private LinearLayout llDate;
+    private TextView tvDate;
 
     public ChattingPersonFileViewHolder(View v) {
         super(v);
@@ -44,13 +46,16 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
         tvDuration = v.findViewById(R.id.tvDuration);
         layoutNotAudio = v.findViewById(R.id.layoutNotAudio);
         layoutAudio = v.findViewById(R.id.layoutAudio);
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
     }
 
     @Override
     public void bindData(final ChattingDto dto) {
         super.bindData(dto);
 
-        /** Set IMAGE FILE TYPE */
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
 
         String _fileName = dto.getAttachInfo().getFileName();
         if (_fileName == null || _fileName.trim().length() == 0)
@@ -63,27 +68,21 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
         ImageUtils.showRoundImage(dto, avatar_imv);
         String strUnReadCount = String.valueOf(dto.getUnReadCount());
         tvUnread.setText(strUnReadCount);
-        tvUnread.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "tvUnread");
-                Intent intent = new Intent(Constant.INTENT_GOTO_UNREAD_ACTIVITY);
-                intent.putExtra(Statics.MessageNo, dto.getMessageNo());
-                BaseActivity.Instance.sendBroadcast(intent);
-            }
+        tvUnread.setOnClickListener(v -> {
+            Log.d(TAG, "tvUnread");
+            Intent intent = new Intent(Constant.INTENT_GOTO_UNREAD_ACTIVITY);
+            intent.putExtra(Statics.MessageNo, dto.getMessageNo());
+            BaseActivity.Instance.sendBroadcast(intent);
         });
-        avatar_imv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    int userNo = dto.getUserNo();
-                    Intent intent = new Intent(BaseActivity.Instance, ProfileUserActivity.class);
-                    intent.putExtra(Constant.KEY_INTENT_USER_NO, userNo);
-                    BaseActivity.Instance.startActivity(intent);
-                    BaseActivity.Instance.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        avatar_imv.setOnClickListener(v -> {
+            try {
+                int userNo = dto.getUserNo();
+                Intent intent = new Intent(BaseActivity.Instance, ProfileUserActivity.class);
+                intent.putExtra(Constant.KEY_INTENT_USER_NO, userNo);
+                BaseActivity.Instance.startActivity(intent);
+                BaseActivity.Instance.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 

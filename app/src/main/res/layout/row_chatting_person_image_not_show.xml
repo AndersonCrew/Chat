@@ -2,45 +2,60 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:orientation="vertical"
+   >
 
-    <ImageView
-        android:id="@+id/avatar_imv"
-        style="@style/chatting_avatar_small"
-        android:visibility="invisible" />
+    <include
+        android:id="@+id/llDate"
+        android:visibility="gone"
+        layout="@layout/row_chatting_date"/>
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_left_avatart_and_text"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/avatar_imv"
+            style="@style/chatting_avatar_small"
+            android:visibility="invisible" />
 
         <LinearLayout
-            style="@style/lnl_chat_left_style">
-
-            <ImageView
-                android:id="@+id/chatting_imv"
-                style="@style/chatting_image" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_left_avatart_and_text"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                style="@style/lnl_chat_left_style">
 
-                <TextView
-                    android:id="@+id/date_tv"
-                    style="@style/tv_chat_time_style" />
+                <ImageView
+                    android:id="@+id/chatting_imv"
+                    style="@style/chatting_image" />
 
-                <TextView
-                    android:id="@+id/text_unread"
-                    style="@style/tv_unread"
-                    android:layout_marginLeft="@dimen/margin_normal"
-                    android:textColor="@color/text_unread" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/date_tv"
+                        style="@style/tv_chat_time_style" />
+
+                    <TextView
+                        android:id="@+id/text_unread"
+                        style="@style/tv_unread"
+                        android:layout_marginLeft="@dimen/margin_normal"
+                        android:textColor="@color/text_unread" />
+                </LinearLayout>
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
+
+
 </LinearLayout>

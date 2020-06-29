@@ -2,6 +2,7 @@ package com.dazone.crewchatoff.ViewHolders;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
@@ -17,6 +18,7 @@ import com.dazone.crewchatoff.fragment.RecentFavoriteFragment;
 import com.dazone.crewchatoff.interfaces.IF_RestoreUser;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
+import com.dazone.crewchatoff.utils.Utils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ import java.util.List;
 public class ChattingViewHolder4 extends BaseChattingHolder {
     private TextView tv_4;
     private ImageView iv_cancel;
+    private LinearLayout llDate;
+    private TextView tvDate;
 
     public ChattingViewHolder4(View v) {
         super(v);
@@ -38,12 +42,15 @@ public class ChattingViewHolder4 extends BaseChattingHolder {
     protected void setup(View v) {
         tv_4 = v.findViewById(R.id.tv_4);
         iv_cancel = v.findViewById(R.id.iv_cancel);
-
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
     }
 
     @Override
     public void bindData(final ChattingDto dto) {
-        boolean flag = false;
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
+
         String listUser = "";
         String s = dto.getMessage().trim();
         if (s.startsWith("{") && dto.getType() == 4) {

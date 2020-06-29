@@ -1,5 +1,6 @@
 package com.dazone.crewchatoff.ViewHolders;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -21,6 +22,7 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,6 +79,9 @@ public class ChattingPersonVideoNotShowViewHolder extends BaseChattingHolder imp
     boolean isLoaded = false;
     private String timeStrPublic = "";
     private Bitmap bitmapPublic = null;
+    private LinearLayout llDate;
+    private TextView tvDate;
+
     public ChattingPersonVideoNotShowViewHolder(Activity activity, View v) {
         super(v);
         mActivity = activity;
@@ -92,6 +97,8 @@ public class ChattingPersonVideoNotShowViewHolder extends BaseChattingHolder imp
         tvDuration = v.findViewById(R.id.tv_duration);
 
         tvUnread = v.findViewById(R.id.text_unread);
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
 
 
         ivPlayBtn = v.findViewById(R.id.iv_play_btn);
@@ -101,6 +108,7 @@ public class ChattingPersonVideoNotShowViewHolder extends BaseChattingHolder imp
         overLayView.setOnCreateContextMenuListener(this);
     }
 
+    @SuppressLint("HandlerLeak")
     protected final android.os.Handler mHandler = new android.os.Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
@@ -130,6 +138,10 @@ public class ChattingPersonVideoNotShowViewHolder extends BaseChattingHolder imp
         tempDto = dto;
         MessageNo = dto.getMessageNo();
         AttachDTO attachDTO = dto.getAttachInfo();
+
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
+
         if (attachDTO != null) {
             videoUrl = new Prefs().getServerSite() + Urls.URL_DOWNLOAD + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTO.getAttachNo();
             fileName = attachDTO.getFileName();

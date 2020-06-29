@@ -16,6 +16,7 @@ import com.dazone.crewchatoff.dto.UserDto;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.TimeUtils;
+import com.dazone.crewchatoff.utils.Utils;
 
 import java.util.Date;
 
@@ -23,6 +24,8 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
     private TextView tv_contact_name, tv_contact_number;
     private TextView date_tv, tvUnread;
     private LinearLayout lnContact;
+    private LinearLayout llDate;
+    private TextView tvDate;
 
     public ChattingContactViewHolder(View v) {
         super(v);
@@ -35,11 +38,16 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
         tvUnread = v.findViewById(R.id.text_unread);
         date_tv = v.findViewById(R.id.date_tv);
         lnContact = v.findViewById(R.id.lnContact);
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
     }
 
     @Override
     public void bindData(final ChattingDto dto) {
         UserDto userDto = dto.getUser();
+
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
 
         tv_contact_name.setText(userDto.getFullName());
         if (userDto.getPhoneNumber() != null) {

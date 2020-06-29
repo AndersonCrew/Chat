@@ -52,6 +52,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -1015,13 +1016,13 @@ public class Utils {
                 code = Integer.parseInt(extras.getString("Code", "0"));
 
 
-                if(extras.containsKey("Data"))
+                if (extras.containsKey("Data"))
                     data = extras.getString("Data");
             }
             String log = "";
-            if(code > -1){
+            if (code > -1) {
                 log = String.format("%d - %s", code, data);
-            }else {
+            } else {
                 log = "Emplty!!!";
             }
             appendLog(log);
@@ -1060,8 +1061,8 @@ public class Utils {
         List<ChattingDto> tempList = new ArrayList<>();
         tempList.addAll(list);
         boolean isExist = false;
-        for(int i = 0; i < list.size(); i++) {
-            if(chattingDto.getMessageNo() == list.get(i).getMessageNo()){
+        for (int i = 0; i < list.size(); i++) {
+            if (chattingDto.getMessageNo() == list.get(i).getMessageNo()) {
                 tempList.remove(i);
                 tempList.add(chattingDto);
                 isExist = true;
@@ -1069,20 +1070,31 @@ public class Utils {
             }
         }
 
-        if(!isExist) {
+        if (!isExist) {
             list.add(chattingDto);
         }
 
-        return  tempList;
+        return tempList;
     }
 
-    public static int getPosition (ChattingDto dto, List<ChattingDto> list) {
-        for(ChattingDto chattingDto : list) {
-            if(chattingDto.getMessageNo() == dto.getMessageNo()){
+    public static int getPosition(ChattingDto dto, List<ChattingDto> list) {
+        for (ChattingDto chattingDto : list) {
+            if (chattingDto.getMessageNo() == dto.getMessageNo()) {
                 return list.indexOf(chattingDto);
             }
         }
 
         return list.size() - 1;
+    }
+
+    public static String getStrDate (ChattingDto dto) {
+        if(TimeUtils.checkDateIsToday(dto.getRegDate())) {
+            return Utils.getString(R.string.today);
+        } else if(TimeUtils.checkDateIsYesterday(dto.getRegDate())) {
+            return  Utils.getString(R.string.yesterday);
+        } else {
+            long chatTime = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
+            return TimeUtils.showTimeWithoutTimeZone(chatTime, Statics.DATE_FORMAT_YYYY_MM_DD);
+        }
     }
 }

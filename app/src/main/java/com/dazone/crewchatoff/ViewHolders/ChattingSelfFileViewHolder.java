@@ -84,6 +84,8 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
     private ProgressBar progressBar, pBar;
     String TAG = "ChattingSelfFileViewHolder";
     long MessageNo;
+    private LinearLayout llDate;
+    private TextView tvDate;
 
     public ChattingSelfFileViewHolder(View v) {
         super(v);
@@ -105,6 +107,9 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
         layoutAudio = v.findViewById(R.id.layoutAudio);
         tvDuration = v.findViewById(R.id.tvDuration);
         linearLayout.setOnCreateContextMenuListener(this);
+
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
     }
 
     public ProgressBar getProgressBar() {
@@ -121,6 +126,9 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
         tempDto = dto;
         MessageNo = dto.getMessageNo();
         try {
+            llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+            tvDate.setText(Utils.getStrDate(dto));
+
             if (!EventBus.getDefault().isRegistered(this)) {
                 EventBus.getDefault().register(this);
             }

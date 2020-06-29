@@ -6,27 +6,17 @@
     android:orientation="vertical"
     android:paddingRight="10dp">
 
-    <LinearLayout style="@style/lnl_chat_right_style"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true">
+    <include
+        android:id="@+id/llDate"
+        android:visibility="gone"
+        layout="@layout/row_chatting_date" />
 
-        <include
-            layout="@layout/row_chatting_contact_layout" />
+    <LinearLayout
+        style="@style/lnl_chat_right_style"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true">
 
-      <!--  <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/date_tv"
-                style="@style/tv_chat_time_style" />
-
-            <TextView
-                android:id="@+id/text_unread"
-                style="@style/tv_unread"
-                android:layout_marginLeft="@dimen/margin_normal"
-                android:textColor="@color/text_unread" />
-        </LinearLayout>-->
+        <include layout="@layout/row_chatting_contact_layout" />
 
         <ProgressBar
             android:id="@+id/progressBar"

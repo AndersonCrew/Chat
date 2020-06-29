@@ -63,6 +63,19 @@ class ChattingViewModel : BaseViewModel() {
         disposables.add(dispo)
     }
 
+    fun loadMoreLocal(roomNo: Long, messageNo: Long) {
+        val listObservable = Single.just(ChatMessageDBHelper.getMsgSession(roomNo, messageNo, ChatMessageDBHelper.BEFORE))
+        val dispo: Disposable = listObservable
+                .subscribeOn(Schedulers.io())
+                .subscribe { list ->
+                    if (!list.isNullOrEmpty()) {
+                        listChattingLoadmore.postValue(list)
+                    }
+                }
+
+        disposables.add(dispo)
+    }
+
 
     fun getChatList(regDate: String, roomNo: Long, type: Int, userID: Int) {
         val params = JsonObject()
@@ -97,7 +110,7 @@ class ChattingViewModel : BaseViewModel() {
                                 listChatting.postValue(list)
 
                                 //Update MessageUnreadCount
-                                updateMessageUnReadCount(roomNo, userID, list[0].strRegDate)
+                                updateMessageUnReadCount(roomNo, userID, list[list.size - 1].strRegDate)
                                 CurrentChatListFragment.fragment?.updateRoomUnread(roomNo)
                                 RecentFavoriteFragment.instance?.updateRoomUnread(roomNo)
                             }
@@ -146,7 +159,7 @@ class ChattingViewModel : BaseViewModel() {
         param1.addProperty("baseDate", baseDate)
         params.addProperty("reqJson", Gson().toJson(param1))
 
-        disposables.add(RetrofitFactory.apiService.updateMessageUnreadCount(params)
+        disposables.add(RetrofitFactory.apiService.getMessageUnreadCount(params)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isSuccessful) {

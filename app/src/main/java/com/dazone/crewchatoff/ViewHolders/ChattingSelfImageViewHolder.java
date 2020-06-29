@@ -99,6 +99,8 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
     private Bitmap destBitmap = null;
     String TAG = "ChattingSelfImageViewHolder";
     private ILoadImage iLoadImage;
+    private LinearLayout llDate;
+    private TextView tvDate;
 
     public ChattingSelfImageViewHolder(Activity activity, View v, ILoadImage iLoadImage) {
         super(v);
@@ -114,6 +116,9 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         tvUnread = v.findViewById(R.id.text_unread);
         lnSendFail = v.findViewById(R.id.ln_send_failed);
         progressBarSending = v.findViewById(R.id.progressbar_sending);
+        llDate = v.findViewById(R.id.llDate);
+        tvDate = v.findViewById(R.id.time);
+
         chatting_imv.setOnCreateContextMenuListener(this);
     }
 
@@ -133,6 +138,9 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
     @Override
     public void bindData(final ChattingDto dto) {
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
+
         tempDto = dto;
         MessageNo = dto.getMessageNo();
         try {
