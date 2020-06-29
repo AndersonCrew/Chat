@@ -553,7 +553,10 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
 
                         ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-                        Log.d(TAG, "addNewRow 4");
+                        List<ChattingDto> integerList = new ArrayList<>();
+                        integerList.add(chattingDto);
+                        if (ChattingFragment.instance != null && integerList.size() > 0)
+                            ChattingFragment.instance.sendFileWithQty_v2(integerList, 0);
                     }
                     break;
                 case Statics.FILE_PICKER_SELECT:
@@ -786,7 +789,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
                     chattingDto.setAttachFilePath(path);
                     chattingDto.setRoomNo(chattingDto.getRoomNo());
-                    chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
+                    chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(TimeUtils.getTime(ChattingFragment.instance.dataSet.get(ChattingFragment.instance.dataSet.size() - 1).getRegDate()) + 100 + ""));
                     ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
 
                     chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
@@ -794,6 +797,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     chattingDto.setPositionUploadImage(ChattingFragment.instance.dataSet.size() - 1);
                     integerList.add(chattingDto);
                 }
+
                 if (intent.getAction().equals(MediaChooser.IMAGE_SELECTED_ACTION_FROM_MEDIA_CHOOSER)) {
                     if (ChattingFragment.instance != null)
                         ChattingFragment.instance.sendFileWithQty(integerList, 0);
@@ -860,21 +864,13 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         Utils.addCallArray(userNos, arrayAdapter, treeUserDTOTempArrayList);
         builderSingle.setNegativeButton(
                 "cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                (dialog, which) -> dialog.dismiss());
 
         builderSingle.setAdapter(
                 arrayAdapter,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String phoneNumber = GetPhoneNumber(arrayAdapter.getItem(which));
-                        Utils.CallPhone(ChattingActivity.this, phoneNumber);
-                    }
+                (dialog, which) -> {
+                    String phoneNumber = GetPhoneNumber(arrayAdapter.getItem(which));
+                    Utils.CallPhone(ChattingActivity.this, phoneNumber);
                 });
 
         AlertDialog dialog = builderSingle.create();
@@ -911,65 +907,63 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         }
 
         // Setup menu item selection
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_list_chat:
-                        menu_list_chat();
-                        return true;
-                    case R.id.menu_add_chat:
-                        final Intent intent = new Intent(ChattingActivity.this, InviteUserActivity.class);
-                        intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
-                        intent.putExtra(Constant.KEY_INTENT_COUNT_MEMBER, userNos);
-                        intent.putExtra(Constant.KEY_INTENT_ROOM_TITLE, title);
-                        startActivityForResult(intent, Statics.ADD_USER_SELECT);
-                        return true;
-                    case R.id.menu_left_group:
-                        HttpRequest.getInstance().DeleteChatRoomUser(roomNo, myId, new BaseHTTPCallBack() {
-                            @Override
-                            public void onHTTPSuccess() {
-                                // delete local db this room
-                                Log.d(TAG, "menu_left_group roomNo:" + roomNo);
-                                ChatMessageDBHelper.deleteMessageByLocalRoomNo(roomNo);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_list_chat:
+                    menu_list_chat();
+                    return true;
+                case R.id.menu_add_chat:
+                    final Intent intent = new Intent(ChattingActivity.this, InviteUserActivity.class);
+                    intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
+                    intent.putExtra(Constant.KEY_INTENT_COUNT_MEMBER, userNos);
+                    intent.putExtra(Constant.KEY_INTENT_ROOM_TITLE, title);
+                    startActivityForResult(intent, Statics.ADD_USER_SELECT);
+                    return true;
+                case R.id.menu_left_group:
+                    HttpRequest.getInstance().DeleteChatRoomUser(roomNo, myId, new BaseHTTPCallBack() {
+                        @Override
+                        public void onHTTPSuccess() {
+                            // delete local db this room
+                            Log.d(TAG, "menu_left_group roomNo:" + roomNo);
+                            ChatMessageDBHelper.deleteMessageByLocalRoomNo(roomNo);
 
-                                Intent intent1 = new Intent(ChattingActivity.this, MainActivity.class);
-                                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent1);
-                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                            }
-
-                            @Override
-                            public void onHTTPFail(ErrorDto errorDto) {
-                            }
-                        });
-                        return true;
-                    case R.id.menu_send_file:
-                        if (checkPermissionsReadExternalStorage()) {
-                            Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
-                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
-                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
-                            i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-                            i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
-                            ChattingActivity.Instance.startActivityForResult(i, Statics.FILE_PICKER_SELECT);
-                        } else {
-                            ChattingActivity.instance.setPermissionsReadExternalStorage();
+                            Intent intent1 = new Intent(ChattingActivity.this, MainActivity.class);
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent1);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         }
-                        return true;
-                    case R.id.menu_close:
-                        finish();
-                        return true;
-                    case R.id.menu_room_rename:
-                        renameRoom();
-                        return true;
-                    case R.id.menu_iv_file_box:
-                        ivFileBox();
-                        return true;
-                    case R.id.menu_attach_file_box:
-                        attachFileBox();
-                        return true;
-                    default:
-                        return false;
-                }
+
+                        @Override
+                        public void onHTTPFail(ErrorDto errorDto) {
+                        }
+                    });
+                    return true;
+                case R.id.menu_send_file:
+                    if (checkPermissionsReadExternalStorage()) {
+                        Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
+                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
+                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+                        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+                        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+                        ChattingActivity.Instance.startActivityForResult(i, Statics.FILE_PICKER_SELECT);
+                    } else {
+                        ChattingActivity.instance.setPermissionsReadExternalStorage();
+                    }
+                    return true;
+                case R.id.menu_close:
+                    finish();
+                    return true;
+                case R.id.menu_room_rename:
+                    renameRoom();
+                    return true;
+                case R.id.menu_iv_file_box:
+                    ivFileBox();
+                    return true;
+                case R.id.menu_attach_file_box:
+                    attachFileBox();
+                    return true;
+                default:
+                    return false;
             }
         });
 

@@ -273,7 +273,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                         }
                     }
 
-                    rvMainList.post(() -> adapterList.notifyDataSetChanged());
+                    adapterList.notifyDataSetChanged();
                 }
             });
 
@@ -368,16 +368,14 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         });
 
-        adapterList = new ChattingAdapter(mContext, mActivity, dataSet, rvMainList, () -> rvMainList.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!hasLoadedImageFirst)
-                    rvMainList.smoothScrollToPosition(dataSet.size());
-            }
+        adapterList = new ChattingAdapter(mContext, mActivity, dataSet, rvMainList, () -> rvMainList.postDelayed(() -> {
+            if (!hasLoadedImageFirst)
+                rvMainList.smoothScrollToPosition(dataSet.size());
         }, 500));
 
 
         initViewModel();
+        viewModel.getChatListFirst(roomNo, userID);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -528,7 +526,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     public void addNewRowFromChattingActivity(ChattingDto chattingDto) {
         dataSet.add(chattingDto);
-        notifyItemInserted();
         scrollToEndList();
     }
 
@@ -1116,7 +1113,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         isActive = true;
         registerGCMReceiver();
         CrewChatApplication.currentRoomNo = roomNo;
-        viewModel.getChatListFirst(roomNo, userID);
+
     }
 
     private final static int MSG_UPDATE_DISPLAY = 2;
@@ -1305,7 +1302,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (intent.getAction().equals(Constant.INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT)) {
             final long roomNo = intent.getLongExtra(Constant.KEY_INTENT_ROOM_NO, 0);
             if (roomNo != 0 && dataSet.size() > 0) {
-                String baseDate = intent.getStringExtra(Constant.KEY_INTENT_BASE_DATE);
+                String baseDate = dataSet.size() > 20 ? dataSet.get(dataSet.size() - 20).getStrRegDate() : dataSet.get(0).getStrRegDate();
                 viewModel.getMessageUnReadCount(roomNo, baseDate);
             }
         } else if (intent.getAction().equals(Constant.INTENT_FILTER_ADD_USER)) {

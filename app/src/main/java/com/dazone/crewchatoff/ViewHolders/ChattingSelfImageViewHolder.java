@@ -150,12 +150,9 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         }
         String url = "";
 
-        chatting_imv.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                v.showContextMenu();
-                return true;
-            }
+        chatting_imv.setOnLongClickListener(v -> {
+            v.showContextMenu();
+            return true;
         });
 
         // Calculate ratio
