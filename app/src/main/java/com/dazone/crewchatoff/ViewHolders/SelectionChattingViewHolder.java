@@ -1,5 +1,6 @@
 package com.dazone.crewchatoff.ViewHolders;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -140,45 +141,34 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
             case 4:
                 icon.setImageResource(R.drawable.attach_ic_video);
                 title.setText(Utils.getString(R.string.video));
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        try {
-//                            Intent intentVideo = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-//                            intentVideo.setType(Statics.MIME_TYPE_VIDEO);
-//                            ChattingActivity.Instance.startActivityForResult(intentVideo, Statics.VIDEO_PICKER_SELECT);
-//                            ChattingActivity.Instance.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
+                layout.setOnClickListener(v -> {
+                    if (ChattingActivity.instance != null) {
+                        if (ChattingActivity.instance.checkPermissionsCamera()) {
+                            try {
 
+                                @SuppressLint("IntentReset") Intent intent = new Intent(
+                                        Intent.ACTION_PICK,
+                                        android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                                intent.setType("video/*");
 
-                        if (ChattingActivity.instance != null) {
-                            if (ChattingActivity.instance.checkPermissionsCamera()) {
-                                try {
-                                    Intent intentVideo = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                                    intentVideo.setType(Statics.MIME_TYPE_VIDEO);
-                                    ChattingActivity.Instance.startActivityForResult(intentVideo, Statics.VIDEO_PICKER_SELECT);
-                                    ChattingActivity.Instance.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                ChattingActivity.instance.setPermissionsCamera();
+                                ChattingActivity.Instance.startActivityForResult(intent, Statics.VIDEO_PICKER_SELECT);
+                                ChattingActivity.Instance.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         } else {
-                            Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
+                            ChattingActivity.instance.setPermissionsCamera();
                         }
-
+                    } else {
+                        Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 break;
             case 5:
                 icon.setImageResource(R.drawable.attach_ic_file);
                 title.setText(Utils.getString(R.string.file));
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                layout.setOnClickListener(v -> {
 //                        Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
 //                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
 //                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
@@ -187,23 +177,21 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
 //                        ChattingActivity.Instance.startActivityForResult(i, Statics.FILE_PICKER_SELECT);
 
 
-
-                        if (ChattingActivity.instance != null) {
-                            if (ChattingActivity.instance.checkPermissionsCamera()) {
-                                Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
-                                i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
-                                i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
-                                i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-                                i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
-                                ChattingActivity.Instance.startActivityForResult(i, Statics.FILE_PICKER_SELECT);
-                            } else {
-                                ChattingActivity.instance.setPermissionsCamera();
-                            }
+                    if (ChattingActivity.instance != null) {
+                        if (ChattingActivity.instance.checkPermissionsCamera()) {
+                            Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
+                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
+                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+                            i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+                            i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
+                            ChattingActivity.Instance.startActivityForResult(i, Statics.FILE_PICKER_SELECT);
                         } else {
-                            Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
+                            ChattingActivity.instance.setPermissionsCamera();
                         }
-
+                    } else {
+                        Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 break;
 
@@ -237,7 +225,8 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
                         if (ChattingActivity.instance != null) {
                             if (ChattingActivity.instance.checkPermissionsAudio()) {
                                 try {
-                                    if(ChattingFragment.instance!=null)ChattingFragment.instance.recordDialog();
+                                    if (ChattingFragment.instance != null)
+                                        ChattingFragment.instance.recordDialog();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

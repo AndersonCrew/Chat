@@ -46,15 +46,15 @@ class ChattingViewModel : BaseViewModel() {
                     }
 
                     if (Utils.isNetworkAvailable()) {
-                        val listChatMessage = ChatMessageDBHelper.getMsgSession(roomNo, 0, ChatMessageDBHelper.FIRST)
                         var baseDate = CrewChatApplication.getInstance().timeServer
                         var mesType = 1
-                        if (listChatMessage.size > 0) {
-                            baseDate = listChatMessage[listChatMessage.size - 1].strRegDate
+                        if (list.size > 0) {
+                            baseDate = list[list.size - 1].strRegDate
                             mesType = ChatMessageDBHelper.AFTER
                         }
 
-                        getChatList(baseDate, roomNo, mesType, userID)
+                        val strBaseDate = if(list.size > 0) list[list.size - 1].strRegDate else null
+                        getChatList(baseDate, roomNo, mesType, userID, strBaseDate)
                     } else {
                         showLoading(false)
                     }
@@ -77,7 +77,7 @@ class ChattingViewModel : BaseViewModel() {
     }
 
 
-    fun getChatList(regDate: String, roomNo: Long, type: Int, userID: Int) {
+    fun getChatList(regDate: String, roomNo: Long, type: Int, userID: Int, strRegDate: String?) {
         val params = JsonObject()
         params.addProperty("command", Urls.URL_GET_CHAT_MSG_SECTION_TIME)
         params.addProperty("sessionId", CrewChatApplication.getInstance().prefs.getaccesstoken())
@@ -106,13 +106,18 @@ class ChattingViewModel : BaseViewModel() {
                             val list = Gson().fromJson<List<ChattingDto>>(data, listType)
                             if (type == ChatMessageDBHelper.BEFORE) {
                                 listChattingLoadmore.postValue(list)
-                            } else if (!list.isNullOrEmpty()) {
-                                listChatting.postValue(list)
+                            } else {
+                                if (!list.isNullOrEmpty()) {
+                                    listChatting.postValue(list)
 
-                                //Update MessageUnreadCount
-                                updateMessageUnReadCount(roomNo, userID, list[list.size - 1].strRegDate)
-                                CurrentChatListFragment.fragment?.updateRoomUnread(roomNo)
-                                RecentFavoriteFragment.instance?.updateRoomUnread(roomNo)
+                                    //Update MessageUnreadCount
+                                    updateMessageUnReadCount(roomNo, userID, list[list.size - 1].strRegDate, false)
+                                    CurrentChatListFragment.fragment?.updateRoomUnread(roomNo)
+                                    RecentFavoriteFragment.instance?.updateRoomUnread(roomNo)
+                                } else {
+                                    val unwrappedStr = strRegDate?: return@subscribe
+                                    getMessageUnReadCount(roomNo, unwrappedStr)
+                                }
                             }
                         } else {
                             showError(ErrorDto().setMessage("Cannot fetch message form Server!"))
@@ -123,7 +128,7 @@ class ChattingViewModel : BaseViewModel() {
                 }))
     }
 
-    fun updateMessageUnReadCount(roomNo: Long, userNo: Int, baseDate: String) {
+    fun updateMessageUnReadCount(roomNo: Long, userNo: Int, baseDate: String, fromNotification: Boolean) {
         val params = JsonObject()
         params.addProperty("command", Urls.URL_UPDATE_MESSAGE_UNREAD_COUNT_TIME)
         params.addProperty("sessionId", CrewChatApplication.getInstance().prefs.getaccesstoken())
@@ -141,6 +146,9 @@ class ChattingViewModel : BaseViewModel() {
                 .subscribe({
                     if (it.isSuccessful) {
                         Log.d("CHATTING_ROOM", "UpdateMessageUnReadCount Success")
+                        if(fromNotification){
+                            getMessageUnReadCount(roomNo, baseDate)
+                        }
                     } else Log.d("CHATTING_ROOM", "UpdateMessageUnReadCount Fail")
                 }, {
                     Log.d("CHATTING_ROOM", "UpdateMessageUnReadCount Fail")

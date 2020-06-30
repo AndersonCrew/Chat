@@ -533,11 +533,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     Uri videoUriPick = data.getData();
                     if (videoUriPick != null) {
                         String path = "";
-                        if (Build.VERSION.SDK_INT == 22) {
-                            path = Utils.getRealPathFromUri(videoUriPick, this);
-                        } else {
-                            path = Utils.getPathFromURI(videoUriPick, this);
-                        }
+                        path = Utils.getPath(this, videoUriPick);
                         File file = new File(path);
                         String filename = path.substring(path.lastIndexOf("/") + 1);
                         ChattingDto chattingDto = new ChattingDto();
@@ -553,10 +549,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
 
                         ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-                        List<ChattingDto> integerList = new ArrayList<>();
-                        integerList.add(chattingDto);
-                        if (ChattingFragment.instance != null && integerList.size() > 0)
-                            ChattingFragment.instance.sendFileWithQty_v2(integerList, 0);
                     }
                     break;
                 case Statics.FILE_PICKER_SELECT:

@@ -168,47 +168,34 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             file_size_tv.setText(Utils.readableFileSize(dto.getAttachInfo().getSize()));
             file_receive_tv.setVisibility(View.GONE);
 
-            linearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("onClick", TAG);
-                    AttachDTO attachDTO = dto.getAttachInfo();
-                    touchOnView(attachDTO);
-                }
+            linearLayout.setOnClickListener(v -> {
+                Log.d("onClick", TAG);
+                AttachDTO attachDTO = dto.getAttachInfo();
+                touchOnView(attachDTO);
             });
 
-            linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
+            linearLayout.setOnLongClickListener(view -> {
+                attachDTOTemp = dto.getAttachInfo();
+                Log.d(TAG, "onLongClick:" + new Gson().toJson(dto));
 
-                    attachDTOTemp = dto.getAttachInfo();
-                    Log.d(TAG, "onLongClick:" + new Gson().toJson(dto));
-
-                    view.showContextMenu();
-                    return true;
-                }
+                view.showContextMenu();
+                return true;
             });
         }
 
         String strUnReadCount = String.valueOf(dto.getUnReadCount());
         tvUnread.setText(strUnReadCount);
-        date_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "tvUnread");
-                actionUnread();
-            }
+        date_tv.setOnClickListener(v -> {
+            Log.d(TAG, "tvUnread");
+            actionUnread();
         });
         if (dto.getUnReadCount() == 0) {
             tvUnread.setVisibility(View.GONE);
         } else {
             tvUnread.setVisibility(View.VISIBLE);
-            tvUnread.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "tvUnread");
-                    actionUnread();
-                }
+            tvUnread.setOnClickListener(v -> {
+                Log.d(TAG, "tvUnread");
+                actionUnread();
             });
         }
 
@@ -228,12 +215,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                         path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Statics.AUDIO_RECORDER_FOLDER_ROOT + "/" + fileName;
                     }
 
-                    new Constant.audioGetDuration(BaseActivity.Instance, path, new AudioGetDuration() {
-                        @Override
-                        public void onComplete(String duration) {
-                            tvDuration.setText(duration);
-                        }
-                    }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    new Constant.audioGetDuration(BaseActivity.Instance, path, duration -> tvDuration.setText(duration)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
                     tvDuration.setText("");
                 }
@@ -318,7 +300,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
     AttachDTO attachDTOTemp = null;
 
     void actionDownload() {
-
         if (attachDTOTemp != null) {
             String url = new Prefs().getServerSite() + Urls.URL_DOWNLOAD + "session=" + CrewChatApplication.getInstance().getPrefs().getaccesstoken() + "&no=" + attachDTOTemp.getAttachNo();
             Log.d(TAG, "url download:" + url);

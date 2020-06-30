@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -164,24 +165,6 @@ public class Utils {
         }
     }
 
-    //    public static String getPathFromURI(Uri contentURI, Context context) {
-//        String result;
-//        try {
-//            Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
-//            if (cursor == null) { // Source is Dropbox or other similar local file path
-//                result = contentURI.getPath();
-//            } else {
-//                cursor.moveToFirst();
-//                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-//                result = cursor.getString(idx);
-//                cursor.close();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            result = "";
-//        }
-//        return result;
-//    }
     public static String getPathFromURI(Uri contentUri, Context context) {
 
         String result;
@@ -211,6 +194,19 @@ public class Utils {
         return result;
     }
 
+    public static String getPath(Context context, Uri uri) {
+        String[] projection = { MediaStore.Video.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
+    }
     public static String getRealPathFromUri(Uri uri, Context context) {
         String result = "";
         String documentID;

@@ -153,6 +153,7 @@ public class GcmIntentService extends IntentService {
                     chattingDto = new ChattingDto();
                     chattingDto.setRoomNo(bundleDto.getRoomNo());
                     chattingDto.setUnreadTotalCount(bundleDto.getUnreadTotalCount());
+                    chattingDto.setUnReadCount(bundleDto.getUnreadTotalCount());
                     chattingDto.setMessage(bundleDto.getMessage());
                     chattingDto.setMessageNo(bundleDto.getMessageNo());
                     chattingDto.setWriterUserNo(bundleDto.getWriteUserNo());

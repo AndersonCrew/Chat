@@ -230,11 +230,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     if (layoutManager != null) {
                         scrollToEndList();
                     }
-
-                    if (viewModel.getHasLoadNewMessage()) {
-                        viewModel.getMessageUnReadCount(roomNo, dataSet.get(0).getStrRegDate());
-                    }
                 });
+
+                if (viewModel.getHasLoadNewMessage()) {
+                    viewModel.getMessageUnReadCount(roomNo, dataSet.get(dataSet.size() - 1).getStrRegDate());
+                }
             }
         });
 
@@ -251,7 +251,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
                     initData(dataSet);
                     layoutManager.scrollToPositionWithOffset(dataSet.size() - oldSize, 0);
-                    viewModel.getMessageUnReadCount(roomNo, dataSet.get(0).getStrRegDate());
+                    viewModel.getMessageUnReadCount(roomNo, dataSet.get(dataSet.size() - 1).getStrRegDate());
                 });
             }
         });
@@ -504,7 +504,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         File file = new File(path);
         String filename = path.substring(path.lastIndexOf("/") + 1);
         if (filename.contains(".")) {
-            //ChattingDto chattingDto = this.chattingDto;
             ChattingDto chattingDto = new ChattingDto();
             chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
             chattingDto.setAttachFilePath(path);
@@ -1302,7 +1301,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (intent.getAction().equals(Constant.INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT)) {
             final long roomNo = intent.getLongExtra(Constant.KEY_INTENT_ROOM_NO, 0);
             if (roomNo != 0 && dataSet.size() > 0) {
-                String baseDate = dataSet.size() > 20 ? dataSet.get(dataSet.size() - 20).getStrRegDate() : dataSet.get(0).getStrRegDate();
+                String baseDate = intent.getStringExtra(Constant.KEY_INTENT_BASE_DATE);
                 viewModel.getMessageUnReadCount(roomNo, baseDate);
             }
         } else if (intent.getAction().equals(Constant.INTENT_FILTER_ADD_USER)) {
@@ -1337,7 +1336,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     private void processReceivingMessage(ChattingDto dataDto) {
         //UpdateMessageUnreadCount
-        viewModel.updateMessageUnReadCount(roomNo, userID, dataDto.getStrRegDate());
+        viewModel.updateMessageUnReadCount(roomNo, userID, dataDto.getStrRegDate(), true);
         if (dataSet != null) {
             for (ChattingDto chattingDto : dataSet) {
                 if (chattingDto.getMessageNo() == dataDto.getMessageNo() && dataDto.getRoomNo() == roomNo ) {
@@ -1625,7 +1624,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             hasLoadMore = true;
 
             if(Utils.isNetworkAvailable()) {
-                viewModel.getChatList(dataSet.get(0).getStrRegDate(), roomNo, ChatMessageDBHelper.BEFORE, userID);
+                viewModel.getChatList(dataSet.get(0).getStrRegDate(), roomNo, ChatMessageDBHelper.BEFORE, userID, null);
             } else {
                 viewModel.loadMoreLocal(roomNo, dataSet.get(0).getMessageNo());
             }
