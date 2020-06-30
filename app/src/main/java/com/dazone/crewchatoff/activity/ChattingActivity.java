@@ -502,6 +502,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             chattingDto.setAttachFilePath(path);
                             chattingDto.setAttachFileName(filename);
                             chattingDto.setAttachFileSize((int) file.length());
+                            chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
                             chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                             ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                             Log.d(TAG, "addNewRow 2");
@@ -522,6 +523,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                             chattingDto.setAttachFilePath(path);
                             chattingDto.setAttachFileName(filename);
                             chattingDto.setAttachFileSize((int) file.length());
+                            chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
                             chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                             ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                             Log.d(TAG, "addNewRow 3");
@@ -540,6 +542,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO);
                         chattingDto.setAttachFilePath(path);
                         chattingDto.setAttachFileName(filename);
+                        chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
                         chattingDto.setAttachFileSize((int) file.length());
 
                         // Add new attach info
@@ -599,6 +602,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                                     chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
                                     chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
                                     chattingDto.setAttachFileSize((int) file.length());
+                                    chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
                                     chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
                                     ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
                                     Log.d(TAG, "addNewRow 5");
@@ -786,6 +790,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
                     chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
                     chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
+                    chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
                     chattingDto.setPositionUploadImage(ChattingFragment.instance.dataSet.size() - 1);
                     integerList.add(chattingDto);
                 }

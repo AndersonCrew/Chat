@@ -214,6 +214,9 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 String oldPath = chatting_imv.getTag() != null ? chatting_imv.getTag().toString() : null;
                 String newPath = dto.getAttachFilePath();
 
+                ChattingFragment.instance.SendTo(dto, progressBarImageLoading, getAdapterPosition(), null);
+
+
                 if (oldPath == null || !oldPath.equals(newPath)) {
                     chatting_imv.setTag(dto.getAttachFilePath());
                 }
@@ -247,6 +250,12 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
                                     @Override
                                     public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        int srcWidth = resource.getWidth();
+                                        int srcHeight = resource.getHeight();
+                                        int dstWidth = (int) (srcWidth * ratio) / 2;
+                                        int dstHeight = (int) (srcHeight * ratio) / 2;
+                                        Bitmap bitmap = createScaledBitmap(resource, dstWidth, dstHeight, true);
+                                        chatting_imv.setImageBitmap(bitmap);
                                         return false;
                                     }
                                 })
@@ -272,16 +281,13 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                         ImageUtils.showImage(url, chatting_imv);
                     }
 
-                    chatting_imv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                ChattingFragment.instance.ViewImageFull(dto);
-                            } catch (Exception e) {
-
-                            }
-
+                    chatting_imv.setOnClickListener(v -> {
+                        try {
+                            ChattingFragment.instance.ViewImageFull(dto);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+
                     });
                 } catch (Exception e) {
                     e.printStackTrace();

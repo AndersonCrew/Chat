@@ -194,7 +194,7 @@ public class Utils {
         return result;
     }
 
-    public static String getPath(Context context, Uri uri) {
+    public static String getPath(Activity context, Uri uri) {
         String[] projection = { MediaStore.Video.Media.DATA };
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null) {
@@ -206,23 +206,6 @@ public class Utils {
             return cursor.getString(column_index);
         } else
             return null;
-    }
-    public static String getRealPathFromUri(Uri uri, Context context) {
-        String result = "";
-        String documentID;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            String[] pathParts = uri.getPath().split("/");
-            documentID = pathParts[pathParts.length - 1];
-        } else {
-            String pathSegments[] = uri.getLastPathSegment().split(":");
-            documentID = pathSegments[pathSegments.length - 1];
-        }
-        String mediaPath = MediaStore.Images.Media.DATA;
-        Cursor imageCursor = context.getContentResolver().query(uri, new String[]{mediaPath}, MediaStore.Images.Media._ID + "=" + documentID, null, null);
-        if (imageCursor.moveToFirst()) {
-            result = imageCursor.getString(imageCursor.getColumnIndex(mediaPath));
-        }
-        return result;
     }
 
     public static void showMessage(String message) {

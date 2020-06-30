@@ -145,12 +145,8 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
                     if (ChattingActivity.instance != null) {
                         if (ChattingActivity.instance.checkPermissionsCamera()) {
                             try {
-
-                                @SuppressLint("IntentReset") Intent intent = new Intent(
-                                        Intent.ACTION_PICK,
+                                Intent intent = new Intent(Intent.ACTION_PICK,
                                         android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                                intent.setType("video/*");
-
                                 ChattingActivity.Instance.startActivityForResult(intent, Statics.VIDEO_PICKER_SELECT);
                                 ChattingActivity.Instance.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             } catch (Exception e) {
@@ -169,14 +165,6 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
                 icon.setImageResource(R.drawable.attach_ic_file);
                 title.setText(Utils.getString(R.string.file));
                 layout.setOnClickListener(v -> {
-//                        Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
-//                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
-//                        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
-//                        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-//                        i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
-//                        ChattingActivity.Instance.startActivityForResult(i, Statics.FILE_PICKER_SELECT);
-
-
                     if (ChattingActivity.instance != null) {
                         if (ChattingActivity.instance.checkPermissionsCamera()) {
                             Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
