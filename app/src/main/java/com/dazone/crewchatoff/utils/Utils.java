@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dazone.crewchatoff.R;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.customs.AlertDialogView;
 import com.dazone.crewchatoff.database.UserDBHelper;
@@ -67,11 +68,6 @@ public class Utils {
     private static NetworkInfo getNetworkInfo() {
         ConnectivityManager connectivityManager = (ConnectivityManager) CrewChatApplication.getInstance().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo();
-    }
-
-    public static boolean isWifiEnable() {
-        NetworkInfo networkInfo = getNetworkInfo();
-        return (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI);
     }
 
     public static String getString(int stringID) {
@@ -112,50 +108,6 @@ public class Utils {
         transaction.commit();
     }
 
-/*    public static void replaceFragmentOrAdd(FragmentManager fragmentManager,Fragment fragment, int frameLayout,boolean isSaveStack,String tag) {
-        Fragment fragmentA = fragmentManager.findFragmentByTag(fragment.getId()+"");
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (fragmentA == null) {
-            //not exist
-            if (TextUtils.isEmpty(tag)) {
-                transaction.add(frameLayout, fragment);
-            } else {
-                transaction.add(frameLayout, fragment, tag);
-            }
-
-            if (isSaveStack) {
-                transaction.addToBackStack(null);
-            }
-        }
-        else{
-            //fragment exist
-            if (TextUtils.isEmpty(tag)) {
-                transaction.replace(frameLayout, fragment);
-            } else {
-                transaction.replace(frameLayout, fragment, tag);
-            }
-
-            if (isSaveStack) {
-                transaction.addToBackStack(null);
-            }
-        }
-        transaction.commit();
-    }*/
-
-    public static void addFragmentNotSupportV4ToActivity(android.app.FragmentManager fragmentManager, android.app.Fragment fragment, int frameLayout, boolean isSaveStack, String tag) {
-        android.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (TextUtils.isEmpty(tag)) {
-            transaction.add(frameLayout, fragment);
-        } else {
-            transaction.add(frameLayout, fragment, tag);
-        }
-
-        if (isSaveStack) {
-            transaction.addToBackStack(null);
-        }
-        transaction.commit();
-    }
-
     public static void hideKeyboard(Activity activity) {
         try {
             InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -166,7 +118,6 @@ public class Utils {
     }
 
     public static String getPathFromURI(Uri contentUri, Context context) {
-
         String result;
         try {
             Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
@@ -290,7 +241,6 @@ public class Utils {
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        //request.setTitle(name);
         int type = getTypeFile(fileType);
         switch (type) {
             case 1:
@@ -323,8 +273,6 @@ public class Utils {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(
-                            DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(reference);
                     Cursor c = downloadmanager.query(query);
@@ -461,13 +409,9 @@ public class Utils {
         return type == 2;
     }
 
-
     public static boolean isAudio(String fileType) {
-        if (fileType.equalsIgnoreCase(Statics.AUDIO_MP3) || fileType.equalsIgnoreCase(".wav") || fileType.equalsIgnoreCase(Statics.AUDIO_AMR)
-                || fileType.equalsIgnoreCase(Statics.AUDIO_WMA) || fileType.equalsIgnoreCase(Statics.AUDIO_M4A)) {
-            return true;
-        }
-        return false;
+        return fileType.equalsIgnoreCase(Statics.AUDIO_MP3) || fileType.equalsIgnoreCase(".wav") || fileType.equalsIgnoreCase(Statics.AUDIO_AMR)
+                || fileType.equalsIgnoreCase(Statics.AUDIO_WMA) || fileType.equalsIgnoreCase(Statics.AUDIO_M4A);
     }
 
     public static int getTypeFileAttach(String fileType) {
@@ -520,42 +464,8 @@ public class Utils {
         }
     }
 
-    public static boolean checkChat(ChattingDto chattingDto, int myId) {
-        boolean check = true;
-        if (chattingDto != null) {
-            if (chattingDto.getUserNos().size() > 1) {
-                for (int i : chattingDto.getUserNos())
-                    if (i != myId) {
-                        check = false;
-                        break;
-                    }
-            } else {
-                check = true;
-            }
-        } else {
-            return true;
-        }
-
-        return check;
-    }
 
     public static boolean checkChatId198(ChattingDto chattingDto) {
-//        boolean check = false;
-//        if (chattingDto != null) {
-//            if (chattingDto.getUserNos().size() > 0) {
-//                for (int i : chattingDto.getUserNos())
-//                    if (i == 198) {
-//                        check = true;
-//                        break;
-//                    }
-//            } else {
-//                check = false;
-//            }
-//        } else {
-//            return false;
-//        }
-//
-//        return check;
         return false;
     }
 
@@ -566,33 +476,6 @@ public class Utils {
         return (int) (dips * context.getResources().getDisplayMetrics().density + 0.5f);
     }
 
-    /**
-     * CHECK CALL VISIBLE
-     */
-    public static boolean isCallVisible(ArrayList<Integer> userNos, ArrayList<TreeUserDTOTemp> treeUserDTOTemps) {
-//        ArrayList<TreeUserDTOTemp> treeUserDTOTemps = AllUserDBHelper.getUser();
-
-        for (int i : userNos) {
-            if (i != UserDBHelper.getUser().Id) {
-                for (TreeUserDTOTemp treeUserDTOTemp : treeUserDTOTemps) {
-                    if (i == treeUserDTOTemp.getUserNo()) {
-                        String phone = !TextUtils.isEmpty(treeUserDTOTemp.getCellPhone().trim()) ?
-                                treeUserDTOTemp.getCellPhone() :
-                                !TextUtils.isEmpty(treeUserDTOTemp.getCompanyPhone().trim()) ?
-                                        treeUserDTOTemp.getCompanyPhone() :
-                                        "";
-
-                        if (!TextUtils.isEmpty(phone)) {
-                            return true;
-                        }
-
-                        break;
-                    }
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * CHECK CALL VISIBLE
@@ -636,16 +519,6 @@ public class Utils {
         context.startActivity(intent);
     }
 
-    /*
-        public static void sendMail(Context context, String emailAddress) {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            String[] recipients = new String[]{emailAddress, "",};
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra(android.content.Intent.EXTRA_EMAIL, recipients);
-            intent.setType("message/rfc822");
-            context.startActivity(Intent.createChooser(intent, "Choose an Email client"));
-        }
-    */
     public static void sendMail(Context context, String eMail) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -655,11 +528,6 @@ public class Utils {
         intent.putExtra(android.content.Intent.EXTRA_EMAIL, recipients);
         intent.setType("message/rfc822");
         context.startActivity(Intent.createChooser(intent, "Choose an Email client"));
-    }
-
-    public static String getCurrentMyName() {
-        String s = "";
-        return s;
     }
 
     public static int getCurrentId() {
@@ -683,10 +551,6 @@ public class Utils {
 
         return UserDBHelper.getUser();
     }
-
-//    public static ArrayList<TreeUserDTOTemp> getUsers() {
-//        return AllUserDBHelper.getUser();
-//    }
 
     /**
      * Remove duplicate item
@@ -715,7 +579,6 @@ public class Utils {
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        //request.setTitle(name);
         int type = getTypeFile(fileType);
         switch (type) {
             case 1:
@@ -749,7 +612,6 @@ public class Utils {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(reference);
                     Cursor c = downloadmanager.query(query);
@@ -778,7 +640,6 @@ public class Utils {
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        //request.setTitle(name);
         int type = getTypeFile(fileType);
         switch (type) {
             case 1:
@@ -812,7 +673,6 @@ public class Utils {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
                     DownloadManager.Query query = new DownloadManager.Query();
                     query.setFilterById(reference);
                     Cursor c = downloadmanager.query(query);
@@ -877,10 +737,10 @@ public class Utils {
         builder.setView(dialogView);
 
         // Get the custom alert dialog view widgets reference
-        Button btn_positive = (Button) dialogView.findViewById(R.id.btn_yes);
-        Button btn_negative = (Button) dialogView.findViewById(R.id.btn_no);
-        TextView txtTitle = (TextView) dialogView.findViewById(R.id.txt_dialog_title);
-        TextView txtContent = (TextView) dialogView.findViewById(R.id.txt_dialog_content);
+        Button btn_positive = dialogView.findViewById(R.id.btn_yes);
+        Button btn_negative = dialogView.findViewById(R.id.btn_no);
+        TextView txtTitle = dialogView.findViewById(R.id.txt_dialog_title);
+        TextView txtContent = dialogView.findViewById(R.id.txt_dialog_content);
 
         btn_negative.setVisibility(View.GONE);
         btn_positive.setText(okButton);
@@ -888,126 +748,50 @@ public class Utils {
         txtTitle.setText(title);
         txtContent.setText(message);
 
-//        Button btn_neutral = (Button) dialogView.findViewById(R.id.dialog_neutral_btn);
-
-        // Create the alert dialog
         final android.app.AlertDialog dialog = builder.create();
 
-        // Set negative/no button click listener
-        btn_positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Dismiss the alert dialog
-//                if (clickEvent != null) {
-//                    clickEvent.onCancelClick();
-//                }
-                dialog.cancel();
-            }
+        btn_positive.setOnClickListener(v -> {
+            dialog.cancel();
         });
 
-        // Set cancel/neutral button click listener
-//        btn_neutral.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Dismiss/cancel the alert dialog
-//                dialog.cancel();
-//                tv_message.setText("Cancel button clicked");
-//            }
-//        });
-
-        // Display the custom alert dialog on interface
         if (!context.isFinishing()) {
             dialog.show();
         }
     }
 
     public static void customAlertDialog(final Activity context, String title, String message, String okButton, String noButton, final DialogUtils.OnAlertDialogViewClickEvent clickEvent) {
-        // Build an AlertDialog
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
         builder.setCancelable(false);
         LayoutInflater inflater = context.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.custom_dialog_common, null);
 
-        // Set the custom layout as alert dialog view
         builder.setView(dialogView);
-
-        // Get the custom alert dialog view widgets reference
-        Button btn_positive = (Button) dialogView.findViewById(R.id.btn_yes);
-        Button btn_negative = (Button) dialogView.findViewById(R.id.btn_no);
-        TextView txtTitle = (TextView) dialogView.findViewById(R.id.txt_dialog_title);
-        TextView txtContent = (TextView) dialogView.findViewById(R.id.txt_dialog_content);
+        Button btn_positive = dialogView.findViewById(R.id.btn_yes);
+        Button btn_negative = dialogView.findViewById(R.id.btn_no);
+        TextView txtTitle = dialogView.findViewById(R.id.txt_dialog_title);
+        TextView txtContent = dialogView.findViewById(R.id.txt_dialog_content);
 
         btn_negative.setText(noButton);
         btn_positive.setText(okButton);
         txtTitle.setText(title);
         txtContent.setText(message);
 
-//        Button btn_neutral = (Button) dialogView.findViewById(R.id.dialog_neutral_btn);
-
-        // Create the alert dialog
         final android.app.AlertDialog dialog = builder.create();
 
-        // Set positive/yes button click listener
-        btn_positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Dismiss the alert dialog
-                if (clickEvent != null) {
-                    clickEvent.onOkClick(dialog);
-                }
-                dialog.dismiss();
+        btn_positive.setOnClickListener(v -> {
+            if (clickEvent != null) {
+                clickEvent.onOkClick(dialog);
             }
+            dialog.dismiss();
         });
 
-        // Set negative/no button click listener
-        btn_negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Dismiss the alert dialog
-                if (clickEvent != null) {
-                    clickEvent.onCancelClick();
-                }
-                dialog.cancel();
+        btn_negative.setOnClickListener(v -> {
+            if (clickEvent != null) {
+                clickEvent.onCancelClick();
             }
+            dialog.cancel();
         });
-
-        // Set cancel/neutral button click listener
-//        btn_neutral.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Dismiss/cancel the alert dialog
-//                dialog.cancel();
-//                tv_message.setText("Cancel button clicked");
-//            }
-//        });
-
-        // Display the custom alert dialog on interface
         dialog.show();
-
-    }
-
-    public static void writeNotificationLog(Bundle extras) {
-//        Log.d("writeNotificationLog", "writeNotificationLog");
-        try {
-            int code = -1;
-            String data = "";
-            if (extras.containsKey("Code")) {
-                code = Integer.parseInt(extras.getString("Code", "0"));
-
-
-                if (extras.containsKey("Data"))
-                    data = extras.getString("Data");
-            }
-            String log = "";
-            if (code > -1) {
-                log = String.format("%d - %s", code, data);
-            } else {
-                log = "Emplty!!!";
-            }
-            appendLog(log);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void appendLog(String text) {
@@ -1030,8 +814,6 @@ public class Utils {
             buf.newLine();
             buf.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            Log.d("appendLog", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -1075,5 +857,30 @@ public class Utils {
             long chatTime = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
             return TimeUtils.showTimeWithoutTimeZone(chatTime, Statics.DATE_FORMAT_YYYY_MM_DD);
         }
+    }
+
+    public static String setServerSite(String domain) {
+        String[] domains = domain.split("[.]");
+        if (domain.contains(".bizsw.co.kr") && !domain.contains("8080")) {
+            domain =  domain.replace(".bizsw.co.kr", ".bizsw.co.kr:8080");
+        }
+
+        if (domains.length == 1) {
+            domain = domains[0] + ".crewcloud.net";
+        }
+
+        if(domain.startsWith("http://")){
+            domain = domain.replace("http://", "");
+        }
+
+        if(domain.startsWith("https://")) {
+            domain = domain.replace("https://", "");
+        }
+
+        String head = CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.HAS_SSL, false) ? "https://" : "http://";
+        String domainCompany = head + domain;
+        CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.DOMAIN, domainCompany);
+        CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.COMPANY_NAME, domain);
+        return domainCompany;
     }
 }

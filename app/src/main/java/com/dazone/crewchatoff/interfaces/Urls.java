@@ -49,4 +49,5 @@ public class Urls {
     public static final int DDS_SERVER_PORT = 1118;
     public static String HOST_STATUS = "122.41.175.77";
     public static final String URL_CHECK_UPDATE = "http://mobileupdate.crewcloud.net/WebServiceMobile.asmx/Mobile_Version";
+    public static final String URL_CHECK_SSL = "http://mobileupdate.crewcloud.net/WebServiceMobile.asmx/SSL_Check";
 }

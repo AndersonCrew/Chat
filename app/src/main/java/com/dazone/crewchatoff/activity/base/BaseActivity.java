@@ -34,7 +34,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     public static BaseActivity Instance = null;
     public Prefs prefs;
     private ProgressDialog mProgressDialog;
-    protected String server_site;
     private NetworkStateReceiver networkStateReceiver;
     public static boolean isDisConnect;
 
@@ -45,7 +44,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         mContext = this;
         Instance = this;
         prefs = CrewChatApplication.getInstance().getPrefs();
-        server_site = prefs.getServerSite();
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }

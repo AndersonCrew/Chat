@@ -106,7 +106,7 @@ public class GcmIntentService extends IntentService {
                     Code = Integer.parseInt(extras.getString("Code", "0"));
                     switch (Code) {
                         case 1:
-                            Log.d("TAG", "Case 1 ###");
+                            Log.d("TAG", "Receive new message");
                             receiveCode1(extras);
                             break;
                         case 2:
@@ -271,7 +271,6 @@ public class GcmIntentService extends IntentService {
                         intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
 
                         /** Notification */
-
                         sendNotification(Utils.getString(R.string.notification_add_user),
                                 Utils.getString(R.string.app_name),
                                 null,
@@ -372,12 +371,7 @@ public class GcmIntentService extends IntentService {
                     @Override
                     public void OnGetChatRoomSuccess(final ChatRoomDTO chatRoomDTO) {
                         if (chatRoomDTO != null) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ChatRoomDBHelper.updateChatRoom(roomNo, chatRoomDTO.getRoomTitle().trim());
-                                }
-                            }).start();
+                            new Thread(() -> ChatRoomDBHelper.updateChatRoom(roomNo, chatRoomDTO.getRoomTitle().trim())).start();
                             Intent intent = new Intent(Constant.INTENT_FILTER_UPDATE_ROOM_NAME);
                             intent.putExtra(Statics.ROOM_NO, roomNo);
                             intent.putExtra(Statics.ROOM_TITLE, chatRoomDTO.getRoomTitle().trim());

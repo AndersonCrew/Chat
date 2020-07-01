@@ -39,7 +39,6 @@ import java.util.List;
 public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
     private Activity mActivity;
     private ILoadImage iLoadImage;
-    private ViewGroup parent;
     private Comparator<ChattingDto> mComparator = (o1, o2) -> {
         Date date1 = new Date(TimeUtils.getTime(o1.getRegDate()));
         Date date2 = new Date(TimeUtils.getTime(o2.getRegDate()));
@@ -54,7 +53,6 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        this.parent = parent;
         RecyclerView.ViewHolder vh = null;
         View v;
 

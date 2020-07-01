@@ -219,7 +219,7 @@ public class RecentFavoriteFragment extends ListFragment<ChattingDto> implements
         });
 
         rvMainList.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvMainList.setLayoutManager(layoutManager);
         initAdapter();
         rvMainList.setAdapter(adapterList);

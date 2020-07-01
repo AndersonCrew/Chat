@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
@@ -227,9 +228,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     }
 
                     initData(dataSet);
-                    if (layoutManager != null) {
-                        scrollToEndList();
-                    }
                 });
 
                 if (viewModel.getHasLoadNewMessage()) {
@@ -243,7 +241,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             isLoading = false;
             if (listNew.size() > 0) {
                 getActivity().runOnUiThread(() -> {
-                    int oldSize = dataSet.size() + 3;
+                    int oldSize = dataSet.size() + 1;
                     for (ChattingDto chat : listNew) {
                         Utils.checkExist(chat, dataSet);
                         addMessage(chat);
@@ -353,7 +351,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
                 hideNewMessage();
                 isShowNewMessage = false;
-
             }
 
             @Override
@@ -861,11 +858,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         dataSet.add(chattingDto);
         Collections.sort(dataSet, mComparator);
 
-        if (layoutManager.findLastCompletelyVisibleItemPosition() == dataSet.size() - 2) {
-            int b = dataSet.size() - 1;
-            if (b >= 0)
-                layoutManager.scrollToPosition(b);
-        }
         if (isFromNotification) {
             isFromNotification = false;
         }
@@ -1078,13 +1070,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     }
 
                     adapterList.notifyDataSetChanged();
-
                 }
             });
-
-            if (dataSet != null) {
-                scrollEndList(dataSet.size());
-            }
         }
     }
 

@@ -212,21 +212,18 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                         public void onHTTPSuccess() {
                             // New thread to clear all cache
                             CrewChatApplication.isAddUser = false;
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    BelongsToDBHelper.clearBelong();
-                                    AllUserDBHelper.clearUser();
-                                    ChatRoomDBHelper.clearChatRooms();
-                                    ChatMessageDBHelper.clearMessages();
-                                    DepartmentDBHelper.clearDepartment();
-                                    UserDBHelper.clearUser();
-                                    FavoriteGroupDBHelper.clearGroups();
-                                    FavoriteUserDBHelper.clearFavorites();
-                                    CrewChatApplication.resetValue();
-                                    CrewChatApplication.isLoggedIn = false;
-                                    handler.obtainMessage(LOGOUT_COMPLETE).sendToTarget();
-                                }
+                            new Thread(() -> {
+                                BelongsToDBHelper.clearBelong();
+                                AllUserDBHelper.clearUser();
+                                ChatRoomDBHelper.clearChatRooms();
+                                ChatMessageDBHelper.clearMessages();
+                                DepartmentDBHelper.clearDepartment();
+                                UserDBHelper.clearUser();
+                                FavoriteGroupDBHelper.clearGroups();
+                                FavoriteUserDBHelper.clearFavorites();
+                                CrewChatApplication.resetValue();
+                                CrewChatApplication.isLoggedIn = false;
+                                handler.obtainMessage(LOGOUT_COMPLETE).sendToTarget();
                             }).start();
                         }
 

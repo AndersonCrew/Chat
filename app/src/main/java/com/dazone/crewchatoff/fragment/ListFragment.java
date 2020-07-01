@@ -53,8 +53,6 @@ public abstract class ListFragment<T> extends Fragment {
     protected RelativeLayout list_content_rl, rlMain;
     protected TextView no_item_found;
     protected SwipeRefreshLayout swipeRefreshLayout;
-    protected String str_lastID = "";
-    protected int lastID = 0;
     public LinearLayoutManager layoutManager;
     protected Context mContext;
     protected FloatingActionButton fab;
@@ -148,10 +146,6 @@ public abstract class ListFragment<T> extends Fragment {
         if (tvUpdateTime != null) tvUpdateTime.setText(timer);
     }
 
-    protected void scrollEndList(int position) {
-        rvMainList.smoothScrollToPosition(position);
-    }
-
     private TextWatcher mWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -234,7 +228,10 @@ public abstract class ListFragment<T> extends Fragment {
     protected void setupRecyclerView() {
         rvMainList.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        layoutManager.setReverseLayout(false);
+        layoutManager.setStackFromEnd(false);
         rvMainList.setLayoutManager(layoutManager);
+
         initAdapter();
         rvMainList.setAdapter(adapterList);
     }

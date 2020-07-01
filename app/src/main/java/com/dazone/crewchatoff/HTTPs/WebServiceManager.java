@@ -37,52 +37,49 @@ public class WebServiceManager<T> {
     }
 
     public void doJsonObjectRequest(int requestMethod, final String url, final JSONObject bodyParam, final RequestListener<String> listener) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethod, url, bodyParam, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethod, url, bodyParam, response -> {
+            try {
+                int isSuccess;
+                JSONObject json = new JSONObject(response.getString("d"));
                 try {
-                    int isSuccess;
-                    JSONObject json = new JSONObject(response.getString("d"));
-                    try {
-                        isSuccess = json.getInt("success");
-                    } catch (Exception e) {
-                        if (json.getBoolean("success")) {
-                            isSuccess = 1;
-                        } else {
-                            isSuccess = 0;
-                        }
-                    }
-                    if (isSuccess == 1) {
-                        try {
-                            listener.onSuccess(json.getString("data"));
-                        }catch (Exception e){
-                            listener.onSuccess(json.toString());
-                        }
+                    isSuccess = json.getInt("success");
+                } catch (Exception e) {
+                    if (json.getBoolean("success")) {
+                        isSuccess = 1;
                     } else {
-                        ErrorDto errorDto = new Gson().fromJson(json.getString("error"), ErrorDto.class);
-                        if (errorDto == null) {
-                            errorDto = new ErrorDto();
-                            errorDto.message = Utils.getString(R.string.no_network_error);
-                        } else {
-                            if (errorDto.code == 0 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
-                                new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
-                                CrewChatApplication.getInstance().getPrefs().clearLogin();
-                                BaseActivity.Instance.startNewActivity(LoginActivity.class);
-                            } else if (errorDto.code == -100 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
-                                new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
-                                CrewChatApplication.getInstance().getPrefs().clearLogin();
-                                BaseActivity.Instance.startNewActivity(LoginActivity.class);
-                            }
+                        isSuccess = 0;
+                    }
+                }
+                if (isSuccess == 1) {
+                    try {
+                        listener.onSuccess(json.getString("data"));
+                    }catch (Exception e){
+                        listener.onSuccess(json.toString());
+                    }
+                } else {
+                    ErrorDto errorDto = new Gson().fromJson(json.getString("error"), ErrorDto.class);
+                    if (errorDto == null) {
+                        errorDto = new ErrorDto();
+                        errorDto.message = Utils.getString(R.string.no_network_error);
+                    } else {
+                        if (errorDto.code == 0 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
+                            new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
+                            CrewChatApplication.getInstance().getPrefs().clearLogin();
+                            BaseActivity.Instance.startNewActivity(LoginActivity.class);
+                        } else if (errorDto.code == -100 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
+                            new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
+                            CrewChatApplication.getInstance().getPrefs().clearLogin();
+                            BaseActivity.Instance.startNewActivity(LoginActivity.class);
                         }
-
-                        listener.onFailure(errorDto);
                     }
 
-                } catch (JSONException e) {
-                    ErrorDto errorDto = new ErrorDto();
-                    errorDto.message = Utils.getString(R.string.no_network_error);
                     listener.onFailure(errorDto);
                 }
+
+            } catch (JSONException e) {
+                ErrorDto errorDto = new ErrorDto();
+                errorDto.message = Utils.getString(R.string.no_network_error);
+                listener.onFailure(errorDto);
             }
         }, error -> {
             ErrorDto errorDto = new ErrorDto();

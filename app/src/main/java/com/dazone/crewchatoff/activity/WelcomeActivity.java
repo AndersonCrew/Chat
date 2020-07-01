@@ -1,9 +1,5 @@
 package com.dazone.crewchatoff.activity;
 
-/**
- * Created by maidinh on 22/2/2017.
- */
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,9 +19,23 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dazone.crewchatoff.BuildConfig;
 import com.dazone.crewchatoff.R;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.database.AllUserDBHelper;
+import com.dazone.crewchatoff.database.BelongsToDBHelper;
+import com.dazone.crewchatoff.database.ChatMessageDBHelper;
+import com.dazone.crewchatoff.database.ChatRoomDBHelper;
+import com.dazone.crewchatoff.database.DepartmentDBHelper;
+import com.dazone.crewchatoff.database.FavoriteGroupDBHelper;
+import com.dazone.crewchatoff.database.FavoriteUserDBHelper;
+import com.dazone.crewchatoff.database.UserDBHelper;
+import com.dazone.crewchatoff.utils.Constant;
+import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.Prefs;
+
+import static com.dazone.crewchatoff.utils.Utils.compareVersionNames;
 
 public class WelcomeActivity extends AppCompatActivity {
     String TAG = "WelcomeActivity";
@@ -49,14 +59,16 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_welcome);
-        Prefs prefs = new Prefs();
 
         String first_login = Statics.FIRST_LOGIN;
-        boolean isLogin = prefs.getBooleanValue(first_login, false);
-        boolean is_first_login = prefs.get_login_install_app(); // default true
-        if (is_first_login) {
-            prefs.set_login_install_app(false);
+        boolean isLogin = CrewChatApplication.getInstance().getPrefs().getBooleanValue(first_login, false);
+        boolean isFirstLogin = CrewChatApplication.getInstance().getPrefs().get_login_install_app(); // default true
 
+        /** Check Logout if current version <= 3.1.1 becase Table of DB has changed*/
+        checkLogout();
+
+        if (isFirstLogin) {
+            CrewChatApplication.getInstance().getPrefs().set_login_install_app(false);
             if (isLogin) {
                 launchHomeScreen();
             } else {
@@ -68,14 +80,30 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
+    private void checkLogout() {
+        if (CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.IS_FIRST_INSTALL_VER, true)) {
+            CrewChatApplication.getInstance().getPrefs().putBooleanValue(Constants.IS_FIRST_INSTALL_VER, false);
+            String appVersion = BuildConfig.VERSION_NAME;
+            if (compareVersionNames(appVersion, "3.1.1") == 1) {
+                BelongsToDBHelper.clearBelong();
+                AllUserDBHelper.clearUser();
+                ChatRoomDBHelper.clearChatRooms();
+                ChatMessageDBHelper.clearMessages();
+                DepartmentDBHelper.clearDepartment();
+                UserDBHelper.clearUser();
+                FavoriteGroupDBHelper.clearGroups();
+                FavoriteUserDBHelper.clearFavorites();
+                CrewChatApplication.resetValue();
+                CrewChatApplication.isLoggedIn = false;
+            }
+        }
+    }
+
     void initView() {
         viewPager = findViewById(R.id.view_pager);
         dotsLayout = findViewById(R.id.layoutDots);
         btnNext = findViewById(R.id.btn_next);
 
-
-        // layouts of all welcome sliders
-        // add few more layouts if you want
         if (exist_Id_Login == 0) {
             sumPage = 4;
             layouts = new int[]{
@@ -93,22 +121,13 @@ public class WelcomeActivity extends AppCompatActivity {
                     R.layout.welcome_slide4};
         }
 
-        // adding bottom dots
         addBottomDots(0);
-
-        // making notification bar transparent
         changeStatusBarColor();
 
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
-
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchHomeScreen();
-            }
-        });
+        btnNext.setOnClickListener(v -> launchHomeScreen());
     }
 
 
@@ -141,7 +160,6 @@ public class WelcomeActivity extends AppCompatActivity {
         finish();
     }
 
-    //  viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
@@ -180,22 +198,15 @@ public class WelcomeActivity extends AppCompatActivity {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             View view = layoutInflater.inflate(layouts[position], container, false);
-            TextView login_btn_sign_up = view.findViewById(R.id.tvNewGroup);
-            if (login_btn_sign_up != null) {
-                Log.d(TAG, "login_btn_sign_up != null");
-                login_btn_sign_up.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(WelcomeActivity.this, SignUpActivity.class);
-                        startActivity(intent);
-                    }
+            TextView tvSignUp = view.findViewById(R.id.tvNewGroup);
+            if (tvSignUp != null) {
+                tvSignUp.setOnClickListener(v -> {
+                    Intent intent = new Intent(WelcomeActivity.this, SignUpActivity.class);
+                    startActivity(intent);
                 });
-            } else {
-                Log.d(TAG, "login_btn_sign_up null");
             }
 
             container.addView(view);
-
             return view;
         }
 
@@ -208,7 +219,6 @@ public class WelcomeActivity extends AppCompatActivity {
         public boolean isViewFromObject(View view, Object obj) {
             return view == obj;
         }
-
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {

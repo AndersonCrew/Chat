@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.database.ChatMessageDBHelper;
 import com.dazone.crewchatoff.database.ChatRoomDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
@@ -47,7 +48,6 @@ public class HttpOauthRequest {
 
 
     public class getIpFromDomain extends AsyncTask<String, String, String> {
-
         IF_GET_IP callback;
         String DOMAIN;
 
@@ -158,11 +158,10 @@ public class HttpOauthRequest {
     }
 
     // Login function V2
-    public void loginV2(final BaseHTTPCallBack baseHTTPCallBack, final String userID, final String password, String mobileOSVersion, final String subDomain, String server_link) {
-        final String url = server_link + OAUTHUrls.URL_GET_LOGIN_V3;
+    public void loginV2(final BaseHTTPCallBack baseHTTPCallBack, final String userID, final String password, String mobileOSVersion) {
+        final String url = CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.DOMAIN, "") + OAUTHUrls.URL_GET_LOGIN_V3;
         Map<String, String> params = new HashMap<>();
-        //params.put("companyDomain", subDomain + "." + OAUTHUrls.URL_ROOT_DOMAIN);
-        params.put("companyDomain", subDomain);
+        params.put("companyDomain", CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""));
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params.put("userID", userID);
@@ -182,45 +181,25 @@ public class HttpOauthRequest {
                 final int CrewChatFileServerPort = userDto.getCrewChatFileServerPort();
                 final boolean CrewChatLocalDatabase = userDto.isCrewChatLocalDatabase();
 
-                Log.d(TAG, "CrewDDSServerIP:" + CrewDDSServerIP);
-                Log.d(TAG, "CrewDDSServerPort:" + CrewDDSServerPort);
-                Log.d(TAG, "CrewChatFileServerIP:" + CrewChatFileServerIP);
-                Log.d(TAG, "CrewChatFileServerPort:" + CrewChatFileServerPort);
-
-
-                Log.d(TAG, "CrewDDSServerIP:" + Constant.isIp(CrewDDSServerIP));
-                Log.d(TAG, "CrewChatFileServerIP:" + Constant.isIp(CrewChatFileServerIP));
-
                 if (!Constant.isIp(CrewDDSServerIP) || !Constant.isIp(CrewChatFileServerIP)) {
                     if (!Constant.isIp(CrewDDSServerIP)) {
-                        Log.d(TAG, "CrewDDSServerIP not IP");
-                        // get ip CrewDDSServerIP
-                        new getIpFromDomain(CrewDDSServerIP, new IF_GET_IP() {
-                            @Override
-                            public void onSuccess(String ip) {
-                                Log.d(TAG, CrewDDSServerIP + " -> " + ip);
-                                if (ip.length() > 0) {
-                                    if (!Constant.isIp(CrewChatFileServerIP)) {
-                                        // get ip CrewChatFileServerIP
-                                        FileServerNotIP(userDto, subDomain, password, userID, ip, CrewDDSServerPort,
-                                                CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
-                                    } else {
-                                        // finish
-                                        _httpSuccess(userDto, subDomain, password, userID, ip, CrewDDSServerPort,
-                                                CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
-                                    }
+                        new getIpFromDomain(CrewDDSServerIP, ip -> {
+                            if (ip.length() > 0) {
+                                if (!Constant.isIp(CrewChatFileServerIP)) {
+                                    FileServerNotIP(userDto, CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""), password, userID, ip, CrewDDSServerPort,
+                                            CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
                                 } else {
-                                    Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
+                                    _httpSuccess(userDto, CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""), password, userID, ip, CrewDDSServerPort,
+                                            CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
                                 }
                             }
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
-                        FileServerNotIP(userDto, subDomain, password, userID, CrewDDSServerIP, CrewDDSServerPort,
+                        FileServerNotIP(userDto, CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""), password, userID, CrewDDSServerIP, CrewDDSServerPort,
                                 CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
                     }
                 } else {
-                    Log.d(TAG, "ALL IS IP");
-                    _httpSuccess(userDto, subDomain, password, userID, CrewDDSServerIP, CrewDDSServerPort,
+                    _httpSuccess(userDto, CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""), password, userID, CrewDDSServerIP, CrewDDSServerPort,
                             CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
                 }
             }
@@ -255,10 +234,8 @@ public class HttpOauthRequest {
         userDto.prefs.putaccesstoken(userDto.session);
         userDto.prefs.putUserNo(userDto.Id);
         userDto.prefs.putUserName(userDto.userID);
-        Log.d(TAG, "userDto.Id:" + userDto.Id);
-        Log.d(TAG, "userDto.avatar:" + userDto.avatar);
+
         userDto.prefs.setAvatarUrl(userDto.avatar);
-        userDto.prefs.putCompanyName(userDto.getNameCompany());
         userDto.prefs.setFullName(userDto.getFullName());
         userDto.prefs.putCompanyNo(userDto.getCompanyNo());
         userDto.prefs.setDDSServer(subDomain);
@@ -273,10 +250,6 @@ public class HttpOauthRequest {
             ChatRoomDBHelper.clearChatRooms();
         }
         CrewChatApplication.CrewChatLocalDatabase = CrewChatLocalDatabase;
-        Log.d(TAG, "add CrewDDSServerIP:" + CrewDDSServerIP);
-        Log.d(TAG, "add CrewDDSServerPort:" + CrewDDSServerPort);
-        Log.d(TAG, "add CrewChatFileServerIP:" + CrewChatFileServerIP);
-        Log.d(TAG, "add CrewChatFileServerPort:" + CrewChatFileServerPort);
 
         new Prefs().setHOST_STATUS(CrewDDSServerIP);
         new Prefs().setDDS_SERVER_PORT(CrewDDSServerPort);
@@ -327,30 +300,22 @@ public class HttpOauthRequest {
                 final String CrewChatFileServerIP = userDto.getCrewChatFileServerIP();
                 final int CrewChatFileServerPort = userDto.getCrewChatFileServerPort();
                 final boolean CrewChatLocalDatabase = userDto.isCrewChatLocalDatabase();
-                Log.d(TAG, "CrewDDSServerIP:" + CrewDDSServerIP);
-                Log.d(TAG, "CrewDDSServerPort:" + CrewDDSServerPort);
-                Log.d(TAG, "CrewChatFileServerIP:" + CrewChatFileServerIP);
-                Log.d(TAG, "CrewChatFileServerPort:" + CrewChatFileServerPort);
 
                 if (!Constant.isIp(CrewDDSServerIP) || !Constant.isIp(CrewChatFileServerIP)) {
                     if (!Constant.isIp(CrewDDSServerIP)) {
-                        Log.d(TAG, "CrewDDSServerIP not IP");
                         // get ip CrewDDSServerIP
-                        new getIpFromDomain(CrewDDSServerIP, new IF_GET_IP() {
-                            @Override
-                            public void onSuccess(String ip) {
-                                Log.d(TAG, CrewDDSServerIP + " -> " + ip);
-                                if (ip.length() > 0) {
-                                    if (!Constant.isIp(CrewChatFileServerIP)) {
-                                        // get ip CrewChatFileServerIP
-                                        SessionFileServerNotIP(userDto, ip, CrewDDSServerPort, CrewChatFileServerIP, CrewChatFileServerPort, baseHTTPCallBack, CrewChatLocalDatabase);
-                                    } else {
-                                        // finish
-                                        _checkSessionSuccess(userDto, ip, CrewDDSServerPort, CrewChatFileServerIP, CrewChatFileServerPort, baseHTTPCallBack, CrewChatLocalDatabase);
-                                    }
+                        new getIpFromDomain(CrewDDSServerIP, ip -> {
+                            Log.d(TAG, CrewDDSServerIP + " -> " + ip);
+                            if (ip.length() > 0) {
+                                if (!Constant.isIp(CrewChatFileServerIP)) {
+                                    // get ip CrewChatFileServerIP
+                                    SessionFileServerNotIP(userDto, ip, CrewDDSServerPort, CrewChatFileServerIP, CrewChatFileServerPort, baseHTTPCallBack, CrewChatLocalDatabase);
                                 } else {
-                                    Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
+                                    // finish
+                                    _checkSessionSuccess(userDto, ip, CrewDDSServerPort, CrewChatFileServerIP, CrewChatFileServerPort, baseHTTPCallBack, CrewChatLocalDatabase);
                                 }
+                            } else {
+                                Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
                             }
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
@@ -375,15 +340,12 @@ public class HttpOauthRequest {
     public void SessionFileServerNotIP(final UserDto userDto, final String CrewDDSServerIP, final int CrewDDSServerPort, final String CrewChatFileServerIP,
                                        final int CrewChatFileServerPort, final BaseHTTPCallBack baseHTTPCallBack, final boolean CrewChatLocalDatabase) {
         Log.d(TAG, "CrewChatFileServerIP not IP");
-        new getIpFromDomain(CrewChatFileServerIP, new IF_GET_IP() {
-            @Override
-            public void onSuccess(String ip) {
-                Log.d(TAG, CrewChatFileServerIP + " -> " + ip);
-                if (ip.length() > 0) {
-                    _checkSessionSuccess(userDto, CrewDDSServerIP, CrewDDSServerPort, ip, CrewChatFileServerPort, baseHTTPCallBack, CrewChatLocalDatabase);
-                } else {
-                    Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
-                }
+        new getIpFromDomain(CrewChatFileServerIP, ip -> {
+            Log.d(TAG, CrewChatFileServerIP + " -> " + ip);
+            if (ip.length() > 0) {
+                _checkSessionSuccess(userDto, CrewDDSServerIP, CrewDDSServerPort, ip, CrewChatFileServerPort, baseHTTPCallBack, CrewChatLocalDatabase);
+            } else {
+                Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
             }
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -396,7 +358,6 @@ public class HttpOauthRequest {
         userDto.prefs.putUserNo(userDto.Id);
         userDto.prefs.putUserName(userDto.userID);
         userDto.prefs.setAvatarUrl(userDto.avatar);
-        userDto.prefs.putCompanyName(userDto.getNameCompany());
         userDto.prefs.setFullName(userDto.getFullName());
         userDto.prefs.putCompanyNo(userDto.getCompanyNo());
         userDto.prefs.putEmail(userDto.getMailAddress());
@@ -436,11 +397,10 @@ public class HttpOauthRequest {
         });
     }
 
-    public void autoLogin(final BaseHTTPCallBack baseHTTPCallBack, final String userID, String mobileOSVersion, final String subDomain, String server_link) {
-        final String url = server_link + OAUTHUrls.AutoLogin;
+    public void autoLogin(final BaseHTTPCallBack baseHTTPCallBack, final String userID, String mobileOSVersion) {
+        final String url = CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.DOMAIN, "") + OAUTHUrls.AutoLogin;
         Map<String, String> params = new HashMap<>();
-        //params.put("companyDomain", subDomain + "." + OAUTHUrls.URL_ROOT_DOMAIN);
-        params.put("companyDomain", subDomain);
+        params.put("companyDomain", CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""));
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
         params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
         params.put("userID", userID);
@@ -461,30 +421,27 @@ public class HttpOauthRequest {
                 if (!Constant.isIp(CrewDDSServerIP) || !Constant.isIp(CrewChatFileServerIP)) {
                     if (!Constant.isIp(CrewDDSServerIP)) {
                         // get ip CrewDDSServerIP
-                        new getIpFromDomain(CrewDDSServerIP, new IF_GET_IP() {
-                            @Override
-                            public void onSuccess(String ip) {
-                                if (ip.length() > 0) {
-                                    if (!Constant.isIp(CrewChatFileServerIP)) {
-                                        // get ip CrewChatFileServerIP
-                                        FileServerNotIP(userDto, subDomain, "", userID, ip, CrewDDSServerPort,
-                                                CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
-                                    } else {
-                                        // finish
-                                        _httpSuccess(userDto, subDomain, "", userID, ip, CrewDDSServerPort,
-                                                CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
-                                    }
+                        new getIpFromDomain(CrewDDSServerIP, ip -> {
+                            if (ip.length() > 0) {
+                                if (!Constant.isIp(CrewChatFileServerIP)) {
+                                    // get ip CrewChatFileServerIP
+                                    FileServerNotIP(userDto, CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""), "", userID, ip, CrewDDSServerPort,
+                                            CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
                                 } else {
-                                    Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
+                                    // finish
+                                    _httpSuccess(userDto, CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""), "", userID, ip, CrewDDSServerPort,
+                                            CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
                                 }
+                            } else {
+                                Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), "Can not get ip, try again", Toast.LENGTH_SHORT).show();
                             }
                         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
-                        FileServerNotIP(userDto, subDomain, "", userID, CrewDDSServerIP, CrewDDSServerPort,
+                        FileServerNotIP(userDto, CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""), "", userID, CrewDDSServerIP, CrewDDSServerPort,
                                 CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
                     }
                 } else {
-                    _httpSuccess(userDto, subDomain, "", userID, CrewDDSServerIP, CrewDDSServerPort,
+                    _httpSuccess(userDto, CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""), "", userID, CrewDDSServerIP, CrewDDSServerPort,
                             CrewChatFileServerPort, CrewChatFileServerIP, baseHTTPCallBack, CrewChatLocalDatabase);
                 }
             }

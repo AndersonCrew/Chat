@@ -225,8 +225,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
             default:
                 chatting_imv.setImageBitmap(null);
-                chatting_imv.destroyDrawingCache();
-
                 long regDate = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
                 date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
@@ -250,12 +248,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
                                     @Override
                                     public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                        int srcWidth = resource.getWidth();
-                                        int srcHeight = resource.getHeight();
-                                        int dstWidth = (int) (srcWidth * ratio) / 2;
-                                        int dstHeight = (int) (srcHeight * ratio) / 2;
-                                        Bitmap bitmap = createScaledBitmap(resource, dstWidth, dstHeight, true);
-                                        chatting_imv.setImageBitmap(bitmap);
                                         return false;
                                     }
                                 })

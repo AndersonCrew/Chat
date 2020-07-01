@@ -147,7 +147,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         if (!CrewChatApplication.isLoggedIn) {
             Log.d(TAG, "loadStaticLocalData");
             CrewChatApplication.getInstance().syncData();
-            CrewChatApplication.getInstance().loadStaticLocalData();
             CrewChatApplication.isLoggedIn = true;
             CrewChatApplication.currentId = currentUserNo;
         }
@@ -287,7 +286,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             public void onHTTPFail(ErrorDto errorDto) {
 
             }
-        }, this);
+        });
 
 
     }
@@ -328,19 +327,11 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                 } else if (msg.what == Constant.ACTIVITY_HANDLER_START_UPDATE) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setMessage(R.string.string_update_content);
-                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            new Async_DownloadApkFile(MainActivity.this, "CrewChat").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                            dialog.dismiss();
-                        }
+                    builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+                        new Async_DownloadApkFile(MainActivity.this, "CrewChat").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        dialog.dismiss();
                     });
-                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                    builder.setNegativeButton(R.string.no, (dialog, which) -> dialog.dismiss());
                     AlertDialog dialog = builder.create();
                     dialog.setCancelable(false);
                     dialog.show();

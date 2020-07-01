@@ -3,6 +3,7 @@ package com.dazone.crewchatoff.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.interfaces.Urls;
 
@@ -14,20 +15,15 @@ public class Prefs implements Serializable {
 
     private final String SHAREDPREFERENCES_NAME = "oathsharedpreferences";
     private final String ACCESSTOKEN = "accesstoken";
-    private final String SERVERSITE = "serversite";
     private final String USER_NAME = "username";
     private final String FULL_NAME = "full_name";
     private final String EMAIL = "email";
-    private final String BADGE = "badge";
-    private final String COMPANY_NAME = "company_name";
     private final String COMPANY_NO = "company_no";
     private final String USERNO = "user_no";
-    private final String INTRO_COUNT = "introcount";
     private final String AVATAR_URL = "avatar_url";
     private final String DDS_SERVER = "dds_server";
     private final String PASSWORD = "password";
     private final String USER_ID = "user_id";
-    private final String SERVER_VERSION = "server_version";
     private final String UD_ROOM_NAME = "UD_ROOM_NAME";
     private final String UD_ROOM_ID = "UD_ROOM_ID";
     private final String IMAGE_LIST = "IMAGE_LIST";
@@ -161,12 +157,8 @@ public class Prefs implements Serializable {
         return prefs.contains(key);
     }
 
-    public void putServerSite(String serversite) {
-        putStringValue(SERVERSITE, serversite);
-    }
-
     public String getServerSite() {
-        return getStringValue(SERVERSITE, "");
+        return getStringValue(Constants.DOMAIN, "");
     }
 
     public void putUserName(String username) {
@@ -187,14 +179,6 @@ public class Prefs implements Serializable {
 
     public String getAvatarUrl() {
         return getStringValue(AVATAR_URL, "");
-    }
-
-    public void putCompanyName(String companyName) {
-        putStringValue(COMPANY_NAME, companyName);
-    }
-
-    public String getCompanyName() {
-        return getStringValue(COMPANY_NAME, "");
     }
 
     public void putCompanyNo(int companyNo) {

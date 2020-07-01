@@ -1,23 +1,18 @@
 package com.dazone.crewchatoff.utils;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.dazone.crewchatoff.BuildConfig;
-import com.dazone.crewchatoff.HTTPs.GetUserStatus;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.constant.Statics;
-import com.dazone.crewchatoff.database.*;
 import com.dazone.crewchatoff.dto.*;
 import com.dazone.crewchatoff.dto.userfavorites.FavoriteGroupDto;
 import com.dazone.crewchatoff.dto.userfavorites.FavoriteUserDto;
@@ -42,7 +37,6 @@ public class CrewChatApplication extends MultiDexApplication {
     public static ArrayList<TreeUserDTO> listDeparts = null;
     public static int currentId = 0;
     public static boolean CrewChatLocalDatabase = false;
-//    public static String currentName = "";
 
     public static ArrayList<FavoriteGroupDto> listFavoriteGroup = null;
     public static ArrayList<FavoriteUserDto> listFavoriteTop = null;
@@ -70,7 +64,6 @@ public class CrewChatApplication extends MultiDexApplication {
         if (Utils.checkStringValue(mPrefs.getaccesstoken()) && !mPrefs.getBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, false)) {
             isLoggedIn = true;
             syncData();
-            loadStaticLocalData();
         } else {
             isLoggedIn = false;
         }
@@ -87,25 +80,6 @@ public class CrewChatApplication extends MultiDexApplication {
         CrewChatApplication.isLoggedIn = true;
     }
 
-    private ArrayList<TreeUserDTO> temp = new ArrayList<>();
-
-    public void convertData(List<TreeUserDTO> treeUserDTOs) {
-        if (treeUserDTOs != null && treeUserDTOs.size() != 0) {
-            for (TreeUserDTO dto : treeUserDTOs) {
-                if (dto.getSubordinates() != null && dto.getSubordinates().size() > 0) {
-                    temp.add(dto);
-                    convertData(dto.getSubordinates());
-                } else {
-                    temp.add(dto);
-                }
-            }
-        }
-    }
-
-    public void loadStaticLocalData() {
-
-    }
-
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
@@ -117,7 +91,6 @@ public class CrewChatApplication extends MultiDexApplication {
 
     private static void init() {
         mPrefs = new Prefs();
-
         // Check version code, if is update
         int old_version = mPrefs.getIntValue(Statics.VERSION_CODE, 0);
         int versionCode = BuildConfig.VERSION_CODE;
@@ -243,6 +216,4 @@ public class CrewChatApplication extends MultiDexApplication {
         Date date = new Date(System.currentTimeMillis() - getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0));
         return TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
     }
-
-
 }

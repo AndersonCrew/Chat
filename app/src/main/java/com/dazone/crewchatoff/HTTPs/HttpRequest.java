@@ -7,6 +7,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.activity.MainActivity;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.*;
 import com.dazone.crewchatoff.dto.userfavorites.FavoriteChatRoomDto;
@@ -15,6 +16,7 @@ import com.dazone.crewchatoff.utils.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -240,7 +242,6 @@ public class HttpRequest {
             this.userNos = userNos;
         }
     }
-
 
     class ForwardMsg {
         long messageNo;
@@ -765,11 +766,6 @@ public class HttpRequest {
         });
     }
 
-    /*
-     * Notification setting function
-     * Type InsertDevice, Update Device
-     * */
-
     public void setNotification(String command, String deviceId, Map<String, Object> notificationParams, final OnSetNotification callback) {
         String url = root_link + Urls.URL_ROOT_2;
 
@@ -833,10 +829,6 @@ public class HttpRequest {
         });
     }
 
-    /*
-     * Function to add an user to favorite group
-     * */
-
     public void insertFavoriteUser(long groupNo, long UserNo, final BaseHTTPCallbackWithJson baseHTTPCallBack) {
         String url = root_link + Urls.URL_ROOT_2;
 
@@ -872,10 +864,6 @@ public class HttpRequest {
         });
     }
 
-    /*
-     * Function to add an user to favorite group
-     * */
-
     public void deleteFavoriteUser(long groupNo, long UserNo, final BaseHTTPCallbackWithJson baseHTTPCallBack) {
         String url = root_link + Urls.URL_ROOT_2;
 
@@ -910,10 +898,6 @@ public class HttpRequest {
             }
         });
     }
-
-    /*
-     * Function to get all favorite group and data
-     * */
 
     public void getFavotiteGroupAndData(final BaseHTTPCallbackWithJson baseHTTPCallBack) {
 
@@ -969,7 +953,6 @@ public class HttpRequest {
         });
     }
 
-    // Insert a new favorite group
     public void insertFavoriteGroup(String groupName, final BaseHTTPCallbackWithJson baseHTTPCallBack) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
@@ -1002,7 +985,6 @@ public class HttpRequest {
         });
     }
 
-    // Update name of a favorite group
     public void updateFavoriteGroup(long groupNo, String groupName, int sortNo, final BaseHTTPCallbackWithJson baseHTTPCallBack) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
@@ -1037,7 +1019,6 @@ public class HttpRequest {
         });
     }
 
-    // Delete a favorite group
     public void deleteFavoriteGroup(long groupNo, final BaseHTTPCallBack baseHTTPCallBack) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
@@ -1070,7 +1051,6 @@ public class HttpRequest {
         });
     }
 
-    // Insert a new favorite group
     public void updateChatRoomNotification(long roomNo, boolean notification, final BaseHTTPCallBack baseHTTPCallBack) {
         String url = root_link + Urls.URL_ROOT_2;
         Map<String, String> params = new HashMap<>();
@@ -1403,14 +1383,12 @@ public class HttpRequest {
         });
     }
 
-    public void checkVersionUpdate(final BaseHTTPCallBackWithString baseHTTPCallBack, final Context context) {
+    public void checkVersionUpdate(final BaseHTTPCallBackWithString baseHTTPCallBack) {
         final String url = Urls.URL_CHECK_UPDATE;
         Map<String, String> params = new HashMap<>();
-        params.put("Domain", prefs.getDDSServer());
+        params.put("Domain", prefs.getStringValue(Constants.COMPANY_NAME, ""));
         params.put("MobileType", "Android");
-        params.put("Applications", "" + "CrewChat");
-        Log.d("sssDebug2018", params.toString());
-        Log.d("sssDebug2018url", url);
+        params.put("Applications", "CrewChat");
 
         WebServiceManager webServiceManager = new WebServiceManager();
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
@@ -1453,4 +1431,30 @@ public class HttpRequest {
         });
     }
 
+    public void checkSSL(final ICheckSSL checkSSL) {
+        final String url = Urls.URL_CHECK_SSL;
+        Map<String, String> params = new HashMap<>();
+        params.put("Domain", CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""));
+        params.put("Applications", "CrewMail");
+
+        WebServiceManager webServiceManager = new WebServiceManager();
+        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean hasSSL = jsonObject.getBoolean("SSL");
+                    CrewChatApplication.getInstance().getPrefs().putBooleanValue(Constants.HAS_SSL, hasSSL);
+                    checkSSL.hasSSL(hasSSL);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(ErrorDto error) {
+                checkSSL.checkSSLError(error);
+            }
+        });
+    }
 }

@@ -54,6 +54,7 @@ import com.dazone.crewchatoff.database.ServerSiteDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
 import com.dazone.crewchatoff.dto.ErrorDto;
 import com.dazone.crewchatoff.interfaces.BaseHTTPCallBack;
+import com.dazone.crewchatoff.interfaces.ICheckSSL;
 import com.dazone.crewchatoff.interfaces.OnCheckDevice;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
@@ -83,10 +84,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     private AutoCompleteTextView edtServer;
     private ScrollView scrollView;
     private boolean firstLogin = true;
-    private String username, password;
-    private String subDomain;
-    protected int activityNumber = 0;
-    private String msg = "";
     private Dialog errorDialog;
     private IconButton mBtnSignUp;
     private FrameLayout iv;
@@ -98,11 +95,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         isDisplayPass = true;
         flag = false;
         attachKeyboardListeners();
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.getInt("count_id") != 0) {
-            activityNumber = bundle.getInt("count_id");
-        }
-
     }
 
     @Override
@@ -112,12 +104,9 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     }
 
     private void firstChecking() {
-        Log.d(TAG, "firstChecking");
         if (firstLogin) {
-            Log.d(TAG, "firstLogin:" + firstLogin);
             if (Utils.isNetworkAvailable()) {
                 doLogin();
-                Log.d(TAG, "isNetworkAvailable");
             } else {
                 notNetwork();
             }
@@ -125,10 +114,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     }
 
     public void notNetwork() {
-        Log.d(TAG, "not isNetworkAvailable");
-        //showNetworkDialog();
-        // if user is logged in, let's go to main activity, will update this function on next version
-        // has logged in before and session is OK
         if (Utils.checkStringValue(prefs.getaccesstoken()) && !prefs.getBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, false)) {
             findViewById(R.id.logo).setVisibility(View.VISIBLE);
             callActivity(MainActivity.class);
@@ -144,14 +129,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
 
     private void doLogin() {
         if (Utils.checkStringValue(prefs.getaccesstoken()) && !prefs.getBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, false)) {
-            Log.d(TAG, "checkLogin");
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    HttpOauthRequest.getInstance().checkLogin(LoginActivity.this);
-                }
-            }).start();
-
+            new Thread(() -> HttpOauthRequest.getInstance().checkLogin(LoginActivity.this)).start();
         } else {
             prefs.putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, false);
             findViewById(R.id.logo).setVisibility(View.GONE);
@@ -174,7 +152,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         registerReceiver(accountReceiver, intentFilter);
         flag = true;
 
-        Log.d(TAG, "init");
         try {
             ShortcutBadger.applyCount(this, 0);
         } catch (Exception e) {
@@ -188,7 +165,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         edtUserName.setText(prefs.getUserID());
 
         String dm = prefs.getDDSServer();
-        Log.d(TAG, "domain:" + dm);
         if (dm.contains("crewcloud.net")) {
             String[] str = dm.split("[.]");
             if (str[0] != null)
@@ -198,78 +174,39 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         edtServer.setText(dm);
         edtPassword.setText(prefs.getPass());
         mBtnSignUp = findViewById(R.id.login_btn_signup);
-        mBtnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
+        mBtnSignUp.setOnClickListener(v -> {
+            Intent intent1 = new Intent(LoginActivity.this, SignUpActivity.class);
+            startActivity(intent1);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                username = edtUserName.getText().toString().trim();
-                password = edtPassword.getText().toString();
-                subDomain = edtServer.getText().toString().trim();
+        btnLogin.setOnClickListener(v -> {
+            String mUsername = edtUserName.getText().toString().trim();
+            String mPassword = edtPassword.getText().toString();
+            String domain = edtServer.getText().toString().trim();
 
-                if (subDomain.contains(".")) {
-                    Log.d(TAG, "contains");
-                } else {
-                    Log.d(TAG, "dont contains");
-                    subDomain = subDomain + ".crewcloud.net";
-                }
-
-                String error = checkStringValue(subDomain, username, password);
-
-                if (TextUtils.isEmpty(error)) {
-                    Log.d(TAG, "subDomain:" + subDomain);
-                    // Module URL
-                    server_site = getServerSite(subDomain);
-                    if (!TextUtils.isEmpty(server_site)) {
-                        if (!server_site.toLowerCase().startsWith("http")) {
-                            server_site = "http://" + server_site;
-                        }
+            Utils.setServerSite(domain);
+            if (TextUtils.isEmpty(checkStringValue(domain, mUsername, mPassword))) {
+                showProgressDialog();
+                HttpRequest.getInstance().checkSSL(new ICheckSSL() {
+                    @Override
+                    public void hasSSL(boolean hasSSL) {
+                        HttpOauthRequest.getInstance().loginV2(LoginActivity.this, mUsername, mPassword, Build.VERSION.RELEASE);
                     }
-                    Log.d(TAG, "server_site:" + server_site);
-                    // URL to login
 
-                    String loginUrl = getLoginServerSite(subDomain);
-                    Log.d(TAG, "loginUrl:" + loginUrl);
-                    if (!TextUtils.isEmpty(loginUrl)) {
-                        if (!loginUrl.toLowerCase().startsWith("http")) {
-                            loginUrl = "http://" + loginUrl;
-                        }
-                        showProgressDialog();
-                        HttpOauthRequest.getInstance().loginV2(LoginActivity.this, username, password, Build.VERSION.RELEASE, subDomain, loginUrl);
-                    } else {
-                        showAlertDialog(getString(R.string.app_name), getString(R.string.string_wrong_server_site), getString(R.string.string_ok), null, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                customDialog.dismiss();
-                            }
-                        }, null);
+                    @Override
+                    public void checkSSLError(ErrorDto errorData) {
+                        dismissProgressDialog();
+                        Toast.makeText(LoginActivity.this, "Cannot check ssl this domain!", Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    showAlertDialog(getString(R.string.app_name), error, getString(R.string.string_ok), null, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            customDialog.dismiss();
-                        }
-                    }, null);
-                }
+                });
+            } else {
+                showAlertDialog(getString(R.string.app_name), checkStringValue(domain, mUsername, mPassword), getString(R.string.string_ok), null, v1 -> customDialog.dismiss(), null);
             }
         });
 
         iv = findViewById(R.id.iv);
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                displayPass();
-            }
-        });
-
+        iv.setOnClickListener(v -> displayPass());
     }
 
     boolean isDisplayPass = true;
@@ -285,51 +222,25 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     }
 
     void autoLogin(String username, String password, String subDomain) {
-        password = "1";
-        if (subDomain.contains(".")) {
-            Log.d(TAG, "contains");
-        } else {
-            Log.d(TAG, "dont contains");
-            subDomain = subDomain + ".crewcloud.net";
-        }
-
+        Utils.setServerSite(subDomain);
         String error = checkStringValue(subDomain, username, password);
 
         if (TextUtils.isEmpty(error)) {
-            Log.d(TAG, "subDomain:" + subDomain);
-            // Module URL
-            server_site = getServerSite(subDomain);
-            if (!TextUtils.isEmpty(server_site)) {
-                if (!server_site.toLowerCase().startsWith("http")) {
-                    server_site = "http://" + server_site;
-                }
-            }
-            Log.d(TAG, "server_site:" + server_site);
-            // URL to login
-
-            String loginUrl = getLoginServerSite(subDomain);
-            Log.d(TAG, "loginUrl:" + loginUrl);
-            if (!TextUtils.isEmpty(loginUrl)) {
-                if (!loginUrl.toLowerCase().startsWith("http")) {
-                    loginUrl = "http://" + loginUrl;
-                }
-                showProgressDialog();
-                HttpOauthRequest.getInstance().autoLogin(LoginActivity.this, username, Build.VERSION.RELEASE, subDomain, loginUrl);
-            } else {
-                showAlertDialog(getString(R.string.app_name), getString(R.string.string_wrong_server_site), getString(R.string.string_ok), null, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        customDialog.dismiss();
-                    }
-                }, null);
-            }
-        } else {
-            showAlertDialog(getString(R.string.app_name), error, getString(R.string.string_ok), null, new View.OnClickListener() {
+            showProgressDialog();
+            HttpRequest.getInstance().checkSSL(new ICheckSSL() {
                 @Override
-                public void onClick(View v) {
-                    customDialog.dismiss();
+                public void hasSSL(boolean hasSSL) {
+                    HttpOauthRequest.getInstance().autoLogin(LoginActivity.this, username, Build.VERSION.RELEASE);
                 }
-            }, null);
+
+                @Override
+                public void checkSSLError(ErrorDto errorData) {
+                    dismissProgressDialog();
+                    Toast.makeText(LoginActivity.this, "Cannot check ssl this domain!", Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            showAlertDialog(getString(R.string.app_name), error, getString(R.string.string_ok), null, v -> customDialog.dismiss(), null);
         }
     }
 
@@ -348,15 +259,10 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         @Override
         public void onReceive(Context context, Intent intent) {
             String receiverPackageName = intent.getExtras().getString("receiverPackageName");
-            Log.d(TAG, "receiverPackageName:" + receiverPackageName);
             if (LoginActivity.this.getPackageName().equals(receiverPackageName)) {
-                //String senderPackageName = intent.getExtras().getString("senderPackageName");
                 String companyID = intent.getExtras().getString("companyID");
                 String userID = intent.getExtras().getString("userID");
                 if (!TextUtils.isEmpty(companyID) && !TextUtils.isEmpty(userID)) {
-
-                    Log.d(TAG, "companyID:" + companyID);
-                    Log.d(TAG, "userID:" + userID);
                     if (isAutoLogin) {
                         isAutoLogin = false;
                         showDialogAutoLogin(companyID, userID);
@@ -382,19 +288,12 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
 
         TextView btnYes = alertLayout.findViewById(R.id.btn_yes_auto);
         TextView btnNo = alertLayout.findViewById(R.id.btn_no_auto);
-        btnYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                autoLogin(UserID, "", companyID);
-            }
+        btnYes.setOnClickListener(view -> {
+            alertDialog.dismiss();
+            autoLogin(UserID, "", companyID);
         });
-        btnNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
+
+        btnNo.setOnClickListener(view -> alertDialog.dismiss());
     }
 
     private String checkStringValue(String server_site, String username, String password) {
@@ -427,58 +326,11 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         }
     }
 
-    private String getServerSite(String server_site) {
-        String[] domains = server_site.split("[.]");
-        String subDomain = "crewcloud";
-        if (server_site.equalsIgnoreCase("vn.bizsw.co.kr")) {
-            return "vn.bizsw.co.kr:8080";
-        }
-
-        if (domains.length <= 1 || subDomain.contains(domains[1])) {
-            return domains[0] + ".crewcloud.net";
-        } else {
-            return server_site;
-        }
-    }
-
-    private String getLoginServerSite(String server_site) {
-        String[] domains = server_site.split("[.]");
-        String subDomain = "crewcloud";
-        if (server_site.equalsIgnoreCase("vn.bizsw.co.kr")) {
-            return "vn.bizsw.co.kr:8080";
-        }
-
-        if (domains.length <= 1 || subDomain.contains(domains[1])) {
-            return "www.crewcloud.net";
-        } else {
-            return server_site;
-        }
-    }
-
     @Override
     public void onHTTPSuccess() {
-	        if (!TextUtils.isEmpty(server_site)) {
-            server_site.replace("http://", "");
+        prefs.putUserName(edtUserName.getText().toString().trim());
+        ServerSiteDBHelper.addServerSite(CrewChatApplication.getInstance().getPrefs().getServerSite());
 
-            if (!prefs.getServerSite().toLowerCase().equals(server_site.toLowerCase())) {
-
-                BelongsToDBHelper.clearBelong();
-                AllUserDBHelper.clearUser();
-                ChatRoomDBHelper.clearChatRooms();
-                ChatMessageDBHelper.clearMessages();
-                DepartmentDBHelper.clearDepartment();
-                UserDBHelper.clearUser();
-                FavoriteGroupDBHelper.clearGroups();
-                FavoriteUserDBHelper.clearFavorites();
-                CrewChatApplication.resetValue();
-            }
-            Log.d(TAG, "server_site:" + server_site);
-            prefs.putServerSite(server_site);
-            prefs.putUserName(username);
-
-            ServerSiteDBHelper.addServerSite(server_site);
-        }
-        //HttpOauthRequest.getInstance().insertPhoneToken();
         createGMC();
         loginSuccess();
     }
@@ -501,18 +353,15 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
 
             String first_login = Statics.FIRST_LOGIN;
             boolean isLogin = new Prefs().getBooleanValue(first_login, false);
-            Log.d(TAG, "isLogin:" + isLogin);
             if (isLogin) {
                 notNetwork();
             } else {
-                Log.d(TAG, "firstLogin");
                 dismissProgressDialog();
                 firstLogin = false;
                 findViewById(R.id.logo).setVisibility(View.GONE);
                 init();
             }
         } else {
-            Log.d(TAG, "not firstLogin");
             dismissProgressDialog();
             String error_msg = "";
             switch (errorDto.code) {
@@ -536,15 +385,9 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
                     break;
             }
             if (errorDto.getCode() == 1) {
-                Log.d(TAG, "error_msg:" + error_msg);
                 Toast.makeText(this, error_msg, Toast.LENGTH_SHORT).show();
             } else {
-                showAlertDialog(error_msg, getString(R.string.string_ok), "", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        customDialog.dismiss();
-                    }
-                });
+                showAlertDialog(error_msg, getString(R.string.string_ok), "", v -> customDialog.dismiss());
             }
         }
     }
@@ -581,14 +424,10 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
     protected void onShowKeyboard() {
         if (!hasScroll) {
             if (scrollView != null) {
-                scrollView.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        scrollView.scrollTo(0, Utils.getDimenInPx(R.dimen.scroll_height_login));
-                        if (v != null) {
-                            v.requestFocus();
-                        }
+                scrollView.post(() -> {
+                    scrollView.scrollTo(0, Utils.getDimenInPx(R.dimen.scroll_height_login));
+                    if (v != null) {
+                        v.requestFocus();
                     }
                 });
             }
@@ -649,7 +488,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
                 } else if (msg.what == ACTIVITY_HANDLER_START_UPDATE) {
                     if (!activity.isFinishing()) {
                         AlertDialogView.normalAlertDialogWithCancelWhite(activity, null, Utils.getString(R.string.string_update_content_new), Utils.getString(R.string.no), Utils.getString(R.string.yes), new AlertDialogView.OnAlertDialogViewClickEvent() {
-
                             @Override
                             public void onOkClick(DialogInterface alertDialog) {
                                 new WebClientAsyncTask(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -675,7 +513,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         isAutoLogin = false;
     }
 
-    private final ActivityHandler mActivityHandler = new ActivityHandler(this);
 
     // ----------------------------------------------------------------------------------------------
 
@@ -711,7 +548,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             FileOutputStream fileOutputStream = null;
 
             try {
-                Activity activity = mWeakActivity.get();
                 URL apkUrl = new URL(Constant.ROOT_URL_UPDATE + "/Android/Package/CrewChat.apk");
                 urlConnection = (HttpURLConnection) apkUrl.openConnection();
                 inputStream = urlConnection.getInputStream();
@@ -825,19 +661,14 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         final int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, LoginActivity.this,
-                                PLAY_SERVICES_RESOLUTION_REQUEST);
-                        errorDialog.show();
-                    }
+                runOnUiThread(() -> {
+                    errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, LoginActivity.this,
+                            PLAY_SERVICES_RESOLUTION_REQUEST);
+                    errorDialog.show();
                 });
 
             }
 
-            // Cheat google play service, return false when app is submit to play store
-            // return false;
             return true;
         }
         return true;
@@ -863,9 +694,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
                     return null;
                 }
                 regId = gcm.register(Statics.GOOGLE_SENDER_ID);
-                msg = "Device registered, registration ID=" + regId;
             } catch (IOException ex) {
-                msg = "Error :" + ex.getMessage();
             }
             return null;
         }
@@ -874,23 +703,17 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             new Prefs().setGCMregistrationid(regId);
             insertDevice(regId);
         }
-
     }
 
     private void insertDevice(final String regId) {
-        new Thread(new Runnable() {
+        new Thread(() -> HttpRequest.getInstance().InsertDevice(regId, new BaseHTTPCallBack() {
             @Override
-            public void run() {
-                HttpRequest.getInstance().InsertDevice(regId, new BaseHTTPCallBack() {
-                    @Override
-                    public void onHTTPSuccess() {
-                    }
-
-                    @Override
-                    public void onHTTPFail(ErrorDto errorDto) {
-                    }
-                });
+            public void onHTTPSuccess() {
             }
-        }).start();
+
+            @Override
+            public void onHTTPFail(ErrorDto errorDto) {
+            }
+        })).start();
     }
 }

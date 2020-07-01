@@ -239,9 +239,6 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
 
         }
 
-        Prefs prefs = CrewChatApplication.getInstance().getPrefs();
-        String companyName = prefs.getCompanyName();
-        Log.d(TAG, "companyName:" + companyName);
         tvCompanyNumber.setText(profileUserDTO.getCompanyPhone());
 
         String exPhone = profileUserDTO.getExtensionNumber();
