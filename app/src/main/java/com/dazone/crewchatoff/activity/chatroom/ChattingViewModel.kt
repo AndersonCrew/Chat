@@ -118,11 +118,11 @@ class ChattingViewModel : BaseViewModel() {
                                 }
                             }
                         } else {
-                            showError(ErrorDto().setMessage("Cannot fetch message form Server!"))
+                            Log.d("CHAT ROOM", "Cannot fetch message form Server!")
                         }
                     }
                 }, {
-                    showError(ErrorDto().setMessage("Cannot fetch message form Server!"))
+                    Log.d("CHAT ROOM", "Cannot fetch message form Server!")
                 }))
     }
 

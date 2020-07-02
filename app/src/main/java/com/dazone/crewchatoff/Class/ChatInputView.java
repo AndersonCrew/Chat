@@ -71,19 +71,16 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
         linearEmoji.setVisibility(View.GONE);
         mEmojiView = v.findViewById(R.id.emojicons);
 
-        edt_comment.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (linearEmoji.getVisibility() == View.VISIBLE) {
-                    linearEmoji.setVisibility(View.GONE);
-                }
-
-                if (selection_lnl.getVisibility() == View.VISIBLE) {
-                    selection_lnl.setVisibility(View.GONE);
-                }
-
-                return false;
+        edt_comment.setOnTouchListener((v1, event) -> {
+            if (linearEmoji.getVisibility() == View.VISIBLE) {
+                linearEmoji.setVisibility(View.GONE);
             }
+
+            if (selection_lnl.getVisibility() == View.VISIBLE) {
+                selection_lnl.setVisibility(View.GONE);
+            }
+
+            return false;
         });
     }
 

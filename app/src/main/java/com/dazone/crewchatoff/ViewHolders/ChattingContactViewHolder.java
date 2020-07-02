@@ -61,13 +61,10 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
 
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);
-        date_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Constant.INTENT_GOTO_UNREAD_ACTIVITY);
-                intent.putExtra(Statics.MessageNo, dto.getMessageNo());
-                BaseActivity.Instance.sendBroadcast(intent);
-            }
+        date_tv.setOnClickListener(v -> {
+            Intent intent = new Intent(Constant.INTENT_GOTO_UNREAD_ACTIVITY);
+            intent.putExtra(Statics.MessageNo, dto.getMessageNo());
+            BaseActivity.Instance.sendBroadcast(intent);
         });
         if (dto.getUnReadCount() == 0) {
             tvUnread.setVisibility(View.GONE);

@@ -111,6 +111,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         showLoading();
     }
 
+
     private void getDataFromClient(List<TreeUserDTOTemp> listOfUsers) {
         dataSet.clear();
         List<TreeUserDTOTemp> list1;
@@ -140,6 +141,8 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             if (Constant.isAddChattingDto(chattingDto) && chattingDto.getListTreeUser() != null && chattingDto.getListTreeUser().size() > 0)
                 dataSet.add(chattingDto);
         }
+
+        getUserStatus();
 
         if (dataSet != null && dataSet.size() > 0) {
             countDataFromServer(true);
@@ -429,8 +432,8 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             }
         }
 
-        if(!isFirstTime) {
-            init();
+        if(listOfUsers != null) {
+            getChatList(listOfUsers);
         }
     }
 
@@ -671,43 +674,34 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 MainActivity.instance.showPAB();
             }
         }
-
-        getUserStatus();
     }
 
     public void getUserStatus() {
-        new getStatus(new onStatus() {
-            @Override
-            public void finishStatus() {
-                if (dataSet != null && dataSet.size() > 0) {
-                    for (ChattingDto dto : dataSet) {
-                        if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0 && dto.getListTreeUser().size() < 2) {
-                            int userNo = dto.getListTreeUser().get(0).getUserNo();
-                            for (TreeUserDTOTemp obj : listOfUsers) {
-                                int stt = obj.getStatus();
-                                int uN = obj.getUserNo();
-                                if (userNo == uN) {
-                                    dto.setStatus(stt);
-                                    break;
-                                }
+        new getStatus(() -> {
+            if (dataSet != null && dataSet.size() > 0) {
+                for (ChattingDto dto : dataSet) {
+                    if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0 && dto.getListTreeUser().size() < 2) {
+                        int userNo = dto.getListTreeUser().get(0).getUserNo();
+                        for (TreeUserDTOTemp obj : listOfUsers) {
+                            int stt = obj.getStatus();
+                            int uN = obj.getUserNo();
+                            if (userNo == uN) {
+                                dto.setStatus(stt);
+                                break;
                             }
                         }
                     }
-                    rvMainList.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapterList.notifyDataSetChanged();
-                        }
-                    }, 100);
+                }
+
+                rvMainList.postDelayed(() -> adapterList.notifyDataSetChanged(), 100);
 
 
-                    if (RecentFavoriteFragment.instance != null) {
-                        RecentFavoriteFragment.instance.updateSTT(listOfUsers);
-                    }
+                if (RecentFavoriteFragment.instance != null) {
+                    RecentFavoriteFragment.instance.updateSTT(listOfUsers);
                 }
-                if (CompanyFragment.instance != null) {
-                    CompanyFragment.instance.updateListStatus(listOfUsers);
-                }
+            }
+            if (CompanyFragment.instance != null) {
+                CompanyFragment.instance.updateListStatus(listOfUsers);
             }
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

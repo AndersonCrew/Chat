@@ -436,7 +436,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 case MotionEvent.ACTION_DOWN:
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.d(TAG, "ACTION_UP");
                     if (!isThreadRunning) {
                         Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.press_hold), Toast.LENGTH_SHORT).show();
                     }
@@ -444,6 +443,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                     break;
             }
             return false;
+        });
+
+        rlNewMessage.setOnClickListener(v -> {
+            hideNewMessage();
+            scrollToEndList();
         });
     }
 
@@ -513,12 +517,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
             chattingDto.setAttachFileSize((int) file.length());
             chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
-
-            addNewRowFromChattingActivity(chattingDto);
-
             chattingDto.setPositionUploadImage(dataSet.size() - 1);
             integerList.add(chattingDto);
-            sendFileWithQty_v2(integerList, 0);
+
+            addNewRowFromChattingActivity(chattingDto);
         } else {
             Toast.makeText(getActivity(), getResources().getString(R.string.can_not_send_this_file) + " " + filename, Toast.LENGTH_SHORT).show();
         }
@@ -858,6 +860,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void updateMessageSendFile(ChattingDto chattingDto) {
+        view.linearEmoji.setVisibility(View.GONE);
         UserDto user = new UserDto(String.valueOf(Utils.getCurrentUser().Id), Utils.getCurrentUser().FullName, Utils.getCurrentUser().avatar);
         chattingDto.setUser(user);
         chattingDto.setContent(chattingDto.getMessage());
@@ -875,6 +878,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void updateSendFail(ChattingDto dto) {
+        view.linearEmoji.setVisibility(View.GONE);
         sendComplete = false;
         isSend = true;
         Iterator<ChattingDto> it = dataSet.iterator();
@@ -891,6 +895,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void updateSendSuccess (ChattingDto dto) {
+        view.linearEmoji.setVisibility(View.GONE);
         sendComplete = false;
         isSend = true;
         int position = 0;
@@ -1312,19 +1317,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         intent.putExtra("userNos", userNos);
         intent.putExtra(Statics.ROOM_NO, roomNo);
         startActivity(intent);
-    }
-
-    public void sendFileWithQty_v2(final List<ChattingDto> integerList,
-                                   final int index) {
-
-        new Handler().postDelayed(() -> {
-            if (integerList == null || integerList.size() == 0 || index >= integerList.size())
-                return;
-
-
-            //TODO SEND AUDIO
-            //SendTo(integerList.get(index), integerList.get(index).getPositionUploadImage());
-        }, 500);
     }
 
     public void SendTo(ChattingDto chattingDto, ProgressBar progressBar) {

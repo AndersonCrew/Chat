@@ -239,9 +239,6 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
 
         if (dto.getMessage() != null) {
             String message = dto.getMessage();
-            long regDateContent = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
-            SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
-            String dateStr = "[ " + formatter.format(regDateContent) + " ] - ";
             try {
                 Spanned msg;
                 if (dto.getType() == Constant.APPROVAL) {
@@ -274,7 +271,7 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                 } else {
                     content_tv.setAutoLinkMask(Linkify.ALL);
                     content_tv.setLinksClickable(true);
-                    content_tv.setText(dateStr + dto.getMessage());
+                    content_tv.setText(dto.getMessage());
                 }
 
 
@@ -327,9 +324,9 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
         });
 
         // Set event listener for failed message
-        btnResend.setImageDrawable(dto.isSendding ? CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.icon_loadding) :
-                CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
         if (btnResend != null) {
+            btnResend.setImageDrawable(dto.isSendding ? CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.icon_loadding) :
+                    CrewChatApplication.getInstance().getResources().getDrawable(R.drawable.chat_ic_refresh));
             btnResend.setTag(dto.getId());
             btnResend.setOnClickListener(v -> {
                 // sendComplete=true;

@@ -1061,24 +1061,9 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                 dto.setRoomNo(roomNo);
                 dto.setWriterUser(Utils.getCurrentId());
                 dto.setRegDate(Utils.getTimeNewChat(diffTime));
-                HttpRequest.getInstance().SendChatMsg(roomNo, contact.getPhone(0) == null ? contact.getDisplayName() : contact.getDisplayName() + "\n" + contact.getPhone(0), new SendChatMessage() {
-                    @Override
-                    public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
-                        dto.setHasSent(true);
-                        dto.setMessage(chattingDto.getMessage());
-                        dto.setMessageNo(chattingDto.getMessageNo());
-                        dto.setmType(Statics.CHATTING_VIEW_TYPE_CONTACT);
-                        dto.setUnReadCount(chattingDto.getUnReadCount());
-                        String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
-                        dto.setRegDate(time);
-                        ChattingFragment.instance.addNewRowFromChattingActivity(dto);
-                    }
-
-                    @Override
-                    public void onSendChatMessageFail(ErrorDto errorDto, String url) {
-                        Toast.makeText(getApplicationContext(), "Send message failed !", Toast.LENGTH_LONG).show();
-                    }
-                });
+                dto.setPositionUploadImage(new Random().nextInt(1000));
+                ChattingFragment.instance.addNewRowFromChattingActivity(dto);
+                ChattingFragment.instance.reSendMessage(dto);
 
                 try {
                     Thread.sleep(diffTime);
