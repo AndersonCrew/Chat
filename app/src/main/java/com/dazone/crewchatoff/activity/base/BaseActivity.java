@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.constant.Statics;
-import com.dazone.crewchatoff.eventbus.CloseScreen;
 import com.dazone.crewchatoff.eventbus.RotationAction;
 import com.dazone.crewchatoff.services.NetworkStateReceiver;
 import com.dazone.crewchatoff.utils.Constant;
@@ -176,13 +175,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     public void showAlertDialog(String content, String positiveTitle,
                                 String negativeTitle, View.OnClickListener positiveListener) {
         showAlertDialog(getString(R.string.app_name), content, positiveTitle, negativeTitle,
-                positiveListener, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        customDialog.dismiss();
-
-                    }
-                });
+                positiveListener, v -> customDialog.dismiss());
     }
 
     public void rotationSetting() {
@@ -209,7 +202,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     public void networkAvailable() {
         if (isDisConnect) {
             sendComplete=false;
-            EventBus.getDefault().post(new CloseScreen());
             isDisConnect=false;
         }
     }

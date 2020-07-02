@@ -590,9 +590,7 @@ public class HttpRequest {
         webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
             @Override
             public void onSuccess(String response) {
-                Log.d(TAG, "SendChatMsg onSuccess");
                 ChattingDto chattingDto = new Gson().fromJson(response, ChattingDto.class);
-                SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
                 if (sendChatMessage != null)
                     sendChatMessage.onSendChatMessageSuccess(chattingDto);
             }
@@ -600,38 +598,6 @@ public class HttpRequest {
             @Override
             public void onFailure(ErrorDto error) {
                 Log.d(TAG, "SendChatMsg error");
-                if (sendChatMessage != null)
-                    sendChatMessage.onSendChatMessageFail(error, url);
-            }
-        });
-    }
-
-    public void SendChatAttachFile(long RoomNo, int attachNo, final SendChatMessage sendChatMessage) {
-        final String url = root_link + Urls.URL_ROOT_2;
-        Map<String, String> params = new HashMap<>();
-        Map<Object, Object> params2 = new HashMap<>();
-        params.put("command", "" + Urls.URL_SEND_ATTACH_FILE_TIME);
-        params.put("sessionId", "" + CrewChatApplication.getInstance().getPrefs().getaccesstoken());
-        params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
-        params.put("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes());
-        params2.put("roomNo", RoomNo);
-        params2.put("attachNo", attachNo);
-        params2.put("regDate", CrewChatApplication.getInstance().getTimeServer());
-
-        Gson gson = new Gson();
-        String js = gson.toJson(params2);
-        params.put("reqJson", js);
-        WebServiceManager webServiceManager = new WebServiceManager();
-        webServiceManager.doJsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new WebServiceManager.RequestListener<String>() {
-            @Override
-            public void onSuccess(String response) {
-                ChattingDto chattingDto = new Gson().fromJson(response, ChattingDto.class);
-                if (sendChatMessage != null)
-                    sendChatMessage.onSendChatMessageSuccess(chattingDto);
-            }
-
-            @Override
-            public void onFailure(ErrorDto error) {
                 if (sendChatMessage != null)
                     sendChatMessage.onSendChatMessageFail(error, url);
             }

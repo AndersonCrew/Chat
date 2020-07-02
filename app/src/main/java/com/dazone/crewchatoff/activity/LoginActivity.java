@@ -328,7 +328,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
 
     @Override
     public void onHTTPSuccess() {
-        prefs.putUserName(edtUserName.getText().toString().trim());
         ServerSiteDBHelper.addServerSite(CrewChatApplication.getInstance().getPrefs().getServerSite());
 
         createGMC();

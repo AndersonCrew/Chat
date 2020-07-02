@@ -5,20 +5,15 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableString;
@@ -45,10 +40,8 @@ import com.dazone.crewchatoff.Class.ChatInputView;
 import com.dazone.crewchatoff.Enumeration.ChatMessageType;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.ViewHolders.ChattingSelfFileViewHolder;
 import com.dazone.crewchatoff.activity.ChatViewImageActivity;
 import com.dazone.crewchatoff.activity.ChattingActivity;
-import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.UnreadActivity;
 import com.dazone.crewchatoff.activity.chatroom.ChattingViewModel;
 import com.dazone.crewchatoff.adapter.ChattingAdapter;
@@ -69,9 +62,6 @@ import com.dazone.crewchatoff.dto.UserDto;
 import com.dazone.crewchatoff.eventbus.ReceiveMessage;
 import com.dazone.crewchatoff.eventbus.ReloadListMessage;
 import com.dazone.crewchatoff.interfaces.ILayoutChange;
-import com.dazone.crewchatoff.interfaces.ILoadImage;
-import com.dazone.crewchatoff.interfaces.OnGetChatMessage;
-import com.dazone.crewchatoff.interfaces.OnGetMessageUnreadCountCallBack;
 import com.dazone.crewchatoff.interfaces.SendChatMessage;
 import com.dazone.crewchatoff.socket.NetClient;
 import com.dazone.crewchatoff.utils.Constant;
@@ -87,13 +77,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -101,12 +87,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import static com.dazone.crewchatoff.activity.MainActivity.mSelectedImage;
-import static com.dazone.crewchatoff.activity.MainActivity.type;
 import static com.dazone.crewchatoff.database.ChatMessageDBHelper.addMessage;
 
 public class ChattingFragment extends ListFragment<ChattingDto> implements View.OnClickListener, EmojiView.EventListener, View.OnKeyListener, TextView.OnEditorActionListener {
@@ -131,7 +114,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     private Prefs mPrefs;
     public static boolean sendComplete = false;
-    int sendTo = 0;
     public static boolean isSend = true;
     public static long msgEnd = -1;
     int recordTouch = 0;
@@ -211,14 +193,14 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ChattingViewModel.class);
 
-        /*Handler Error*/
+        /**Handler Error*/
         viewModel.getEventError().observe(this, error -> {
             if (error != null && error.message != null) {
                 Utils.showMessage(error.message);
             }
         });
 
-        /*Handler Get ListChat*/
+        /**Handler Get ListChat*/
         viewModel.getListChatting().observe(this, list -> {
             if (list != null && list.size() > 0) {
                 getActivity().runOnUiThread(() -> {
@@ -236,7 +218,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         });
 
-        /*Handler Loadmore*/
+        /**Handler Loadmore*/
         viewModel.getListChattingLoadmore().observe(this, listNew -> {
             isLoading = false;
             if (listNew.size() > 0) {
@@ -254,7 +236,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         });
 
-        /*Handler MessageUnreadCount*/
+        /**Handler MessageUnreadCount*/
         viewModel.getListMessageUnReadCount().observe(this, list -> {
             getActivity().runOnUiThread(() -> {
                 if (list != null && list.size() > 0) {
@@ -275,6 +257,28 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 }
             });
 
+        });
+
+        /**Handler Send Attach Success*/
+        viewModel.getAttachFile().observe(this, attachFile -> {
+            if (attachFile != null) {
+                Log.d("SEND FILE", "sendAttachFile observe positionUploadImage =  " + attachFile.getPositionUploadImage() + " AttachNo = " + attachFile.getAttachNo());
+                updateMessageSendFile(attachFile);
+                notifyToCurrentChatList(attachFile);
+            }
+        });
+
+        /**Handle send message fail*/
+        viewModel.getDtoFailed().observe(this, dto -> {
+            updateSendFail(dto);
+            Log.d("CHAT ROOM", "Send Message Fail");
+        });
+
+        /**Handle send normal message*/
+        viewModel.getNormalMessage().observe(this, dto -> {
+            notifyToCurrentChatList(dto);
+            updateSendSuccess(dto);
+            Log.d("CHAT ROOM", "Send Message Success");
         });
 
     }
@@ -550,7 +554,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             try {
                 recorder.prepare();
                 recorder.start();
-                Log.d(TAG, "Start Recording");
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -830,15 +833,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         }
 
         if (isUpdate) {
-            if (CurrentChatListFragment.fragment != null) {
-                try {
-                    ChattingDto dt = (ChattingDto) chattingDto.clone();
-                    dt.setUnReadCount(0);
-                    CurrentChatListFragment.fragment.updateData(dt);
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
-            }
+            notifyToCurrentChatList(chattingDto);
         }
 
         chattingDto.setUser(user);
@@ -856,141 +851,59 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         }
 
         dataSet.add(chattingDto);
-        Collections.sort(dataSet, mComparator);
 
         if (isFromNotification) {
             isFromNotification = false;
         }
     }
 
-    public void addNewChat(ChattingDto chattingDto, int position, WatingUpload callBack) {
-        UserDto user = null;
-        UserDto temp = Utils.getCurrentUser();
-        switch (chattingDto.getType()) {
-            case 0:
-                if (chattingDto.getWriterUser() == userID) {
-                    user = new UserDto(String.valueOf(temp.Id), temp.FullName, temp.avatar);
-                    boolean isCheck = false;
-                    if (dataSet != null && dataSet.size() > 0) {
-                        isCheck = Utils.getChattingType(chattingDto, dataSet.get(dataSet.size() - 1));
-                    }
-                    if (isCheck) {
-                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELF_NOT_SHOW);
-                    } else {
-                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELF);
-                    }
-                } else {
-                    TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(listTemp, chattingDto.getWriterUser());
-                    if (treeUserDTOTemp != null)
-                        user = new UserDto(String.valueOf(treeUserDTOTemp.getUserNo()), treeUserDTOTemp.getName(), treeUserDTOTemp.getAvatarUrl());
-
-                    boolean isCheck = false;
-                    if (dataSet != null && dataSet.size() > 0) {
-                        isCheck = Utils.getChattingType(chattingDto, dataSet.get(dataSet.size() - 1));
-                    }
-                    if (isCheck) {
-                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_PERSON_NOT_SHOW);
-                    } else {
-                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_PERSON);
-                    }
-                }
-                break;
-            case 1:
-                if (chattingDto.getWriterUser() == userID) {
-                    user = new UserDto(String.valueOf(temp.Id), temp.FullName, temp.avatar);
-                } else {
-                    TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(listTemp, chattingDto.getWriterUser());
-                    if (treeUserDTOTemp != null)
-                        user = new UserDto(String.valueOf(treeUserDTOTemp.getUserNo()), treeUserDTOTemp.getName(), treeUserDTOTemp.getAvatarUrl());
-                }
-                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_GROUP_NEW);
-                break;
-            case 2:
-                if (chattingDto.getWriterUser() == userID) {
-                    user = new UserDto(String.valueOf(temp.Id), temp.FullName, temp.avatar);
-                    if (chattingDto.getAttachInfo() != null) {
-                        if (chattingDto.getAttachInfo().getType() == 1)
-                            chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELF_IMAGE);
-                        else {
-                            // Check is video or normal file
-                            String filename = chattingDto.getAttachInfo().getFileName();
-                            if (Utils.isVideo(filename)) {
-                                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELF_VIDEO);
-                            } else {
-                                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELF_FILE);
-                            }
-                        }
-                    }
-                } else {
-                    TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(listTemp, chattingDto.getWriterUser());
-                    if (treeUserDTOTemp != null)
-                        user = new UserDto(String.valueOf(treeUserDTOTemp.getUserNo()), treeUserDTOTemp.getName(), treeUserDTOTemp.getAvatarUrl());
-                    if (chattingDto.getAttachInfo() != null)
-                        if (chattingDto.getAttachInfo().getType() == 1) {
-                            boolean isCheck = false;
-                            if (dataSet != null && dataSet.size() > 0) {
-                                isCheck = Utils.getChattingType(chattingDto, dataSet.get(dataSet.size() - 1));
-                            }
-                            if (isCheck) {
-                                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_PERSON_IMAGE_NOT_SHOW);
-                            } else {
-                                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_PERSON_IMAGE);
-                            }
-                        } else {
-                            boolean isCheck = false;
-                            if (dataSet != null && dataSet.size() > 0) {
-                                isCheck = Utils.getChattingType(chattingDto, dataSet.get(dataSet.size() - 1));
-                            }
-                            if (isCheck) {
-                                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_PERSON_FILE_NOT_SHOW);
-                            } else {
-                                // Check is video or normal file
-                                String filename = chattingDto.getAttachInfo().getFileName();
-                                if (Utils.isVideo(filename)) {
-                                    chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_PERSON_VIDEO_NOT_SHOW);
-                                } else {
-                                    chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_PERSON_FILE);
-                                }
-                            }
-                        }
-                }
-                break;
-            default:
-                if (chattingDto.getWriterUser() == userID) {
-                    user = new UserDto(String.valueOf(temp.Id), temp.FullName, temp.avatar);
-                    chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELF);
-                } else {
-                    TreeUserDTOTemp treeUserDTOTemp = Utils.GetUserFromDatabase(listTemp, chattingDto.getWriterUser());
-                    if (treeUserDTOTemp != null)
-                        user = new UserDto(String.valueOf(treeUserDTOTemp.getUserNo()), treeUserDTOTemp.getName(), treeUserDTOTemp.getAvatarUrl());
-                    chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_PERSON);
-                }
-                break;
-        }
-
-        if (chattingDto.getType() == 2) {
-            if (chattingDto.getAttachInfo() == null) {
-                return;
-            }
-        }
-
-        if (CurrentChatListFragment.fragment != null) {
-            try {
-                ChattingDto dt = (ChattingDto) chattingDto.clone();
-                dt.setUnReadCount(0);
-                CurrentChatListFragment.fragment.updateData(dt);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-        }
-
+    private void updateMessageSendFile(ChattingDto chattingDto) {
+        UserDto user = new UserDto(String.valueOf(Utils.getCurrentUser().Id), Utils.getCurrentUser().FullName, Utils.getCurrentUser().avatar);
         chattingDto.setUser(user);
         chattingDto.setContent(chattingDto.getMessage());
 
+        int position = 0;
+        for (int i = 0; i < dataSet.size(); i++) {
+            if (dataSet.get(i).getPositionUploadImage() == chattingDto.getPositionUploadImage()) {
+                position = i;
+                break;
+            }
+        }
 
         dataSet.set(position, chattingDto);
         adapterList.notifyItemChanged(position);
-        if (callBack != null) callBack.onFinish();
+    }
+
+    private void updateSendFail(ChattingDto dto) {
+        sendComplete = false;
+        isSend = true;
+        Iterator<ChattingDto> it = dataSet.iterator();
+        while (it.hasNext()) {
+            ChattingDto chat = it.next();
+            if (chat.getPositionUploadImage() == dto.getPositionUploadImage() && roomNo == dto.getRoomNo()) {
+                chat.setHasSent(false);
+                chat.isSendding = false;
+                break;
+            }
+        }
+
+        adapterList.notifyDataSetChanged();
+    }
+
+    private void updateSendSuccess (ChattingDto dto) {
+        sendComplete = false;
+        isSend = true;
+        int position = 0;
+        Iterator<ChattingDto> it = dataSet.iterator();
+        while (it.hasNext()) {
+            ChattingDto chat = it.next();
+            if (chat.getPositionUploadImage() == dto.getPositionUploadImage() && roomNo == dto.getRoomNo()) {
+                position = dataSet.indexOf(chat);
+                break;
+            }
+        }
+
+        adapterList.notifyItemChanged(position);
     }
 
     private void initData(List<ChattingDto> list) {
@@ -1032,47 +945,23 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             newDto.setUserNo(userID);
             newDto.setType(Statics.MESSAGE_TYPE_NORMAL);
             newDto.setRoomNo(roomNo);
+            newDto.setmType(Statics.CHATTING_VIEW_TYPE_SELF_NOT_SHOW);
             newDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
             newDto.setWriterUser(userID);
             newDto.setHasSent(true);
-            newDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault( TimeUtils.getTime(dataSet.get(dataSet.size() - 1).getRegDate()) + 100 + ""));
+            newDto.setRegDate(Utils.getTimeNewChat(0));
+            newDto.setPositionUploadImage(new Random().nextInt(1000));
             newDto.setId(new Random().nextInt());
             newDto.isSendding = true;
 
-
-            addNewChat(newDto, true, false);
-            adapterList.notifyDataSetChanged();
-
-            HttpRequest.getInstance().SendChatMsg(roomNo, message, new SendChatMessage() {
-                @Override
-                public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
-                    isSend = true;
-                    newDto.setHasSent(true);
-                    newDto.setMessageNo(chattingDto.getMessageNo());
-                    newDto.setUnReadCount(chattingDto.getUnReadCount());
-                    newDto.setRegDate(chattingDto.getRegDate());
-                    newDto.setStrRegDate(chattingDto.getStrRegDate());
-
-                    notifyItemInserted();
-                    sendComplete = false;
-                }
-
-                @Override
-                public void onSendChatMessageFail(ErrorDto errorDto, String url) {
-                    newDto.isSendding = false;
-                    sendComplete = false;
-                    isSend = true;
-                    if (Utils.isNetworkAvailable()) {
-                        newDto.setHasSent(true);
-                    } else {
-                        newDto.setUnReadCount(0);
-                        newDto.setHasSent(false);
-                    }
-
-                    adapterList.notifyDataSetChanged();
-                }
-            });
+            dataSet.add(newDto);
+            scrollToEndList();
+            viewModel.sendNormalMessage(roomNo, message, newDto);
         }
+    }
+
+    public void reSendMessage(ChattingDto newDto) {
+        viewModel.sendNormalMessage(roomNo, newDto.getMessage(), newDto);
     }
 
     @Override
@@ -1326,17 +1215,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         viewModel.updateMessageUnReadCount(roomNo, userID, dataDto.getStrRegDate(), true);
         if (dataSet != null) {
             for (ChattingDto chattingDto : dataSet) {
-                if (chattingDto.getMessageNo() == dataDto.getMessageNo() && dataDto.getRoomNo() == roomNo ) {
+                if (chattingDto.getMessageNo() == dataDto.getMessageNo() && dataDto.getRoomNo() == roomNo) {
                     return;
                 }
             }
-        }
-
-        if (isSendingFile && dataDto != null
-                && dataDto.getAttachFileName() != null
-                && dataDto.getAttachFileName().length() > 0
-                && dataDto.getWriterUser() == Utils.getCurrentId()) {
-            return;
         }
 
 
@@ -1362,26 +1244,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 notifyItemInserted();
             }
 
-            if (CurrentChatListFragment.fragment != null) {
-                try {
-                    ChattingDto dt = (ChattingDto) dataDto.clone();
-                    dt.setUnReadCount(0);
-                    CurrentChatListFragment.fragment.updateData(dt);
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
-            }
+            notifyToCurrentChatList(dataDto);
         } else {
             dataDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dataDto.getRegDate()));
-            if (CurrentChatListFragment.fragment != null) {
-                try {
-                    ChattingDto dt = (ChattingDto) dataDto.clone();
-                    dt.setUnReadCount(0);
-                    CurrentChatListFragment.fragment.updateData(dt);
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
-            }
+            notifyToCurrentChatList(dataDto);
         }
     }
 
@@ -1406,38 +1272,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             } else {
                 view.linearEmoji.setVisibility(View.GONE);
             }
-    }
-
-    private boolean isSendingFile = false;
-
-    public void sendAttachFile(int attachNo, long roomNo, final int position, final WatingUpload callBack, final ChattingDto chattingDto) {
-        isSendingFile = true;
-        HttpRequest.getInstance().SendChatAttachFile(roomNo, attachNo, new SendChatMessage() {
-            @Override
-            public void onSendChatMessageSuccess(final ChattingDto dto) {
-                isSendingFile = false;
-                progressBar.setVisibility(View.GONE);
-                if (CurrentChatListFragment.fragment != null) {
-                    try {
-                        ChattingDto dt = (ChattingDto) dto.clone();
-                        dt.setUnReadCount(0);
-                        CurrentChatListFragment.fragment.updateData(dt);
-                    } catch (CloneNotSupportedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                dto.setLastedMsgAttachType(chattingDto.getLastedMsgAttachType());
-                dto.setLastedMsgType(chattingDto.getLastedMsgType());
-                addNewChat(dto, position, callBack);
-            }
-
-            @Override
-            public void onSendChatMessageFail(ErrorDto errorDto, String url) {
-                isSendingFile = false;
-                progressBar.setVisibility(View.GONE);
-            }
-        });
     }
 
     @Override
@@ -1472,10 +1306,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         return false;
     }
 
-    public interface WatingUpload {
-        void onFinish();
-    }
-
     public void goToUnreadActivity(long msgNo) {
         Intent intent = new Intent(getActivity(), UnreadActivity.class);
         intent.putExtra(Statics.MessageNo, msgNo);
@@ -1491,38 +1321,18 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             if (integerList == null || integerList.size() == 0 || index >= integerList.size())
                 return;
 
-            final int pos = integerList.get(index).getPositionUploadImage();
 
-            RecyclerView.ViewHolder holder = rvMainList.findViewHolderForAdapterPosition(pos);
-            ProgressBar progressBar = null;
-            if (holder != null && holder instanceof ChattingSelfFileViewHolder)
-                progressBar = ((ChattingSelfFileViewHolder) holder).getProgressBar();
-
-            SendTo(integerList.get(index), progressBar, integerList.get(index).getPositionUploadImage(), () -> {
-                int next = index + 1;
-                if (next < integerList.size())
-                    sendFileWithQty_v2(integerList, next);
-            });
+            //TODO SEND AUDIO
+            //SendTo(integerList.get(index), integerList.get(index).getPositionUploadImage());
         }, 500);
     }
 
-    public void sendFileWithQty(final List<ChattingDto> integerList, final int index) {
-        if (integerList == null || integerList.size() == 0 || index >= integerList.size())
-            return;
-        SendTo(integerList.get(index), null, integerList.get(index).getPositionUploadImage(), () -> {
-            int next = index + 1;
-            if (next < integerList.size())
-                sendFileWithQty(integerList, next);
-        });
-    }
-
-    public void SendTo(ChattingDto chattingDto, ProgressBar progressBar, int position, WatingUpload callBack) {
-        sendTo++;
+    public void SendTo(ChattingDto chattingDto, ProgressBar progressBar) {
         if (view != null) {
             view.selection_lnl.setVisibility(View.GONE);
         }
 
-        new SendToServer(chattingDto, progressBar, position, callBack).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new SendToServer(chattingDto, progressBar).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
@@ -1543,14 +1353,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     public class SendToServer extends AsyncTask<Void, Void, Integer> {
         private ChattingDto chattingDto;
         private ProgressBar progressBar;
-        private int position;
-        private WatingUpload callBack;
 
-        private SendToServer(ChattingDto chattingDto, ProgressBar progressBar, int position, WatingUpload callBack) {
+        private SendToServer(ChattingDto chattingDto, ProgressBar progressBar) {
             this.chattingDto = chattingDto;
             this.progressBar = progressBar;
-            this.position = position;
-            this.callBack = callBack;
         }
 
         @Override
@@ -1595,7 +1401,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            sendAttachFile(integer, roomNo, position, callBack, chattingDto);
+            viewModel.sendAttachFile(integer, roomNo, chattingDto);
         }
     }
 
@@ -1610,7 +1416,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             isLoading = true;
             hasLoadMore = true;
 
-            if(Utils.isNetworkAvailable()) {
+            if (Utils.isNetworkAvailable()) {
                 viewModel.getChatList(dataSet.get(0).getStrRegDate(), roomNo, ChatMessageDBHelper.BEFORE, userID, null);
             } else {
                 viewModel.loadMoreLocal(roomNo, dataSet.get(0).getMessageNo());
@@ -1619,11 +1425,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void refFreshData() {
-        try {
-            initData(dataSet);
-            adapterList.notifyDataSetChanged();
-        } catch (Exception e) {
-        }
+        initData(dataSet);
+        adapterList.notifyDataSetChanged();
     }
 
     public void ViewImageFull(ChattingDto chattingDto) {
@@ -1649,5 +1452,17 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         Intent intent = new Intent(mActivity, ChatViewImageActivity.class);
         intent.putExtra(Statics.CHATTING_DTO_GALLERY_POSITION, position);
         mActivity.startActivity(intent);
+    }
+
+    private void notifyToCurrentChatList(ChattingDto dto) {
+        if (CurrentChatListFragment.fragment != null) {
+            try {
+                ChattingDto dt = (ChattingDto) dto.clone();
+                dt.setUnReadCount(0);
+                CurrentChatListFragment.fragment.updateData(dt);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

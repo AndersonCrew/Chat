@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -19,7 +18,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +35,7 @@ import android.widget.Toast;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.base.BaseSingleStatusActivity;
+import com.dazone.crewchatoff.constant.Config;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.ChatMessageDBHelper;
@@ -47,7 +46,6 @@ import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.ErrorDto;
 import com.dazone.crewchatoff.dto.TreeUserDTOTemp;
 import com.dazone.crewchatoff.dto.UserDto;
-import com.dazone.crewchatoff.eventbus.CloseScreen;
 import com.dazone.crewchatoff.fragment.ChattingFragment;
 import com.dazone.crewchatoff.fragment.CompanyFragment;
 import com.dazone.crewchatoff.fragment.CurrentChatListFragment;
@@ -65,15 +63,13 @@ import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.onegravity.contactpicker.contact.Contact;
 import com.onegravity.contactpicker.core.ContactPickerActivity;
 
-import org.greenrobot.eventbus.Subscribe;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import static com.dazone.crewchatoff.constant.Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO;
 
@@ -136,7 +132,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        getTimeServer();
         if (CompanyFragment.instance != null)
             treeUserDTOTempArrayList = CompanyFragment.instance.getUser();
         if (treeUserDTOTempArrayList == null || treeUserDTOTempArrayList.size() == 0)
@@ -429,277 +424,48 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult");
+        if (fragment == null || data == null) {
+            return;
+        }
+
         if (resultCode == Activity.RESULT_OK) {
-            if (fragment != null) {
-                if (fragment.view != null && fragment.view.selection_lnl.getVisibility() == View.VISIBLE) {
-                    fragment.view.selection_lnl.setVisibility(View.GONE);
-                }
-            }
+            fragment.view.selection_lnl.setVisibility(View.GONE);
             switch (requestCode) {
                 case Statics.ADD_USER_SELECT:
                     activityResultAddUser(data);
                     break;
 
                 case Statics.IMAGE_ROTATE_CODE:
-                    if (data != null) {
-                        String path = data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE);
-
-                        // Add image to gallery album
-                        galleryAddPic(path);
-
-                        ChattingDto chattingDto = new ChattingDto();
-                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
-                        chattingDto.setAttachFilePath(path);
-                        chattingDto.setRoomNo(chattingDto.getRoomNo());
-                        chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
-                        chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
-
-
-                        chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
-                        ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-                        Log.d(TAG, "addNewRow 1");
-
-
-                        if (ChattingFragment.instance != null) {
-                            List<ChattingDto> integerList = new ArrayList<>();
-                            chattingDto.setPositionUploadImage(ChattingFragment.instance.dataSet.size() - 1);
-                            integerList.add(chattingDto);
-                            ChattingFragment.instance.sendFileWithQty(integerList, 0);
-                        }
-                    }
+                    handleImageRotate(data);
                     break;
 
                 case Statics.CAMERA_CAPTURE_IMAGE_REQUEST_CODE:
-                    Log.d(TAG, "CAMERA_CAPTURE_IMAGE_REQUEST_CODE");
-                    if (uri != null) {
-                        String path = Utils.getPathFromURI(uri, this);
-                        // Processing to rotate Image
-                        Intent intent = new Intent(this, RotateImageActivity.class);
-                        intent.putExtra(Statics.CHATTING_DTO_GALLERY_SINGLE, path);
-                        String currentTime = System.currentTimeMillis() + "";
-                        intent.putExtra(Statics.CHATTING_DTO_REG_DATE, currentTime);
-                        startActivityForResult(intent, Statics.IMAGE_ROTATE_CODE);
-                    }
+                    handleCameraCapture();
                     break;
 
                 case Statics.CAMERA_VIDEO_REQUEST_CODE:
-                    if (data != null) {
-                        Log.d(TAG, "data!=null");
-                        Uri videoUri = data.getData();
-                        if (videoUri != null) {
-                            Log.d(TAG, "videoUri!=null:" + videoUri.toString());
-                            String path = Utils.getPathFromURI(videoUri, this);
-
-                            galleryAddPic(path);
-
-                            File file = new File(path);
-                            Log.d(TAG, "path:" + path);
-                            String filename = path.substring(path.lastIndexOf("/") + 1);
-                            Log.d(TAG, "filename:" + filename);
-                            ChattingDto chattingDto = new ChattingDto();
-                            chattingDto.setmType(CHATTING_VIEW_TYPE_SELECT_VIDEO);
-                            chattingDto.setAttachFilePath(path);
-                            chattingDto.setAttachFileName(filename);
-                            chattingDto.setAttachFileSize((int) file.length());
-                            chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
-                            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
-                            ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-                            Log.d(TAG, "addNewRow 2");
-                        }
-                    } else {
-                        Log.d(TAG, "data==null");
-                        if (videoPath != null) {
-                            Log.d(TAG, "videoPath!=null:" + videoPath.toString());
-                            Uri videoUri = videoPath;
-                            String path = Utils.getPathFromURI(videoUri, this);
-
-                            galleryAddPic(path);
-
-                            File file = new File(path);
-                            String filename = path.substring(path.lastIndexOf("/") + 1);
-                            ChattingDto chattingDto = new ChattingDto();
-                            chattingDto.setmType(CHATTING_VIEW_TYPE_SELECT_VIDEO);
-                            chattingDto.setAttachFilePath(path);
-                            chattingDto.setAttachFileName(filename);
-                            chattingDto.setAttachFileSize((int) file.length());
-                            chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
-                            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
-                            ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-                            Log.d(TAG, "addNewRow 3");
-                        }
-                    }
+                    handleVideoRecoder(data);
                     break;
 
                 case Statics.VIDEO_PICKER_SELECT:
-                    Uri videoUriPick = data.getData();
-                    if (videoUriPick != null) {
-                        String path = "";
-                        path = Utils.getPath(this, videoUriPick);
-                        File file = new File(path);
-                        String filename = path.substring(path.lastIndexOf("/") + 1);
-                        ChattingDto chattingDto = new ChattingDto();
-                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO);
-                        chattingDto.setAttachFilePath(path);
-                        chattingDto.setAttachFileName(filename);
-                        chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
-                        chattingDto.setAttachFileSize((int) file.length());
-
-                        // Add new attach info
-                        AttachDTO attachInfo = new AttachDTO();
-                        attachInfo.setFileName(filename);
-                        chattingDto.setAttachInfo(attachInfo);
-                        chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
-
-                        ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-                    }
+                    handleVideoSelected(data);
                     break;
+
                 case Statics.FILE_PICKER_SELECT:
-                    List<Uri> pathUri = new ArrayList<>();
-                    if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
-                        Log.d(TAG, "getBooleanExtra true");
-                        // For JellyBean and above
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            ClipData clip = data.getClipData();
-                            if (clip != null) {
-                                for (int i = 0; i < clip.getItemCount(); i++) {
-                                    pathUri.add(clip.getItemAt(i).getUri());
-                                }
-                            }
-                            // For Ice Cream Sandwich
-                        } else {
-                            ArrayList<String> paths = data.getStringArrayListExtra(FilePickerActivity.EXTRA_PATHS);
-                            if (paths != null) {
-                                for (String path : paths) {
-                                    pathUri.add(Uri.parse(path));
-                                }
-                            }
-                        }
-                    } else {
-                        Log.d(TAG, "getBooleanExtra false");
-                        pathUri.add(data.getData());
-
-                    }
-
-                    if (pathUri != null && pathUri.size() > 0) {
-                        if (pathUri.size() > 10) {
-                            // show notify
-                            Toast.makeText(getApplicationContext(), "Limit is 10 file", Toast.LENGTH_SHORT).show();
-                        } else {
-                            List<ChattingDto> integerList = new ArrayList<>();
-                            for (Uri obj : pathUri) {
-                                Log.d(TAG, "pathUri != null:" + obj.toString());
-                                String path = Utils.getPathFromURI(obj, this);
-                                Log.d(TAG, "path:" + path);
-                                File file = new File(path);
-                                String filename = path.substring(path.lastIndexOf("/") + 1);
-                                Log.d(TAG, "filename:" + filename);
-                                if (filename.contains(".")) {
-                                    ChattingDto chattingDto = new ChattingDto();
-                                    chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
-                                    chattingDto.setAttachFilePath(path);
-                                    chattingDto.setAttachFileName(filename);
-                                    chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
-                                    chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
-                                    chattingDto.setAttachFileSize((int) file.length());
-                                    chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
-                                    chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
-                                    ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-                                    Log.d(TAG, "addNewRow 5");
-
-                                    chattingDto.setPositionUploadImage(ChattingFragment.instance.dataSet.size() - 1);
-                                    integerList.add(chattingDto);
-                                } else {
-                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.can_not_send_this_file) + " " + filename, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            if (ChattingFragment.instance != null && integerList.size() > 0)
-                                ChattingFragment.instance.sendFileWithQty_v2(integerList, 0);
-                        }
-                    }
+                    handleFileSelected(data);
                     break;
 
                 case Statics.CONTACT_PICKER_SELECT:
-                    if (data != null && data.hasExtra(ContactPickerActivity.RESULT_CONTACT_DATA)) {
-                        // Loop all contact that user has picked and display it on chat windows
-                        // we got a result from the contact picker
-                        List<Contact> contacts = (List<Contact>) data.getSerializableExtra(ContactPickerActivity.RESULT_CONTACT_DATA);
-
-                        for (final Contact contact : contacts) {
-                            final ChattingDto dto = new ChattingDto();
-                            UserDto userDto = new UserDto();
-                            userDto.setFullName(contact.getDisplayName());
-                            userDto.setPhoneNumber(contact.getPhone(0));
-                            userDto.setAvatar(contact.getPhotoUri() != null ? contact.getPhotoUri().toString() : null);
-
-                            dto.setmType(Statics.CHATTING_VIEW_TYPE_CONTACT);
-                            dto.setUser(userDto);
-                            dto.setMessage(contact.getPhone(0) == null ? contact.getDisplayName() : contact.getDisplayName() + "\n" + contact.getPhone(0));
-                            dto.setHasSent(false);
-                            dto.setUserNo(Utils.getCurrentId());
-                            dto.setRoomNo(roomNo);
-                            dto.setWriterUser(Utils.getCurrentId());
-                            // perform update when send message success
-                            String currentTime = System.currentTimeMillis() + "";
-                            String time = TimeUtils.convertTimeDeviceToTimeServerDefault(currentTime);
-                            dto.setRegDate(time);
-                            //final long lastId = ChatMessageDBHelper.addSimpleMessage(dto);
-                            HttpRequest.getInstance().SendChatMsg(roomNo, contact.getPhone(0) == null ? contact.getDisplayName() : contact.getDisplayName() + "\n" + contact.getPhone(0), new SendChatMessage() {
-                                @Override
-                                public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
-                                    // update old chat message model --> messageNo from server
-                                    dto.setHasSent(true);
-                                    dto.setMessage(chattingDto.getMessage());
-                                    dto.setMessageNo(chattingDto.getMessageNo());
-                                    dto.setmType(Statics.CHATTING_VIEW_TYPE_CONTACT);
-                                    dto.setUnReadCount(chattingDto.getUnReadCount());
-                                    String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
-                                    dto.setRegDate(time);
-                                    ChattingFragment.instance.addNewRowFromChattingActivity(dto);
-
-                                }
-
-                                @Override
-                                public void onSendChatMessageFail(ErrorDto errorDto, String url) {
-                                    Toast.makeText(getApplicationContext(), "Send message failed !", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-                    }
+                    handleContactSelected(data);
                     break;
+
                 case Statics.RENAME_ROOM:
-
-                    if (data != null) {
-                        final int roomNo = data.getIntExtra(Statics.ROOM_NO, 0);
-                        final String roomTitle = data.getStringExtra(Statics.ROOM_TITLE);
-                        // Update current chat list
-                        updateRoomName(roomTitle);
-
-                        Prefs prefs = CrewChatApplication.getInstance().getPrefs();
-                        prefs.setRoomName(roomTitle);
-                        prefs.putRoomId(roomNo);
-                        // Start new thread to update local database
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ChatRoomDBHelper.updateChatRoom(roomNo, roomTitle);
-                            }
-                        }).start();
-
-
-                    }
+                    handleRenameRoom(data);
                     break;
             }
         } else if (resultCode == Constant.INTENT_RESULT_CREATE_NEW_ROOM) {
-            Log.d(TAG, "INTENT_RESULT_CREATE_NEW_ROOM");
-            try {
-                Bundle bc = data.getExtras();
-                if (bc != null) {
-                    // Update room title
-                    newRoom(bc);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (data.getExtras() != null) {
+                newRoom(data.getExtras());
             }
         }
     }
@@ -771,33 +537,29 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             }
 
             List<String> listFilePath = intent.getStringArrayListExtra("list");
+            long diffTime = 0;
             if (listFilePath != null && listFilePath.size() > 0) {
-                List<ChattingDto> integerList = new ArrayList<>();
                 for (int i = 0; i < listFilePath.size(); i++) {
                     String path = listFilePath.get(i);
                     ChattingDto chattingDto = new ChattingDto();
+                    diffTime += Config.TIME_WAIT*i;
 
-                    if (intent.getAction().equals(MediaChooser.IMAGE_SELECTED_ACTION_FROM_MEDIA_CHOOSER)) {
-                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
-                    } else {
-                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
-                    }
-
+                    chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
                     chattingDto.setAttachFilePath(path);
                     chattingDto.setRoomNo(chattingDto.getRoomNo());
-                    chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(TimeUtils.getTime(ChattingFragment.instance.dataSet.get(ChattingFragment.instance.dataSet.size() - 1).getRegDate()) + 100 + ""));
-                    ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-
+                    chattingDto.setRegDate(Utils.getTimeNewChat(diffTime));
                     chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
                     chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
                     chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
-                    chattingDto.setPositionUploadImage(ChattingFragment.instance.dataSet.size() - 1);
-                    integerList.add(chattingDto);
-                }
+                    chattingDto.setPositionUploadImage(new Random().nextInt(1000));
 
-                if (intent.getAction().equals(MediaChooser.IMAGE_SELECTED_ACTION_FROM_MEDIA_CHOOSER)) {
-                    if (ChattingFragment.instance != null)
-                        ChattingFragment.instance.sendFileWithQty(integerList, 0);
+                    ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+
+                    try {
+                        Thread.sleep(diffTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -1155,16 +917,185 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         ActivityCompat.requestPermissions(this, requestPermission, RandW_PERMISSIONS_REQUEST_CODE);
     }
 
-    @Subscribe
-    public void closeScreen(CloseScreen closeScreen) {
-        try {
-            backToListChat();
-        } catch (Exception e) {
+    private void handleImageRotate(Intent data) {
+        String pathImageRotate = data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE);
 
+        // Add image to gallery album
+        galleryAddPic(pathImageRotate);
+
+        ChattingDto chattingDto = new ChattingDto();
+        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
+        chattingDto.setAttachFilePath(pathImageRotate);
+        chattingDto.setRoomNo(chattingDto.getRoomNo());
+        chattingDto.setRegDate(Utils.getTimeNewChat(0));
+        chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
+
+        chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
+        chattingDto.setPositionUploadImage(new Random().nextInt(1000));
+        ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+    }
+
+    private void handleCameraCapture() {
+        if (uri != null) {
+            String path = Utils.getPathFromURI(uri, this);
+            Intent intent = new Intent(this, RotateImageActivity.class);
+            intent.putExtra(Statics.CHATTING_DTO_GALLERY_SINGLE, path);
+            String currentTime = System.currentTimeMillis() + "";
+            intent.putExtra(Statics.CHATTING_DTO_REG_DATE, currentTime);
+            startActivityForResult(intent, Statics.IMAGE_ROTATE_CODE);
         }
     }
 
-    private void getTimeServer() {
+    private void handleVideoRecoder(Intent data) {
+        Uri videoUri = data.getData();
+        if (videoUri != null) {
+            String path = Utils.getPathFromURI(videoUri, this);
+            galleryAddPic(path);
 
+            File file = new File(path);
+            String filename = path.substring(path.lastIndexOf("/") + 1);
+            ChattingDto chattingDto = new ChattingDto();
+            chattingDto.setmType(CHATTING_VIEW_TYPE_SELECT_VIDEO);
+            chattingDto.setAttachFilePath(path);
+            chattingDto.setAttachFileName(filename);
+            chattingDto.setAttachFileSize((int) file.length());
+            chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
+            chattingDto.setRegDate(Utils.getTimeNewChat(0));
+            chattingDto.setPositionUploadImage(new Random().nextInt(1000));
+            ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+        }
+    }
+
+    private void handleVideoSelected(Intent data) {
+        Uri videoUriPick = data.getData();
+        if (videoUriPick != null) {
+            String path;
+            path = Utils.getPath(this, videoUriPick);
+            File file = new File(path);
+            String filename = path.substring(path.lastIndexOf("/") + 1);
+            ChattingDto chattingDto = new ChattingDto();
+            chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO);
+            chattingDto.setAttachFilePath(path);
+            chattingDto.setAttachFileName(filename);
+            chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
+            chattingDto.setAttachFileSize((int) file.length());
+            chattingDto.setPositionUploadImage(new Random().nextInt(1000));
+
+            // Add new attach info
+            AttachDTO attachInfo = new AttachDTO();
+            attachInfo.setFileName(filename);
+            chattingDto.setAttachInfo(attachInfo);
+            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
+
+            ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+        }
+    }
+
+    private void handleFileSelected(Intent data) {
+        List<Uri> pathUri = new ArrayList<>();
+        if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
+            ClipData clip = data.getClipData();
+            if (clip != null) {
+                for (int i = 0; i < clip.getItemCount(); i++) {
+                    pathUri.add(clip.getItemAt(i).getUri());
+                }
+            }
+        } else {
+            pathUri.add(data.getData());
+        }
+
+        if (pathUri.size() > 0) {
+            if (pathUri.size() > 10) {
+                Toast.makeText(getApplicationContext(), "Limit is 10 file", Toast.LENGTH_SHORT).show();
+            } else {
+                long diffTime = 0;
+                for (Uri obj : pathUri) {
+                    diffTime += Config.TIME_WAIT *pathUri.indexOf(obj);
+                    String path = Utils.getPathFromURI(obj, this);
+                    File file = new File(path);
+                    String filename = file.getName();
+                    if (filename.contains(".")) {
+                        ChattingDto chattingDto = new ChattingDto();
+                        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_FILE);
+                        chattingDto.setAttachFilePath(path);
+                        chattingDto.setAttachFileName(filename);
+                        chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
+                        chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
+                        chattingDto.setAttachFileSize((int) file.length());
+                        chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
+                        chattingDto.setRegDate(Utils.getTimeNewChat(diffTime));
+                        chattingDto.setPositionUploadImage(new Random().nextInt(1000));
+                        ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+
+                        try {
+                            Thread.sleep(diffTime);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.can_not_send_this_file) + " " + filename, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleContactSelected(Intent data) {
+        if (data != null && data.hasExtra(ContactPickerActivity.RESULT_CONTACT_DATA)) {
+            List<Contact> contacts = (List<Contact>) data.getSerializableExtra(ContactPickerActivity.RESULT_CONTACT_DATA);
+
+            long diffTime = 0;
+            for (final Contact contact : contacts) {
+                diffTime += Config.TIME_WAIT*contacts.indexOf(contact);
+                final ChattingDto dto = new ChattingDto();
+                UserDto userDto = new UserDto();
+                userDto.setFullName(contact.getDisplayName());
+                userDto.setPhoneNumber(contact.getPhone(0));
+                userDto.setAvatar(contact.getPhotoUri() != null ? contact.getPhotoUri().toString() : null);
+
+                dto.setmType(Statics.CHATTING_VIEW_TYPE_CONTACT);
+                dto.setUser(userDto);
+                dto.setMessage(contact.getPhone(0) == null ? contact.getDisplayName() : contact.getDisplayName() + "\n" + contact.getPhone(0));
+                dto.setHasSent(false);
+                dto.setUserNo(Utils.getCurrentId());
+                dto.setRoomNo(roomNo);
+                dto.setWriterUser(Utils.getCurrentId());
+                dto.setRegDate(Utils.getTimeNewChat(diffTime));
+                HttpRequest.getInstance().SendChatMsg(roomNo, contact.getPhone(0) == null ? contact.getDisplayName() : contact.getDisplayName() + "\n" + contact.getPhone(0), new SendChatMessage() {
+                    @Override
+                    public void onSendChatMessageSuccess(final ChattingDto chattingDto) {
+                        dto.setHasSent(true);
+                        dto.setMessage(chattingDto.getMessage());
+                        dto.setMessageNo(chattingDto.getMessageNo());
+                        dto.setmType(Statics.CHATTING_VIEW_TYPE_CONTACT);
+                        dto.setUnReadCount(chattingDto.getUnReadCount());
+                        String time = TimeUtils.convertTimeDeviceToTimeServerDefault(chattingDto.getRegDate());
+                        dto.setRegDate(time);
+                        ChattingFragment.instance.addNewRowFromChattingActivity(dto);
+                    }
+
+                    @Override
+                    public void onSendChatMessageFail(ErrorDto errorDto, String url) {
+                        Toast.makeText(getApplicationContext(), "Send message failed !", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                try {
+                    Thread.sleep(diffTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void handleRenameRoom(Intent data) {
+        final int roomNo = data.getIntExtra(Statics.ROOM_NO, 0);
+        final String roomTitle = data.getStringExtra(Statics.ROOM_TITLE);
+        updateRoomName(roomTitle);
+        Prefs prefs = CrewChatApplication.getInstance().getPrefs();
+        prefs.setRoomName(roomTitle);
+        prefs.putRoomId(roomNo);
+        new Thread(() -> ChatRoomDBHelper.updateChatRoom(roomNo, roomTitle)).start();
     }
 }

@@ -18,4 +18,10 @@ interface DazoneService {
 
     @POST(Urls.URL_ROOT_2)
     fun getMessageUnreadCount(@Body param: JsonObject): Observable<Response<JsonObject>>
+
+    @POST(Urls.URL_ROOT_2)
+    fun sendAttachFile(@Body param: JsonObject): Observable<Response<JsonObject>>
+
+    @POST(Urls.URL_ROOT_2)
+    fun sendNormalMessage(@Body param: JsonObject): Observable<Response<JsonObject>>
 }

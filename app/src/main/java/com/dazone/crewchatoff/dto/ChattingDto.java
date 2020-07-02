@@ -96,6 +96,7 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
     private int positionUploadImage;
     private int temp = 0;
     private boolean isHeader;
+    private boolean isSendTemp = false;
 
     public String getStrRegDate() {
         return strRegDate;
@@ -168,6 +169,14 @@ public class ChattingDto extends DataDto implements DrawImageItem, Serializable,
                 ", Notification=" + Notification +
                 ", Favorite=" + Favorite +
                 '}';
+    }
+
+    public boolean isSendTemp() {
+        return isSendTemp;
+    }
+
+    public void setSendTemp(boolean sendTemp) {
+        isSendTemp = sendTemp;
     }
 
     public int getRoomType() {

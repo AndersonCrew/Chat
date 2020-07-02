@@ -11,13 +11,10 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
-import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -45,7 +42,7 @@ import com.dazone.crewchatoff.customs.AudioPlayer;
 import com.dazone.crewchatoff.dto.AttachDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.ErrorDto;
-import com.dazone.crewchatoff.interfaces.AudioGetDuration;
+import com.dazone.crewchatoff.fragment.ChattingFragment;
 import com.dazone.crewchatoff.interfaces.ICreateOneUserChatRom;
 import com.dazone.crewchatoff.interfaces.IF_Relay;
 import com.dazone.crewchatoff.interfaces.Urls;
@@ -55,10 +52,8 @@ import com.dazone.crewchatoff.utils.ImageUtils;
 import com.dazone.crewchatoff.utils.Prefs;
 import com.dazone.crewchatoff.utils.TimeUtils;
 import com.dazone.crewchatoff.utils.Utils;
-import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -68,7 +63,6 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,15 +71,19 @@ import static com.dazone.crewchatoff.utils.Utils.getString;
 import static com.dazone.crewchatoff.utils.Utils.getTypeFile;
 
 public class ChattingSelfFileViewHolder extends BaseChattingHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-    private TextView date_tv, file_name_tv, file_size_tv, file_receive_tv;
+    private TextView tvFileDate, tvFileName, tvFileSize, fileReceiveTv;
     private TextView tvUnread, tvDuration;
-    protected ImageView file_thumb;
+    protected ImageView imgFileThumb;
     private LinearLayout linearLayout, layoutNotAudio, layoutAudio;
     private ProgressBar progressBar, pBar;
     String TAG = "ChattingSelfFileViewHolder";
-    long MessageNo;
+    private long MessageNo;
     private LinearLayout llDate;
     private TextView tvDate;
+    private String fileType = "";
+    private String fileName = "";
+    private ChattingDto tempDto;
+    int getUnReadCount;
 
     public ChattingSelfFileViewHolder(View v) {
         super(v);
@@ -93,12 +91,11 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
 
     @Override
     protected void setup(View v) {
-
-        date_tv = v.findViewById(R.id.date_tv);
-        file_name_tv = v.findViewById(R.id.file_name_tv);
-        file_size_tv = v.findViewById(R.id.file_size_tv);
-        file_receive_tv = v.findViewById(R.id.file_receive_tv);
-        file_thumb = v.findViewById(R.id.file_thumb);
+        tvFileDate = v.findViewById(R.id.date_tv);
+        tvFileName = v.findViewById(R.id.file_name_tv);
+        tvFileSize = v.findViewById(R.id.file_size_tv);
+        fileReceiveTv = v.findViewById(R.id.file_receive_tv);
+        imgFileThumb = v.findViewById(R.id.file_thumb);
         linearLayout = v.findViewById(R.id.main_attach);
         progressBar = v.findViewById(R.id.progressBar);
         pBar = v.findViewById(R.id.pBar);
@@ -116,68 +113,53 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
         return progressBar;
     }
 
-    String fileType = "";
-    String _fileName = "";
-    ChattingDto tempDto;
-    int getUnReadCount;
-
     @Override
     public void bindData(final ChattingDto dto) {
         tempDto = dto;
         MessageNo = dto.getMessageNo();
-        try {
-            llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
-            tvDate.setText(Utils.getStrDate(dto));
+        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        tvDate.setText(Utils.getStrDate(dto));
+        getUnReadCount = dto.getUnReadCount();
+        long regDate = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
+        tvFileDate.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
-            if (!EventBus.getDefault().isRegistered(this)) {
-                EventBus.getDefault().register(this);
-            }
-            getUnReadCount = dto.getUnReadCount();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         if (dto.getmType() == Statics.CHATTING_VIEW_TYPE_SELECT_FILE) {
-            Log.d(TAG, "_fileName:" + dto.getAttachFileName());
-            _fileName = dto.getAttachFileName();
-            file_name_tv.setText(_fileName);
-            file_size_tv.setText(Utils.readableFileSize(dto.getAttachFileSize()));
-            file_receive_tv.setVisibility(View.GONE);
-            /** Set IMAGE FILE TYPE */
+            fileName = dto.getAttachFileName();
+            tvFileName.setText(fileName);
+            tvFileSize.setText(Utils.readableFileSize(dto.getAttachFileSize()));
+            fileReceiveTv.setVisibility(View.GONE);
 
 
             fileType = Utils.getFileType(dto.getAttachFileName());
-            ImageUtils.imageFileType(file_thumb, fileType);
+            ImageUtils.imageFileType(imgFileThumb, fileType);
 
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress(0);
+            if (!dto.isSendTemp()) {
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(0);
+                ChattingFragment.instance.SendTo(dto, progressBar);
+            } else progressBar.setVisibility(View.GONE);
 
         } else {
-            long regDate = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
-            date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
+            fileName = dto.getAttachInfo().getFileName();
+            if (fileName == null || fileName.trim().length() == 0)
+                fileName = dto.getAttachFileName();
+            if (fileName == null) fileName = "";
 
-            /** Set IMAGE FILE TYPE */
-            _fileName = dto.getAttachInfo().getFileName();
-            if (_fileName == null || _fileName.trim().length() == 0)
-                _fileName = dto.getAttachFileName();
-            if (_fileName == null) _fileName = "";
+            fileType = Utils.getFileType(fileName);
+            ImageUtils.imageFileType(imgFileThumb, fileType);
 
-            fileType = Utils.getFileType(_fileName);
-            ImageUtils.imageFileType(file_thumb, fileType);
-
-            file_name_tv.setText(_fileName);
-            file_size_tv.setText(Utils.readableFileSize(dto.getAttachInfo().getSize()));
-            file_receive_tv.setVisibility(View.GONE);
+            tvFileName.setText(fileName);
+            tvFileSize.setText(Utils.readableFileSize(dto.getAttachInfo().getSize()));
+            fileReceiveTv.setVisibility(View.GONE);
 
             linearLayout.setOnClickListener(v -> {
-                Log.d("onClick", TAG);
                 AttachDTO attachDTO = dto.getAttachInfo();
                 touchOnView(attachDTO);
             });
 
             linearLayout.setOnLongClickListener(view -> {
                 attachDTOTemp = dto.getAttachInfo();
-                Log.d(TAG, "onLongClick:" + new Gson().toJson(dto));
-
                 view.showContextMenu();
                 return true;
             });
@@ -185,26 +167,14 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
 
         String strUnReadCount = String.valueOf(dto.getUnReadCount());
         tvUnread.setText(strUnReadCount);
-        date_tv.setOnClickListener(v -> {
-            Log.d(TAG, "tvUnread");
-            actionUnread();
-        });
-        if (dto.getUnReadCount() == 0) {
-            tvUnread.setVisibility(View.GONE);
-        } else {
-            tvUnread.setVisibility(View.VISIBLE);
-            tvUnread.setOnClickListener(v -> {
-                Log.d(TAG, "tvUnread");
-                actionUnread();
-            });
-        }
+        tvFileDate.setOnClickListener(v -> actionUnread());
+        tvUnread.setVisibility(dto.getUnReadCount() == 0 ? View.GONE : View.VISIBLE);
 
-        // check fileType is audio or not
+        tvUnread.setOnClickListener(v -> actionUnread());
         if (Utils.isAudio(fileType)) {
             if (layoutNotAudio != null) layoutNotAudio.setVisibility(View.GONE);
             if (layoutAudio != null) layoutAudio.setVisibility(View.VISIBLE);
 
-            // settext tvDuration
             if (tvDuration != null) {
                 AttachDTO attachDTO = dto.getAttachInfo();
                 if (attachDTO != null) {
@@ -234,7 +204,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                     Log.d(TAG, "url:" + url);
 
                     pBar.setVisibility(View.VISIBLE);
-                    new WebClientAsyncTask(BaseActivity.Instance, pBar, url, _fileName, new OnDownloadFinish() {
+                    new WebClientAsyncTask(BaseActivity.Instance, pBar, url, fileName, new OnDownloadFinish() {
                         @Override
                         public void onFinish(File file) {
                             Log.d(TAG, "onFinish download file");
@@ -242,7 +212,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                             if (Utils.isAudio(fileType)) {
                                 String path = file.getAbsolutePath();
                                 Log.d(TAG, "path:" + path);
-                                new AudioPlayer(BaseActivity.Instance, path, _fileName).show();
+                                new AudioPlayer(BaseActivity.Instance, path, fileName).show();
                             } else if (Utils.isVideo(fileType)) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     Uri apkUri = FileProvider.getUriForFile(BaseActivity.Instance, BuildConfig.APPLICATION_ID + ".provider", file);

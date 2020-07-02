@@ -56,7 +56,7 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
         RecyclerView.ViewHolder vh = null;
         View v;
 
-        Collections.sort(mDataSet, mComparator);
+
         switch (viewType) {
             case Statics.CHATTING_VIEW_TYPE_SELF:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chatting_self, parent, false);

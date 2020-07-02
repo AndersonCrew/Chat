@@ -62,7 +62,7 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
             _fileName = dto.getAttachFileName();
         if (_fileName == null) _fileName = "";
         String fileType = Utils.getFileType(_fileName);
-        ImageUtils.imageFileType(file_thumb, fileType);
+        ImageUtils.imageFileType(imgFileThumb, fileType);
 
         user_name_tv.setText(dto.getName());
         ImageUtils.showRoundImage(dto, avatar_imv);

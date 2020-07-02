@@ -138,7 +138,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
     @Override
     public void bindData(final ChattingDto dto) {
-        llDate.setVisibility(dto.isHeader()? View.VISIBLE : View.GONE);
+        llDate.setVisibility(dto.isHeader() ? View.VISIBLE : View.GONE);
         tvDate.setText(Utils.getStrDate(dto));
 
         tempDto = dto;
@@ -175,6 +175,9 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         } else {
             if (lnSendFail != null) lnSendFail.setVisibility(View.VISIBLE);
         }
+
+        long regDate = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
+        date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
 
         switch (dto.getmType()) {
             case Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE:
@@ -214,7 +217,10 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 String oldPath = chatting_imv.getTag() != null ? chatting_imv.getTag().toString() : null;
                 String newPath = dto.getAttachFilePath();
 
-                ChattingFragment.instance.SendTo(dto, progressBarImageLoading, getAdapterPosition(), null);
+                if (!dto.isSendTemp()) {
+                    dto.setSendTemp(true);
+                    ChattingFragment.instance.SendTo(dto, progressBarImageLoading);
+                } else progressBarImageLoading.setVisibility(View.GONE);
 
 
                 if (oldPath == null || !oldPath.equals(newPath)) {
@@ -225,8 +231,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
             default:
                 chatting_imv.setImageBitmap(null);
-                long regDate = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
-                date_tv.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
+                chatting_imv.destroyDrawingCache();
 
                 try {
                     if (dto.getAttachNo() != 0) {
@@ -265,7 +270,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                                         chatting_imv.setImageBitmap(bitmap);
                                         if (progressBarImageLoading != null)
                                             progressBarImageLoading.setVisibility(View.GONE);
-                                        if(iLoadImage != null)
+                                        if (iLoadImage != null)
                                             iLoadImage.onLoaded();
                                     }
                                 });
@@ -301,12 +306,8 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
             tvUnread.setVisibility(View.GONE);
         } else {
             tvUnread.setVisibility(View.VISIBLE);
-            tvUnread.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "tvUnread");
-                    actionUnread();
-                }
+            tvUnread.setOnClickListener(v -> {
+                actionUnread();
             });
         }
     }
@@ -375,8 +376,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                         String url = String.format("/UI/CrewChat/MobileAttachDownload.aspx?session=%s&no=%s",
                                 new Prefs().getaccesstoken(), tempDto.getAttachNo());
                         String urlDownload = new Prefs().getServerSite() + url;
-
-                        String path = Environment.getExternalStorageDirectory() + Constant.pathDownload + "/" + attachDTO.getFileName();
                         Utils.displayDownloadFileDialog(mActivity, urlDownload, attachDTO.getFileName());
                     }
                 }

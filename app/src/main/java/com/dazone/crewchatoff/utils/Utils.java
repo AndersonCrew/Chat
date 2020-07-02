@@ -146,7 +146,7 @@ public class Utils {
     }
 
     public static String getPath(Activity context, Uri uri) {
-        String[] projection = { MediaStore.Video.Media.DATA };
+        String[] projection = {MediaStore.Video.Media.DATA};
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null) {
             // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
@@ -848,11 +848,11 @@ public class Utils {
         return list.size() - 1;
     }
 
-    public static String getStrDate (ChattingDto dto) {
-        if(TimeUtils.checkDateIsToday(dto.getRegDate())) {
+    public static String getStrDate(ChattingDto dto) {
+        if (TimeUtils.checkDateIsToday(dto.getRegDate())) {
             return Utils.getString(R.string.today);
-        } else if(TimeUtils.checkDateIsYesterday(dto.getRegDate())) {
-            return  Utils.getString(R.string.yesterday);
+        } else if (TimeUtils.checkDateIsYesterday(dto.getRegDate())) {
+            return Utils.getString(R.string.yesterday);
         } else {
             long chatTime = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
             return TimeUtils.showTimeWithoutTimeZone(chatTime, Statics.DATE_FORMAT_YYYY_MM_DD);
@@ -862,18 +862,18 @@ public class Utils {
     public static String setServerSite(String domain) {
         String[] domains = domain.split("[.]");
         if (domain.contains(".bizsw.co.kr") && !domain.contains("8080")) {
-            domain =  domain.replace(".bizsw.co.kr", ".bizsw.co.kr:8080");
+            domain = domain.replace(".bizsw.co.kr", ".bizsw.co.kr:8080");
         }
 
         if (domains.length == 1) {
             domain = domains[0] + ".crewcloud.net";
         }
 
-        if(domain.startsWith("http://")){
+        if (domain.startsWith("http://")) {
             domain = domain.replace("http://", "");
         }
 
-        if(domain.startsWith("https://")) {
+        if (domain.startsWith("https://")) {
             domain = domain.replace("https://", "");
         }
 
@@ -882,5 +882,9 @@ public class Utils {
         CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.DOMAIN, domainCompany);
         CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.COMPANY_NAME, domain);
         return domainCompany;
+    }
+
+    public static String getTimeNewChat(long diffTime) {
+        return TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + diffTime +"");
     }
 }
