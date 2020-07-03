@@ -853,10 +853,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         }
 
         dataSet.add(chattingDto);
-
-        if (isFromNotification) {
-            isFromNotification = false;
-        }
+        scrollToEndList();
+        isFromNotification = false;
     }
 
     private void updateMessageSendFile(ChattingDto chattingDto) {
@@ -955,6 +953,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             newDto.setWriterUser(userID);
             newDto.setHasSent(true);
             newDto.setRegDate(Utils.getTimeNewChat(0));
+            newDto.setStrRegDate(Utils.getTimeFormat(System.currentTimeMillis()));
             newDto.setPositionUploadImage(new Random().nextInt(1000));
             newDto.setId(new Random().nextInt());
             newDto.isSendding = true;

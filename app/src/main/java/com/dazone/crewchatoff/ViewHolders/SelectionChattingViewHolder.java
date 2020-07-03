@@ -54,88 +54,61 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
             case 1:
                 icon.setImageResource(R.drawable.attach_ic_camera);
                 title.setText(Utils.getString(R.string.camera));
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        try {
-//                            captureImage(Statics.MEDIA_TYPE_IMAGE);
-//                        } catch (Exception e) {
-//
-//                        }
-
-                        if (ChattingActivity.instance != null) {
-                            if (ChattingActivity.instance.checkPermissionsCamera()) {
-                                try {
-                                    captureImage(Statics.MEDIA_TYPE_IMAGE);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                ChattingActivity.instance.setPermissionsCamera();
+                layout.setOnClickListener(v -> {
+                    if (ChattingActivity.instance != null) {
+                        if (ChattingActivity.instance.checkPermissionsCamera()) {
+                            try {
+                                captureImage(Statics.MEDIA_TYPE_IMAGE);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         } else {
-                            Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
+                            ChattingActivity.instance.setPermissionsCamera();
                         }
-
+                    } else {
+                        Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 break;
             case 2:
                 icon.setImageResource(R.drawable.attach_ic_video_record);
                 title.setText(Utils.getString(R.string.video_record));
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        try {
-//                            recordVideo();
-//                        } catch (Exception e) {
-//
-//                        }
+                layout.setOnClickListener(v -> {
+                    if (ChattingActivity.instance != null) {
+                        if (ChattingActivity.instance.checkPermissionsCamera()) {
+                            try {
+                                recordVideo();
+                            } catch (Exception e) {
 
-                        if (ChattingActivity.instance != null) {
-                            if (ChattingActivity.instance.checkPermissionsCamera()) {
-                                try {
-                                    recordVideo();
-                                } catch (Exception e) {
-
-                                }
-                            } else {
-                                ChattingActivity.instance.setPermissionsCamera();
                             }
                         } else {
-                            Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
+                            ChattingActivity.instance.setPermissionsCamera();
                         }
-
+                    } else {
+                        Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 break;
             case 3:
                 icon.setImageResource(R.drawable.attach_ic_images);
                 title.setText(Utils.getString(R.string.image));
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        try {
-//                            selectImage();
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-
-                        if (ChattingActivity.instance != null) {
-                            if (ChattingActivity.instance.checkPermissionsCamera()) {
-                                try {
-                                    selectImage();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                ChattingActivity.instance.setPermissionsCamera();
+                layout.setOnClickListener(v -> {
+                    if (ChattingActivity.instance != null) {
+                        if (ChattingActivity.instance.checkPermissionsCamera()) {
+                            try {
+                                selectImage();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         } else {
-                            Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
+                            ChattingActivity.instance.setPermissionsCamera();
                         }
-
+                    } else {
+                        Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 break;
             case 4:
@@ -186,50 +159,41 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
             case 6:
                 icon.setImageResource(R.drawable.attach_ic_contact);
                 title.setText(Utils.getString(R.string.contact));
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        contactPicker();
-
-                        if (ChattingActivity.instance != null) {
-                            if (ChattingActivity.instance.checkPermissionsContacts()) {
-                                contactPicker();
-                            } else {
-                                ChattingActivity.instance.setPermissionsCameraContacts();
-                            }
+                layout.setOnClickListener(v -> {
+                    if (ChattingActivity.instance != null) {
+                        if (ChattingActivity.instance.checkPermissionsContacts()) {
+                            contactPicker();
                         } else {
-                            Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
+                            ChattingActivity.instance.setPermissionsCameraContacts();
                         }
-
+                    } else {
+                        Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 break;
             case 7:
                 icon.setImageResource(R.drawable.recording_icon);
                 title.setText(Utils.getString(R.string.recording));
-                layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (ChattingActivity.instance != null) {
-                            if (ChattingActivity.instance.checkPermissionsAudio()) {
-                                try {
-                                    if (ChattingFragment.instance != null)
-                                        ChattingFragment.instance.recordDialog();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                ChattingActivity.instance.setPermissionsAudio();
+                layout.setOnClickListener(v -> {
+                    if (ChattingActivity.instance != null) {
+                        if (ChattingActivity.instance.checkPermissionsAudio()) {
+                            try {
+                                if (ChattingFragment.instance != null)
+                                    ChattingFragment.instance.recordDialog();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         } else {
-                            Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
+                            ChattingActivity.instance.setPermissionsAudio();
                         }
-
+                    } else {
+                        Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 break;
         }
-//        title.setText(TimeUtils.showTime(dto.getTime(), Statics.DATE_FORMAT_YY_MM_DD));
     }
 
     private void contactPicker() {
@@ -255,8 +219,6 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
             if (takeVideoIntent.resolveActivity(CrewChatApplication.getInstance().getPackageManager()) != null) {
                 ChattingActivity.Instance.startActivityForResult(takeVideoIntent, Statics.CAMERA_VIDEO_REQUEST_CODE);
             }
-
-
         } else {
             Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             Uri videoPath = ChattingActivity.getOutputMediaFileUri(Statics.MEDIA_TYPE_VIDEO);
@@ -290,18 +252,11 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 ChattingActivity.Instance.startActivityForResult(intent, Statics.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
             }
-        /*if (task == Statics.MEDIA_TYPE_VIDEO) {
-            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            uri = getOutputMediaFileUri(Statics.MEDIA_TYPE_VIDEO);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            ChattingActivity.Instance.startActivityForResult(intent, Statics.CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
-        }*/
         }
     }
 
     private void selectImage() {
         MediaChooser.showOnlyImageTab();
-        //MediaChooser.showCameraVideoView(false);
         Intent intent = new Intent(ChattingActivity.Instance, BucketHomeFragmentActivity.class);
         ChattingActivity.Instance.startActivity(intent);
     }

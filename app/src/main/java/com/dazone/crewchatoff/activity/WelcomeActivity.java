@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dazone.crewchatoff.BuildConfig;
 import com.dazone.crewchatoff.R;
@@ -60,12 +61,13 @@ public class WelcomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_welcome);
 
+
+
+        /** Check Logout if current version <= 3.1.1 becase Table of DB has changed*/
+        //checkLogout();
         String first_login = Statics.FIRST_LOGIN;
         boolean isLogin = CrewChatApplication.getInstance().getPrefs().getBooleanValue(first_login, false);
         boolean isFirstLogin = CrewChatApplication.getInstance().getPrefs().get_login_install_app(); // default true
-
-        /** Check Logout if current version <= 3.1.1 becase Table of DB has changed*/
-        checkLogout();
 
         if (isFirstLogin) {
             CrewChatApplication.getInstance().getPrefs().set_login_install_app(false);
@@ -81,21 +83,22 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void checkLogout() {
-        if (CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.IS_FIRST_INSTALL_VER, true)) {
-            CrewChatApplication.getInstance().getPrefs().putBooleanValue(Constants.IS_FIRST_INSTALL_VER, false);
-            String appVersion = BuildConfig.VERSION_NAME;
-            if (compareVersionNames(appVersion, "3.1.1") == 1) {
-                BelongsToDBHelper.clearBelong();
-                AllUserDBHelper.clearUser();
-                ChatRoomDBHelper.clearChatRooms();
-                ChatMessageDBHelper.clearMessages();
-                DepartmentDBHelper.clearDepartment();
-                UserDBHelper.clearUser();
-                FavoriteGroupDBHelper.clearGroups();
-                FavoriteUserDBHelper.clearFavorites();
-                CrewChatApplication.resetValue();
-                CrewChatApplication.isLoggedIn = false;
-            }
+        String appVersion = BuildConfig.VERSION_NAME;
+
+        if (compareVersionNames(appVersion, "3.1.1") == 1) {
+            BelongsToDBHelper.clearBelong();
+            AllUserDBHelper.clearUser();
+            ChatRoomDBHelper.clearChatRooms();
+            ChatMessageDBHelper.clearMessages();
+            DepartmentDBHelper.clearDepartment();
+            UserDBHelper.clearUser();
+            FavoriteGroupDBHelper.clearGroups();
+            FavoriteUserDBHelper.clearFavorites();
+            CrewChatApplication.resetValue();
+            CrewChatApplication.isLoggedIn = false;
+            CrewChatApplication.getInstance().getPrefs().putBooleanValue(Statics.FIRST_LOGIN, false);
+            CrewChatApplication.getInstance().getPrefs().set_login_install_app(false);
+            CrewChatApplication.getInstance().getPrefs().setDataComplete(false);
         }
     }
 

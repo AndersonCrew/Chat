@@ -887,4 +887,8 @@ public class Utils {
     public static String getTimeNewChat(long diffTime) {
         return TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + diffTime +"");
     }
+
+    public static String getTimeFormat(long time) {
+        return TimeUtils.showTimeWithoutTimeZone(time, Statics.yyyy_MM_dd_HH_mm_ss_SSS);
+    }
 }

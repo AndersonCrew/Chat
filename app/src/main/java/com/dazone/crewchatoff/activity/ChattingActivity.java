@@ -424,7 +424,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (fragment == null || data == null) {
+        if (fragment == null) {
             return;
         }
 
@@ -542,7 +542,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                 for (int i = 0; i < listFilePath.size(); i++) {
                     String path = listFilePath.get(i);
                     ChattingDto chattingDto = new ChattingDto();
-                    diffTime += Config.TIME_WAIT*i;
+                    diffTime += Config.TIME_WAIT * i;
 
                     chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
                     chattingDto.setAttachFilePath(path);
@@ -918,6 +918,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private void handleImageRotate(Intent data) {
+        if (data == null)
+            return;
         String pathImageRotate = data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE);
 
         // Add image to gallery album
@@ -947,6 +949,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private void handleVideoRecoder(Intent data) {
+        if (data == null)
+            return;
         Uri videoUri = data.getData();
         if (videoUri != null) {
             String path = Utils.getPathFromURI(videoUri, this);
@@ -967,6 +971,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private void handleVideoSelected(Intent data) {
+        if (data == null)
+            return;
         Uri videoUriPick = data.getData();
         if (videoUriPick != null) {
             String path;
@@ -992,6 +998,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     private void handleFileSelected(Intent data) {
+        if (data == null)
+            return;
         List<Uri> pathUri = new ArrayList<>();
         if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
             ClipData clip = data.getClipData();
@@ -1010,7 +1018,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             } else {
                 long diffTime = 0;
                 for (Uri obj : pathUri) {
-                    diffTime += Config.TIME_WAIT *pathUri.indexOf(obj);
+                    diffTime += Config.TIME_WAIT * pathUri.indexOf(obj);
                     String path = Utils.getPathFromURI(obj, this);
                     File file = new File(path);
                     String filename = file.getName();
@@ -1046,7 +1054,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
             long diffTime = 0;
             for (final Contact contact : contacts) {
-                diffTime += Config.TIME_WAIT*contacts.indexOf(contact);
+                diffTime += Config.TIME_WAIT * contacts.indexOf(contact);
                 final ChattingDto dto = new ChattingDto();
                 UserDto userDto = new UserDto();
                 userDto.setFullName(contact.getDisplayName());

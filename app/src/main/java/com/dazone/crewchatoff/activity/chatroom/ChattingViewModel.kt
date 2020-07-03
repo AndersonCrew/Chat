@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import com.dazone.crewchatoff.activity.base.BaseViewModel
+import com.dazone.crewchatoff.constant.Statics
 import com.dazone.crewchatoff.database.ChatMessageDBHelper
 import com.dazone.crewchatoff.dto.ChattingDto
 import com.dazone.crewchatoff.dto.ErrorDto
@@ -22,6 +23,7 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ChattingViewModel : BaseViewModel() {
@@ -242,6 +244,8 @@ class ChattingViewModel : BaseViewModel() {
     }
 
     fun sendNormalMessage(roomNo: Long, message: String, chattingDto: ChattingDto) {
+        val formatter = SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault())
+        val serverDate = formatter.parse(chattingDto.strRegDate).time - CrewChatApplication.getInstance().prefs.getLongValue(Statics.TIME_SERVER_MILI, 0)
         val params = JsonObject()
         params.addProperty("command", Urls.URL_SEND_CHAT_TIME)
         params.addProperty("sessionId", CrewChatApplication.getInstance().prefs.getaccesstoken())
@@ -251,8 +255,11 @@ class ChattingViewModel : BaseViewModel() {
         val param1 = JsonObject()
         param1.addProperty("roomNo", roomNo)
         param1.addProperty("message", message)
-        param1.addProperty("regDate", CrewChatApplication.getInstance().timeServer)
+        param1.addProperty("regDate", formatter.format(serverDate))
         params.addProperty("reqJson", Gson().toJson(param1))
+
+        Log.d("ABCDE", "REGDATE LOCAL : " + chattingDto.strRegDate )
+        Log.d("ABCDE", "REGDATE SEND TO SERVER : " + formatter.format(serverDate) )
 
         disposables.add(RetrofitFactory.apiService.sendNormalMessage(params)
                 .subscribeOn(Schedulers.io())
@@ -272,6 +279,8 @@ class ChattingViewModel : BaseViewModel() {
                             chattingDto.strRegDate = dto.strRegDate
 
                             normalMessage.postValue(chattingDto)
+
+                            Log.d("ABCDE", "REGDATE FROM RESPONSE SERVER WHEN SUCCESS : " + dto.strRegDate )
                         } else {
                             dtoFailed.postValue(chattingDto)
                         }
