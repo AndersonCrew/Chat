@@ -104,24 +104,21 @@ public abstract class BasePagerActivity extends BaseActivity {
 
 
         fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (MainActivity.CURRENT_TAB == 0) {
-                    if (MainActivity.instance != null) {
-                        MainActivity.instance.gotoOrganizationChart();
-                    }
-                } else if (MainActivity.CURRENT_TAB == 2) {
-                    if (BaseFavoriteFragment.CURRENT_TAB == 0) {
-                    } else {
-                        if (MultilLevelListviewFragment.instanceNew != null
-                                && MultilLevelListviewFragment.instanceNew.isLoadDB()) {
-                            MultilLevelListviewFragment.instanceNew.addFavorite();
-                        }
-                    }
-
-
+        fab.setOnClickListener(view -> {
+            if (MainActivity.CURRENT_TAB == 0) {
+                if (MainActivity.instance != null) {
+                    MainActivity.instance.gotoOrganizationChart();
                 }
+            } else if (MainActivity.CURRENT_TAB == 2) {
+                if (BaseFavoriteFragment.CURRENT_TAB == 0) {
+                } else {
+                    if (MultilLevelListviewFragment.instanceNew != null
+                            && MultilLevelListviewFragment.instanceNew.isLoadDB()) {
+                        MultilLevelListviewFragment.instanceNew.addFavorite();
+                    }
+                }
+
+
             }
         });
         init();

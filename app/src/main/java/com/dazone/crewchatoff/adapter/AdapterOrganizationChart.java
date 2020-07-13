@@ -34,7 +34,7 @@ import java.util.List;
 
 public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrganizationChart.MyViewHolder> {
     private String TAG = "OrganizationChart";
-    private List<TreeUserDTO> list;
+    private List<TreeUserDTO> list = new ArrayList<>();
     private List<TreeUserDTO> listTemp = new ArrayList<>();
     private List<TreeUserDTO> listTemp_2 = new ArrayList<>();
     private List<TreeUserDTO> listTemp_3 = new ArrayList<>();
@@ -180,174 +180,209 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
             name_department.setText("" + treeUserDTO.getName_parent());
             name.setText(nameString);
             nameTwo.setText(nameString);
-            item_org_wrapper.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (treeUserDTO.getType() != 2) {
-                        if (treeUserDTO.isFlag()) {
-                            Log.d(TAG, "collapse");
-                            collapse(index, treeUserDTO);
-                            treeUserDTO.setFlag(false);
-                        } else {
-                            Log.d(TAG, "expand");
-                            boolean flag = false;
-                            if (index == list.size() - 1) {
-                                flag = true;
+            item_org_wrapper.setOnClickListener(view -> {
+                if (treeUserDTO.getType() != 2) {
+                    if (treeUserDTO.isFlag()) {
+                        Log.d(TAG, "collapse");
+                        collapse(index, treeUserDTO);
+                        treeUserDTO.setFlag(false);
+                    } else {
+                        Log.d(TAG, "expand");
+                        boolean flag = false;
+                        if (index == list.size() - 1) {
+                            flag = true;
+                        }
+                        expand(index, treeUserDTO, flag);
+                        treeUserDTO.setFlag(true);
+                    }
+                } else {
+                    boolean flag_2 = treeUserDTO.isCheck();
+                    boolean flag;
+                    if (flag_2) {
+                        flag = false;
+                        row_check.setChecked(false);
+                        treeUserDTO.setIsCheck(false);
+                    } else {
+                        flag = true;
+                        row_check.setChecked(true);
+                        treeUserDTO.setIsCheck(true);
+                    }
+
+                    int LEVEL = treeUserDTO.getLevel();
+                    int LEVEL_TEMP = treeUserDTO.getLevel();
+
+                    if (flag) {
+                        for (int i = 0; i < listTemp.size(); i++) {
+                            TreeUserDTO obj = listTemp.get(i);
+
+                            if (treeUserDTO.getId() == obj.getId()
+                                    && treeUserDTO.getDBId() == obj.getDBId()
+                                    && treeUserDTO.getParent() == obj.getParent()
+                                    && treeUserDTO.getType() == obj.getType()
+                                    && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
+                                    && treeUserDTO.getmSortNo() == obj.getmSortNo()
+                                    && treeUserDTO.getName().equals(obj.getName())) {
+
+                                listTemp.get(i).setIsCheck(flag);
+
+                                break;
                             }
-                            expand(index, treeUserDTO, flag);
-                            treeUserDTO.setFlag(true);
                         }
                     } else {
-                        boolean flag_2 = treeUserDTO.isCheck();
-                        boolean flag;
-                        if (flag_2) {
-                            flag = false;
-                            row_check.setChecked(false);
-                            treeUserDTO.setIsCheck(false);
-                        } else {
-                            flag = true;
-                            row_check.setChecked(true);
-                            treeUserDTO.setIsCheck(true);
+                        list.get(index).setIsCheck(false);
+                        for (int i = index; i >= 0; i--) {
+                            TreeUserDTO obj = list.get(i);
+                            if (LEVEL > obj.getLevel()) {
+                                list.get(i).setIsCheck(false);
+                                LEVEL = obj.getLevel();
+
+                            }
                         }
 
-                        int LEVEL = treeUserDTO.getLevel();
-                        int LEVEL_TEMP = treeUserDTO.getLevel();
-
-                        if (flag) {
-                            for (int i = 0; i < listTemp.size(); i++) {
-                                TreeUserDTO obj = listTemp.get(i);
-
-                                if (treeUserDTO.getId() == obj.getId()
-                                        && treeUserDTO.getDBId() == obj.getDBId()
-                                        && treeUserDTO.getParent() == obj.getParent()
-                                        && treeUserDTO.getType() == obj.getType()
-                                        && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
-                                        && treeUserDTO.getmSortNo() == obj.getmSortNo()
-                                        && treeUserDTO.getName().equals(obj.getName())) {
-
-                                    listTemp.get(i).setIsCheck(flag);
-
-                                    break;
-                                }
+                        int k = -10;
+                        for (int i = 0; i < listTemp.size(); i++) {
+                            TreeUserDTO obj = listTemp.get(i);
+                            if (treeUserDTO.getId() == obj.getId()
+                                    && treeUserDTO.getDBId() == obj.getDBId()
+                                    && treeUserDTO.getParent() == obj.getParent()
+                                    && treeUserDTO.getType() == obj.getType()
+                                    && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
+                                    && treeUserDTO.getmSortNo() == obj.getmSortNo()
+                                    && treeUserDTO.getName().equals(obj.getName())) {
+                                k = i;
+                                listTemp.get(i).setIsCheck(false);
+                                break;
                             }
-                        } else {
-                            list.get(index).setIsCheck(false);
-                            for (int i = index; i >= 0; i--) {
-                                TreeUserDTO obj = list.get(i);
-                                if (LEVEL > obj.getLevel()) {
-                                    list.get(i).setIsCheck(false);
-                                    LEVEL = obj.getLevel();
+                        }
+                        if (k >= 0) {
 
-                                }
-                            }
-
-                            int k = -10;
-                            for (int i = 0; i < listTemp.size(); i++) {
+                            for (int i = k; i >= 0; i--) {
                                 TreeUserDTO obj = listTemp.get(i);
-                                if (treeUserDTO.getId() == obj.getId()
-                                        && treeUserDTO.getDBId() == obj.getDBId()
-                                        && treeUserDTO.getParent() == obj.getParent()
-                                        && treeUserDTO.getType() == obj.getType()
-                                        && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
-                                        && treeUserDTO.getmSortNo() == obj.getmSortNo()
-                                        && treeUserDTO.getName().equals(obj.getName())) {
-                                    k = i;
+                                if (LEVEL_TEMP > obj.getLevel()) {
+
                                     listTemp.get(i).setIsCheck(false);
-                                    break;
-                                }
-                            }
-                            if (k >= 0) {
-
-                                for (int i = k; i >= 0; i--) {
-                                    TreeUserDTO obj = listTemp.get(i);
-                                    if (LEVEL_TEMP > obj.getLevel()) {
-
-                                        listTemp.get(i).setIsCheck(false);
-                                        LEVEL_TEMP = obj.getLevel();
-                                    }
+                                    LEVEL_TEMP = obj.getLevel();
                                 }
                             }
                         }
-                        notifyDataSetChanged();
                     }
+                    notifyDataSetChanged();
                 }
             });
 
             row_check.setChecked(treeUserDTO.isCheck());
-            row_check.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d(TAG, "row_check onClick");
-                    boolean flag = row_check.isChecked();
-                    treeUserDTO.setIsCheck(flag);
-                    int LEVEL = treeUserDTO.getLevel();
-                    int LEVEL_TEMP = treeUserDTO.getLevel();
+            row_check.setOnClickListener(view -> {
+                Log.d(TAG, "row_check onClick");
+                boolean flag = row_check.isChecked();
+                treeUserDTO.setIsCheck(flag);
+                int LEVEL = treeUserDTO.getLevel();
+                int LEVEL_TEMP = treeUserDTO.getLevel();
 
-                    if (treeUserDTO.getType() == 2) {
-                        if (flag) {
-                            for (int i = 0; i < listTemp.size(); i++) {
-                                TreeUserDTO obj = listTemp.get(i);
+                if (treeUserDTO.getType() == 2) {
+                    if (flag) {
+                        for (int i = 0; i < listTemp.size(); i++) {
+                            TreeUserDTO obj = listTemp.get(i);
 
-                                if (treeUserDTO.getId() == obj.getId()
-                                        && treeUserDTO.getDBId() == obj.getDBId()
-                                        && treeUserDTO.getParent() == obj.getParent()
-                                        && treeUserDTO.getType() == obj.getType()
-                                        && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
-                                        && treeUserDTO.getmSortNo() == obj.getmSortNo()
-                                        && treeUserDTO.getName().equals(obj.getName())) {
+                            if (treeUserDTO.getId() == obj.getId()
+                                    && treeUserDTO.getDBId() == obj.getDBId()
+                                    && treeUserDTO.getParent() == obj.getParent()
+                                    && treeUserDTO.getType() == obj.getType()
+                                    && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
+                                    && treeUserDTO.getmSortNo() == obj.getmSortNo()
+                                    && treeUserDTO.getName().equals(obj.getName())) {
 
-                                    listTemp.get(i).setIsCheck(flag);
+                                listTemp.get(i).setIsCheck(flag);
 
-                                    break;
-                                }
+                                break;
                             }
-                        } else {
-                            list.get(index).setIsCheck(false);
-                            for (int i = index; i >= 0; i--) {
-                                TreeUserDTO obj = list.get(i);
-                                if (LEVEL > obj.getLevel()) {
-                                    list.get(i).setIsCheck(false);
-                                    LEVEL = obj.getLevel();
+                        }
+                    } else {
+                        list.get(index).setIsCheck(false);
+                        for (int i = index; i >= 0; i--) {
+                            TreeUserDTO obj = list.get(i);
+                            if (LEVEL > obj.getLevel()) {
+                                list.get(i).setIsCheck(false);
+                                LEVEL = obj.getLevel();
 
-                                }
                             }
+                        }
 
-                            int k = -10;
-                            for (int i = 0; i < listTemp.size(); i++) {
+                        int k = -10;
+                        for (int i = 0; i < listTemp.size(); i++) {
+                            TreeUserDTO obj = listTemp.get(i);
+                            if (treeUserDTO.getId() == obj.getId()
+                                    && treeUserDTO.getDBId() == obj.getDBId()
+                                    && treeUserDTO.getParent() == obj.getParent()
+                                    && treeUserDTO.getType() == obj.getType()
+                                    && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
+                                    && treeUserDTO.getmSortNo() == obj.getmSortNo()
+                                    && treeUserDTO.getName().equals(obj.getName())) {
+                                k = i;
+                                listTemp.get(i).setIsCheck(false);
+                                break;
+                            }
+                        }
+                        if (k >= 0) {
+
+                            for (int i = k; i >= 0; i--) {
                                 TreeUserDTO obj = listTemp.get(i);
-                                if (treeUserDTO.getId() == obj.getId()
-                                        && treeUserDTO.getDBId() == obj.getDBId()
-                                        && treeUserDTO.getParent() == obj.getParent()
-                                        && treeUserDTO.getType() == obj.getType()
-                                        && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
-                                        && treeUserDTO.getmSortNo() == obj.getmSortNo()
-                                        && treeUserDTO.getName().equals(obj.getName())) {
-                                    k = i;
+                                if (LEVEL_TEMP > obj.getLevel()) {
+
                                     listTemp.get(i).setIsCheck(false);
+                                    LEVEL_TEMP = obj.getLevel();
+                                }
+                            }
+                        }
+                    }
+
+                } else {
+                    if (flag) {
+                        int a = index + 1;
+                        if (a < list.size()) {
+                            for (int i = a; i < list.size(); i++) {
+                                TreeUserDTO obj = list.get(i);
+                                if (LEVEL < obj.getLevel()) {
+                                    list.get(i).setIsCheck(true);
+                                } else {
                                     break;
                                 }
                             }
-                            if (k >= 0) {
-
-                                for (int i = k; i >= 0; i--) {
-                                    TreeUserDTO obj = listTemp.get(i);
-                                    if (LEVEL_TEMP > obj.getLevel()) {
-
-                                        listTemp.get(i).setIsCheck(false);
-                                        LEVEL_TEMP = obj.getLevel();
-                                    }
+                        }
+                        int temp = 0;
+                        for (int i = 0; i < listTemp.size(); i++) {
+                            TreeUserDTO obj = listTemp.get(i);
+                            if (treeUserDTO.getId() == obj.getId()
+                                    && treeUserDTO.getDBId() == obj.getDBId()
+                                    && treeUserDTO.getParent() == obj.getParent()
+                                    && treeUserDTO.getType() == obj.getType()
+                                    && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
+                                    && treeUserDTO.getmSortNo() == obj.getmSortNo()
+                                    && treeUserDTO.getName().equals(obj.getName())) {
+                                listTemp.get(i).setIsCheck(flag);
+                                temp = i;
+                                break;
+                            }
+                        }
+                        int c = temp + 1;
+                        if (c < listTemp.size()) {
+                            for (int i = c; i < listTemp.size(); i++) {
+                                TreeUserDTO obj = listTemp.get(i);
+                                if (LEVEL < obj.getLevel()) {
+                                    listTemp.get(i).setIsCheck(true);
+                                } else {
+                                    break;
                                 }
                             }
                         }
 
                     } else {
-                        if (flag) {
+                        if (LEVEL == 0) {
                             int a = index + 1;
                             if (a < list.size()) {
                                 for (int i = a; i < list.size(); i++) {
                                     TreeUserDTO obj = list.get(i);
                                     if (LEVEL < obj.getLevel()) {
-                                        list.get(i).setIsCheck(true);
+                                        list.get(i).setIsCheck(false);
                                     } else {
                                         break;
                                     }
@@ -373,109 +408,68 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
                                 for (int i = c; i < listTemp.size(); i++) {
                                     TreeUserDTO obj = listTemp.get(i);
                                     if (LEVEL < obj.getLevel()) {
-                                        listTemp.get(i).setIsCheck(true);
+                                        listTemp.get(i).setIsCheck(false);
                                     } else {
                                         break;
                                     }
                                 }
                             }
-
                         } else {
-                            if (LEVEL == 0) {
-                                int a = index + 1;
-                                if (a < list.size()) {
-                                    for (int i = a; i < list.size(); i++) {
-                                        TreeUserDTO obj = list.get(i);
-                                        if (LEVEL < obj.getLevel()) {
-                                            list.get(i).setIsCheck(false);
-                                        } else {
-                                            break;
-                                        }
-                                    }
-                                }
-                                int temp = 0;
-                                for (int i = 0; i < listTemp.size(); i++) {
-                                    TreeUserDTO obj = listTemp.get(i);
-                                    if (treeUserDTO.getId() == obj.getId()
-                                            && treeUserDTO.getDBId() == obj.getDBId()
-                                            && treeUserDTO.getParent() == obj.getParent()
-                                            && treeUserDTO.getType() == obj.getType()
-                                            && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
-                                            && treeUserDTO.getmSortNo() == obj.getmSortNo()
-                                            && treeUserDTO.getName().equals(obj.getName())) {
-                                        listTemp.get(i).setIsCheck(flag);
-                                        temp = i;
-                                        break;
-                                    }
-                                }
-                                int c = temp + 1;
-                                if (c < listTemp.size()) {
-                                    for (int i = c; i < listTemp.size(); i++) {
-                                        TreeUserDTO obj = listTemp.get(i);
-                                        if (LEVEL < obj.getLevel()) {
-                                            listTemp.get(i).setIsCheck(false);
-                                        } else {
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else {
 
-                                for (int i = index; i >= 0; i--) {
+                            for (int i = index; i >= 0; i--) {
+                                TreeUserDTO obj = list.get(i);
+                                if (LEVEL > obj.getLevel()) {
+                                    list.get(i).setIsCheck(false);
+                                    LEVEL = obj.getLevel();
+                                }
+                            }
+
+                            int temp = 0;
+                            for (int i = 0; i < listTemp.size(); i++) {
+                                TreeUserDTO obj = listTemp.get(i);
+                                if (treeUserDTO.getId() == obj.getId()
+                                        && treeUserDTO.getDBId() == obj.getDBId()
+                                        && treeUserDTO.getParent() == obj.getParent()
+                                        && treeUserDTO.getType() == obj.getType()
+                                        && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
+                                        && treeUserDTO.getmSortNo() == obj.getmSortNo()
+                                        && treeUserDTO.getName().equals(obj.getName())) {
+                                    listTemp.get(i).setIsCheck(flag);
+                                    temp = i;
+                                    break;
+                                }
+                            }
+                            for (int i = temp; i >= 0; i--) {
+                                TreeUserDTO obj = listTemp.get(i);
+                                if (LEVEL > obj.getLevel()) {
+                                    listTemp.get(i).setIsCheck(false);
+                                    LEVEL = obj.getLevel();
+                                }
+                            }
+                            int level = treeUserDTO.getLevel();
+                            for (int i = temp + 1; i < listTemp.size(); i++) {
+                                TreeUserDTO obj = listTemp.get(i);
+                                if (level < obj.getLevel()) {
+                                    listTemp.get(i).setIsCheck(false);
+                                } else {
+                                    break;
+                                }
+                            }
+                            // for child list
+                            if (index + 1 < list.size()) {
+                                for (int i = index + 1; i < list.size(); i++) {
                                     TreeUserDTO obj = list.get(i);
-                                    if (LEVEL > obj.getLevel()) {
-                                        list.get(i).setIsCheck(false);
-                                        LEVEL = obj.getLevel();
-                                    }
-                                }
-
-                                int temp = 0;
-                                for (int i = 0; i < listTemp.size(); i++) {
-                                    TreeUserDTO obj = listTemp.get(i);
-                                    if (treeUserDTO.getId() == obj.getId()
-                                            && treeUserDTO.getDBId() == obj.getDBId()
-                                            && treeUserDTO.getParent() == obj.getParent()
-                                            && treeUserDTO.getType() == obj.getType()
-                                            && treeUserDTO.getPositionSortNo() == obj.getPositionSortNo()
-                                            && treeUserDTO.getmSortNo() == obj.getmSortNo()
-                                            && treeUserDTO.getName().equals(obj.getName())) {
-                                        listTemp.get(i).setIsCheck(flag);
-                                        temp = i;
-                                        break;
-                                    }
-                                }
-                                for (int i = temp; i >= 0; i--) {
-                                    TreeUserDTO obj = listTemp.get(i);
-                                    if (LEVEL > obj.getLevel()) {
-                                        listTemp.get(i).setIsCheck(false);
-                                        LEVEL = obj.getLevel();
-                                    }
-                                }
-                                int level = treeUserDTO.getLevel();
-                                for (int i = temp + 1; i < listTemp.size(); i++) {
-                                    TreeUserDTO obj = listTemp.get(i);
                                     if (level < obj.getLevel()) {
-                                        listTemp.get(i).setIsCheck(false);
+                                        list.get(i).setIsCheck(false);
                                     } else {
                                         break;
-                                    }
-                                }
-                                // for child list
-                                if (index + 1 < list.size()) {
-                                    for (int i = index + 1; i < list.size(); i++) {
-                                        TreeUserDTO obj = list.get(i);
-                                        if (level < obj.getLevel()) {
-                                            list.get(i).setIsCheck(false);
-                                        } else {
-                                            break;
-                                        }
                                     }
                                 }
                             }
                         }
                     }
-                    notifyDataSetChanged();
                 }
+                notifyDataSetChanged();
             });
         }
     }
@@ -536,12 +530,7 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
                     }
                 }
                 if (hasType2 && hasType0) {
-                    Collections.sort(obj.getSubordinates(), new Comparator<TreeUserDTO>() {
-                        @Override
-                        public int compare(TreeUserDTO r1, TreeUserDTO r2) {
-                            return r1.getmSortNo() - r2.getmSortNo();
-                        }
-                    });
+                    Collections.sort(obj.getSubordinates(), (r1, r2) -> r1.getmSortNo() - r2.getmSortNo());
                 }
                 for (TreeUserDTO dto1 : obj.getSubordinates()) {
                     addList(dto1, margin, level);
@@ -550,15 +539,15 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
         }
     }
 
-    public void updateList(List<TreeUserDTO> list) {
-        if (list != null && list.size() > 0) {
-            Log.d(TAG, "start updateList");
-            this.list.clear();
+    public void updateList(List<TreeUserDTO> listUpdate) {
+        if (listUpdate != null && listUpdate.size() > 0) {
+            list.clear();
+
             final int tempMargin = Utils.getDimenInPx(R.dimen.dimen_20_40) * -1;
-            for (TreeUserDTO obj : list) {
+            for (TreeUserDTO obj : listUpdate) {
                 addList(obj, tempMargin, -1);
             }
-            Log.d(TAG, "finish addListTemp");
+
             List<TreeUserDTO> lst = this.listTemp_2;
             for (int i = 0; i < lst.size(); i++) {
                 TreeUserDTO obj = lst.get(i);
@@ -593,7 +582,6 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
             if (instance_2 != null)
                 instance_2.scrollToEndList(k);
             Log.d(TAG, "notifyDataSetChanged");
-
         }
 
     }
@@ -602,9 +590,7 @@ public class AdapterOrganizationChart extends RecyclerView.Adapter<AdapterOrgani
         return listTemp;
     }
 
-    public AdapterOrganizationChart(Context context, List<TreeUserDTO> list, boolean mIsDisableSelected, NewOrganizationChart instance,
-                                    InviteUserActivity instance_2, ArrayList<Integer> userNos) {
-        this.list = list;
+    public AdapterOrganizationChart( NewOrganizationChart instance, InviteUserActivity instance_2, ArrayList<Integer> userNos) {
         this.instance = instance;
         this.instance_2 = instance_2;
         this.mg = Utils.getDimenInPx(R.dimen.dimen_20_40);

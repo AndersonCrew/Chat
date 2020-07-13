@@ -30,6 +30,8 @@ import com.onegravity.contactpicker.contact.ContactSortOrder;
 import com.onegravity.contactpicker.core.ContactPickerActivity;
 import com.onegravity.contactpicker.picture.ContactPictureType;
 
+import java.io.File;
+
 public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto> {
     public TextView title;
     public ImageView icon;
@@ -207,7 +209,6 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
     }
 
     private void recordVideo() {
-
         if (Build.VERSION.SDK_INT > 23) {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Video.VideoColumns.MIME_TYPE, "video/mp4");

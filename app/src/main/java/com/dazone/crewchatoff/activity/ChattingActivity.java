@@ -36,6 +36,7 @@ import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.base.BaseSingleStatusActivity;
 import com.dazone.crewchatoff.constant.Config;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.ChatMessageDBHelper;
@@ -64,6 +65,7 @@ import com.onegravity.contactpicker.contact.Contact;
 import com.onegravity.contactpicker.core.ContactPickerActivity;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,12 +76,16 @@ import java.util.Random;
 import static com.dazone.crewchatoff.constant.Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO;
 
 public class ChattingActivity extends BaseSingleStatusActivity implements View.OnClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
-    public static void toActivity(Context context, long roomNo, long myId, ChattingDto tempDto) {
+    public static void toActivity(Context context, long roomNo, long myId, ChattingDto tempDto, String typeShare, Uri filePathShare) {
         Intent intent = new Intent(context, ChattingActivity.class);
         Bundle args = new Bundle();
         args.putLong(Constant.KEY_INTENT_ROOM_NO, roomNo);
         args.putLong(Constant.KEY_INTENT_USER_NO, myId);
         args.putSerializable(Constant.KEY_INTENT_ROOM_DTO, tempDto);
+        if (typeShare != null && filePathShare != null) {
+            args.putString(Constants.TYPE_SHARE, typeShare);
+            args.putString(Constants.FILE_PATH_SHARE, filePathShare.toString());
+        }
 
         intent.putExtras(args);
         context.startActivity(intent);
@@ -100,6 +106,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     private ChattingDto mDto = null;
     public static ChattingActivity instance = null;
     int IV_STATUS = -1;
+    private String filePathShare;
+    private String typeShare;
 
     public void removeUserList(int userId) {
         if (userNos != null) {
@@ -151,7 +159,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         registerReceiver(imageBroadcastReceiver, imageIntentFilter);
 
         receiveData();
-        // if network is connected, sync all chat rom message and store in local database then display it on chat view
         if (Utils.isNetworkAvailable()) {
             getChatRoomInfo();
         }
@@ -196,7 +203,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             setupTitleRoom(mDto.getUserNos(), roomTitle, subTitle);
         }
 
-        // Get room title online if room information was updated
         if (!isFinishing()) {
             addFragment();
         }
@@ -219,6 +225,14 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                 mDto = (ChattingDto) bundle.getSerializable(Constant.KEY_INTENT_ROOM_DTO);
 
                 IV_STATUS = bundle.getInt(Statics.IV_STATUS, -1);
+
+                typeShare = bundle.getString(Constants.TYPE_SHARE);
+                filePathShare = bundle.getString(Constants.FILE_PATH_SHARE);
+
+                if (typeShare != null && filePathShare != null) {
+                    handleActionSend(typeShare, filePathShare);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -436,7 +450,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     break;
 
                 case Statics.IMAGE_ROTATE_CODE:
-                    handleImageRotate(data);
+                    handleImageRotate(data, null);
                     break;
 
                 case Statics.CAMERA_CAPTURE_IMAGE_REQUEST_CODE:
@@ -548,6 +562,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     chattingDto.setAttachFilePath(path);
                     chattingDto.setRoomNo(chattingDto.getRoomNo());
                     chattingDto.setRegDate(Utils.getTimeNewChat(diffTime));
+                    chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal() + diffTime));
                     chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
                     chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
                     chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
@@ -676,6 +691,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
                     intent.putExtra(Constant.KEY_INTENT_COUNT_MEMBER, userNos);
                     intent.putExtra(Constant.KEY_INTENT_ROOM_TITLE, title);
+                    intent.putExtra(Constants.LIST_MEMBER, (Serializable) CompanyFragment.instance.getSubordinates());
                     startActivityForResult(intent, Statics.ADD_USER_SELECT);
                     return true;
                 case R.id.menu_left_group:
@@ -752,7 +768,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     public void renameRoom() {
-
         Bundle roomInfo = new Bundle();
         roomInfo.putInt(Statics.ROOM_NO, (int) roomNo);
         roomInfo.putString(Statics.ROOM_TITLE, roomTitle);
@@ -761,8 +776,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         Intent intent = new Intent(this, RenameRoomActivity.class);
         intent.putExtras(roomInfo);
         startActivityForResult(intent, Statics.RENAME_ROOM);
-
-
     }
 
     private void showSearchView() {
@@ -917,10 +930,13 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         ActivityCompat.requestPermissions(this, requestPermission, RandW_PERMISSIONS_REQUEST_CODE);
     }
 
-    private void handleImageRotate(Intent data) {
-        if (data == null)
-            return;
-        String pathImageRotate = data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE);
+    private void handleImageRotate(Intent data, String filePathShare) {
+        String pathImageRotate = "";
+        if (data != null) {
+            pathImageRotate = data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE);
+        } else if (filePathShare != null) {
+            pathImageRotate = Utils.getPathImage(this, Uri.parse(filePathShare));
+        } else return;
 
         // Add image to gallery album
         galleryAddPic(pathImageRotate);
@@ -930,6 +946,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         chattingDto.setAttachFilePath(pathImageRotate);
         chattingDto.setRoomNo(chattingDto.getRoomNo());
         chattingDto.setRegDate(Utils.getTimeNewChat(0));
+        chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
         chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
 
         chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
@@ -942,16 +959,20 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             String path = Utils.getPathFromURI(uri, this);
             Intent intent = new Intent(this, RotateImageActivity.class);
             intent.putExtra(Statics.CHATTING_DTO_GALLERY_SINGLE, path);
-            String currentTime = System.currentTimeMillis() + "";
+            String currentTime = CrewChatApplication.getInstance().getTimeLocal() + "";
             intent.putExtra(Statics.CHATTING_DTO_REG_DATE, currentTime);
             startActivityForResult(intent, Statics.IMAGE_ROTATE_CODE);
         }
     }
 
     private void handleVideoRecoder(Intent data) {
-        if (data == null)
-            return;
-        Uri videoUri = data.getData();
+        Uri videoUri = null;
+        if (data != null) {
+            videoUri = data.getData();
+        } else if (videoPath != null) {
+            videoUri = videoPath;
+        }
+
         if (videoUri != null) {
             String path = Utils.getPathFromURI(videoUri, this);
             galleryAddPic(path);
@@ -965,6 +986,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             chattingDto.setAttachFileSize((int) file.length());
             chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
             chattingDto.setRegDate(Utils.getTimeNewChat(0));
+            chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
             chattingDto.setPositionUploadImage(new Random().nextInt(1000));
             ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
         }
@@ -991,7 +1013,8 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             AttachDTO attachInfo = new AttachDTO();
             attachInfo.setFileName(filename);
             chattingDto.setAttachInfo(attachInfo);
-            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
+            chattingDto.setRegDate(Utils.getTimeNewChat(0));
+            chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
 
             ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
         }
@@ -1032,6 +1055,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                         chattingDto.setAttachFileSize((int) file.length());
                         chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
                         chattingDto.setRegDate(Utils.getTimeNewChat(diffTime));
+                        chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal() + diffTime));
                         chattingDto.setPositionUploadImage(new Random().nextInt(1000));
                         ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
 
@@ -1069,6 +1093,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                 dto.setRoomNo(roomNo);
                 dto.setWriterUser(Utils.getCurrentId());
                 dto.setRegDate(Utils.getTimeNewChat(diffTime));
+                dto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal() + diffTime));
                 dto.setPositionUploadImage(new Random().nextInt(1000));
                 ChattingFragment.instance.addNewRowFromChattingActivity(dto);
                 ChattingFragment.instance.reSendMessage(dto);
@@ -1090,5 +1115,21 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         prefs.setRoomName(roomTitle);
         prefs.putRoomId(roomNo);
         new Thread(() -> ChatRoomDBHelper.updateChatRoom(roomNo, roomTitle)).start();
+    }
+
+    private void handleActionSend(String typeShare, String filePathShare) {
+        if (typeShare.equals("text/plain")) {
+            // handleSendText(intent);
+        } else if (typeShare.startsWith("video/")) {
+            //handleSendVideo(intent);
+        } else if (typeShare.startsWith("audio/")) {
+            //handleSendAudio(intent);
+        } else if (typeShare.startsWith("text/")) {
+            // handleSendContact(intent);
+        } else if (typeShare.startsWith("image/")) {
+            handleImageRotate(null, filePathShare);
+        } else {
+            // handleSendFile(intent);
+        }
     }
 }

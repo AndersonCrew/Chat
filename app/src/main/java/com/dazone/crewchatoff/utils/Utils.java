@@ -159,6 +159,20 @@ public class Utils {
             return null;
     }
 
+    public static String getPathImage (Activity context, Uri uri) {
+        String[] projection = {MediaStore.Video.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
+    }
+
     public static void showMessage(String message) {
         Toast.makeText(CrewChatApplication.getInstance().getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
@@ -312,6 +326,7 @@ public class Utils {
                 break;
             case Statics.VIDEO_MP4:
             case Statics.VIDEO_MOV:
+            case Statics.VIDEO_3GP:
                 type = 2;
                 break;
             case Statics.AUDIO_MP3:
@@ -885,7 +900,7 @@ public class Utils {
     }
 
     public static String getTimeNewChat(long diffTime) {
-        return TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + diffTime +"");
+        return TimeUtils.convertTimeDeviceToTimeServerDefault(CrewChatApplication.getInstance().getTimeLocal() + diffTime +"");
     }
 
     public static String getTimeFormat(long time) {

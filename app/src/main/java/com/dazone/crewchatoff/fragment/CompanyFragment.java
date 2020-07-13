@@ -323,14 +323,11 @@ public class CompanyFragment extends Fragment {
                     String modDate = TimeUtils.showTimeWithoutTimeZone(calendar.getTimeInMillis(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
                     new Prefs().setModDate(modDate);
                     isGetUser = true;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            AllUserDBHelper.addUser(treeUserDTOs);
-                            treeUserDTOsInit.addAll(treeUserDTOs);
-                            new TinyDB(CrewChatApplication.getInstance()).putListObjectTmp("user", treeUserDTOsInit);
-                            mHandler.obtainMessage(GET_USER_COMPLETE, treeUserDTOs).sendToTarget();
-                        }
+                    new Thread(() -> {
+                        AllUserDBHelper.addUser(treeUserDTOs);
+                        treeUserDTOsInit.addAll(treeUserDTOs);
+                        new TinyDB(CrewChatApplication.getInstance()).putListObjectTmp("user", treeUserDTOsInit);
+                        mHandler.obtainMessage(GET_USER_COMPLETE, treeUserDTOs).sendToTarget();
                     }).start();
                 }
             }

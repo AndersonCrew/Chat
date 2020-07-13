@@ -213,7 +213,11 @@ public class CrewChatApplication extends MultiDexApplication {
     }
 
     public String getTimeServer() {
-        Date date = new Date(System.currentTimeMillis() - getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0));
+        Date date = new Date(getTimeLocal() - getPrefs().getLongValue(Statics.TIME_SERVER_MILI, 0));
         return TimeUtils.showTimeWithoutTimeZone(date.getTime(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
+    }
+
+    public long getTimeLocal() {
+        return System.currentTimeMillis() - getPrefs().getLongValue(Statics.TIME_LOCAL_MILI, 0);
     }
 }

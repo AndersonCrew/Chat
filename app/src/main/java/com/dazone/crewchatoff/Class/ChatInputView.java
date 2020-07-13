@@ -54,7 +54,7 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
         btnSend = v.findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
         edt_comment = v.findViewById(R.id.edt_comment);
-        edt_comment.setImeOptions(edt_comment.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+        //edt_comment.setImeOptions(edt_comment.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
         selection_lnl = v.findViewById(R.id.selection_lnl);
         selection_lnl.setVisibility(View.GONE);
 

@@ -18,6 +18,7 @@ import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.Views.RoundedImageView;
 import com.dazone.crewchatoff.activity.ChattingActivity;
+import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
 import com.dazone.crewchatoff.activity.RoomUserInformationActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
@@ -396,90 +397,71 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
 
         view.setTag(dto.getRoomNo());
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                long roomNo = (long) v.getTag();
-                ChattingActivity.toActivity(BaseActivity.Instance, roomNo, myId, tempDto);
-            }
+        view.setOnClickListener(v -> {
+            long roomNo = (long) v.getTag();
+            ChattingActivity.toActivity(BaseActivity.Instance, roomNo, myId, tempDto, MainActivity.type, MainActivity.imageUri);
         });
 
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                v.showContextMenu();
-                return true;
-            }
+        view.setOnLongClickListener(v -> {
+            v.showContextMenu();
+            return true;
         });
 
         final boolean finalIsFilter = isFilter;
 
-        tvTotalUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<Integer> uNos = new ArrayList<>();
-                uNos.add(myId);
-                if (finalIsFilter) {
+        tvTotalUser.setOnClickListener(v -> {
+            ArrayList<Integer> uNos = new ArrayList<>();
+            uNos.add(myId);
+            if (finalIsFilter) {
 
-                    for (TreeUserDTOTemp tree : dto.getListTreeUser()) {
-                        uNos.add(tree.getUserNo());
-                    }
-                } else {
-                    for (int id : dto.getUserNos()) {
-                        if (myId != id) {
-                            uNos.add(id);
-                        }
+                for (TreeUserDTOTemp tree : dto.getListTreeUser()) {
+                    uNos.add(tree.getUserNo());
+                }
+            } else {
+                for (int id : dto.getUserNos()) {
+                    if (myId != id) {
+                        uNos.add(id);
                     }
                 }
-
-                Intent intent = new Intent(BaseActivity.Instance, RoomUserInformationActivity.class);
-                intent.putIntegerArrayListExtra("userNos", uNos);
-                intent.putExtra("roomTitle", roomTitle);
-                long roomNo = dto.getRoomNo();
-                intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
-                BaseActivity.Instance.startActivity(intent);
             }
+
+            Intent intent = new Intent(BaseActivity.Instance, RoomUserInformationActivity.class);
+            intent.putIntegerArrayListExtra("userNos", uNos);
+            intent.putExtra("roomTitle", roomTitle);
+            long roomNo = dto.getRoomNo();
+            intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
+            BaseActivity.Instance.startActivity(intent);
         });
 
-        layoutGroupAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ArrayList<Integer> uNos = new ArrayList<>();
-                uNos.add(myId);
-                if (finalIsFilter) {
+        layoutGroupAvatar.setOnClickListener(view -> {
+            ArrayList<Integer> uNos = new ArrayList<>();
+            uNos.add(myId);
+            if (finalIsFilter) {
 
-                    for (TreeUserDTOTemp tree : dto.getListTreeUser()) {
-                        uNos.add(tree.getUserNo());
-                    }
-                } else {
-                    for (int id : dto.getUserNos()) {
-                        if (myId != id) {
-                            uNos.add(id);
-                        }
+                for (TreeUserDTOTemp tree : dto.getListTreeUser()) {
+                    uNos.add(tree.getUserNo());
+                }
+            } else {
+                for (int id : dto.getUserNos()) {
+                    if (myId != id) {
+                        uNos.add(id);
                     }
                 }
-
-                long roomNo = dto.getRoomNo();
-                Log.d(TAG, "roomNo put:" + roomNo);
-
-                Intent intent = new Intent(BaseActivity.Instance, RoomUserInformationActivity.class);
-                intent.putIntegerArrayListExtra("userNos", uNos);
-                intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
-                intent.putExtra("roomTitle", roomTitle);
-                BaseActivity.Instance.startActivity(intent);
             }
+
+            long roomNo = dto.getRoomNo();
+            Intent intent = new Intent(BaseActivity.Instance, RoomUserInformationActivity.class);
+            intent.putIntegerArrayListExtra("userNos", uNos);
+            intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
+            intent.putExtra("roomTitle", roomTitle);
+            BaseActivity.Instance.startActivity(intent);
         });
 
-        imgAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0) {
-
-                    Intent intent = new Intent(BaseActivity.Instance, ProfileUserActivity.class);
-                    intent.putExtra(Constant.KEY_INTENT_USER_NO, dto.getListTreeUser().get(0).getUserNo());
-                    BaseActivity.Instance.startActivity(intent);
-                }
+        imgAvatar.setOnClickListener(view -> {
+            if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0) {
+                Intent intent = new Intent(BaseActivity.Instance, ProfileUserActivity.class);
+                intent.putExtra(Constant.KEY_INTENT_USER_NO, dto.getListTreeUser().get(0).getUserNo());
+                BaseActivity.Instance.startActivity(intent);
             }
         });
     }
@@ -588,12 +570,7 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                     public void onHTTPSuccess() {
                         ivNotification.setVisibility(View.GONE);
                         tempDto.setNotification(true);
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ChatRoomDBHelper.updateChatRoomNotification(roomNo, true);
-                            }
-                        }).start();
+                        new Thread(() -> ChatRoomDBHelper.updateChatRoomNotification(roomNo, true)).start();
                     }
 
                     @Override
@@ -609,12 +586,7 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
                         ivNotification.setVisibility(View.VISIBLE);
                         tempDto.setNotification(false);
 
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ChatRoomDBHelper.updateChatRoomNotification(roomNo, false);
-                            }
-                        }).start();
+                        new Thread(() -> ChatRoomDBHelper.updateChatRoomNotification(roomNo, false)).start();
                     }
 
                     @Override

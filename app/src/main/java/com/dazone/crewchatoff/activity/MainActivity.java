@@ -36,6 +36,7 @@ import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.base.BasePagerActivity;
 import com.dazone.crewchatoff.adapter.TabPagerAdapter;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
@@ -69,6 +70,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -128,12 +130,8 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     @Override
     protected void init() {
         File dir = new File(Environment.getExternalStorageDirectory() + Constant.pathDownload_no);
-        if (dir.exists() && dir.isDirectory()) {
-            // do something here
-            Log.d(TAG, "dir exists");
-        } else {
+        if (!dir.exists() || !dir.isDirectory()) {
             dir.mkdirs();
-            Log.d(TAG, "dir dont exists");
         }
 
         instance = this;
@@ -145,13 +143,12 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         active = true;
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         if (!CrewChatApplication.isLoggedIn) {
-            Log.d(TAG, "loadStaticLocalData");
             CrewChatApplication.getInstance().syncData();
             CrewChatApplication.isLoggedIn = true;
             CrewChatApplication.currentId = currentUserNo;
         }
 
-        if(BuildConfig.FLAVOR.equals("serverVersion")) {
+        if (BuildConfig.FLAVOR.equals("serverVersion")) {
             checkVersion();
         }
     }
@@ -185,6 +182,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                 setupTab();
                 setupViewPager();
             }
+
             mHandler.postDelayed(() -> {
                 if (Intent.ACTION_SEND.equals(action) && type != null) {
                     if ("text/plain".equals(type)) {
@@ -195,6 +193,8 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                         handleSendAudio(intent);
                     } else if (type.startsWith("text/")) {
                         handleSendContact(intent);
+                    } else if (type.startsWith("image/")) {
+                        handlSendImage(intent);
                     } else {
                         handleSendFile(intent);
                     }
@@ -245,7 +245,16 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
 
     void handleSendFile(Intent intent) {
         imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        Log.d("ssssimageUri", imageUri.toString());
+        mSelectedImage.clear();
+        if (imageUri != null) {
+            if (mSelectedImage != null) {
+                mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
+            }
+        }
+    }
+
+    void handlSendImage(Intent intent) {
+        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         mSelectedImage.clear();
         if (imageUri != null) {
             if (mSelectedImage != null) {
@@ -483,8 +492,8 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             return false;
         } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;
-        } else return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED;
-
+        } else
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void setPermissions() {
@@ -543,12 +552,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         this.doubleBackToExitPressedOnce = true;
 
         Toast.makeText(this, getResources().getString(R.string.press_again_to_exit_message), Toast.LENGTH_SHORT).show();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
+        mHandler.postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
     }
 
     private int currentPage;
@@ -575,6 +579,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                 && CompanyFragment.instance.isLoadTreeData()) {
             Intent intent = new Intent(MainActivity.this, NewOrganizationChart.class);
             intent.putExtra(Statics.IS_NEW_CHAT, true);
+            intent.putExtra(Constants.LIST_MEMBER, (Serializable) CompanyFragment.instance.getSubordinates());
             startActivity(intent);
         } else {
             Toast.makeText(getApplicationContext(), "wait get list user finish", Toast.LENGTH_SHORT).show();

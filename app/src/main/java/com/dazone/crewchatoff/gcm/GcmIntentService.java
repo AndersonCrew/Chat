@@ -258,19 +258,18 @@ public class GcmIntentService extends IntentService {
      */
     private void receiveCode2(Bundle bundle) {
         try {
-            if (bundle.containsKey("UserNo")) {
+            if (bundle.containsKey("Data")) {
                 /** GET UserNo*/
-                int userNo = Integer.parseInt(bundle.getString("UserNo", "0"));
+
+                String objExtra = bundle.getString("Data", "");
+                JSONObject object = new JSONObject(objExtra);
+                int userNo = Integer.parseInt(object.getString("SubjectUserNo"));
                 if (userNo == Utils.getCurrentId()) {
                     if (bundle.containsKey("Data")) {
-                        /** GET RoomNo */
-                        long roomNo = Long.parseLong(bundle.getString("Data", "0"));
-
-                        /** Set Intent */
+                        long roomNo = Long.parseLong(object.getString("RoomNo"));
                         Intent intent = new Intent(this, ChattingActivity.class);
                         intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
 
-                        /** Notification */
                         sendNotification(Utils.getString(R.string.notification_add_user),
                                 Utils.getString(R.string.app_name),
                                 null,
@@ -279,7 +278,6 @@ public class GcmIntentService extends IntentService {
                                 roomNo);
 
 
-                        /** Send Broadcast */
                         if ((CurrentChatListFragment.fragment != null && CurrentChatListFragment.fragment.isActive) || (ChattingFragment.instance != null && ChattingFragment.instance.isActive)) {
                             Intent intentBroadcast = new Intent(Constant.INTENT_FILTER_ADD_USER);
                             intentBroadcast.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
@@ -295,10 +293,6 @@ public class GcmIntentService extends IntentService {
             e.printStackTrace();
         }
     }
-
-    /*
-     * CHAT DELETE MEMBER CODE = 3
-     * */
 
     private void chatDeleteMember(Bundle extras) {
         if (extras.containsKey("Data")) {

@@ -60,13 +60,8 @@ public abstract class BaseSingleStatusActivity extends BaseActivity {
         toolbar_title = findViewById(R.id.toolbar_title);
         toolbar_status = findViewById(R.id.toolbar_status);
         fab.setVisibility(View.GONE);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
         btnGroup = findViewById(R.id.btnGroup);
         btnGroup.setOnClickListener(new View.OnClickListener() {
             @Override

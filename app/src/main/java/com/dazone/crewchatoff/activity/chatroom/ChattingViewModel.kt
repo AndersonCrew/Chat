@@ -194,7 +194,8 @@ class ChattingViewModel : BaseViewModel() {
 
     @SuppressLint("UseSparseArrays")
     fun sendAttachFile(attachNo: Int, roomNo: Long, chattingDto: ChattingDto) {
-        Log.d("SEND FILE", "sendAttachFile Start positionUploadImage =  " + chattingDto.positionUploadImage + " AttachNo = " + attachNo)
+        val formatter = SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault())
+        val serverDate = formatter.parse(chattingDto.strRegDate).time - CrewChatApplication.getInstance().prefs.getLongValue(Statics.TIME_SERVER_MILI, 0)
         val params = JsonObject()
         params.addProperty("command", Urls.URL_SEND_ATTACH_FILE_TIME)
         params.addProperty("sessionId", CrewChatApplication.getInstance().prefs.getaccesstoken())
@@ -204,7 +205,7 @@ class ChattingViewModel : BaseViewModel() {
         val param1 = JsonObject()
         param1.addProperty("roomNo", roomNo)
         param1.addProperty("attachNo", attachNo)
-        param1.addProperty("regDate", CrewChatApplication.getInstance().timeServer)
+        param1.addProperty("regDate", formatter.format(serverDate))
         params.addProperty("reqJson", Gson().toJson(param1))
 
         disposables.add(RetrofitFactory.apiService.sendAttachFile(params)
@@ -258,9 +259,6 @@ class ChattingViewModel : BaseViewModel() {
         param1.addProperty("regDate", formatter.format(serverDate))
         params.addProperty("reqJson", Gson().toJson(param1))
 
-        Log.d("ABCDE", "REGDATE LOCAL : " + chattingDto.strRegDate )
-        Log.d("ABCDE", "REGDATE SEND TO SERVER : " + formatter.format(serverDate) )
-
         disposables.add(RetrofitFactory.apiService.sendNormalMessage(params)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -279,8 +277,6 @@ class ChattingViewModel : BaseViewModel() {
                             chattingDto.strRegDate = dto.strRegDate
 
                             normalMessage.postValue(chattingDto)
-
-                            Log.d("ABCDE", "REGDATE FROM RESPONSE SERVER WHEN SUCCESS : " + dto.strRegDate )
                         } else {
                             dtoFailed.postValue(chattingDto)
                         }

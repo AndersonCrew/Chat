@@ -236,6 +236,7 @@ public interface Statics {
     String AUDIO_WMA = ".wma";
     String AUDIO_AMR = ".amr";
     String VIDEO_MP4 = ".mp4";
+    String VIDEO_3GP = ".3gp";
     String VIDEO_MOV = ".mov";
     String FILE_PDF = ".pdf";
     String FILE_DOCX = ".docx";
@@ -269,4 +270,5 @@ public interface Statics {
     int ORIGINAL = 2;
 
     String TIME_SERVER_MILI = "TIME_SERVER_MILI";
+    String TIME_LOCAL_MILI = "TIME_LOCAL_MILI";
 }

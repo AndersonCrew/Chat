@@ -80,6 +80,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -87,6 +89,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -264,7 +267,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             if (attachFile != null) {
                 Log.d("SEND FILE", "sendAttachFile observe positionUploadImage =  " + attachFile.getPositionUploadImage() + " AttachNo = " + attachFile.getAttachNo());
                 updateMessageSendFile(attachFile);
-                notifyToCurrentChatList(attachFile);
             }
         });
 
@@ -276,7 +278,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         /**Handle send normal message*/
         viewModel.getNormalMessage().observe(this, dto -> {
-            notifyToCurrentChatList(dto);
             updateSendSuccess(dto);
             Log.d("CHAT ROOM", "Send Message Success");
         });
@@ -388,15 +389,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         view.btnSend.setOnClickListener(this);
         view.edt_comment.setOnKeyListener(this);
         view.edt_comment.setOnEditorActionListener(this);
-        if (isGetValueEnterAuto()) {
-            if (Build.VERSION.SDK_INT >= 24) {
-                view.edt_comment.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
-                view.edt_comment.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            }
 
-        } else {
-            view.edt_comment.setInputType(131073);
-        }
         list_content_rl.setBackgroundColor(ImageUtils.getColor(getContext(), R.color.chat_list_bg_color));
         disableSwipeRefresh();
 
@@ -516,7 +509,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
             chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
             chattingDto.setAttachFileSize((int) file.length());
-            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(System.currentTimeMillis() + ""));
+            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(CrewChatApplication.getInstance().getTimeLocal() + ""));
             chattingDto.setPositionUploadImage(dataSet.size() - 1);
             integerList.add(chattingDto);
 
@@ -834,10 +827,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         }
 
-        if (isUpdate) {
-            notifyToCurrentChatList(chattingDto);
-        }
-
         chattingDto.setUser(user);
         chattingDto.setContent(chattingDto.getMessage());
 
@@ -879,6 +868,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         view.linearEmoji.setVisibility(View.GONE);
         sendComplete = false;
         isSend = true;
+
         Iterator<ChattingDto> it = dataSet.iterator();
         while (it.hasNext()) {
             ChattingDto chat = it.next();
@@ -906,7 +896,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         }
 
-        adapterList.notifyItemChanged(position);
+        //adapterList.notifyItemChanged(position);
     }
 
     private void initData(List<ChattingDto> list) {
@@ -931,8 +921,18 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private Comparator<ChattingDto> mComparator = (o1, o2) -> {
+        SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
         Date date1 = new Date(TimeUtils.getTime(o1.getRegDate()));
         Date date2 = new Date(TimeUtils.getTime(o2.getRegDate()));
+
+        try {
+            date1 = formatter.parse(o1.getStrRegDate());
+            date2 = formatter.parse(o2.getStrRegDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
         return date1.compareTo(date2);
     };
 
@@ -953,7 +953,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             newDto.setWriterUser(userID);
             newDto.setHasSent(true);
             newDto.setRegDate(Utils.getTimeNewChat(0));
-            newDto.setStrRegDate(Utils.getTimeFormat(System.currentTimeMillis()));
+            newDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
             newDto.setPositionUploadImage(new Random().nextInt(1000));
             newDto.setId(new Random().nextInt());
             newDto.isSendding = true;
@@ -1247,8 +1247,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 addNewChat(dataDto, true, true);
                 notifyItemInserted();
             }
-
-            notifyToCurrentChatList(dataDto);
         } else {
             dataDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dataDto.getRegDate()));
             notifyToCurrentChatList(dataDto);

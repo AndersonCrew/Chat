@@ -1390,12 +1390,18 @@ public class HttpRequest {
                 try {
                     JSONObject object = new JSONObject(response);
                     String strDateServer = object.getString("StrServerDate");
-                    SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
-                    Date serverDate = formatter.parse(strDateServer);
-                    long calTime = System.currentTimeMillis() - serverDate.getTime();
+                    String strDateLocal = object.getString("StrServerConvetLocalDate");
 
-                    Log.d("SHOWTIME", "SERVER TIME : " );
+                    SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
+
+                    Date serverDate = formatter.parse(strDateServer);
+                    Date LocalDate = formatter.parse(strDateLocal);
+
+                    long calTime = LocalDate.getTime() - serverDate.getTime();
+                    long localCalTime = System.currentTimeMillis() - LocalDate.getTime();
+
                     CrewChatApplication.getInstance().getPrefs().putLongValue(Statics.TIME_SERVER_MILI, calTime);
+                    CrewChatApplication.getInstance().getPrefs().putLongValue(Statics.TIME_LOCAL_MILI, localCalTime);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {

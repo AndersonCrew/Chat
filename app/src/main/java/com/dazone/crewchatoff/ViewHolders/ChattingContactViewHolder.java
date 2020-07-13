@@ -70,24 +70,18 @@ public class ChattingContactViewHolder extends BaseChattingHolder {
             tvUnread.setVisibility(View.GONE);
         } else {
             tvUnread.setVisibility(View.VISIBLE);
-            tvUnread.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Constant.INTENT_GOTO_UNREAD_ACTIVITY);
-                    intent.putExtra(Statics.MessageNo, dto.getMessageNo());
-                    BaseActivity.Instance.sendBroadcast(intent);
-                }
+            tvUnread.setOnClickListener(v -> {
+                Intent intent = new Intent(Constant.INTENT_GOTO_UNREAD_ACTIVITY);
+                intent.putExtra(Statics.MessageNo, dto.getMessageNo());
+                BaseActivity.Instance.sendBroadcast(intent);
             });
         }
         lnContact.setTag(userDto.getPhoneNumber());
-        lnContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String phoneNumber = (String) v.getTag();
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + phoneNumber));
-                BaseActivity.Instance.startActivity(intent);
-            }
+        lnContact.setOnClickListener(v -> {
+            String phoneNumber = (String) v.getTag();
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + phoneNumber));
+            BaseActivity.Instance.startActivity(intent);
         });
     }
 }

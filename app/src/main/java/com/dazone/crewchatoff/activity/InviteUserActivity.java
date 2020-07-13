@@ -18,6 +18,7 @@ import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.Tree.Org_tree;
 import com.dazone.crewchatoff.adapter.AdapterOrganizationChart;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
@@ -51,14 +52,10 @@ import static java.lang.Integer.MAX_VALUE;
 public class InviteUserActivity extends AppCompatActivity {
     private String TAG = "InviteUserActivity";
     private RecyclerView recyclerView;
-    private ArrayList<TreeUserDTO> mPersonList = new ArrayList<>();
     private ArrayList<TreeUserDTO> temp = new ArrayList<>();
     private AdapterOrganizationChart mAdapter;
-    private ArrayList<TreeUserDTO> mDepartmentList;
-    private ArrayList<TreeUserDTOTemp> listTemp;
     private LinearLayoutManager mLayoutManager;
     private List<TreeUserDTO> list = new ArrayList<>();
-    private ArrayList<TreeUserDTO> mSelectedPersonList = new ArrayList<>();
 
     private long task = -1;
     private ArrayList<Integer> userNos;
@@ -90,6 +87,7 @@ public class InviteUserActivity extends AppCompatActivity {
                 task = bundle1.getLong(Constant.KEY_INTENT_ROOM_NO);
                 userNos = bundle1.getIntegerArrayList(Constant.KEY_INTENT_COUNT_MEMBER);
                 oldTitle = bundle1.getString(Constant.KEY_INTENT_ROOM_TITLE);
+                list = (List<TreeUserDTO>) getIntent().getSerializableExtra(Constants.LIST_MEMBER);
             } catch (Exception e) {
                 task = -1;
                 e.printStackTrace();
@@ -108,7 +106,7 @@ public class InviteUserActivity extends AppCompatActivity {
     void initView() {
         recyclerView = findViewById(R.id.rv);
         InviteUserActivity instance = this;
-        mAdapter = new AdapterOrganizationChart(this, list, true, null, instance, userNos);
+        mAdapter = new AdapterOrganizationChart(null, instance, userNos);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -120,10 +118,7 @@ public class InviteUserActivity extends AppCompatActivity {
     }
 
     void initDB() {
-//        initWholeOrganization();
-
-        if (CompanyFragment.instance != null) {
-            list = CompanyFragment.instance.getSubordinates();
+        if (list != null && list.size() > 0) {
             mAdapter.updateList(list);
         } else {
             Toast.makeText(getApplicationContext(), "Can not get list user, restart app please", Toast.LENGTH_SHORT).show();

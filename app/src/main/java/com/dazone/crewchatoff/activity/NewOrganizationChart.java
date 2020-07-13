@@ -26,6 +26,7 @@ import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.Tree.Org_tree;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.adapter.AdapterOrganizationChart;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.BelongDepartmentDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
@@ -52,11 +53,6 @@ public class NewOrganizationChart extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private AdapterOrganizationChart mAdapter;
     private List<TreeUserDTO> list = new ArrayList<>();
-    private ArrayList<TreeUserDTOTemp> listTemp;
-    private ArrayList<TreeUserDTO> mDepartmentList;
-    private ArrayList<TreeUserDTO> temp = new ArrayList<>();
-    private ArrayList<TreeUserDTO> mPersonList = new ArrayList<>();
-    private ArrayList<TreeUserDTO> mSelectedPersonList = new ArrayList<>();
     private TextView tvCount;
     private EditText edRoomName;
     private CheckBox cbCreateNewRoom;
@@ -73,11 +69,12 @@ public class NewOrganizationChart extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.create_chat_room));
 
-        if(!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
         try {
             isNewChat = getIntent().getBooleanExtra(Statics.IS_NEW_CHAT, false);
+            list = (List<TreeUserDTO>) getIntent().getSerializableExtra(Constants.LIST_MEMBER);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,10 +87,12 @@ public class NewOrganizationChart extends AppCompatActivity {
         initDB();
 
     }
+
     @Subscribe
     public void notifyAdapter(NotifyAdapterOgr notifyAdapterOgr) {
         mAdapter.notifyDataSetChanged();
     }
+
     public void scrollToEndList(int size) {
         recyclerView.smoothScrollToPosition(size);
     }
@@ -108,7 +107,6 @@ public class NewOrganizationChart extends AppCompatActivity {
     }
 
     void initView() {
-
         ivShare = findViewById(R.id.ivShare);
         layoutRoomName = findViewById(R.id.layoutRoomName);
         if (isNewChat) {
@@ -123,9 +121,9 @@ public class NewOrganizationChart extends AppCompatActivity {
             String type = intent.getType();
             if (Intent.ACTION_SEND.equals(action) && type != null) {
                 if ("text/plain".equals(type)) {
-                    handleSendText(intent); // Handle text being sent
+                    //TODO HANDLER SEND TEXT
                 } else if (type.startsWith("image/")) {
-                    handleSendImage(intent); // Handle single image being sent
+                    handleSendImage(intent);
                 }
             }
 
@@ -154,7 +152,7 @@ public class NewOrganizationChart extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.rv);
         NewOrganizationChart instance = this;
-        mAdapter = new AdapterOrganizationChart(this, list, true, instance, null, null);
+        mAdapter = new AdapterOrganizationChart(instance, null, null);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -193,17 +191,9 @@ public class NewOrganizationChart extends AppCompatActivity {
 
     }
 
-    void handleSendText(Intent intent) {
-        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (sharedText != null) {
-            // Update UI to reflect text being shared
-        }
-    }
-
     void handleSendImage(Intent intent) {
         Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
-            // Update UI to reflect image being shared
             try {
                 ivShare.setImageBitmap(Constant.getThumbnail(this, imageUri));
             } catch (IOException e) {
@@ -215,104 +205,15 @@ public class NewOrganizationChart extends AppCompatActivity {
 
 
     void initDB() {
-        if (CompanyFragment.instance != null) {
-            list = CompanyFragment.instance.getSubordinates();
+        if (list != null && list.size() > 0) {
             mAdapter.updateList(list);
         } else {
             Toast.makeText(getApplicationContext(), "Can not get list user, restart app please", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void buildTree(final ArrayList<TreeUserDTO> treeUserDTOs, boolean isFromServer) {
-        if (treeUserDTOs != null) {
-            if (isFromServer) {
-                convertData(treeUserDTOs);
-            } else {
-                temp.clear();
-                temp.addAll(treeUserDTOs);
-            }
-
-            for (TreeUserDTO treeUserDTO : temp) {
-                if (treeUserDTO.getSubordinates() != null && treeUserDTO.getSubordinates().size() > 0) {
-                    treeUserDTO.setSubordinates(null);
-                }
-            }
-
-            // sort data by order
-            Collections.sort(temp, new Comparator<TreeUserDTO>() {
-                @Override
-                public int compare(TreeUserDTO r1, TreeUserDTO r2) {
-                    if (r1.getmSortNo() > r2.getmSortNo()) {
-                        return 1;
-                    } else if (r1.getmSortNo() == r2.getmSortNo()) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
-                }
-            });
-
-            for (TreeUserDTOTemp treeUserDTOTemp : listTemp) {
-                for (BelongDepartmentDTO belong : treeUserDTOTemp.getBelongs()) {
-                    TreeUserDTO treeUserDTO = new TreeUserDTO(
-                            belong.getDutyName(),
-                            treeUserDTOTemp.getName(),
-                            treeUserDTOTemp.getNameEN(),
-                            treeUserDTOTemp.getCellPhone(),
-                            treeUserDTOTemp.getAvatarUrl(),
-                            belong.getPositionName(),
-                            treeUserDTOTemp.getType(),
-                            treeUserDTOTemp.getStatus(),
-                            treeUserDTOTemp.getUserNo(),
-                            belong.getDepartNo(),
-                            treeUserDTOTemp.getUserStatusString(),
-                            belong.getPositionSortNo()
-                    );
-
-                    for (TreeUserDTO u : mSelectedPersonList) {
-                        if (treeUserDTOTemp.getUserNo() == u.getId()) {
-                            treeUserDTO.setIsCheck(true);
-                            break;
-                        }
-                    }
-
-                    temp.add(treeUserDTO);
-                }
-            }
-
-            mPersonList = new ArrayList<>();
-            mPersonList.addAll(temp);
-
-            TreeUserDTO dto = null;
-
-            try {
-                dto = Org_tree.buildTree(mPersonList);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (dto != null) {
-                list = dto.getSubordinates();
-                mAdapter.updateList(list);
-            }
-        }
-    }
-
-    public void convertData(List<TreeUserDTO> treeUserDTOs) {
-        if (treeUserDTOs != null && treeUserDTOs.size() != 0) {
-            for (TreeUserDTO dto : treeUserDTOs) {
-                if (dto.getSubordinates() != null && dto.getSubordinates().size() > 0) {
-                    temp.add(dto);
-                    convertData(dto.getSubordinates());
-                } else {
-                    temp.add(dto);
-                }
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_organization, menu);
         return true;
     }
@@ -334,7 +235,6 @@ public class NewOrganizationChart extends AppCompatActivity {
             case R.id.menu_add:
                 if (isNewChat)
                     addToGroupChat();
-                else actionShare();
                 break;
         }
         return false;
@@ -350,10 +250,6 @@ public class NewOrganizationChart extends AppCompatActivity {
     }
 
     ArrayList<TreeUserDTO> lst = new ArrayList<>();
-
-    void actionShare() {
-        Log.d(TAG, "actionShare");
-    }
 
     void addToGroupChat() {
         lst = getListDTO(mAdapter.getList());
