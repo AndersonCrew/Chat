@@ -11,4 +11,5 @@ public class UnreadDto {
     public int UserNo;
     public boolean IsRead=false;
     public String ModDate="";
+    public String strModDate="";
 }

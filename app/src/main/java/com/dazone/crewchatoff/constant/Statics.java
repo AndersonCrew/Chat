@@ -105,7 +105,7 @@ public interface Statics {
     String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     String DATE_FORMAT_DD = "dd";
 
-    String DATE_FORMAT_YYYY_MM_DD_AM_PM_HH_MM = "yyyy-MM-dd aa hh:mm";
+    String DATE_FORMAT_YYYY_MM_DD_AM_PM_HH_MM = "MM/dd HH:mm:ss";
 
     String yyyy_MM_dd_HH_mm_ss_SSS = "yyyy-MM-dd HH:mm:ss.SSS";
 

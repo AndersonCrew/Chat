@@ -24,6 +24,15 @@ public class TreeUserDTO extends DataDto implements DrawImageItem, Serializable 
     public boolean IsRead = false;
     public String ModDate = "";
     public String DutyName = "";
+    public String strModDate="";
+
+    public String getStrModDate() {
+        return strModDate;
+    }
+
+    public void setStrModDate(String strModDate) {
+        this.strModDate = strModDate;
+    }
 
     public String getDutyName() {
         return DutyName;

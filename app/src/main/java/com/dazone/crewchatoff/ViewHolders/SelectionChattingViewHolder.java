@@ -37,7 +37,6 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
     public ImageView icon;
     public LinearLayout layout;
     private Uri uri;
-    private String TAG = "SelectionChattingViewHolder";
 
     public SelectionChattingViewHolder(View v) {
         super(v);
@@ -45,9 +44,9 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
 
     @Override
     protected void setup(View v) {
-        title = (TextView) v.findViewById(R.id.title);
-        icon = (ImageView) v.findViewById(R.id.ic_folder);
-        layout = (LinearLayout) v.findViewById(R.id.layout);
+        title = v.findViewById(R.id.title);
+        icon = v.findViewById(R.id.ic_folder);
+        layout = v.findViewById(R.id.layout);
     }
 
     @Override
@@ -120,6 +119,7 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
                     if (ChattingActivity.instance != null) {
                         if (ChattingActivity.instance.checkPermissionsCamera()) {
                             try {
+                                ChattingActivity.instance.isChoseFile = true;
                                 Intent intent = new Intent(Intent.ACTION_PICK,
                                         android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
                                 ChattingActivity.Instance.startActivityForResult(intent, Statics.VIDEO_PICKER_SELECT);
@@ -142,6 +142,7 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
                 layout.setOnClickListener(v -> {
                     if (ChattingActivity.instance != null) {
                         if (ChattingActivity.instance.checkPermissionsCamera()) {
+                            ChattingActivity.instance.isChoseFile = true;
                             Intent i = new Intent(ChattingActivity.Instance, FilePickerActivity.class);
                             i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
                             i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
@@ -199,6 +200,7 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
     }
 
     private void contactPicker() {
+        ChattingActivity.instance.isChoseFile = true;
         Intent intent = new Intent(ChattingActivity.Instance, ContactPickerActivity.class)
                 .putExtra(ContactPickerActivity.EXTRA_CONTACT_BADGE_TYPE, ContactPictureType.ROUND.name())
                 .putExtra(ContactPickerActivity.EXTRA_CONTACT_DESCRIPTION, ContactDescription.ADDRESS.name())
@@ -209,6 +211,7 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
     }
 
     private void recordVideo() {
+        ChattingActivity.instance.isChoseFile = true;
         if (Build.VERSION.SDK_INT > 23) {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Video.VideoColumns.MIME_TYPE, "video/mp4");
@@ -234,6 +237,7 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
 
     //Capture camera
     private void captureImage(int task) {
+        ChattingActivity.instance.isChoseFile = true;
         if (Build.VERSION.SDK_INT > 23) {
             // for android >= 7
             if (task == Statics.MEDIA_TYPE_IMAGE) {
@@ -257,6 +261,7 @@ public class SelectionChattingViewHolder extends ItemViewHolder<SelectionPlusDto
     }
 
     private void selectImage() {
+        ChattingActivity.instance.isChoseFile = true;
         MediaChooser.showOnlyImageTab();
         Intent intent = new Intent(ChattingActivity.Instance, BucketHomeFragmentActivity.class);
         ChattingActivity.Instance.startActivity(intent);

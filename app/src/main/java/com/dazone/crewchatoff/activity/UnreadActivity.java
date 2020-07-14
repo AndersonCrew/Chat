@@ -88,7 +88,6 @@ public class UnreadActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-
     void initDb() {
         new HttpRequest().GetCheckMessageUserList(MessageNo, ROOM_NO, new UnreadCallBack() {
             @Override
@@ -112,14 +111,14 @@ public class UnreadActivity extends AppCompatActivity {
         if (users.size() > 0) {
             List<TreeUserDTO> temp = getLst(myId, users, userNos);
             if (temp != null && temp.size() > 0) {
-
                 for (TreeUserDTO obj : temp) {
                     int userId = obj.getId();
                     for (UnreadDto dto : list) {
                         if (userId == dto.UserNo) {
                             if (dto.IsRead) {
-                                obj.IsRead=dto.IsRead;
+                                obj.IsRead = true;
                                 obj.ModDate = dto.ModDate;
+                                obj.strModDate = dto.strModDate;
                             }
                             break;
                         }

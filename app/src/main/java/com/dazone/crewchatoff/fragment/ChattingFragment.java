@@ -110,7 +110,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private boolean isLoadMore = true;
     private boolean hasLoadMore = false;
 
-    private boolean isFromNotification = false;
     private boolean isShowNewMessage = false;
     private Activity mActivity;
     private UserDto temp = null;
@@ -300,14 +299,16 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         super.onStart();
 
         if (CompanyFragment.instance != null) listTemp = CompanyFragment.instance.getUser();
-        if (listTemp == null || listTemp.size() == 0)
+        if (listTemp == null || listTemp.size() == 0) {
             listTemp = AllUserDBHelper.getUser_v2();
-        if (listTemp == null) listTemp = new ArrayList<>();
+        }
+
+        if (listTemp == null) {
+            listTemp = new ArrayList<>();
+        }
 
 
         set_msg_for_edit_text();
-
-
     }
 
     @Override
@@ -371,8 +372,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         });
 
         adapterList = new ChattingAdapter(mContext, mActivity, dataSet, rvMainList, () -> rvMainList.postDelayed(() -> {
-            if (!hasLoadedImageFirst)
-                rvMainList.smoothScrollToPosition(dataSet.size());
+            /*if (!hasLoadedImageFirst)
+                rvMainList.smoothScrollToPosition(dataSet.size());*/
         }, 500));
 
 
@@ -607,6 +608,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public void recordDialog() {
+        ChattingActivity.instance.isChoseFile = true;
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
@@ -842,8 +844,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         }
 
         dataSet.add(chattingDto);
-        scrollToEndList();
-        isFromNotification = false;
     }
 
     private void updateMessageSendFile(ChattingDto chattingDto) {
@@ -882,21 +882,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         adapterList.notifyDataSetChanged();
     }
 
-    private void updateSendSuccess (ChattingDto dto) {
+    private void updateSendSuccess(ChattingDto dto) {
         view.linearEmoji.setVisibility(View.GONE);
         sendComplete = false;
         isSend = true;
-        int position = 0;
-        Iterator<ChattingDto> it = dataSet.iterator();
-        while (it.hasNext()) {
-            ChattingDto chat = it.next();
-            if (chat.getPositionUploadImage() == dto.getPositionUploadImage() && roomNo == dto.getRoomNo()) {
-                position = dataSet.indexOf(chat);
-                break;
-            }
-        }
-
-        //adapterList.notifyItemChanged(position);
+        adapterList.notifyDataSetChanged();
     }
 
     private void initData(List<ChattingDto> list) {
@@ -992,7 +982,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         isActive = true;
         registerGCMReceiver();
         CrewChatApplication.currentRoomNo = roomNo;
-
     }
 
     private final static int MSG_UPDATE_DISPLAY = 2;
@@ -1227,17 +1216,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
 
         boolean isShow = dataDto.getRoomNo() == roomNo;
-        if (isShowNewMessage && isShow) {
-            showNewMessage(dataDto);
-        } else {
-            hideNewMessage();
-        }
 
         dataDto.setWriterUser(dataDto.getWriterUserNo());
         dataDto.setCheckFromServer(true);
 
         if (roomNo == dataDto.getRoomNo()) {
-            isFromNotification = true;
             if (!TextUtils.isEmpty(dataDto.getMessage()) || dataDto.getAttachNo() != 0) {
                 if (dataDto.getType() != 6) {
                     msgEnd = -1;
@@ -1245,7 +1228,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 }
 
                 addNewChat(dataDto, true, true);
-                notifyItemInserted();
+                if (isShowNewMessage && isShow) {
+                    showNewMessage(dataDto);
+                } else {
+                    hideNewMessage();
+                    notifyItemInserted();
+                    scrollToEndList();
+                }
             }
         } else {
             dataDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(dataDto.getRegDate()));

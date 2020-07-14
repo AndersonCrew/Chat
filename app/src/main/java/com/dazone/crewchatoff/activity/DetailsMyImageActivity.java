@@ -18,7 +18,6 @@ import com.dazone.crewchatoff.customs.ImageViewZoomSupport;
 public class DetailsMyImageActivity extends AppCompatActivity {
     ImageViewZoomSupport imageView;
     String url = "";
-    String TAG = "DetailsMyImageActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,11 +26,9 @@ public class DetailsMyImageActivity extends AppCompatActivity {
         setContentView(R.layout.details_my_image_layout);
         imageView = findViewById(R.id.imageView);
         url = getIntent().getStringExtra(Statics.CHATTING_DTO_GALLERY_SHOW_FULL);
-        Log.d(TAG, "url:" + url);
 
         Glide.with(this)
                 .load(url)
-                .asBitmap()
                 .placeholder(R.drawable.loading)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.loading)

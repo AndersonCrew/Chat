@@ -54,11 +54,9 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
         btnSend = v.findViewById(R.id.btnSend);
         btnSend.setOnClickListener(this);
         edt_comment = v.findViewById(R.id.edt_comment);
-        //edt_comment.setImeOptions(edt_comment.getImeOptions() | EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
         selection_lnl = v.findViewById(R.id.selection_lnl);
         selection_lnl.setVisibility(View.GONE);
 
-        // set height selection_lnl
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) selection_lnl.getLayoutParams();
         if (CrewChatApplication.getInstance().getPrefs().getDDSServer().contains(Statics.chat_jw_group_co_kr)) {
             params.height = Utils.getDimenInPx(R.dimen.dimen_70_140);
@@ -94,7 +92,6 @@ public class ChatInputView extends BaseViewClass implements View.OnClickListener
         switch (viewID) {
             case R.id.plus_imv:
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
                 selection_lnl.removeAllViews();
 
                 if (linearEmoji.getVisibility() == View.VISIBLE)

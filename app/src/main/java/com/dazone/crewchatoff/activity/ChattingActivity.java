@@ -108,6 +108,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     int IV_STATUS = -1;
     private String filePathShare;
     private String typeShare;
+    public boolean isChoseFile = false;
 
     public void removeUserList(int userId) {
         if (userNos != null) {
@@ -1131,5 +1132,16 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         } else {
             // handleSendFile(intent);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(!isChoseFile) {
+            ChattingFragment.instance.Reload();
+        }
+
+        ChattingActivity.instance.isChoseFile = false;
     }
 }
