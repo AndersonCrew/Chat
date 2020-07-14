@@ -48,7 +48,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.dazone.crewchatoff.BuildConfig;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
@@ -74,7 +73,9 @@ import com.dazone.crewchatoff.utils.TimeUtils;
 import com.dazone.crewchatoff.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -95,7 +96,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
     private ProgressBar progressBarImageLoading;
     private ChattingDto tempDto;
     private Activity mActivity;
-    private float ratio = 1.8f;
+    private float ratio = 1.5f;
     private Bitmap destBitmap = null;
     String TAG = "ChattingSelfImageViewHolder";
     private ILoadImage iLoadImage;
@@ -184,7 +185,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 chatting_imv.setImageBitmap(null);
                 chatting_imv.destroyDrawingCache();
                 String imagePath = dto.getAttachFilePath(); // photoFile is a File type.
-
                 try {
                     final BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inJustDecodeBounds = false;
@@ -192,19 +192,19 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                     Bitmap tempBitmap = BitmapFactory.decodeFile(imagePath, options);
                     int height = options.outHeight;
                     int width = options.outWidth;
-
                     int reqWidth, reqHeight;
-                    if (width > 180) {
+                    if(width > 180) {
                         reqWidth = (int) (180 * ratio);
-                    } else {
-                        reqWidth = (int) (60 * ratio);
-                    }
-                    reqHeight = (reqWidth * height) / width;
+                    } else reqWidth = (int) (60 * ratio);
+
+                    reqHeight = (reqWidth * height) /width;
+
                     try {
                         destBitmap = createScaledBitmap(tempBitmap, reqWidth / 2, reqHeight / 2, true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
+
                     chatting_imv.setImageBitmap(destBitmap);
                 } catch (OutOfMemoryError e) {
                     e.printStackTrace();
@@ -239,41 +239,35 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                                 new Prefs().getaccesstoken(), dto.getAttachNo());
                         final String fullUrl = new Prefs().getServerSite() + urlT;
                         Log.d("sssDebug2018", fullUrl);
-                        Glide.with(CrewChatApplication.getInstance())
+
+                        Picasso.with(CrewChatApplication.getInstance())
                                 .load(fullUrl)
-                                .asBitmap()
-                                .placeholder(R.drawable.error_loading_image)
-                                .listener(new RequestListener<String, Bitmap>() {
+                                .into(new Target() {
                                     @Override
-                                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                        int srcWidth = bitmap.getWidth();
+                                        int srcHeight = bitmap.getHeight();
+                                        int dstWidth = (int) ((srcWidth * ratio) / 2);
+                                        int dstHeight = (int) ((srcHeight * ratio) / 2);
+                                        Bitmap bitmapImage = createScaledBitmap(bitmap, dstWidth, dstHeight, true);
+                                        chatting_imv.setImageBitmap(bitmapImage);
                                         if (progressBarImageLoading != null)
                                             progressBarImageLoading.setVisibility(View.GONE);
-                                        return false;
+
+                                        if (iLoadImage != null)
+                                            iLoadImage.onLoaded(dto);
                                     }
 
                                     @Override
-                                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                        return false;
-                                    }
-                                })
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                .error(R.drawable.error_loading_image)
-                                .fallback(R.drawable.error_loading_image)
-                                .into(new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                        int srcWidth = resource.getWidth();
-                                        int srcHeight = resource.getHeight();
-                                        int dstWidth = (int) (srcWidth * ratio) / 2;
-                                        int dstHeight = (int) (srcHeight * ratio) / 2;
-                                        Bitmap bitmap = createScaledBitmap(resource, dstWidth, dstHeight, true);
-                                        chatting_imv.setImageBitmap(bitmap);
+                                    public void onBitmapFailed(Drawable errorDrawable) {
                                         if (progressBarImageLoading != null)
                                             progressBarImageLoading.setVisibility(View.GONE);
-                                        if (iLoadImage != null)
-                                            iLoadImage.onLoaded();
                                     }
-                                });
+
+                                    @Override
+                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                    }});
                     } else {
                         ImageUtils.showImage(url, chatting_imv);
                     }
@@ -295,12 +289,9 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
         String strUnReadCount = dto.getUnReadCount() + "";
         tvUnread.setText(strUnReadCount);
-        date_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "tvUnread");
-                actionUnread();
-            }
+        date_tv.setOnClickListener(v -> {
+            Log.d(TAG, "tvUnread");
+            actionUnread();
         });
         if (dto.getUnReadCount() == 0) {
             tvUnread.setVisibility(View.GONE);

@@ -228,6 +228,7 @@ class ChattingViewModel : BaseViewModel() {
                             dto.attachInfo = chattingDto.attachInfo
                             dto.positionUploadImage = chattingDto.positionUploadImage
                             dto.attachNo = attachNo
+                            dto.setmType(chattingDto.getmType())
 
                             attachFile.postValue(dto)
 

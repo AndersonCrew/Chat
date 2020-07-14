@@ -125,7 +125,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private Handler handlerTimer = new Handler();
     private int timeDelay = 1000;
     private int timerCount = -1;
-    private boolean hasLoadedImageFirst = false;
+    private boolean hasLoadImage = false;
 
     private ChattingViewModel viewModel;
     private Runnable updateTimer = new Runnable() {
@@ -342,13 +342,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             public void onScrolledUp() {
                 super.onScrolledUp();
                 isShowNewMessage = true;
-                hasLoadedImageFirst = true;
             }
 
             @Override
             public void onScrolledDown() {
                 super.onScrolledDown();
-                hasLoadedImageFirst = false;
             }
 
             @Override
@@ -371,11 +369,13 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             }
         });
 
-        adapterList = new ChattingAdapter(mContext, mActivity, dataSet, rvMainList, () -> rvMainList.postDelayed(() -> {
-            /*if (!hasLoadedImageFirst)
-                rvMainList.smoothScrollToPosition(dataSet.size());*/
+        adapterList = new ChattingAdapter(mContext, mActivity, dataSet, rvMainList, (chattingDto) -> rvMainList.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (dataSet.contains(chattingDto) && dataSet.size() - dataSet.indexOf(chattingDto) <= 6 && !isShowNewMessage)
+                    scrollToEndList();
+            }
         }, 500));
-
 
         initViewModel();
         viewModel.getChatListFirst(roomNo, userID);

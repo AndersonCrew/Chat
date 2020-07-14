@@ -157,34 +157,6 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
         }
     }
 
-    private void decodeBitmap() {
-        if (imagePath != null) {
-            ivMain.setImageBitmap(null);
-            ivMain.destroyDrawingCache();
-            if (mMainBitmap != null) {
-                mMainBitmap.recycle();
-            }
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            mMainBitmap = BitmapFactory.decodeFile(imagePath);
-            options.inSampleSize = 1; // default inSampleSize
-
-            int height = mMainBitmap.getHeight();
-            int width = mMainBitmap.getWidth();
-
-            // if size too large, need to reduce size before upload
-            if (height > 1280 && width > 960) {
-                options.inSampleSize = 2;
-                Bitmap imgbitmap = BitmapFactory.decodeFile(imagePath, options);
-                mMainBitmap = ExifUtil.rotateBitmap(imagePath, imgbitmap);
-                ivMain.setImageBitmap(mMainBitmap);
-            } else {
-                ivMain.setImageBitmap(mMainBitmap);
-            }
-        }
-
-    }
-
     private void initData() {
         Intent i = getIntent();
         imagePath = i.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE);
@@ -206,7 +178,6 @@ public class RotateImageActivity extends Activity implements View.OnClickListene
     }
 
     class LoadbitMap extends AsyncTask<Void, Integer, String> {
-
 
         protected void onPreExecute() {
             super.onPreExecute();

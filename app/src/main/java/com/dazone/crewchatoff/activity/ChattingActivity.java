@@ -933,10 +933,12 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
 
     private void handleImageRotate(Intent data, String filePathShare) {
         String pathImageRotate = "";
-        if (data != null) {
+        if (data != null && data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE) != null) {
             pathImageRotate = data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE);
         } else if (filePathShare != null) {
             pathImageRotate = Utils.getPathImage(this, Uri.parse(filePathShare));
+        } else if(uri != null) {
+            pathImageRotate = Utils.getPathImage(this, uri);
         } else return;
 
         // Add image to gallery album
@@ -953,10 +955,12 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
         chattingDto.setPositionUploadImage(new Random().nextInt(1000));
         ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+        isChoseFile = true;
     }
 
     private void handleCameraCapture() {
         if (uri != null) {
+            isChoseFile = true;
             String path = Utils.getPathFromURI(uri, this);
             Intent intent = new Intent(this, RotateImageActivity.class);
             intent.putExtra(Statics.CHATTING_DTO_GALLERY_SINGLE, path);
@@ -1142,6 +1146,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             ChattingFragment.instance.Reload();
         }
 
-        ChattingActivity.instance.isChoseFile = false;
+        isChoseFile = false;
     }
 }
