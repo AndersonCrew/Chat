@@ -8,5 +8,4 @@ public interface NLevelListItem {
 	void toggle();
 	NLevelListItem getParent();
 	int getLevel();
-	// public View getView();
 }

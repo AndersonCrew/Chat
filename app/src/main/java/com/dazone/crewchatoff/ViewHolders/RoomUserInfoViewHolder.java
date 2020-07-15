@@ -47,14 +47,14 @@ public class RoomUserInfoViewHolder extends ItemViewHolder<TreeUserDTO> {
 
     @Override
     protected void setup(View view) {
-        avatar = (ImageView) view.findViewById(R.id.avatar);
-        folderIcon = (ImageView) view.findViewById(R.id.ic_folder);
-        ivUserStatus = (ImageView) view.findViewById(R.id.status_imv);
-        relAvatar = (RelativeLayout) view.findViewById(R.id.relAvatar);
-        name = (TextView) view.findViewById(R.id.name);
-        position = (TextView) view.findViewById(R.id.position);
-        tvWorkPhone = (TextView) view.findViewById(R.id.tv_work_phone);
-        tvPersonalPhone = (TextView) view.findViewById(R.id.tv_personal_phone);
+        avatar = view.findViewById(R.id.avatar);
+        folderIcon = view.findViewById(R.id.ic_folder);
+        ivUserStatus = view.findViewById(R.id.status_imv);
+        relAvatar = view.findViewById(R.id.relAvatar);
+        name = view.findViewById(R.id.name);
+        position = view.findViewById(R.id.position);
+        tvWorkPhone = view.findViewById(R.id.tv_work_phone);
+        tvPersonalPhone = view.findViewById(R.id.tv_personal_phone);
     }
 
     @Override
@@ -157,14 +157,14 @@ public class RoomUserInfoViewHolder extends ItemViewHolder<TreeUserDTO> {
             totalString = firstString + changeString;
             Spannable spanText = new SpannableString(totalString);
             spanText.setSpan(new ForegroundColorSpan(CrewChatApplication.getInstance().getResources()
-                    .getColor(R.color.gray)), String.valueOf(firstString + 3)
+                    .getColor(R.color.gray)), (firstString + 3)
                     .length(), totalString.length(), 0);
             txtSpan.setText(spanText);
         } else {
             totalString = firstString + " / " + changeString;
             Spannable spanText = new SpannableString(totalString);
             spanText.setSpan(new ForegroundColorSpan(CrewChatApplication.getInstance().getResources()
-                    .getColor(R.color.gray)), String.valueOf(firstString + " / ")
+                    .getColor(R.color.gray)), (firstString + " / ")
                     .length(), totalString.length(), 0);
             txtSpan.setText(spanText);
         }

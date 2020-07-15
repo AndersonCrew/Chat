@@ -48,7 +48,6 @@ import java.util.Locale;
 
 public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
     private CurrentChatListFragment.OnContextMenuSelect mOnContextMenuSelect;
-    String TAG = "ListCurrentViewHolder";
 
     public ListCurrentViewHolder(View itemView, CurrentChatListFragment.OnContextMenuSelect callback) {
         super(itemView);

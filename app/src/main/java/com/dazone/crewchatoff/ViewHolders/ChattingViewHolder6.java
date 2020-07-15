@@ -23,7 +23,6 @@ import java.util.List;
 
 public class ChattingViewHolder6 extends BaseChattingHolder {
     private TextView tv_6;
-    String TAG="ChattingViewHolder6";
     private LinearLayout llDate;
     private TextView tvDate;
 

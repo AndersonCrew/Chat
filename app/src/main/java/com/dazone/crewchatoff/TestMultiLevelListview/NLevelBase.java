@@ -11,7 +11,6 @@ public class NLevelBase implements NLevelListItem, Serializable{
 
     private TreeUserDTO wrappedObject;
     private NLevelItem parent;
-    private NLevelView nLevelView;
     private boolean isExpanded = false;
     private int mLevelIndex = 0;
 

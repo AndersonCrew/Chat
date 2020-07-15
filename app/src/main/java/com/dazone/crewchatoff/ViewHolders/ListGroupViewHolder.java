@@ -21,10 +21,10 @@ public class ListGroupViewHolder extends ItemViewHolder<TreeUserDTOTemp> {
 
     @Override
     protected void setup(View v) {
-        layoutMain = (RelativeLayout) v.findViewById(R.id.layout_main);
-        tvUserName = (TextView) v.findViewById(R.id.tv_username);
-        ivAvatar = (ImageView) v.findViewById(R.id.iv_avatar);
-        tvPosition = (TextView) v.findViewById(R.id.tv_position);
+        layoutMain = v.findViewById(R.id.layout_main);
+        tvUserName = v.findViewById(R.id.tv_username);
+        ivAvatar = v.findViewById(R.id.iv_avatar);
+        tvPosition = v.findViewById(R.id.tv_position);
     }
 
     @Override
