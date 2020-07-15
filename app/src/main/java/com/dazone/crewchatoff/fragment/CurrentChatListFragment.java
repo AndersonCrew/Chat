@@ -56,8 +56,26 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         IntentFilter filter = new IntentFilter();
         filter.addAction(Statics.ACTION_SHOW_SEARCH_INPUT_IN_CURRENT_CHAT);
         filter.addAction(Statics.ACTION_HIDE_SEARCH_INPUT_IN_CURRENT_CHAT);
+
+        IntentFilter filterScreen = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        getActivity().registerReceiver(mScreenReceiver, filterScreen);
+
         getActivity().registerReceiver(mReceiverShowSearchInput, filter);
     }
+
+    private boolean isScreenOff;
+    private BroadcastReceiver mScreenReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                isScreenOff = true;
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                isScreenOff = false;
+            }
+        }
+    };
 
     private BroadcastReceiver mReceiverShowSearchInput = new BroadcastReceiver() {
         @Override
@@ -80,6 +98,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         super.onDestroyView();
         if (getActivity() != null) {
             getActivity().unregisterReceiver(mReceiverShowSearchInput);
+            getActivity().unregisterReceiver(mScreenReceiver);
         }
     }
 
@@ -94,6 +113,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         if (listOfUsers != null && listOfUsers.size() > 0) {
             treeUserDTOTempList = listOfUsers;
             getDataFromClient(listOfUsers);
+            getUserStatus();
         }
 
     }
@@ -110,7 +130,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     protected void initList() {
         showLoading();
     }
-
 
     private void getDataFromClient(List<TreeUserDTOTemp> listOfUsers) {
         dataSet.clear();
@@ -141,8 +160,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             if (Constant.isAddChattingDto(chattingDto) && chattingDto.getListTreeUser() != null && chattingDto.getListTreeUser().size() > 0)
                 dataSet.add(chattingDto);
         }
-
-        getUserStatus();
 
         if (dataSet != null && dataSet.size() > 0) {
             countDataFromServer(true);
@@ -432,9 +449,11 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
             }
         }
 
-        if(listOfUsers != null) {
+        if (listOfUsers != null) {
             getChatList(listOfUsers);
         }
+
+        getUserStatus();
     }
 
     @Override
@@ -578,14 +597,11 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
                 isFirstTime = false;
                 if (localSize != severSize) {
-                    Log.d(TAG, "localSize != severSize");
                     ChatRoomDBHelper.clearChatRooms();
                     dataSet.clear();
                     adapterList.notifyDataSetChanged();
-                    Log.d(TAG, "adapterList.notifyDataSetChanged 10");
                     List<TreeUserDTOTemp> list1;
                     TreeUserDTOTemp treeUserDTOTemp1;
-                    // Sort before display it
                     for (ChattingDto chattingDto : list) {
                         if (!Utils.checkChatId198(chattingDto)) {
                             list1 = new ArrayList<>();
@@ -612,6 +628,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     }
 
                     if (dataSet != null && dataSet.size() > 0) {
+                        //updateStatusUser();
                         adapterList.notifyDataSetChanged();
                     }
                 } else {
@@ -644,8 +661,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                         return date2.compareTo(date1);
                     });
 
+                    //updateStatusUser();
                     adapterList.notifyDataSetChanged();
                 }
+
                 updateFavoriteList();
                 countDataFromServer(true);
                 updateStatus();
@@ -680,7 +699,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         new getStatus(() -> {
             if (dataSet != null && dataSet.size() > 0) {
                 for (ChattingDto dto : dataSet) {
-                    if (dto.getListTreeUser() != null && dto.getListTreeUser().size() > 0 && dto.getListTreeUser().size() < 2) {
+                    if (dto.getListTreeUser() != null && dto.getListTreeUser().size() == 1) {
                         int userNo = dto.getListTreeUser().get(0).getUserNo();
                         for (TreeUserDTOTemp obj : listOfUsers) {
                             int stt = obj.getStatus();
@@ -737,18 +756,34 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         }
     }
 
+    private StatusDto status;
+
     void getStatusPersonal() {
-        StatusDto status = new GetUserStatus().getStatusOfUsers(new Prefs().getHOST_STATUS(), new Prefs().getCompanyNo());
+        status = new GetUserStatus().getStatusOfUsers(new Prefs().getHOST_STATUS(), new Prefs().getCompanyNo());
         if (status != null && listOfUsers != null) {
             for (TreeUserDTOTemp u : listOfUsers) {
                 for (StatusItemDto sItem : status.getItems()) {
                     if (sItem.getUserID().equals(u.getUserID())) {
                         u.setStatus(sItem.getStatus());
                         break;
+                    } else u.setStatus(0);
+                }
+            }
+        }
+
+        //updateStatusUser();
+    }
+
+    private void updateStatusUser() {
+        if (status != null && dataSet != null) {
+            for (ChattingDto u : dataSet) {
+                for (StatusItemDto sItem : status.getItems()) {
+                    if (sItem.getUserID().equals(String.valueOf(u.getWriterUserNo()))) {
+                        u.setStatus(sItem.getStatus());
+                        break;
                     }
                 }
             }
-
         }
     }
 
