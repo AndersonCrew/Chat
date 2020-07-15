@@ -157,9 +157,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
         mPrefs = CrewChatApplication.getInstance().getPrefs();
         msgEnd = -1;
         isShowIcon = false;
@@ -510,7 +507,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             chattingDto.setLastedMsgAttachType(Statics.ATTACH_FILE);
             chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
             chattingDto.setAttachFileSize((int) file.length());
-            chattingDto.setRegDate(TimeUtils.convertTimeDeviceToTimeServerDefault(CrewChatApplication.getInstance().getTimeLocal() + ""));
+            chattingDto.setRegDate(Utils.getTimeNewChat(0));
+            chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
             chattingDto.setPositionUploadImage(dataSet.size() - 1);
             integerList.add(chattingDto);
 
@@ -1098,6 +1096,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         if (mActivity != null) {
             mActivity.registerReceiver(mReceiverNewAssignTask, filter);
+        }
+
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
         }
     }
 

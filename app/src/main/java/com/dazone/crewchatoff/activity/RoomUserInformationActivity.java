@@ -1,5 +1,6 @@
 package com.dazone.crewchatoff.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.adapter.RoomUserInfoAdapter;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.dto.BelongDepartmentDTO;
@@ -35,6 +37,7 @@ import com.dazone.crewchatoff.utils.Utils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class RoomUserInformationActivity extends BaseActivity {
@@ -84,13 +87,12 @@ public class RoomUserInformationActivity extends BaseActivity {
 
             // init data
             if (userNos != null) {
-                String subtitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, userNos.size());
+                @SuppressLint("StringFormatMatches") String subtitle = CrewChatApplication.getInstance().getResources().getString(R.string.room_info_participant_count, userNos.size());
                 toolbar_title.setText(subtitle);
 
 
                 temp = getLst(myID, users, userNos);
 
-                //toolbar_title.setText(roomTitle);
                 mAdapter = new RoomUserInfoAdapter(this, temp, rvMainList);
                 rvMainList.setAdapter(mAdapter);
             }
@@ -172,12 +174,7 @@ public class RoomUserInformationActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ivBack = findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        ivBack.setOnClickListener(v -> finish());
         toolbar_title = findViewById(R.id.toolbar_title);
         rvMainList = findViewById(R.id.rv_main);
 
@@ -192,6 +189,7 @@ public class RoomUserInformationActivity extends BaseActivity {
             intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
             intent.putExtra(Constant.KEY_INTENT_COUNT_MEMBER, userNos);
             intent.putExtra(Constant.KEY_INTENT_ROOM_TITLE, roomTitle);
+            intent.putExtra(Constants.LIST_MEMBER, (Serializable) CompanyFragment.instance.getSubordinates());
             startActivityForResult(intent, Statics.ADD_USER_SELECT);
         } else {
             Toast.makeText(getApplicationContext(), "Can not get roomNo", Toast.LENGTH_SHORT).show();
