@@ -75,7 +75,6 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnCheckDevice {
     String TAG = "LoginActivity";
@@ -152,11 +151,6 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         registerReceiver(accountReceiver, intentFilter);
         flag = true;
 
-        try {
-            ShortcutBadger.applyCount(this, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         btnLogin = findViewById(R.id.login_btn_login);
         edtUserName = findViewById(R.id.login_edt_username);
         edtPassword = findViewById(R.id.login_edt_passsword);

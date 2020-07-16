@@ -77,4 +77,13 @@ public class CurrentChatAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
             }
         }
     }
+
+    public int getTotalUnReadCount() {
+        int totalUnReadCount = 0;
+        for(ChattingDto dto : mDataSet) {
+            totalUnReadCount += dto.getUnReadCount();
+        }
+
+        return totalUnReadCount;
+    }
 }

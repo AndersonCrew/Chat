@@ -207,6 +207,10 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         if (!isFinishing()) {
             addFragment();
         }
+
+        if(CurrentChatListFragment.instance != null) {
+            CurrentChatListFragment.fragment.updateBadgeCount();
+        }
     }
 
     /**

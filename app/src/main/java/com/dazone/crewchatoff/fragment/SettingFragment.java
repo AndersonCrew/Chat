@@ -29,6 +29,8 @@ import com.dazone.crewchatoff.activity.LoginActivity;
 import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.NotificationSettingActivity;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
+import com.dazone.crewchatoff.adapter.CurrentChatAdapter;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.customs.AlertDialogView;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
@@ -48,6 +50,8 @@ import com.dazone.crewchatoff.utils.DialogUtils;
 import com.dazone.crewchatoff.utils.ImageUtils;
 import com.dazone.crewchatoff.utils.Prefs;
 import com.dazone.crewchatoff.utils.Utils;
+
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class SettingFragment extends BaseFragment implements View.OnClickListener {
     private String TAG = "SettingFragment";
@@ -224,6 +228,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                                 CrewChatApplication.resetValue();
                                 CrewChatApplication.isLoggedIn = false;
                                 handler.obtainMessage(LOGOUT_COMPLETE).sendToTarget();
+                                CrewChatApplication.getInstance().getPrefs().putIntValue(Constants.TOTAL_NOTIFICATION, 0);
+                                ShortcutBadger.removeCount(getContext()); //for 1.1.4
                             }).start();
                         }
 

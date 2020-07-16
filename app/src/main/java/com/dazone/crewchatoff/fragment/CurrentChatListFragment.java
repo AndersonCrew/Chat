@@ -20,6 +20,7 @@ import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.RenameRoomActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.adapter.CurrentChatAdapter;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.ChatRoomDBHelper;
 import com.dazone.crewchatoff.dto.ChattingDto;
@@ -43,6 +44,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class CurrentChatListFragment extends ListFragment<ChattingDto> implements OnGetCurrentChatCallBack {
     public boolean isUpdate = false;
@@ -103,7 +106,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     }
 
     ArrayList<TreeUserDTOTemp> listOfUsers = null;
-
 
     public void init() {
         myId = new Prefs().getUserNo();
@@ -193,6 +195,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     break;
 
                 case Statics.ROOM_OPEN:
+                    updateBadgeCount();
                     intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
                     ChattingDto dto = (ChattingDto) bundle.getSerializable(Constant.KEY_INTENT_ROOM_DTO);
 
@@ -202,7 +205,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
                     intent.putExtras(args);
                     startActivity(intent);
-
                     break;
 
                 case Statics.ROOM_ADD_TO_FAVORITE:
@@ -452,8 +454,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         if (listOfUsers != null) {
             getChatList(listOfUsers);
         }
-
-        getUserStatus();
     }
 
     @Override
@@ -628,7 +628,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     }
 
                     if (dataSet != null && dataSet.size() > 0) {
-                        //updateStatusUser();
                         adapterList.notifyDataSetChanged();
                     }
                 } else {
@@ -661,13 +660,14 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                         return date2.compareTo(date1);
                     });
 
-                    //updateStatusUser();
                     adapterList.notifyDataSetChanged();
                 }
 
+                getUserStatus();
                 updateFavoriteList();
                 countDataFromServer(true);
                 updateStatus();
+                updateBadgeCount();
             }
 
             @Override
@@ -681,7 +681,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
 
     public void updateStatus() {
-        // MainActivity line 283
         if (dataSet == null || dataSet.size() == 0) {
             showLnNodata();
         } else {
@@ -762,23 +761,9 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         status = new GetUserStatus().getStatusOfUsers(new Prefs().getHOST_STATUS(), new Prefs().getCompanyNo());
         if (status != null && listOfUsers != null) {
             for (TreeUserDTOTemp u : listOfUsers) {
+                u.setStatus(0);
                 for (StatusItemDto sItem : status.getItems()) {
                     if (sItem.getUserID().equals(u.getUserID())) {
-                        u.setStatus(sItem.getStatus());
-                        break;
-                    } else u.setStatus(0);
-                }
-            }
-        }
-
-        //updateStatusUser();
-    }
-
-    private void updateStatusUser() {
-        if (status != null && dataSet != null) {
-            for (ChattingDto u : dataSet) {
-                for (StatusItemDto sItem : status.getItems()) {
-                    if (sItem.getUserID().equals(String.valueOf(u.getWriterUserNo()))) {
                         u.setStatus(sItem.getStatus());
                         break;
                     }
@@ -954,6 +939,14 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 adapterList.notifyItemChanged(dataSet.indexOf(a));
                 break;
             }
+        }
+    }
+
+    public void updateBadgeCount() {
+        CrewChatApplication.getInstance().getPrefs().putIntValue(Constants.TOTAL_NOTIFICATION, ((CurrentChatAdapter) adapterList).getTotalUnReadCount());
+        final int unreadCount = CrewChatApplication.getInstance().getPrefs().getIntValue(Constants.TOTAL_NOTIFICATION, 0);
+        if (unreadCount > 0) {
+            ShortcutBadger.applyCount(getContext(), unreadCount); //for 1.1.4
         }
     }
 }

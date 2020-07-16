@@ -24,6 +24,7 @@ import android.util.Log;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.ChattingActivity;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.ChatMessageDBHelper;
@@ -193,17 +194,18 @@ public class GcmIntentService extends IntentService {
                     chattingDto.setLastedMsgAttachType(bundleDto.getAttachFileType());
 
                     final long roomNo = chattingDto.getRoomNo();
-                    final long unreadCount = bundleDto.getUnreadTotalCount();
+                    final int unreadCount = CrewChatApplication.getInstance().getPrefs().getIntValue(Constants.TOTAL_NOTIFICATION, 0);
 
-                    ShortcutBadger.applyCount(this, (int) unreadCount); //for 1.1.4
+                    if (unreadCount > 0) {
+                        ShortcutBadger.applyCount(this, unreadCount); //for 1.1.4
+                        CrewChatApplication.getInstance().getPrefs().putIntValue(Constants.TOTAL_NOTIFICATION, unreadCount + 1);
+                    }
+
                     chattingDto.setLastedMsgDate(bundleDto.getRegDate());
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ChatRoomDBHelper.updateUnreadTotalCountChatRoom(roomNo, unreadCount);
-                            ChatRoomDBHelper.updateChatRoom(chattingDto.getRoomNo(), chattingDto.getLastedMsg(), chattingDto.getLastedMsgType(), chattingDto.getLastedMsgAttachType(), chattingDto.getLastedMsgDate(), chattingDto.getUnreadTotalCount(), chattingDto.getUnReadCount(), chattingDto.getWriterUserNo());
-                        }
+                    new Thread(() -> {
+                        ChatRoomDBHelper.updateUnreadTotalCountChatRoom(roomNo, unreadCount);
+                        ChatRoomDBHelper.updateChatRoom(chattingDto.getRoomNo(), chattingDto.getLastedMsg(), chattingDto.getLastedMsgType(), chattingDto.getLastedMsgAttachType(), chattingDto.getLastedMsgDate(), chattingDto.getUnreadTotalCount(), chattingDto.getUnReadCount(), chattingDto.getWriterUserNo());
                     }).start();
 
                     if (chattingDto.getWriterUserNo() != Utils.getCurrentId()) {
@@ -324,8 +326,8 @@ public class GcmIntentService extends IntentService {
                 long userNo = 0;
                 if (extras.containsKey("UserNo")) {
                     userNo = Long.parseLong(extras.getString("UserNo", "0"));
-                } 
-                
+                }
+
 
                 final long roomNo = object.getLong("RoomNo");
                 final String baseDate = object.getString("BaseDate");
