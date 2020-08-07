@@ -266,12 +266,12 @@ public class ChattingSelfViewHolder extends BaseChattingHolder {
                     } else {
                         content_tv.setAutoLinkMask(Linkify.ALL);
                         content_tv.setLinksClickable(true);
-                        content_tv.setText("[ " + dto.getStrRegDate() + "] - " + dto.getMessage());
+                        content_tv.setText(dto.getMessage());
                     }
                 } else {
                     content_tv.setAutoLinkMask(Linkify.ALL);
                     content_tv.setLinksClickable(true);
-                    content_tv.setText("[ " + dto.getStrRegDate() + "] - " + dto.getMessage());
+                    content_tv.setText(dto.getMessage());
                 }
 
 
