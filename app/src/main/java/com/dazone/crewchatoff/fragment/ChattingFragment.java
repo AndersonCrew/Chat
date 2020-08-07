@@ -189,6 +189,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         });
     }
 
+    private boolean hasActionSend = false;
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ChattingViewModel.class);
 
@@ -276,6 +277,19 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         viewModel.getNormalMessage().observe(this, dto -> {
             updateSendSuccess(dto);
             Log.d("CHAT ROOM", "Send Message Success");
+        });
+
+        /**handle action share*/
+        viewModel.getSendActionShare().observe(this, flag -> {
+            if(flag != null && flag) {
+                new Handler().postDelayed(() -> {
+                    try {
+                        ChattingActivity.instance.setUpActioneSend();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }, 3000);
+            }
         });
 
     }

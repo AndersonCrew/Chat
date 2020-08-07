@@ -232,7 +232,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     void handleSendVideo(Intent intent) {
         imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
-            //  fab.performClick();
+            mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
         }
     }
 
@@ -247,9 +247,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         mSelectedImage.clear();
         if (imageUri != null) {
-            if (mSelectedImage != null) {
-                mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
-            }
+            mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
         }
     }
 
@@ -257,9 +255,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         mSelectedImage.clear();
         if (imageUri != null) {
-            if (mSelectedImage != null) {
-                mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
-            }
+            mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
         }
     }
 
@@ -267,15 +263,12 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
         mSelectedImage.clear();
         if (imageUris != null) {
-            // Update UI to reflect multiple images being shared
             for (Uri path : imageUris) {
-                // Do something with the URI
                 if (mSelectedImage != null) {
                     mSelectedImage.add(Utils.getPathFromURI(path, getApplicationContext()));
                 }
 
             }
-            fab.performClick();
         }
     }
 
@@ -555,8 +548,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         mHandler.postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
     }
 
-    private int currentPage;
-
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     }
@@ -580,6 +571,12 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             Intent intent = new Intent(MainActivity.this, NewOrganizationChart.class);
             intent.putExtra(Statics.IS_NEW_CHAT, true);
             intent.putExtra(Constants.LIST_MEMBER, (Serializable) CompanyFragment.instance.getSubordinates());
+
+            if(MainActivity.type != null && MainActivity.mSelectedImage.size() > 0) {
+                intent.putExtra(Constants.TYPE_SHARE, MainActivity.type);
+                intent.putExtra(Constants.LIST_FILE_PATH_SHARE, MainActivity.mSelectedImage);
+            }
+
             startActivity(intent);
         } else {
             Toast.makeText(getApplicationContext(), "wait get list user finish", Toast.LENGTH_SHORT).show();
@@ -601,7 +598,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         }
 
         MainActivity.CURRENT_TAB = position;
-        currentPage = position;
         new Prefs().putIntValue("PAGE", position);
         if (position == TAB_CHAT || position == TAB_FAVORITE) {
             showPAB();
@@ -762,7 +758,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             }
 
             Utils.hideKeyboard(this);
-            currentPage = position;
             Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
             new Prefs().putIntValue("PAGE", position);
 

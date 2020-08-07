@@ -29,8 +29,10 @@ import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.TestMultiLevelListview.MultilLevelListviewFragment;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.activity.ChattingActivity;
+import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.FavoriteGroupDBHelper;
 import com.dazone.crewchatoff.database.FavoriteUserDBHelper;
@@ -72,6 +74,8 @@ public class AdapterOrganizationCompanyTab extends RecyclerView.Adapter<AdapterO
     private int isSearch = 0; // 0 -> normal : 1 -> search
     private Context mContext;
     private CompanyFragment instance;
+    private ArrayList<String> mSelectedImage = new ArrayList<>();
+    private String typeShare;
 
     public void updateListStatus(List<TreeUserDTOTemp> lstStatus) {
         if (lstStatus != null && list != null && list.size() > 0) {
@@ -927,6 +931,12 @@ public class AdapterOrganizationCompanyTab extends RecyclerView.Adapter<AdapterO
                     intent.putExtra(Statics.CHATTING_DTO, chattingDto);
                     intent.putExtra(Statics.IV_STATUS, selectedPersonList.get(0).getStatus());
                     intent.putExtra(Constant.KEY_INTENT_ROOM_NO, chattingDto.getRoomNo());
+
+                    if(MainActivity.type != null && MainActivity.mSelectedImage.size() > 0) {
+                        intent.putExtra(Constants.TYPE_SHARE, MainActivity.type);
+                        intent.putExtra(Constants.LIST_FILE_PATH_SHARE, MainActivity.mSelectedImage);
+                    }
+
                     BaseActivity.Instance.startActivity(intent);
                     if (layout != null) layout.setEnabled(true);
                 }
@@ -963,6 +973,12 @@ public class AdapterOrganizationCompanyTab extends RecyclerView.Adapter<AdapterO
                     intent.putExtra(Constant.KEY_INTENT_ROOM_NO, chattingDto.getRoomNo());
                     if (IV_STATUS != -1)
                         intent.putExtra(Statics.IV_STATUS, IV_STATUS);
+
+                    if(MainActivity.type != null && MainActivity.mSelectedImage.size() > 0) {
+                        intent.putExtra(Constants.TYPE_SHARE, MainActivity.type);
+                        intent.putExtra(Constants.LIST_FILE_PATH_SHARE, MainActivity.mSelectedImage);
+                    }
+
                     BaseActivity.Instance.startActivity(intent);
                     if (layout != null) layout.setEnabled(true);
                 }

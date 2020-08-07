@@ -1395,10 +1395,10 @@ public class HttpRequest {
                     SimpleDateFormat formatter = new SimpleDateFormat(Statics.yyyy_MM_dd_HH_mm_ss_SSS, Locale.getDefault());
 
                     Date serverDate = formatter.parse(strDateServer);
-                    Date LocalDate = formatter.parse(strDateLocal);
+                    Date localDate = formatter.parse(strDateLocal);
 
-                    long calTime = LocalDate.getTime() - serverDate.getTime();
-                    long localCalTime = System.currentTimeMillis() - LocalDate.getTime();
+                    long calTime = localDate.getTime() - serverDate.getTime();
+                    long localCalTime = System.currentTimeMillis() - localDate.getTime();
 
                     CrewChatApplication.getInstance().getPrefs().putLongValue(Statics.TIME_SERVER_MILI, calTime);
                     CrewChatApplication.getInstance().getPrefs().putLongValue(Statics.TIME_LOCAL_MILI, localCalTime);

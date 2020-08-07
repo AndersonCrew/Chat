@@ -398,7 +398,9 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
 
         view.setOnClickListener(v -> {
             long roomNo = (long) v.getTag();
-            ChattingActivity.toActivity(BaseActivity.Instance, roomNo, myId, tempDto, MainActivity.type, MainActivity.imageUri);
+            ChattingActivity.toActivity(BaseActivity.Instance, roomNo, myId, tempDto, MainActivity.type, MainActivity.mSelectedImage);
+            MainActivity.type = null;
+            MainActivity.imageUri = null;
         });
 
         view.setOnLongClickListener(v -> {

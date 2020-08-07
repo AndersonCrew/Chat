@@ -77,12 +77,11 @@ public class WelcomeActivity extends AppCompatActivity {
         } else {
             launchHomeScreen();
         }
-
     }
 
     private void checkLogout() {
         String appVersion = BuildConfig.VERSION_NAME;
-        if (compareVersionNames(appVersion, "3.1.1") != -1) {
+        if (compareVersionNames(appVersion, "3.1.5") <= 0 && !CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.IS_FIRST_INSTALL_VER, false)) {
             BelongsToDBHelper.clearBelong();
             AllUserDBHelper.clearUser();
             ChatRoomDBHelper.clearChatRooms();
@@ -96,6 +95,12 @@ public class WelcomeActivity extends AppCompatActivity {
             CrewChatApplication.getInstance().getPrefs().putBooleanValue(Statics.FIRST_LOGIN, false);
             CrewChatApplication.getInstance().getPrefs().set_login_install_app(false);
             CrewChatApplication.getInstance().getPrefs().setDataComplete(false);
+            CrewChatApplication.getInstance().getPrefs().putBooleanValue(Constants.IS_FIRST_INSTALL_VER, true);
+
+            if (!CrewChatApplication.getInstance().getPrefs().getStringValue("serversite", "").isEmpty()
+                    && CrewChatApplication.getInstance().getPrefs().getServerSite().isEmpty()) {
+                CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.DOMAIN, CrewChatApplication.getInstance().getPrefs().getStringValue("serversite", ""));
+            }
         }
     }
 

@@ -76,15 +76,15 @@ import java.util.Random;
 import static com.dazone.crewchatoff.constant.Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO;
 
 public class ChattingActivity extends BaseSingleStatusActivity implements View.OnClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
-    public static void toActivity(Context context, long roomNo, long myId, ChattingDto tempDto, String typeShare, Uri filePathShare) {
+    public static void toActivity(Context context, long roomNo, long myId, ChattingDto tempDto, String typeShare, ArrayList<String> mSelectedImage) {
         Intent intent = new Intent(context, ChattingActivity.class);
         Bundle args = new Bundle();
         args.putLong(Constant.KEY_INTENT_ROOM_NO, roomNo);
         args.putLong(Constant.KEY_INTENT_USER_NO, myId);
         args.putSerializable(Constant.KEY_INTENT_ROOM_DTO, tempDto);
-        if (typeShare != null && filePathShare != null) {
+        if (typeShare != null && mSelectedImage != null && mSelectedImage.size() > 0) {
             args.putString(Constants.TYPE_SHARE, typeShare);
-            args.putString(Constants.FILE_PATH_SHARE, filePathShare.toString());
+            args.putSerializable(Constants.LIST_FILE_PATH_SHARE, mSelectedImage);
         }
 
         intent.putExtras(args);
@@ -106,7 +106,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     private ChattingDto mDto = null;
     public static ChattingActivity instance = null;
     int IV_STATUS = -1;
-    private String filePathShare;
+    private ArrayList<String> mSelectedImage = new ArrayList<>();
     private String typeShare;
     public boolean isChoseFile = false;
 
@@ -207,10 +207,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         if (!isFinishing()) {
             addFragment();
         }
-
-        if(CurrentChatListFragment.instance != null) {
-            CurrentChatListFragment.fragment.updateBadgeCount();
-        }
     }
 
     /**
@@ -232,15 +228,25 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                 IV_STATUS = bundle.getInt(Statics.IV_STATUS, -1);
 
                 typeShare = bundle.getString(Constants.TYPE_SHARE);
-                filePathShare = bundle.getString(Constants.FILE_PATH_SHARE);
-
-                if (typeShare != null && filePathShare != null) {
-                    handleActionSend(typeShare, filePathShare);
-                }
+                mSelectedImage = (ArrayList<String>) bundle.getSerializable(Constants.LIST_FILE_PATH_SHARE);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private boolean hasSendActionShare = false;
+
+    public void setUpActioneSend() {
+        if (typeShare != null && mSelectedImage.size() > 0 && !hasSendActionShare) {
+            hasSendActionShare = true;
+            handleActionSend(typeShare, mSelectedImage);
+            typeShare = null;
+            mSelectedImage.clear();
+            MainActivity.imageUri = null;
+            MainActivity.type = null;
+            MainActivity.mSelectedImage.clear();
         }
     }
 
@@ -467,11 +473,11 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
                     break;
 
                 case Statics.VIDEO_PICKER_SELECT:
-                    handleVideoSelected(data);
+                    handleVideoSelected(data, null);
                     break;
 
                 case Statics.FILE_PICKER_SELECT:
-                    handleFileSelected(data);
+                    handleFileSelected(data, null);
                     break;
 
                 case Statics.CONTACT_PICKER_SELECT:
@@ -935,31 +941,57 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         ActivityCompat.requestPermissions(this, requestPermission, RandW_PERMISSIONS_REQUEST_CODE);
     }
 
-    private void handleImageRotate(Intent data, String filePathShare) {
+    private void handleImageRotate(Intent data, ArrayList<String> mSelectedImage) {
         String pathImageRotate = "";
         if (data != null && data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE) != null) {
             pathImageRotate = data.getStringExtra(Statics.CHATTING_DTO_GALLERY_SINGLE);
-        } else if (filePathShare != null) {
-            pathImageRotate = Utils.getPathImage(this, Uri.parse(filePathShare));
-        } else if(uri != null) {
+        } else if (mSelectedImage.size() > 0) {
+            pathImageRotate = Utils.getPathFromURI(Uri.parse(mSelectedImage.get(0)), this);
+        } else if (uri != null) {
             pathImageRotate = Utils.getPathImage(this, uri);
         } else return;
 
         // Add image to gallery album
-        galleryAddPic(pathImageRotate);
+        if(mSelectedImage != null && mSelectedImage.size() > 1) {
+            long diffTime = 0;
+            for (String uriPath : mSelectedImage) {
+                diffTime += Config.TIME_WAIT * mSelectedImage.indexOf(uriPath);
+                galleryAddPic(pathImageRotate);
+                ChattingDto chattingDto = new ChattingDto();
+                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
+                chattingDto.setAttachFilePath( Utils.getPathFromURI(Uri.parse(uriPath), this));
+                chattingDto.setRoomNo(chattingDto.getRoomNo());
+                chattingDto.setRegDate(Utils.getTimeNewChat(diffTime));
+                chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal() + diffTime));
+                chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
 
-        ChattingDto chattingDto = new ChattingDto();
-        chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
-        chattingDto.setAttachFilePath(pathImageRotate);
-        chattingDto.setRoomNo(chattingDto.getRoomNo());
-        chattingDto.setRegDate(Utils.getTimeNewChat(0));
-        chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
-        chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
+                chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
+                chattingDto.setPositionUploadImage(new Random().nextInt(1000));
+                ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+                isChoseFile = true;
+                try {
+                    Thread.sleep(diffTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            galleryAddPic(pathImageRotate);
 
-        chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
-        chattingDto.setPositionUploadImage(new Random().nextInt(1000));
-        ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
-        isChoseFile = true;
+            ChattingDto chattingDto = new ChattingDto();
+            chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
+            chattingDto.setAttachFilePath(pathImageRotate);
+            chattingDto.setRoomNo(chattingDto.getRoomNo());
+            chattingDto.setRegDate(Utils.getTimeNewChat(0));
+            chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
+            chattingDto.setLastedMsgAttachType(Statics.ATTACH_IMAGE);
+
+            chattingDto.setLastedMsgType(Statics.MESSAGE_TYPE_ATTACH);
+            chattingDto.setPositionUploadImage(new Random().nextInt(1000));
+            ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+            isChoseFile = true;
+        }
+
     }
 
     private void handleCameraCapture() {
@@ -1001,48 +1033,88 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         }
     }
 
-    private void handleVideoSelected(Intent data) {
-        if (data == null)
-            return;
-        Uri videoUriPick = data.getData();
-        if (videoUriPick != null) {
-            String path;
-            path = Utils.getPath(this, videoUriPick);
-            File file = new File(path);
-            String filename = path.substring(path.lastIndexOf("/") + 1);
-            ChattingDto chattingDto = new ChattingDto();
-            chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO);
-            chattingDto.setAttachFilePath(path);
-            chattingDto.setAttachFileName(filename);
-            chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
-            chattingDto.setAttachFileSize((int) file.length());
-            chattingDto.setPositionUploadImage(new Random().nextInt(1000));
-
-            // Add new attach info
-            AttachDTO attachInfo = new AttachDTO();
-            attachInfo.setFileName(filename);
-            chattingDto.setAttachInfo(attachInfo);
-            chattingDto.setRegDate(Utils.getTimeNewChat(0));
-            chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
-
-            ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+    private void handleVideoSelected(Intent data, ArrayList<String> mSelectedImage) {
+        Uri videoUriPick = null;
+        if (data != null) {
+            videoUriPick = data.getData();
+        } else if (mSelectedImage.size() > 0) {
+            videoUriPick = Uri.parse(mSelectedImage.get(0));
         }
-    }
 
-    private void handleFileSelected(Intent data) {
-        if (data == null)
-            return;
-        List<Uri> pathUri = new ArrayList<>();
-        if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
-            ClipData clip = data.getClipData();
-            if (clip != null) {
-                for (int i = 0; i < clip.getItemCount(); i++) {
-                    pathUri.add(clip.getItemAt(i).getUri());
+        if(mSelectedImage != null && mSelectedImage.size() > 1) {
+            long diffTime = 0;
+            for (String uriPath : mSelectedImage) {
+                diffTime += Config.TIME_WAIT * mSelectedImage.indexOf(uriPath);
+                String path = Utils.getPathFromURI(Uri.parse(uriPath), this);
+                File file = new File(path);
+                String filename = path.substring(path.lastIndexOf("/") + 1);
+                ChattingDto chattingDto = new ChattingDto();
+                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO);
+                chattingDto.setAttachFilePath(path);
+                chattingDto.setAttachFileName(filename);
+                chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
+                chattingDto.setAttachFileSize((int) file.length());
+                chattingDto.setPositionUploadImage(new Random().nextInt(1000));
+
+                // Add new attach info
+                AttachDTO attachInfo = new AttachDTO();
+                attachInfo.setFileName(filename);
+                chattingDto.setAttachInfo(attachInfo);
+                chattingDto.setRegDate(Utils.getTimeNewChat(diffTime));
+                chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal() + diffTime));
+
+                ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+                try {
+                    Thread.sleep(diffTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         } else {
-            pathUri.add(data.getData());
+            if (videoUriPick != null) {
+                String path;
+                path = Utils.getPathFromURI(videoUriPick, this);
+                File file = new File(path);
+                String filename = path.substring(path.lastIndexOf("/") + 1);
+                ChattingDto chattingDto = new ChattingDto();
+                chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_VIDEO);
+                chattingDto.setAttachFilePath(path);
+                chattingDto.setAttachFileName(filename);
+                chattingDto.setUnReadCount(ChattingActivity.userNos.size() - 1);
+                chattingDto.setAttachFileSize((int) file.length());
+                chattingDto.setPositionUploadImage(new Random().nextInt(1000));
+
+                // Add new attach info
+                AttachDTO attachInfo = new AttachDTO();
+                attachInfo.setFileName(filename);
+                chattingDto.setAttachInfo(attachInfo);
+                chattingDto.setRegDate(Utils.getTimeNewChat(0));
+                chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal()));
+
+                ChattingFragment.instance.addNewRowFromChattingActivity(chattingDto);
+            }
         }
+    }
+
+    private void handleFileSelected(Intent data, ArrayList<String> mSelectedImage) {
+        List<Uri> pathUri = new ArrayList<>();
+        if (data != null) {
+            if (data.getBooleanExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false)) {
+                ClipData clip = data.getClipData();
+                if (clip != null) {
+                    for (int i = 0; i < clip.getItemCount(); i++) {
+                        pathUri.add(clip.getItemAt(i).getUri());
+                    }
+                }
+            } else {
+                pathUri.add(data.getData());
+            }
+        } else if (mSelectedImage.size() > 0) {
+            for (String uriPath : mSelectedImage) {
+                pathUri.add(Uri.parse(uriPath));
+            }
+        }
+
 
         if (pathUri.size() > 0) {
             if (pathUri.size() > 10) {
@@ -1126,19 +1198,19 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         new Thread(() -> ChatRoomDBHelper.updateChatRoom(roomNo, roomTitle)).start();
     }
 
-    private void handleActionSend(String typeShare, String filePathShare) {
+    private void handleActionSend(String typeShare, ArrayList<String> mSelectedImage) {
         if (typeShare.equals("text/plain")) {
             // handleSendText(intent);
         } else if (typeShare.startsWith("video/")) {
-            //handleSendVideo(intent);
+            handleVideoSelected(null, mSelectedImage);
         } else if (typeShare.startsWith("audio/")) {
             //handleSendAudio(intent);
         } else if (typeShare.startsWith("text/")) {
             // handleSendContact(intent);
         } else if (typeShare.startsWith("image/")) {
-            handleImageRotate(null, filePathShare);
+            handleImageRotate(null, mSelectedImage);
         } else {
-            // handleSendFile(intent);
+            handleFileSelected(null, mSelectedImage);
         }
     }
 
@@ -1146,7 +1218,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     protected void onResume() {
         super.onResume();
 
-        if(!isChoseFile) {
+        if (!isChoseFile) {
             ChattingFragment.instance.Reload();
         }
 

@@ -2,6 +2,7 @@ package com.dazone.crewchatoff.activity.chatroom
 
 import android.annotation.SuppressLint
 import android.arch.lifecycle.MutableLiveData
+import android.os.Handler
 import android.util.Log
 import com.dazone.crewchatoff.activity.base.BaseViewModel
 import com.dazone.crewchatoff.constant.Statics
@@ -33,6 +34,7 @@ class ChattingViewModel : BaseViewModel() {
     var attachFile: MutableLiveData<ChattingDto> = MutableLiveData()
     var dtoFailed: MutableLiveData<ChattingDto> = MutableLiveData()
     var normalMessage: MutableLiveData<ChattingDto> = MutableLiveData()
+    var sendActionShare: MutableLiveData<Boolean> = MutableLiveData()
     var hasLoadNewMessage = false
     private var disposables = CompositeDisposable()
 
@@ -118,6 +120,8 @@ class ChattingViewModel : BaseViewModel() {
                                     val unwrappedStr = strRegDate ?: return@subscribe
                                     getMessageUnReadCount(roomNo, unwrappedStr)
                                 }
+
+                                sendActionShare.postValue(true)
                             }
                         } else {
                             Log.d("CHAT ROOM", "Cannot fetch message form Server!")

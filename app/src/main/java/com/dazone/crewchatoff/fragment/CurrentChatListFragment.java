@@ -195,7 +195,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     break;
 
                 case Statics.ROOM_OPEN:
-                    updateBadgeCount();
                     intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
                     ChattingDto dto = (ChattingDto) bundle.getSerializable(Constant.KEY_INTENT_ROOM_DTO);
 
@@ -667,7 +666,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 updateFavoriteList();
                 countDataFromServer(true);
                 updateStatus();
-                updateBadgeCount();
             }
 
             @Override
@@ -939,14 +937,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                 adapterList.notifyItemChanged(dataSet.indexOf(a));
                 break;
             }
-        }
-    }
-
-    public void updateBadgeCount() {
-        CrewChatApplication.getInstance().getPrefs().putIntValue(Constants.TOTAL_NOTIFICATION, ((CurrentChatAdapter) adapterList).getTotalUnReadCount());
-        final int unreadCount = CrewChatApplication.getInstance().getPrefs().getIntValue(Constants.TOTAL_NOTIFICATION, 0);
-        if (unreadCount > 0) {
-            ShortcutBadger.applyCount(getContext(), unreadCount); //for 1.1.4
         }
     }
 }

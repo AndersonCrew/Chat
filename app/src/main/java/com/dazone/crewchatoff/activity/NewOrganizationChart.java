@@ -59,6 +59,8 @@ public class NewOrganizationChart extends AppCompatActivity {
     private RelativeLayout layoutRoomName;
     private ImageView ivShare;
     private boolean isNewChat = false;
+    private ArrayList<String> mSelectedImage = new ArrayList<>();
+    private String typeShare;
 
 
     @Override
@@ -73,7 +75,9 @@ public class NewOrganizationChart extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
         try {
+            typeShare = getIntent().getStringExtra(Constants.TYPE_SHARE);
             isNewChat = getIntent().getBooleanExtra(Statics.IS_NEW_CHAT, false);
+            mSelectedImage = (ArrayList<String>) getIntent().getSerializableExtra(Constants.LIST_FILE_PATH_SHARE);
             list = (List<TreeUserDTO>) getIntent().getSerializableExtra(Constants.LIST_MEMBER);
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,20 +119,8 @@ public class NewOrganizationChart extends AppCompatActivity {
         } else {
             layoutRoomName.setVisibility(View.GONE);
             ivShare.setVisibility(View.VISIBLE);
-
-            Intent intent = getIntent();
-            String action = intent.getAction();
-            String type = intent.getType();
-            if (Intent.ACTION_SEND.equals(action) && type != null) {
-                if ("text/plain".equals(type)) {
-                    //TODO HANDLER SEND TEXT
-                } else if (type.startsWith("image/")) {
-                    handleSendImage(intent);
-                }
-            }
-
-
         }
+
         tvCount = findViewById(R.id.tvCount);
         edRoomName = findViewById(R.id.edRoomName);
         cbCreateNewRoom = findViewById(R.id.cbCreateNewRoom);
@@ -263,6 +255,8 @@ public class NewOrganizationChart extends AppCompatActivity {
                     intent.putExtra(Statics.CHATTING_DTO, chattingDto);
                     intent.putExtra(Statics.IV_STATUS, lst.get(0).getStatus());
                     intent.putExtra(Constant.KEY_INTENT_ROOM_NO, chattingDto.getRoomNo());
+                    intent.putExtra(Constants.TYPE_SHARE, typeShare);
+                    intent.putExtra(Constants.LIST_FILE_PATH_SHARE, mSelectedImage);
                     BaseActivity.Instance.startActivity(intent);
                 }
 
@@ -301,6 +295,8 @@ public class NewOrganizationChart extends AppCompatActivity {
                         Intent intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
                         intent.putExtra(Constant.KEY_INTENT_ROOM_NO, chattingDto.getRoomNo());
                         intent.putExtra(Statics.CHATTING_DTO, chattingDto);
+                        intent.putExtra(Constants.TYPE_SHARE, typeShare);
+                        intent.putExtra(Constants.LIST_FILE_PATH_SHARE, mSelectedImage);
                         if (IV_STATUS != -1)
                             intent.putExtra(Statics.IV_STATUS, IV_STATUS);
                         BaseActivity.Instance.startActivity(intent);
@@ -318,6 +314,8 @@ public class NewOrganizationChart extends AppCompatActivity {
                         Intent intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
                         intent.putExtra(Constant.KEY_INTENT_ROOM_NO, chattingDto.getRoomNo());
                         intent.putExtra(Statics.CHATTING_DTO, chattingDto);
+                        intent.putExtra(Constants.TYPE_SHARE, typeShare);
+                        intent.putExtra(Constants.LIST_FILE_PATH_SHARE, mSelectedImage);
                         if (IV_STATUS != -1)
                             intent.putExtra(Statics.IV_STATUS, IV_STATUS);
                         BaseActivity.Instance.startActivity(intent);

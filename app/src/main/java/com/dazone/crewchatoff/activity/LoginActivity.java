@@ -75,6 +75,8 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 
 public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnCheckDevice {
     String TAG = "LoginActivity";
@@ -94,6 +96,7 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         isDisplayPass = true;
         flag = false;
         attachKeyboardListeners();
+        ShortcutBadger.removeCount(this);
     }
 
     @Override

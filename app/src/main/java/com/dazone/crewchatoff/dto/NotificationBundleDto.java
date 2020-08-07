@@ -6,6 +6,7 @@ package com.dazone.crewchatoff.dto;
 public class NotificationBundleDto {
     private int AttachNo;
     private int UnreadTotalCount;
+    private int UnreadTotalCountAtAll = 0;
     private long RoomNo;
     private String Message;
     private long MessageNo;
@@ -18,6 +19,14 @@ public class NotificationBundleDto {
     private int MessageType;
     private String RegDate;
     private String strRegDate;
+
+    public int getUnreadTotalCountAtAll() {
+        return UnreadTotalCountAtAll;
+    }
+
+    public void setUnreadTotalCountAtAll(int unreadTotalCountAtAll) {
+        UnreadTotalCountAtAll = unreadTotalCountAtAll;
+    }
 
     public String getStrRegDate() {
         return strRegDate;

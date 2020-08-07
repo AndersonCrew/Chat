@@ -228,7 +228,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                                 CrewChatApplication.resetValue();
                                 CrewChatApplication.isLoggedIn = false;
                                 handler.obtainMessage(LOGOUT_COMPLETE).sendToTarget();
-                                CrewChatApplication.getInstance().getPrefs().putIntValue(Constants.TOTAL_NOTIFICATION, 0);
                                 ShortcutBadger.removeCount(getContext()); //for 1.1.4
                             }).start();
                         }

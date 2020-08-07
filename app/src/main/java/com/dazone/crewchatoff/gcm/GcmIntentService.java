@@ -194,11 +194,12 @@ public class GcmIntentService extends IntentService {
                     chattingDto.setLastedMsgAttachType(bundleDto.getAttachFileType());
 
                     final long roomNo = chattingDto.getRoomNo();
-                    final int unreadCount = CrewChatApplication.getInstance().getPrefs().getIntValue(Constants.TOTAL_NOTIFICATION, 0);
+                    final int unreadCount = bundleDto.getUnreadTotalCountAtAll();
 
                     if (unreadCount > 0) {
                         ShortcutBadger.applyCount(this, unreadCount); //for 1.1.4
-                        CrewChatApplication.getInstance().getPrefs().putIntValue(Constants.TOTAL_NOTIFICATION, unreadCount + 1);
+                    } else {
+                        ShortcutBadger.removeCount(this);
                     }
 
                     chattingDto.setLastedMsgDate(bundleDto.getRegDate());
@@ -333,6 +334,13 @@ public class GcmIntentService extends IntentService {
                 final String baseDate = object.getString("BaseDate");
                 final String strBaseDate = object.getString("strBaseDate");
                 final int unReadTotalCount = object.getInt("UnreadTotalCount");
+                final int unReadTotalCountAtAll = object.getInt("UnreadTotalCountAtAll");
+
+                if (unReadTotalCountAtAll > 0) {
+                    ShortcutBadger.applyCount(this, unReadTotalCountAtAll); //for 1.1.4
+                } else {
+                    ShortcutBadger.removeCount(this);
+                }
 
                 Constant.cancelAllNotification(CrewChatApplication.getInstance(), (int) roomNo);
                 Intent intent = new Intent(Constant.INTENT_FILTER_GET_MESSAGE_UNREAD_COUNT);
@@ -343,7 +351,6 @@ public class GcmIntentService extends IntentService {
                 sendBroadcast(intent);
 
                 if (CurrentChatListFragment.fragment != null) {
-
                     boolean flag = CurrentChatListFragment.fragment.active();
                     if (!flag) {
                         CurrentChatListFragment.fragment.updateReadMsgWhenOnPause(roomNo, unReadTotalCount, userNo);

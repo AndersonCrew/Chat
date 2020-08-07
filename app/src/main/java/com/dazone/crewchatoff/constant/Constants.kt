@@ -7,6 +7,6 @@ object Constants {
     const val IS_FIRST_INSTALL_VER = "IS_FIRST_INSTALL_VER"
     const val LIST_MEMBER = "LIST_MEMBER"
     const val FILE_PATH_SHARE = "FILE_PATH_SHARE"
+    const val LIST_FILE_PATH_SHARE = "LIST_FILE_PATH_SHARE"
     const val TYPE_SHARE = "TYPE_SHARE"
-    const val TOTAL_NOTIFICATION = "TOTAL_NOTIFICATION"
 }
