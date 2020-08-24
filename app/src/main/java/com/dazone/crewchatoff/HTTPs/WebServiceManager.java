@@ -65,11 +65,15 @@ public class WebServiceManager<T> {
                         if (errorDto.code == 0 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
                             new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
                             CrewChatApplication.getInstance().getPrefs().clearLogin();
-                            BaseActivity.Instance.startNewActivity(LoginActivity.class);
+                            if(!(BaseActivity.Instance instanceof LoginActivity)) {
+                                BaseActivity.Instance.startNewActivity(LoginActivity.class);
+                            }
                         } else if (errorDto.code == -100 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
                             new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
                             CrewChatApplication.getInstance().getPrefs().clearLogin();
-                            BaseActivity.Instance.startNewActivity(LoginActivity.class);
+                            if(!(BaseActivity.Instance instanceof LoginActivity)) {
+                                BaseActivity.Instance.startNewActivity(LoginActivity.class);
+                            }
                         }
                     }
 

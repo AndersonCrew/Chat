@@ -61,7 +61,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_welcome);
 
-        /** Check Logout if current version <= 3.1.1 becase Table of DB has changed*/
+        /** Check Logout if current version <= 3.1.1 because Table of DB has changed*/
         checkLogout();
         String first_login = Statics.FIRST_LOGIN;
         boolean isLogin = CrewChatApplication.getInstance().getPrefs().getBooleanValue(first_login, false);
@@ -81,7 +81,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void checkLogout() {
         String appVersion = BuildConfig.VERSION_NAME;
-        if (compareVersionNames(appVersion, "3.1.5") <= 0 && !CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.IS_FIRST_INSTALL_VER, false)) {
+        if (!CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.IS_FIRST_INSTALL_VER, false)) {
             BelongsToDBHelper.clearBelong();
             AllUserDBHelper.clearUser();
             ChatRoomDBHelper.clearChatRooms();

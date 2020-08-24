@@ -94,6 +94,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import static com.dazone.crewchatoff.database.ChatMessageDBHelper.addMessage;
+import static com.dazone.crewchatoff.database.ChatMessageDBHelper.updateMessage;
 
 public class ChattingFragment extends ListFragment<ChattingDto> implements View.OnClickListener, EmojiView.EventListener, View.OnKeyListener, TextView.OnEditorActionListener {
     private String TAG = ChattingFragment.class.getName();
@@ -189,7 +190,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         });
     }
 
-    private boolean hasActionSend = false;
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ChattingViewModel.class);
 
@@ -877,9 +877,12 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private void updateSendFail(ChattingDto dto) {
+        dto.setHasSent(false);
+        dto.isSendding = false;
         view.linearEmoji.setVisibility(View.GONE);
         sendComplete = false;
         isSend = true;
+        updateMessage(dto);
 
         Iterator<ChattingDto> it = dataSet.iterator();
         while (it.hasNext()) {
@@ -945,7 +948,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
             isSend = false;
 
             ChattingDto newDto = new ChattingDto();
-            newDto.setMessageNo(Long.MAX_VALUE);
+            newDto.setMessageNo(System.currentTimeMillis());
             newDto.setMessage(message);
             newDto.setUserNo(userID);
             newDto.setType(Statics.MESSAGE_TYPE_NORMAL);
@@ -962,6 +965,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
             dataSet.add(newDto);
             scrollToEndList();
+            addMessage(newDto);
             viewModel.sendNormalMessage(roomNo, message, newDto);
         }
     }

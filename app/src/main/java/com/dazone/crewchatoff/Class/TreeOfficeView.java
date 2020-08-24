@@ -69,16 +69,13 @@ public class TreeOfficeView extends TreeView implements View.OnCreateContextMenu
             if (dto.getSubordinates() != null && dto.getSubordinates().size() != 0) {
                 if (dto.getItemName().equalsIgnoreCase("Customer Business Div.")) {
                     // sort data by order
-                    Collections.sort(dto.getSubordinates(), new Comparator<TreeUserDTO>() {
-                        @Override
-                        public int compare(TreeUserDTO r1, TreeUserDTO r2) {
-                            if (r1.getmSortNo() > r2.getmSortNo()) {
-                                return 1;
-                            } else if (r1.getmSortNo() == r2.getmSortNo()) {
-                                return 0;
-                            } else {
-                                return -1;
-                            }
+                    Collections.sort(dto.getSubordinates(), (r1, r2) -> {
+                        if (r1.getmSortNo() > r2.getmSortNo()) {
+                            return 1;
+                        } else if (r1.getmSortNo() == r2.getmSortNo()) {
+                            return 0;
+                        } else {
+                            return -1;
                         }
                     });
                 }

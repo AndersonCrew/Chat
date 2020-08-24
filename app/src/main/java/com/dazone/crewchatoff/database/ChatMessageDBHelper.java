@@ -122,13 +122,12 @@ public class ChatMessageDBHelper {
         return false;
     }
 
-    public static boolean updateMessage(ChattingDto dto, long id) {
+    public static boolean updateMessage(ChattingDto dto) {
         try {
             ContentValues values = new ContentValues();
             values.put(UNREAD_COUNT, dto.getUnReadCount());
             values.put(ATTACH_NO, dto.getAttachNo());
             values.put(MESSAGE, dto.getMessage());
-            values.put(MESSAGE_NO, dto.getMessageNo());
             values.put(REG_DATE, dto.getRegDate());
             values.put(STR_REG_DATE, dto.getStrRegDate());
 
@@ -136,7 +135,7 @@ public class ChatMessageDBHelper {
             values.put(HAS_SENT, hasSentValue);
 
             ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + dto.getRoomNo() + " AND " + ID + " = " + id, null);
+            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + dto.getRoomNo() + " AND " + MESSAGE_NO + " = " + dto.getMessageNo(), null);
 
             return true;
         } catch (Exception e) {
