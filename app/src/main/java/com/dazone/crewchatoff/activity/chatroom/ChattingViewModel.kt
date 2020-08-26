@@ -55,7 +55,8 @@ class ChattingViewModel : BaseViewModel() {
                             mesType = ChatMessageDBHelper.AFTER
                         }
 
-                        val strBaseDate = if (list.size > 0) list[list.size - 1].strRegDate else null
+                        val realList = list.filter { dto -> dto.isHasSent }
+                        val strBaseDate = if (realList.isNotEmpty()) realList[realList.size - 1].strRegDate else null
                         getChatList(baseDate, roomNo, mesType, userID, strBaseDate)
                     } else {
                         showLoading(false)
