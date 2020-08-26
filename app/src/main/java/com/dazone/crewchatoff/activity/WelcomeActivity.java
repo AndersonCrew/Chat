@@ -81,7 +81,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void checkLogout() {
         String appVersion = BuildConfig.VERSION_NAME;
-        if (compareVersionNames(appVersion, "3.1.5") <= 0 && !CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.IS_FIRST_INSTALL_VER, false)) {
+        if (!CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.IS_FIRST_INSTALL_VER, false)) {
             BelongsToDBHelper.clearBelong();
             AllUserDBHelper.clearUser();
             ChatRoomDBHelper.clearChatRooms();

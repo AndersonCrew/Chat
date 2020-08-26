@@ -79,7 +79,6 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 
 public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnCheckDevice {
-    String TAG = "LoginActivity";
     private Button btnLogin;
     private EditText edtUserName, edtPassword;
     private AutoCompleteTextView edtServer;

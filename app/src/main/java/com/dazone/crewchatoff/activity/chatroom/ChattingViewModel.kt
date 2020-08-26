@@ -279,7 +279,6 @@ class ChattingViewModel : BaseViewModel() {
                             chattingDto.regDate = dto.regDate
                             chattingDto.isSendding = false
                             chattingDto.isHasSent = true
-                            //chattingDto.strRegDate = dto.strRegDate
 
                             normalMessage.postValue(chattingDto)
                         } else {

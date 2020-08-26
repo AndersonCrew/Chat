@@ -6,7 +6,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dazone.crewchatoff.R;
-import com.dazone.crewchatoff.activity.LoginActivity;
+import com.dazone.crewchatoff.activity.IntroActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.ErrorDto;
@@ -65,11 +65,11 @@ public class WebServiceManager<T> {
                         if (errorDto.code == 0 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
                             new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
                             CrewChatApplication.getInstance().getPrefs().clearLogin();
-                            BaseActivity.Instance.startNewActivity(LoginActivity.class);
+                            BaseActivity.Instance.startNewActivity(IntroActivity.class);
                         } else if (errorDto.code == -100 && !url.contains(OAUTHUrls.URL_CHECK_SESSION)) {
                             new Prefs().putBooleanValue(Statics.PREFS_KEY_SESSION_ERROR, true);
                             CrewChatApplication.getInstance().getPrefs().clearLogin();
-                            BaseActivity.Instance.startNewActivity(LoginActivity.class);
+                            BaseActivity.Instance.startNewActivity(IntroActivity.class);
                         }
                     }
 

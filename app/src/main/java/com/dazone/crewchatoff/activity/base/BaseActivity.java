@@ -17,7 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
+import com.dazone.crewchatoff.activity.IntroActivity;
+import com.dazone.crewchatoff.activity.LoginActivity;
 import com.dazone.crewchatoff.constant.Statics;
+import com.dazone.crewchatoff.eventbus.ReloadListMessage;
 import com.dazone.crewchatoff.eventbus.RotationAction;
 import com.dazone.crewchatoff.services.NetworkStateReceiver;
 import com.dazone.crewchatoff.utils.Constant;
@@ -72,7 +75,9 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         super.onResume();
         Instance = this;
 
-        HttpRequest.getInstance().getServerTime();
+        if(!(Instance instanceof LoginActivity)) {
+            HttpRequest.getInstance().getServerTime();
+        }
     }
 
     public void showProgressDialog() {
@@ -203,6 +208,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         if (isDisConnect) {
             sendComplete=false;
             isDisConnect=false;
+            EventBus.getDefault().post(new ReloadListMessage());
         }
     }
 
