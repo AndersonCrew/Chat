@@ -317,9 +317,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         if (listTemp == null) {
             listTemp = new ArrayList<>();
         }
-
-
-        set_msg_for_edit_text();
     }
 
     @Override
@@ -829,12 +826,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 break;
         }
 
-        if (!chattingDto.isCheckFromServer()) {
-            if (view != null) {
-                view.edt_comment.setText("");
-            }
-        }
-
         if (chattingDto.getType() == 2) {
             if (chattingDto.getAttachInfo() == null) {
                 return;
@@ -996,104 +987,9 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         CrewChatApplication.currentRoomNo = roomNo;
     }
 
-    private final static int MSG_UPDATE_DISPLAY = 2;
-    @SuppressLint("HandlerLeak")
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_UPDATE_DISPLAY:
-                    // TODO
-                    String text = (String) msg.obj; // get contents
-                    if (text == null) text = "";
-                    if (view.edt_comment != null)
-                        view.edt_comment.setText(text);
-                    break;
-            }
-        }
-    };
-
-    void set_msg_for_edit_text() {
-        new Thread(() -> {
-            String message = "";
-            try {
-                Prefs prefs = new Prefs();
-                String data = prefs.getMsgNotSend();
-                if (data.length() == 0) return;
-                Type listType = new TypeToken<ArrayList<MessageNotSend>>() {
-                }.getType();
-                List<MessageNotSend> list = new Gson().fromJson(data, listType);
-                int n = list.size();
-                for (int i = 0; i < n; i++) {
-                    MessageNotSend obj = list.get(i);
-                    if (obj.roomNo == roomNo) {
-                        message = obj.msg;
-                        break;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            handler.obtainMessage(MSG_UPDATE_DISPLAY, message).sendToTarget();
-        }).start();
-    }
-
-    void save_msg_not_send() {
-        new Thread(() -> do_save()).start();
-    }
-
-    void do_save() {
-        Prefs prefs = new Prefs();
-        String message = "";
-        try {
-            message = view.edt_comment.getText().toString().trim();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String data = prefs.getMsgNotSend();
-        try {
-            if (data.length() > 0) {
-                Type listType = new TypeToken<ArrayList<MessageNotSend>>() {
-                }.getType();
-                List<MessageNotSend> list = new Gson().fromJson(data, listType);
-                boolean flag = true;
-                int n = list.size();
-                for (int i = 0; i < n; i++) {
-                    MessageNotSend obj = list.get(i);
-                    if (obj.roomNo == roomNo) {
-                        obj.msg = message;
-                        flag = false;
-                        break;
-                    }
-                }
-                if (flag) {
-                    //add room
-                    MessageNotSend obj = new MessageNotSend();
-                    obj.roomNo = roomNo;
-                    obj.msg = message;
-                    list.add(obj);
-                } else {
-                    // update msg
-                }
-                prefs.setMsgNotSend(new Gson().toJson(list));
-            } else {
-                List<MessageNotSend> list = new ArrayList<>();
-                MessageNotSend obj = new MessageNotSend();
-                obj.roomNo = roomNo;
-                obj.msg = message;
-                list.add(obj);
-                prefs.setMsgNotSend(new Gson().toJson(list));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onPause() {
         super.onPause();
-        save_msg_not_send();
         isVisible = false;
         isActive = false;
         unregisterGCMReceiver();
