@@ -39,11 +39,6 @@ import java.util.List;
 public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
     private Activity mActivity;
     private ILoadImage iLoadImage;
-    private Comparator<ChattingDto> mComparator = (o1, o2) -> {
-        Date date1 = new Date(TimeUtils.getTime(o1.getRegDate()));
-        Date date2 = new Date(TimeUtils.getTime(o2.getRegDate()));
-        return date1.compareTo(date2);
-    };
 
     public ChattingAdapter(Context context, Activity activity, List<ChattingDto> mDataSet, RecyclerView view, ILoadImage loadImage) {
         super(context, mDataSet, view);
@@ -141,6 +136,10 @@ public class ChattingAdapter extends PullUpLoadMoreRCVAdapter<ChattingDto> {
                 break;
             case Statics.CHATTING_VIEW_TYPE_6:
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_type_6_layout, parent, false);
+                vh = new ChattingViewHolder6(v);
+                break;
+            case Statics.CHATTING_VIEW_TYPE_EMPTY:
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_nodata, parent, false);
                 vh = new ChattingViewHolder6(v);
                 break;
             default:

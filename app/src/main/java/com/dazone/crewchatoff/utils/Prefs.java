@@ -6,8 +6,14 @@ import android.content.SharedPreferences;
 import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.interfaces.Urls;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Prefs implements Serializable {
 
@@ -68,15 +74,6 @@ public class Prefs implements Serializable {
     public boolean get_login_install_app() {
         return getBooleanValue(login_install_app, true);
     }
-
-    public void setMsgNotSend(String key) {
-        putStringValue(msgNotSend, key);
-    }
-
-    public String getMsgNotSend() {
-        return getStringValue(msgNotSend, "");
-    }
-
 
     public void setCrewChatFileServerIP(String key) {
         putStringValue(CrewChatFileServerIP, key);

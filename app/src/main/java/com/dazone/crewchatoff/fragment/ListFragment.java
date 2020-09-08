@@ -42,6 +42,7 @@ public abstract class ListFragment<T> extends Fragment {
     String TAG = "ListFragment";
     public PullUpLoadMoreRCVAdapter adapterList;
     public List<T> dataSet;
+    public List<T> dataSetCopy;
     protected HttpRequest mHttpRequest;
     public RecyclerView rvMainList;
     public TextView tvUpdateTime;
@@ -70,6 +71,7 @@ public abstract class ListFragment<T> extends Fragment {
         instance = this;
         mHttpRequest = HttpRequest.getInstance();
         dataSet = new ArrayList<>();
+        dataSetCopy = new ArrayList<>();
     }
 
     public void showLnNodata() {

@@ -172,7 +172,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                 mViewPager.setOffscreenPageLimit(1);
                 tabLayout.setupWithViewPager(mViewPager);
                 setupTabTwo();
-                setupViewPager();
 
             } else {
                 tabAdapter = new TabPagerAdapter(getSupportFragmentManager(), 4, this);
@@ -180,9 +179,9 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                 mViewPager.setOffscreenPageLimit(3);
                 tabLayout.setupWithViewPager(mViewPager);
                 setupTab();
-                setupViewPager();
             }
 
+            setupViewPager();
             mHandler.postDelayed(() -> {
                 if (Intent.ACTION_SEND.equals(action) && type != null) {
                     if ("text/plain".equals(type)) {

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.TreeUserDTOTemp;
+import com.dazone.crewchatoff.fragment.ChattingFragment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -112,44 +113,28 @@ public abstract class PullUpLoadMoreRCVAdapter<T> extends RecyclerView.Adapter<R
         void onLoadMore();
     }
 
-    public void filter(final String text) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (T c : mDataSet) {
-                    if (!itemsCopy.contains(c)) {
-                        itemsCopy.add(c);
-                    }
-                }
 
-                mDataSet.clear();
+    public void filter(final String text, List<T> mDataSetCopy) {
+        new Thread(() -> {
+            if (TextUtils.isEmpty(text)) {
+                ChattingFragment.instance.Reload();
+            } else {
+                itemsCopy.clear();
 
-                if (text.isEmpty()) {
-                    mDataSet.addAll(itemsCopy);
-                } else {
-                    synchronized (itemsCopy) {
-                        Iterator i = itemsCopy.iterator();
-
-                        while (i.hasNext()) {
-                            Object item = i.next();
-
-                            if (item instanceof ChattingDto) {
-                                ChattingDto dto = (ChattingDto) item;
-                                String message = dto.getMessage();
-
-                                if (message != null && message.trim().length() > 0) {
-                                    if (message.toLowerCase().contains(text.toLowerCase())) {
-                                        mDataSet.add((T) dto);
-                                    }
-                                }
-                            }
+                for (T message : mDataSetCopy) {
+                    if (message instanceof ChattingDto) {
+                        if (((ChattingDto) message).getMessage().toLowerCase().contains(text.toLowerCase())) {
+                            itemsCopy.add(message);
                         }
                     }
                 }
 
-                // Send handler to update UI
+                mDataSet.clear();
+                mDataSet.addAll(itemsCopy);
                 mHandler.obtainMessage(1).sendToTarget();
             }
+
+
         }).start();
     }
 

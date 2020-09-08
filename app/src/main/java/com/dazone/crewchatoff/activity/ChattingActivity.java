@@ -13,9 +13,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -53,12 +53,10 @@ import com.dazone.crewchatoff.fragment.CurrentChatListFragment;
 import com.dazone.crewchatoff.fragment.RecentFavoriteFragment;
 import com.dazone.crewchatoff.interfaces.BaseHTTPCallBack;
 import com.dazone.crewchatoff.interfaces.OnGetChatRoom;
-import com.dazone.crewchatoff.interfaces.SendChatMessage;
 import com.dazone.crewchatoff.libGallery.MediaChooser;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.Prefs;
-import com.dazone.crewchatoff.utils.TimeUtils;
 import com.dazone.crewchatoff.utils.Utils;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.onegravity.contactpicker.contact.Contact;
@@ -821,6 +819,27 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         }
 
         mSearchView.setOnQueryTextListener(this);
+        mSearchView.setOnClickListener(view -> {
+            ChattingFragment.instance.isSearchFocused = true;
+        });
+
+        mSearchView.setOnCloseListener(() -> {
+            ChattingFragment.instance.isSearchFocused = false;
+            return false;
+        });
+
+        mSearchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                Log.d("AC", "A");
+            }
+        });
+        mSearchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChattingFragment.instance.isSearchFocused = true;
+            }
+        });
     }
 
     protected boolean isAlwaysExpanded() {
@@ -838,12 +857,22 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         return false;
     }
 
+    private String strSearch = "";
     @Override
     public boolean onQueryTextChange(String newText) {
-        ChattingFragment.instance.adapterList.filter(newText);
-        Log.d(TAG, "onQueryTextChange");
+        strSearch = newText;
+        mHandler.removeCallbacks(mRunnable);
+        mHandler.postDelayed(mRunnable, 1000);
         return false;
     }
+
+    private Runnable mRunnable = () -> {
+        ChattingFragment.instance.adapterList.filter(strSearch, ChattingFragment.instance.dataSetCopy);
+        ChattingFragment.instance.isFiltering = !TextUtils.isEmpty(strSearch);
+        ChattingFragment.instance.strFilter = strSearch;
+    };
+
+    private Handler mHandler = new Handler();
 
     int CAMERA_PERMISSIONS_REQUEST_CODE = 0;
 
@@ -952,14 +981,14 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         } else return;
 
         // Add image to gallery album
-        if(mSelectedImage != null && mSelectedImage.size() > 1) {
+        if (mSelectedImage != null && mSelectedImage.size() > 1) {
             long diffTime = 0;
             for (String uriPath : mSelectedImage) {
                 diffTime += Config.TIME_WAIT * mSelectedImage.indexOf(uriPath);
                 galleryAddPic(pathImageRotate);
                 ChattingDto chattingDto = new ChattingDto();
                 chattingDto.setmType(Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE);
-                chattingDto.setAttachFilePath( Utils.getPathFromURI(Uri.parse(uriPath), this));
+                chattingDto.setAttachFilePath(Utils.getPathFromURI(Uri.parse(uriPath), this));
                 chattingDto.setRoomNo(chattingDto.getRoomNo());
                 chattingDto.setRegDate(Utils.getTimeNewChat(diffTime));
                 chattingDto.setStrRegDate(Utils.getTimeFormat(CrewChatApplication.getInstance().getTimeLocal() + diffTime));
@@ -1041,7 +1070,7 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             videoUriPick = Uri.parse(mSelectedImage.get(0));
         }
 
-        if(mSelectedImage != null && mSelectedImage.size() > 1) {
+        if (mSelectedImage != null && mSelectedImage.size() > 1) {
             long diffTime = 0;
             for (String uriPath : mSelectedImage) {
                 diffTime += Config.TIME_WAIT * mSelectedImage.indexOf(uriPath);

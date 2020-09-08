@@ -22,20 +22,12 @@ import com.dazone.crewchatoff.utils.Prefs;
 
 import org.greenrobot.eventbus.EventBus;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 public class CrewChatSettingActivity extends BaseSingleBackActivity implements CrewChatPresenter.RotationInterface {
-    @BindView(R.id.toolbar)
-    Toolbar mToolBar;
-    @BindView(R.id.sw_enter_auto)
-    SwitchCompat swEnter;
-    @BindView(R.id.sw_enter_v_duty)
-    SwitchCompat swEnterVDuty;
-    @BindView(R.id.tv_screen_rotation)
-    TextView mTvScreenRotation;
+    private Toolbar mToolBar;
+    private SwitchCompat swEnter;
+    private SwitchCompat swEnterVDuty;
+    private TextView mTvScreenRotation;
     private Prefs mPrefs;
 
     private CrewChatPresenter mPresenter;
@@ -55,12 +47,25 @@ public class CrewChatSettingActivity extends BaseSingleBackActivity implements C
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_setting);
-        ButterKnife.bind(this);
+
+        mToolBar = findViewById(R.id.toolbar);
+        swEnter = findViewById(R.id.sw_enter_auto);
+        swEnterVDuty = findViewById(R.id.sw_enter_v_duty);
+        mTvScreenRotation = findViewById(R.id.tv_screen_rotation);
+
         setupToolBarSingleTitle(getString(R.string.settings_crew_chat), mToolBar);
         mPresenter = new CrewChatPresenter(this, this);
         mPrefs = CrewChatApplication.getInstance().getPrefs();
         initView();
+        initControls();
+    }
 
+    private void initControls() {
+        swEnter.setOnClickListener(view -> mPrefs.putBooleanValue(Statics.IS_ENABLE_ENTER_KEY, swEnter.isChecked()));
+        swEnterVDuty.setOnClickListener(view -> {
+            Log.d("CrewChatSettingActivity", swEnterVDuty.isChecked() + "");
+            setEnterVDuty(swEnterVDuty);
+        });
     }
 
     @Override
@@ -76,22 +81,6 @@ public class CrewChatSettingActivity extends BaseSingleBackActivity implements C
     @Override
     protected void addFragment(Bundle bundle) {
 
-    }
-
-    @OnClick(R.id.sw_enter_auto)
-    void autoEnter() {
-        mPrefs.putBooleanValue(Statics.IS_ENABLE_ENTER_KEY, swEnter.isChecked());
-    }
-
-    @OnClick(R.id.sw_enter_v_duty)
-    void autoEnterViewDuty() {
-        Log.d("CrewChatSettingActivity", swEnterVDuty.isChecked() + "");
-        setEnterVDuty(swEnterVDuty);
-    }
-
-    @OnClick({R.id.btn_rotation, R.id.tv_screen_rotation})
-    public void rotationAction() {
-        mPresenter.showDialog("");
     }
 
     private void initView() {
@@ -123,7 +112,6 @@ public class CrewChatSettingActivity extends BaseSingleBackActivity implements C
     @Override
     protected void onStop() {
         super.onStop();
-
     }
 
     @Override

@@ -42,7 +42,6 @@ public class SettingNotificationFragment extends Fragment implements CompoundBut
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.activity_notification_setting, container, false);
 
-
         prefs = CrewChatApplication.getInstance().getPrefs();
         initView();
 

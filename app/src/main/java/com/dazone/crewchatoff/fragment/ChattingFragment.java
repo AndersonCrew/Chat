@@ -10,12 +10,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -38,7 +35,6 @@ import android.widget.Toast;
 
 import com.dazone.crewchatoff.Class.ChatInputView;
 import com.dazone.crewchatoff.Enumeration.ChatMessageType;
-import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.ChatViewImageActivity;
 import com.dazone.crewchatoff.activity.ChattingActivity;
@@ -46,6 +42,7 @@ import com.dazone.crewchatoff.activity.UnreadActivity;
 import com.dazone.crewchatoff.activity.chatroom.ChattingViewModel;
 import com.dazone.crewchatoff.adapter.ChattingAdapter;
 import com.dazone.crewchatoff.adapter.EndlessRecyclerOnScrollListener;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.customs.AudioPlayer;
 import com.dazone.crewchatoff.customs.EmojiView;
@@ -54,15 +51,12 @@ import com.dazone.crewchatoff.database.ChatMessageDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
 import com.dazone.crewchatoff.dto.AttachDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
-import com.dazone.crewchatoff.dto.ErrorDto;
-import com.dazone.crewchatoff.dto.MessageNotSend;
 import com.dazone.crewchatoff.dto.MessageUnreadCountDTO;
 import com.dazone.crewchatoff.dto.TreeUserDTOTemp;
 import com.dazone.crewchatoff.dto.UserDto;
 import com.dazone.crewchatoff.eventbus.ReceiveMessage;
 import com.dazone.crewchatoff.eventbus.ReloadListMessage;
 import com.dazone.crewchatoff.interfaces.ILayoutChange;
-import com.dazone.crewchatoff.interfaces.SendChatMessage;
 import com.dazone.crewchatoff.socket.NetClient;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
@@ -71,14 +65,12 @@ import com.dazone.crewchatoff.utils.Prefs;
 import com.dazone.crewchatoff.utils.TimeUtils;
 import com.dazone.crewchatoff.utils.Utils;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -125,9 +117,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     private Handler handlerTimer = new Handler();
     private int timeDelay = 1000;
     private int timerCount = -1;
-    private boolean hasLoadImage = false;
+    public boolean isFiltering = false;
+    public String strFilter = "";
+    public boolean isSearchFocused = false;
 
-    private ChattingViewModel viewModel;
+    public ChattingViewModel viewModel;
     private Runnable updateTimer = new Runnable() {
         @Override
         public void run() {
@@ -180,7 +174,9 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         setiLayoutChange(new ILayoutChange() {
             @Override
             public void onKeyBoardShow() {
-                rvMainList.postDelayed(() -> rvMainList.smoothScrollToPosition(dataSet.size()), 300);
+                if (!isSearchFocused) {
+                    rvMainList.postDelayed(() -> rvMainList.smoothScrollToPosition(dataSet.size()), 300);
+                }
             }
 
             @Override
@@ -190,6 +186,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     private boolean hasActionSend = false;
+
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ChattingViewModel.class);
 
@@ -281,7 +278,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
         /**handle action share*/
         viewModel.getSendActionShare().observe(this, flag -> {
-            if(flag != null && flag) {
+            if (flag != null && flag) {
                 new Handler().postDelayed(() -> {
                     try {
                         ChattingActivity.instance.setUpActioneSend();
@@ -910,6 +907,8 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
 
         Collections.sort(dataSet, mComparator);
+        dataSetCopy.clear();
+        dataSetCopy.addAll(dataSet);
         adapterList.notifyDataSetChanged();
     }
 
@@ -933,6 +932,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         final String message = view.edt_comment.getText().toString();
         if (!TextUtils.isEmpty(message) && message.length() > 0) {
             view.edt_comment.setText("");
+            CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.TEXT_NOT_SEND + roomNo, "");
             isSend = false;
 
             ChattingDto newDto = new ChattingDto();
@@ -985,6 +985,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         isActive = true;
         registerGCMReceiver();
         CrewChatApplication.currentRoomNo = roomNo;
+
+        if (!TextUtils.isEmpty(CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.TEXT_NOT_SEND + roomNo, ""))) {
+            view.edt_comment.setText(CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.TEXT_NOT_SEND + roomNo, ""));
+        }
     }
 
     @Override
@@ -994,6 +998,10 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         isActive = false;
         unregisterGCMReceiver();
         CrewChatApplication.currentRoomNo = 0;
+
+        if (!TextUtils.isEmpty(view.edt_comment.getText())) {
+            CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.TEXT_NOT_SEND + roomNo, view.edt_comment.getText().toString());
+        }
     }
 
     private void registerGCMReceiver() {
@@ -1302,14 +1310,22 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     public static boolean isShowIcon = false;
 
     private void loadMoreData() {
-        if (!isLoading && isLoadMore) {
-            isLoading = true;
-            hasLoadMore = true;
-
+        if (isFiltering) {
             if (Utils.isNetworkAvailable()) {
-                viewModel.getChatList(dataSet.get(0).getStrRegDate(), roomNo, ChatMessageDBHelper.BEFORE, userID, null);
+                //viewModel.getChatList(dataSet.get(0).getStrRegDate(), roomNo, ChatMessageDBHelper.FILTER, userID, null);
             } else {
-                viewModel.loadMoreLocal(roomNo, dataSet.get(0).getMessageNo());
+                viewModel.loadMoreLocal(roomNo, dataSet.get(0).getMessageNo(), ChatMessageDBHelper.FILTER, strFilter);
+            }
+        } else {
+            if (!isLoading && isLoadMore) {
+                isLoading = true;
+                hasLoadMore = true;
+
+                if (Utils.isNetworkAvailable()) {
+                    viewModel.getChatList(dataSet.get(0).getStrRegDate(), roomNo, ChatMessageDBHelper.BEFORE, userID, null);
+                } else {
+                    viewModel.loadMoreLocal(roomNo, dataSet.get(0).getMessageNo(), ChatMessageDBHelper.BEFORE, "");
+                }
             }
         }
     }

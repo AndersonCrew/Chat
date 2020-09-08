@@ -26,6 +26,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ChattingViewModel : BaseViewModel() {
     var listChatting: MutableLiveData<List<ChattingDto>> = MutableLiveData()
@@ -39,7 +40,7 @@ class ChattingViewModel : BaseViewModel() {
     private var disposables = CompositeDisposable()
 
     fun getChatListFirst(roomNo: Long, userID: Int) {
-        val listObservable = Single.just(ChatMessageDBHelper.getMsgSession(roomNo, 0, ChatMessageDBHelper.FIRST))
+        val listObservable = Single.just(ChatMessageDBHelper.getMsgSession(roomNo, 0, ChatMessageDBHelper.FIRST, ""))
         val dispo: Disposable = listObservable
                 .subscribeOn(Schedulers.io())
                 .subscribe { list ->
@@ -65,8 +66,8 @@ class ChattingViewModel : BaseViewModel() {
         disposables.add(dispo)
     }
 
-    fun loadMoreLocal(roomNo: Long, messageNo: Long) {
-        val listObservable = Single.just(ChatMessageDBHelper.getMsgSession(roomNo, messageNo, ChatMessageDBHelper.BEFORE))
+    fun loadMoreLocal(roomNo: Long, messageNo: Long, type: Int, strFilter: String) {
+        val listObservable = Single.just(ChatMessageDBHelper.getMsgSession(roomNo, messageNo, type, strFilter))
         val dispo: Disposable = listObservable
                 .subscribeOn(Schedulers.io())
                 .subscribe { list ->

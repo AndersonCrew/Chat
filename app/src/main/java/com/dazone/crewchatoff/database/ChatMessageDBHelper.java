@@ -46,7 +46,7 @@ public class ChatMessageDBHelper {
     public static final String UNREAD_TOTAL_COUNT = "unread_total_count";
     public static final String HAS_SENT = "message_has_sent";
     // Constant type to get message session
-    public static int NONE = 0, FIRST = 1, BEFORE = 2, AFTER = 3;
+    public static int NONE = 0, FIRST = 1, BEFORE = 2, AFTER = 3, FILTER = 4;
 
     public static final String SQL_EXECUTE = "CREATE TABLE " + TABLE_NAME + "("
             + ID + " integer primary key autoincrement not null,"
@@ -149,7 +149,7 @@ public class ChatMessageDBHelper {
     public static boolean updateUnReadCount(ChattingDto dto) {
         try {
 
-            if(isExist(dto)) {
+            if (isExist(dto)) {
                 ContentValues values = new ContentValues();
                 values.put(UNREAD_COUNT, dto.getUnReadCount());
 
@@ -318,14 +318,14 @@ public class ChatMessageDBHelper {
         return chattingDto;
     }
 
-    public static List<ChattingDto> getMsgSession(long roomNo, long baseMsgNo, int type) {
+    public static List<ChattingDto> getMsgSession(long roomNo, long baseMsgNo, int type, String strFilter) {
         if (type == NONE) { // currently no use
             return null;
         }
 
         List<ChattingDto> mesArray = new ArrayList<>();
-        String[] columns = new String[]{"*"};
-        ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
+        List<ChattingDto> listMsg = new ArrayList<>();
+
 
         String conditions = ROOM_NO + " = " + roomNo;
 
@@ -333,11 +333,36 @@ public class ChatMessageDBHelper {
             conditions += " AND " + MESSAGE_NO + " > " + baseMsgNo;
         } else if (type == BEFORE) {
             conditions += " AND " + MESSAGE_NO + " < " + baseMsgNo;
+        } else if (type == FILTER) {
+            conditions += " AND " + MESSAGE_NO + " > " + 0 + " AND " + MESSAGE + " LIKE " + "'%" + strFilter + "%'";
         }
 
         // If type = NONE or AFTER nothing
-        Cursor cursor = resolver.query(AppContentProvider.GET_MESSAGE_CONTENT_URI, columns, conditions, null, MESSAGE_NO + " DESC LIMIT 18");
-        // Get and return data
+        Cursor cursor = getCursor(conditions);
+        mesArray = getListMsgFromCursor(cursor);
+
+        if (type == FILTER) {
+            for (ChattingDto dto : mesArray) {
+                if (dto.getMessage().toLowerCase().contains(strFilter.toLowerCase())) {
+                    listMsg.add(dto);
+                }
+            }
+
+        } else {
+            listMsg.addAll(mesArray);
+        }
+
+        return listMsg;
+    }
+
+    private static Cursor getCursor(String conditions) {
+        String[] columns = new String[]{"*"};
+        ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
+        return resolver.query(AppContentProvider.GET_MESSAGE_CONTENT_URI, columns, conditions, null, MESSAGE_NO + " DESC LIMIT 18");
+    }
+
+    private static List<ChattingDto> getListMsgFromCursor(Cursor cursor) {
+        List<ChattingDto> mesArray = new ArrayList<>();
         if (cursor != null) {
             if (cursor.getCount() > 0) {
                 try {
@@ -363,7 +388,6 @@ public class ChatMessageDBHelper {
 
         return mesArray;
     }
-
     public static boolean clearMessages() {
         try {
             ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
