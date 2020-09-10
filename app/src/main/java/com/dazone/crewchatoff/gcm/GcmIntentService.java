@@ -64,6 +64,7 @@ import java.util.Locale;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
+import static com.dazone.crewchatoff.database.ChatMessageDBHelper.addMessage;
 
 public class GcmIntentService extends IntentService {
     String TAG = ">>>GcmIntentService";
@@ -248,6 +249,7 @@ public class GcmIntentService extends IntentService {
 
                     // Just send notification
                     sendBroadcastToActivity(chattingDto, true);
+                    addMessage(chattingDto);
 
                 } catch (Exception e) {
                     e.printStackTrace();
