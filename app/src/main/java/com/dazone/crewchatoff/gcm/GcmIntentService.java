@@ -474,7 +474,7 @@ public class GcmIntentService extends IntentService {
                         .setContentText(msgTemp)
                         .setPriority(Notification.PRIORITY_MAX)
                         .setChannelId(channelId)
-                        .setAutoCancel(true);
+                        .setAutoCancel(false);
 
                 // Check notification setting and config notification
                 if (isEnableSound) mBuilder.setSound(soundUri);
@@ -496,7 +496,7 @@ public class GcmIntentService extends IntentService {
                 notification.number = 100;
                 notification.tickerText = getTickerText(unReadCount);
                 mNotificationManager.notify((int) roomNo, mBuilder.build());
-                startForeground(2, notification);
+                startForeground(1, notification);
             }
         } else {
             final long[] vibrate = new long[]{1000, 1000, 0, 0, 0};
@@ -532,7 +532,7 @@ public class GcmIntentService extends IntentService {
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msgTemp))
                         .setContentText(msgTemp)
                         .setPriority(Notification.PRIORITY_MAX)
-                        .setAutoCancel(true);
+                        .setAutoCancel(false);
 
                 // Check notification setting and config notification
                 if (isEnableSound) mBuilder.setSound(soundUri);
