@@ -130,12 +130,13 @@ public class ChatMessageDBHelper {
             values.put(MESSAGE, dto.getMessage());
             values.put(REG_DATE, dto.getRegDate());
             values.put(STR_REG_DATE, dto.getStrRegDate());
+            values.put(MESSAGE_NO, dto.getMessageNo());
 
             int hasSentValue = dto.isHasSent() ? 1 : 0;
             values.put(HAS_SENT, hasSentValue);
 
             ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + dto.getRoomNo() + " AND " + MESSAGE_NO + " = " + dto.getMessageNo(), null);
+            resolver.update(AppContentProvider.GET_MESSAGE_CONTENT_URI, values, ROOM_NO + " = " + dto.getRoomNo() + " AND " + ID + " = " + dto.getId(), null);
 
             return true;
         } catch (Exception e) {
@@ -147,7 +148,6 @@ public class ChatMessageDBHelper {
 
     public static boolean updateUnReadCount(ChattingDto dto) {
         try {
-
             if(isExist(dto)) {
                 ContentValues values = new ContentValues();
                 values.put(UNREAD_COUNT, dto.getUnReadCount());
@@ -168,6 +168,7 @@ public class ChatMessageDBHelper {
             try {
                 if (!isExist(dto)) {
                     ContentValues values = new ContentValues();
+                    values.put(ID, dto.getId());
                     values.put(ROOM_NO, dto.getRoomNo());
                     values.put(MAKE_USER_NO, dto.getMakeUserNo());
                     values.put(MOD_DATE, dto.getModdate());

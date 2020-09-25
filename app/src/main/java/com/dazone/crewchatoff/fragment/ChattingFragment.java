@@ -901,6 +901,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         view.linearEmoji.setVisibility(View.GONE);
         sendComplete = false;
         isSend = true;
+        updateMessage(dto);
         adapterList.notifyDataSetChanged();
     }
 

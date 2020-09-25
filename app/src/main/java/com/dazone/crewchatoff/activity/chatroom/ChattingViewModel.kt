@@ -45,6 +45,12 @@ class ChattingViewModel : BaseViewModel() {
                 .subscribe { list ->
                     if (!list.isNullOrEmpty()) {
                         listChatting.postValue(list)
+
+                        //Update MessageUnreadCount
+                        val realList = list.filter { dto -> dto.isHasSent }
+                        updateMessageUnReadCount(roomNo, userID, realList[realList.size - 1].strRegDate, false)
+                        CurrentChatListFragment.fragment?.updateRoomUnread(roomNo)
+                        RecentFavoriteFragment.instance?.updateRoomUnread(roomNo)
                     }
 
                     if (Utils.isNetworkAvailable()) {
@@ -279,7 +285,6 @@ class ChattingViewModel : BaseViewModel() {
                             chattingDto.unReadCount = dto.unReadCount
                             chattingDto.regDate = dto.regDate
                             chattingDto.isSendding = false
-                            chattingDto.isHasSent = true
 
                             normalMessage.postValue(chattingDto)
                         } else {
