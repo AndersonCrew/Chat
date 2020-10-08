@@ -61,8 +61,12 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
 
 public class GcmIntentService extends IntentService {
-    String TAG = ">>>GcmIntentService";
-    String channelId = "channel-01";
+    private String TAG = ">>>GcmIntentService";
+    private String channelId = "channel-has-sound";
+    private String channelName = "channelname-has-sound";
+    private String channelIdNonSound = "channel-non-sound";
+    private String channelNameNonSound = "channelName-non-sound";
+    private NotificationChannel channel1, channel2;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -75,8 +79,6 @@ public class GcmIntentService extends IntentService {
     ChattingDto chattingDto;
     private Prefs prefs;
     private NotificationCompat.Builder mBuilder;
-    //public static NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.getApplicationContext());
-    //  private NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
     boolean isEnableN, isEnableSound, isEnableVibrate, isEnableTime, isPCVersion;
 
     @Override
@@ -392,6 +394,10 @@ public class GcmIntentService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            channel1 = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+            channel2 = new NotificationChannel(channelIdNonSound, channelNameNonSound, NotificationManager.IMPORTANCE_LOW);
+        }
         startForeground(1, getNotification());
     }
 
@@ -416,10 +422,13 @@ public class GcmIntentService extends IntentService {
     @TargetApi(26)
     private synchronized String createChannel() {
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        String name = "crewChat";
-        int importance = NotificationManager.IMPORTANCE_LOW;
 
-        NotificationChannel mChannel = new NotificationChannel("crewChat channel", name, importance);
+        NotificationChannel mChannel = null;
+        if(isEnableSound) {
+            mChannel = channel1;
+        } else {
+            mChannel = channel2;
+        }
 
         mChannel.enableLights(true);
         mChannel.setLightColor(Color.BLUE);
@@ -428,6 +437,7 @@ public class GcmIntentService extends IntentService {
         } else {
             stopSelf();
         }
+
         return "crewChat channel";
     }
 
@@ -435,11 +445,9 @@ public class GcmIntentService extends IntentService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final long[] vibrate = new long[]{1000, 1000, 0, 0, 0};
             final Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            // CharSequence name = getString(R.string.channel_name);
-            // if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel mChannel = new NotificationChannel(channelId, "crewChat", importance);
+
+            NotificationChannel mChannel = isEnableSound ? channel1 : channel2;
             mChannel.setShowBadge(true);
             mNotificationManager.createNotificationChannel(mChannel);
             myIntent.putExtra(Statics.CHATTING_DTO, chattingDto);
@@ -465,7 +473,8 @@ public class GcmIntentService extends IntentService {
             if (avatarUrl != null) {
                 Bitmap bitmap = getBitmapFromURL(avatarUrl);
 
-                mBuilder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+                String idChanel = isEnableSound ? channelId : channelIdNonSound;
+                mBuilder = new NotificationCompat.Builder(getApplicationContext(), idChanel);
                 mBuilder.setNumber(unReadCount)
                         .setSmallIcon(R.drawable.small_icon_chat)
                         .setLargeIcon(bitmap)
@@ -473,7 +482,7 @@ public class GcmIntentService extends IntentService {
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msgTemp))
                         .setContentText(msgTemp)
                         .setPriority(Notification.PRIORITY_MAX)
-                        .setChannelId(channelId)
+                        .setChannelId(idChanel)
                         .setAutoCancel(false);
 
                 // Check notification setting and config notification
