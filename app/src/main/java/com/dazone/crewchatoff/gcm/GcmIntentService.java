@@ -15,6 +15,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
@@ -62,10 +63,10 @@ import static android.support.v4.app.NotificationCompat.PRIORITY_LOW;
 
 public class GcmIntentService extends IntentService {
     private String TAG = ">>>GcmIntentService";
-    private String channelId = "channel-has-sound";
-    private String channelName = "channelname-has-sound";
-    private String channelIdNonSound = "channel-non-sound";
-    private String channelNameNonSound = "channelName-non-sound";
+    private String channelId = "0011001";
+    private String channelName = "CrewChat 0011001";
+    private String channelIdNonSound = "0022002";
+    private String channelNameNonSound = "CrewChat 0022002";
     private NotificationChannel channel1, channel2;
 
     public GcmIntentService() {
@@ -424,6 +425,7 @@ public class GcmIntentService extends IntentService {
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         NotificationChannel mChannel = null;
+        String chanelId = isEnableSound ? channelId : channelIdNonSound;
         if(isEnableSound) {
             mChannel = channel1;
         } else {
@@ -438,12 +440,12 @@ public class GcmIntentService extends IntentService {
             stopSelf();
         }
 
-        return "crewChat channel";
+        return chanelId;
     }
 
     private void sendNotification(String msg, final String title, String avatarUrl, Intent myIntent, final int unReadCount, final long roomNo) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final long[] vibrate = new long[]{1000, 1000, 0, 0, 0};
+            final long[] vibrate = new long[]{1000, 1000, 1000, 1000, 1000};
             final Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -486,8 +488,23 @@ public class GcmIntentService extends IntentService {
                         .setAutoCancel(false);
 
                 // Check notification setting and config notification
-                if (isEnableSound) mBuilder.setSound(soundUri);
-                if (isEnableVibrate) mBuilder.setVibrate(vibrate);
+                if (isEnableSound) {
+                    mBuilder.setSound(soundUri);
+                } else {
+                    mBuilder.setSound(null);
+                }
+
+                if (isEnableVibrate) {
+                    mBuilder.setVibrate(vibrate);
+                    Vibrator v = (Vibrator) CrewChatApplication.getInstance().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(500);
+                } else {
+                    final long[] noVibrate = new long[]{0, 0, 0, 0, 0};
+                    mBuilder.setVibrate(noVibrate);
+                    Vibrator v = (Vibrator) CrewChatApplication.getInstance().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(0);
+                }
+
                 mBuilder.setContentIntent(contentIntent);
                 if (msgTemp.contains("\r\n")) {
                     NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
@@ -544,8 +561,23 @@ public class GcmIntentService extends IntentService {
                         .setAutoCancel(false);
 
                 // Check notification setting and config notification
-                if (isEnableSound) mBuilder.setSound(soundUri);
-                if (isEnableVibrate) mBuilder.setVibrate(vibrate);
+                if (isEnableSound) {
+                    mBuilder.setSound(soundUri);
+                } else {
+                    mBuilder.setSound(null);
+                }
+
+                if (isEnableVibrate) {
+                    mBuilder.setVibrate(vibrate);
+                    Vibrator v = (Vibrator) CrewChatApplication.getInstance().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(500);
+                } else {
+                    final long[] noVibrate = new long[]{0, 0, 0, 0, 0};
+                    mBuilder.setVibrate(noVibrate);
+                    Vibrator v = (Vibrator) CrewChatApplication.getInstance().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(0);
+                }
+
                 mBuilder.setContentIntent(contentIntent);
                 if (msgTemp.contains("\r\n")) {
                     NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
