@@ -12,7 +12,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-object RetrofitFactory {
+class RetrofitFactory {
     /**Add Header *{AccessToken}*/
     private val authInterceptor = Interceptor { chain ->
         val newUrl = chain

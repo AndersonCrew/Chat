@@ -29,6 +29,7 @@ import com.dazone.crewchatoff.activity.LoginActivity;
 import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.NotificationSettingActivity;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
+import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.adapter.CurrentChatAdapter;
 import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
@@ -207,6 +208,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         new Prefs().putIntValue("PAGE", 0);
         String ids = new Prefs().getGCMregistrationid();
         if (!TextUtils.isEmpty(ids)) {
+            BaseActivity.Instance.showProgressDialog();
             HttpRequest.getInstance().DeleteDevice(ids, new BaseHTTPCallBack() {
                 @Override
                 public void onHTTPSuccess() {
@@ -214,6 +216,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                     HttpOauthRequest.getInstance().logout(new BaseHTTPCallBack() {
                         @Override
                         public void onHTTPSuccess() {
+                            BaseActivity.Instance.dismissProgressDialog();
                             // New thread to clear all cache
                             CrewChatApplication.isAddUser = false;
                             new Thread(() -> {
@@ -227,6 +230,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                                 FavoriteUserDBHelper.clearFavorites();
                                 CrewChatApplication.resetValue();
                                 CrewChatApplication.isLoggedIn = false;
+                                CrewChatApplication.getInstance().getPrefs().clearLogin();
                                 handler.obtainMessage(LOGOUT_COMPLETE).sendToTarget();
                                 ShortcutBadger.removeCount(getContext()); //for 1.1.4
                             }).start();
@@ -235,6 +239,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                         @Override
                         public void onHTTPFail(ErrorDto errorDto) {
                             Log.d(TAG, "onHTTPFail 1");
+                            BaseActivity.Instance.dismissProgressDialog();
                             Toast.makeText(mContext, "Logout failed !", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -244,6 +249,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 @Override
                 public void onHTTPFail(ErrorDto errorDto) {
                     Log.d(TAG, "onHTTPFail 2");
+                    BaseActivity.Instance.dismissProgressDialog();
                     Toast.makeText(mContext, "Logout failed !", Toast.LENGTH_LONG).show();
                 }
             });

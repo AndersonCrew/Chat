@@ -95,7 +95,7 @@ class ChattingViewModel : BaseViewModel() {
 
         params.addProperty("reqJson", Gson().toJson(param1))
 
-        disposables.add(RetrofitFactory.apiService.getChatMessageList(params)
+        disposables.add(RetrofitFactory().apiService.getChatMessageList(params)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe { showLoading(true) }
                 .doFinally { showLoading(false) }
@@ -147,7 +147,7 @@ class ChattingViewModel : BaseViewModel() {
         param1.addProperty("baseDate", baseDate)
         params.addProperty("reqJson", Gson().toJson(param1))
 
-        disposables.add(RetrofitFactory.apiService.updateMessageUnreadCount(params)
+        disposables.add(RetrofitFactory().apiService.updateMessageUnreadCount(params)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isSuccessful) {
@@ -177,7 +177,7 @@ class ChattingViewModel : BaseViewModel() {
         param1.addProperty("baseDate", baseDate)
         params.addProperty("reqJson", Gson().toJson(param1))
 
-        disposables.add(RetrofitFactory.apiService.getMessageUnreadCount(params)
+        disposables.add(RetrofitFactory().apiService.getMessageUnreadCount(params)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isSuccessful) {
@@ -218,7 +218,7 @@ class ChattingViewModel : BaseViewModel() {
         param1.addProperty("regDate", formatter.format(serverDate))
         params.addProperty("reqJson", Gson().toJson(param1))
 
-        disposables.add(RetrofitFactory.apiService.sendAttachFile(params)
+        disposables.add(RetrofitFactory().apiService.sendAttachFile(params)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isSuccessful) {
@@ -270,7 +270,7 @@ class ChattingViewModel : BaseViewModel() {
         param1.addProperty("regDate", formatter.format(serverDate))
         params.addProperty("reqJson", Gson().toJson(param1))
 
-        disposables.add(RetrofitFactory.apiService.sendNormalMessage(params)
+        disposables.add(RetrofitFactory().apiService.sendNormalMessage(params)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isSuccessful) {
@@ -309,7 +309,7 @@ class ChattingViewModel : BaseViewModel() {
         params.addProperty("languageCode", Locale.getDefault().language.toUpperCase())
         params.addProperty("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes())
 
-        disposables.add(RetrofitFactory.apiService.checkHasCallUnreadCount(params)
+        disposables.add(RetrofitFactory().apiService.checkHasCallUnreadCount(params)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isSuccessful) {

@@ -50,6 +50,7 @@ import com.dazone.crewchatoff.interfaces.Urls;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.ImageUtils;
+import com.dazone.crewchatoff.utils.PermissionUtil;
 import com.dazone.crewchatoff.utils.Prefs;
 import com.dazone.crewchatoff.utils.TimeUtils;
 import com.dazone.crewchatoff.utils.Utils;
@@ -240,7 +241,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                     }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             } else {
-                setPermissionsRandW();
+                PermissionUtil.INSTANCE.requestPermissions(BaseActivity.Instance, RandW_PERMISSIONS_REQUEST_CODE, PermissionUtil.INSTANCE.getPermissionsStorage());
             }
         } else {
             Toast.makeText(CrewChatApplication.getInstance(), CrewChatApplication.getInstance().getResources().getString(R.string.can_not_check_permission), Toast.LENGTH_SHORT).show();
@@ -250,15 +251,14 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
 
     void openFile(File file) {
         try {
+            String type = Constant.getMimeType(file.getAbsolutePath());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Uri apkUri = FileProvider.getUriForFile(BaseActivity.Instance, BuildConfig.APPLICATION_ID + ".provider", file);
+                Uri apkUri = FileProvider.getUriForFile(BaseActivity.Instance, BaseActivity.Instance.getApplicationContext().getPackageName() + ".provider", file);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(apkUri);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(apkUri, type);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 BaseActivity.Instance.startActivity(intent);
             } else {
-                String type = Constant.getMimeType(file.getAbsolutePath());
-                Log.d(TAG, "type:" + type);
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(file), type);
@@ -282,21 +282,10 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
     }
 
     public boolean checkPermissionsWandR() {
-        if (ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        return ContextCompat.checkSelfPermission(BaseActivity.Instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return PermissionUtil.INSTANCE.checkPermissions(BaseActivity.Instance, PermissionUtil.INSTANCE.getPermissionsStorage());
     }
 
     int RandW_PERMISSIONS_REQUEST_CODE = 1;
-
-    public void setPermissionsRandW() {
-        String[] requestPermission;
-        requestPermission = new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        ActivityCompat.requestPermissions(BaseActivity.Instance, requestPermission, RandW_PERMISSIONS_REQUEST_CODE);
-    }
 
     private ProgressDialog mProgressDialog = null;
 
@@ -321,7 +310,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                     mProgressDialog.show();
                     DownloadImage(BaseActivity.Instance, url, attachDTOTemp.getFileName(), shareIntent, file);
                 } else {
-                    setPermissionsRandW();
+                    PermissionUtil.INSTANCE.requestPermissions(BaseActivity.Instance, RandW_PERMISSIONS_REQUEST_CODE, PermissionUtil.INSTANCE.getPermissionsStorage());
                 }
             }
 
@@ -537,7 +526,10 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
                 Log.d("doInBackground", "name:" + this.mName);
                 outputFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + Constant.pathDownload, this.mName);
 
-                if (outputFile.exists()) outputFile.delete();
+                if (outputFile.exists()) {
+                    outputFile.delete();
+                }
+
                 outputFile.createNewFile();
 
                 fileOutputStream = new FileOutputStream(outputFile);
@@ -600,11 +592,9 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
 
                 } else {
                     mDownloadCallback.onError();
-                    Log.d("ChattingSelfFileViewHolder", "outputFile.size = 0");
                 }
             } else {
                 mDownloadCallback.onError();
-                Log.d("ChattingSelfFileViewHolder", "outputFile null");
             }
             mProgressBar.setVisibility(View.GONE);
 

@@ -76,6 +76,7 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
             intent.putExtra(Statics.MessageNo, dto.getMessageNo());
             BaseActivity.Instance.sendBroadcast(intent);
         });
+
         avatar_imv.setOnClickListener(v -> {
             try {
                 int userNo = dto.getUserNo();
@@ -102,12 +103,7 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
                     if (!file.exists()) {
                         path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + Statics.AUDIO_RECORDER_FOLDER_ROOT + "/" + fileName;
                     }
-                    new Constant.audioGetDuration(BaseActivity.Instance, path, new AudioGetDuration() {
-                        @Override
-                        public void onComplete(String duration) {
-                            tvDuration.setText(duration);
-                        }
-                    }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    new Constant.audioGetDuration(BaseActivity.Instance, path, duration -> tvDuration.setText(duration)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
                     tvDuration.setText("");
                 }
