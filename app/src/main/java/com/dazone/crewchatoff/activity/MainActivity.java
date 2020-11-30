@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,6 +36,7 @@ import com.dazone.crewchatoff.HTTPs.GetUserStatus;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.base.BasePagerActivity;
+import com.dazone.crewchatoff.activity.chatroom.ChattingViewModel;
 import com.dazone.crewchatoff.adapter.TabPagerAdapter;
 import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
@@ -84,6 +86,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     private boolean doubleBackToExitPressedOnce = false;
     public static MainActivity instance = null;
     public static long myRoom = -55;
+    private ChattingViewModel chattingViewModel;
     @SuppressLint("HandlerLeak")
     protected Handler mHandler = new Handler() {
         @Override
@@ -151,6 +154,9 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         if (BuildConfig.FLAVOR.equals("serverVersion")) {
             checkVersion();
         }
+
+        chattingViewModel = ViewModelProviders.of(this).get(ChattingViewModel.class);
+        chattingViewModel.checkHasCallUnreadCount();
     }
 
     public void setPermissionsReadExternalStorage() {

@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.os.Handler
 import android.util.Log
 import com.dazone.crewchatoff.activity.base.BaseViewModel
+import com.dazone.crewchatoff.constant.Constants
 import com.dazone.crewchatoff.constant.Statics
 import com.dazone.crewchatoff.database.ChatMessageDBHelper
 import com.dazone.crewchatoff.dto.ChattingDto
@@ -161,6 +162,10 @@ class ChattingViewModel : BaseViewModel() {
     }
 
     fun getMessageUnReadCount(roomNo: Long, baseDate: String) {
+        if(CrewChatApplication.getInstance().prefs.getBooleanValue(Constants.HAS_CALL_UNREAD_COUNT, false)) {
+            return
+        }
+
         val params = JsonObject()
         params.addProperty("command", Urls.URL_GET_MESSAGE_UNREAD_COUNT_TIME)
         params.addProperty("sessionId", CrewChatApplication.getInstance().prefs.getaccesstoken())
@@ -293,6 +298,38 @@ class ChattingViewModel : BaseViewModel() {
                     }
                 }, {
                     dtoFailed.postValue(chattingDto)
+                    Log.d("CHATTING_ROOM", "SendNormal Message Fail")
+                }))
+    }
+
+    fun checkHasCallUnreadCount() {
+        val params = JsonObject()
+        params.addProperty("command", Urls.URL_CHECK_HAS_CALL_UNREAD_COUNT)
+        params.addProperty("sessionId", CrewChatApplication.getInstance().prefs.getaccesstoken())
+        params.addProperty("languageCode", Locale.getDefault().language.toUpperCase())
+        params.addProperty("timeZoneOffset", TimeUtils.getTimezoneOffsetInMinutes())
+
+        disposables.add(RetrofitFactory.apiService.checkHasCallUnreadCount(params)
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    if (it.isSuccessful) {
+                        val body = it.body()?.get("d") as JsonObject
+                        val success = body.get("success").toString()
+                        if (success == "true") {
+                            val data = body.get("data").toString()
+                            CrewChatApplication.getInstance().prefs.putBooleanValue(Constants.HAS_CALL_UNREAD_COUNT, !(data == "true"))
+
+                        } else {
+                            //dtoFailed.postValue(chattingDto)
+                        }
+
+                        Log.d("CHATTING_ROOM", "SendNormal Message Success")
+                    } else {
+                        //dtoFailed.postValue(chattingDto)
+                        Log.d("CHATTING_ROOM", "SendNormal Message Fail")
+                    }
+                }, {
+                    //dtoFailed.postValue(chattingDto)
                     Log.d("CHATTING_ROOM", "SendNormal Message Fail")
                 }))
     }

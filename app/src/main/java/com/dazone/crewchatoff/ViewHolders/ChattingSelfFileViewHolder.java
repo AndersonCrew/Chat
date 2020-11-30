@@ -37,6 +37,7 @@ import com.dazone.crewchatoff.activity.ChattingActivity;
 import com.dazone.crewchatoff.activity.MainActivity;
 import com.dazone.crewchatoff.activity.RelayActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.customs.AudioPlayer;
 import com.dazone.crewchatoff.dto.AttachDTO;
@@ -194,6 +195,8 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             if (layoutNotAudio != null) layoutNotAudio.setVisibility(View.VISIBLE);
             if (layoutAudio != null) layoutAudio.setVisibility(View.GONE);
         }
+
+        tvUnread.setVisibility(CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.HAS_CALL_UNREAD_COUNT, false) || dto.getUnReadCount() == 0? View.GONE : View.VISIBLE);
     }
     void touchOnView(AttachDTO attachDTO) {
         if (ChattingActivity.instance != null) {

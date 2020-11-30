@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.utils.CircleTransform;
@@ -98,5 +99,6 @@ public class ChattingPersonViewHolder extends ChattingSelfViewHolder {
                 }
             }
         });
-    }
+
+        tvUnread.setVisibility(CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.HAS_CALL_UNREAD_COUNT, false) || dto.getUnReadCount() == 0? View.GONE : View.VISIBLE);}
 }

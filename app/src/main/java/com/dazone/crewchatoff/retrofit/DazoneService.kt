@@ -24,4 +24,7 @@ interface DazoneService {
 
     @POST(Urls.URL_ROOT_2)
     fun sendNormalMessage(@Body param: JsonObject): Observable<Response<JsonObject>>
+
+    @POST(Urls.URL_ROOT_2)
+    fun checkHasCallUnreadCount(@Body param: JsonObject): Observable<Response<JsonObject>>
 }

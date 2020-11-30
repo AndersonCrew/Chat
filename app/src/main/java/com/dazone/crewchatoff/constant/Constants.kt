@@ -9,4 +9,5 @@ object Constants {
     const val TEXT_NOT_SEND = "TEXT_NOT_SEND"
     const val LIST_FILE_PATH_SHARE = "LIST_FILE_PATH_SHARE"
     const val TYPE_SHARE = "TYPE_SHARE"
+    const val HAS_CALL_UNREAD_COUNT = "HAS_CALL_UNREAD_COUNT"
 }

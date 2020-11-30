@@ -11,12 +11,14 @@ import android.widget.TextView;
 
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.activity.ProfileUserActivity;
+import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.dto.AttachDTO;
 import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.interfaces.AudioGetDuration;
 import com.dazone.crewchatoff.utils.Constant;
+import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.ImageUtils;
 import com.dazone.crewchatoff.utils.Utils;
 
@@ -115,5 +117,5 @@ public class ChattingPersonFileViewHolder extends ChattingSelfFileViewHolder {
             if (layoutAudio != null) layoutAudio.setVisibility(View.GONE);
         }
 
-    }
+        tvUnread.setVisibility(CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.HAS_CALL_UNREAD_COUNT, false) || dto.getUnReadCount() == 0? View.GONE : View.VISIBLE);}
 }
