@@ -122,9 +122,9 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
         if (CompanyFragment.instance != null) listUsers = CompanyFragment.instance.getUser();
         if (listUsers == null) listUsers = new ArrayList<>();
 
+        totalUser = dto.getUserNos().size();
 
         if (dto.getListTreeUser() != null && dto.getListTreeUser().size() < dto.getUserNos().size()) {
-            totalUser = dto.getListTreeUser().size() + 1;
             isFilter = true;
         } else {
             ArrayList<Integer> users = dto.getUserNos();
@@ -142,7 +142,6 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
             }
 
             dto.setListTreeUser(list1);
-            totalUser = list1.size();
         }
 
         if (totalUser > 2) {
@@ -413,16 +412,9 @@ public class ListCurrentViewHolder extends ItemViewHolder<ChattingDto> implement
         tvTotalUser.setOnClickListener(v -> {
             ArrayList<Integer> uNos = new ArrayList<>();
             uNos.add(myId);
-            if (finalIsFilter) {
-
-                for (TreeUserDTOTemp tree : dto.getListTreeUser()) {
-                    uNos.add(tree.getUserNo());
-                }
-            } else {
-                for (int id : dto.getUserNos()) {
-                    if (myId != id) {
-                        uNos.add(id);
-                    }
+            for (int id : dto.getUserNos()) {
+                if (myId != id) {
+                    uNos.add(id);
                 }
             }
 

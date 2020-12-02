@@ -109,22 +109,26 @@ public class GcmIntentService extends IntentService {
                             receiveCode1(extras);
                             break;
                         case 2:
-                            Log.d("TAG", "Case 2 ###");
+                            Log.d("TAG", "Case 2 Add Chat Room User ");
                             receiveCode2(extras);
                             break;
                         case 3:
-                            Log.d("TAG", "Case 3 ###");
+                            Log.d("TAG", "Case 3 Delete Chat Room User ");
                             chatDeleteMember(extras);
                             break;
                         case 4:
                             Log.d("TAG", "Case 4 ###");
                             break;
                         case 5:
-                            Log.d("TAG", "Case 5 ###");
+                            Log.d("TAG", "Case 5 UpdateMessageUnreadCount");
                             receiveCode5(extras);
                             break;
                         case 8:
-                            Log.d("TAG", "Case 8 ###");
+                            Log.d("TAG", "Case 8 Update RoomName");
+                            receiveCode8(extras);
+
+                            case 7:
+                            Log.d("TAG", "Case 7 AddChatRoomUserRestore");
                             receiveCode8(extras);
                             break;
                         default:
@@ -265,29 +269,25 @@ public class GcmIntentService extends IntentService {
                 String objExtra = bundle.getString("Data", "");
                 JSONObject object = new JSONObject(objExtra);
                 int userNo = Integer.parseInt(object.getString("SubjectUserNo"));
-                if (userNo == Utils.getCurrentId()) {
-                    if (bundle.containsKey("Data")) {
-                        long roomNo = Long.parseLong(object.getString("RoomNo"));
-                        Intent intent = new Intent(this, ChattingActivity.class);
-                        intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
+                long roomNo = Long.parseLong(object.getString("RoomNo"));
+                Intent intent = new Intent(this, ChattingActivity.class);
+                intent.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
 
-                        sendNotification(Utils.getString(R.string.notification_add_user),
-                                Utils.getString(R.string.app_name),
-                                null,
-                                intent,
-                                0,
-                                roomNo);
+                sendNotification(Utils.getString(R.string.notification_add_user),
+                        Utils.getString(R.string.app_name),
+                        null,
+                        intent,
+                        0,
+                        roomNo);
 
 
-                        if ((CurrentChatListFragment.fragment != null && CurrentChatListFragment.fragment.isActive) || (ChattingFragment.instance != null && ChattingFragment.instance.isActive)) {
-                            Intent intentBroadcast = new Intent(Constant.INTENT_FILTER_ADD_USER);
-                            intentBroadcast.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
-                            sendBroadcast(intentBroadcast);
-                        } else if (CurrentChatListFragment.fragment != null) {
-                            CurrentChatListFragment.fragment.isUpdate = true;
-                            CurrentChatListFragment.fragment.reloadDataSet();
-                        }
-                    }
+                if ((CurrentChatListFragment.fragment != null && CurrentChatListFragment.fragment.isActive) || (ChattingFragment.instance != null && ChattingFragment.instance.isActive)) {
+                    Intent intentBroadcast = new Intent(Constant.INTENT_FILTER_ADD_USER);
+                    intentBroadcast.putExtra(Constant.KEY_INTENT_ROOM_NO, roomNo);
+                    sendBroadcast(intentBroadcast);
+                } else if (CurrentChatListFragment.fragment != null) {
+                    CurrentChatListFragment.fragment.isUpdate = true;
+                    CurrentChatListFragment.fragment.reloadDataSet();
                 }
             }
         } catch (Exception e) {

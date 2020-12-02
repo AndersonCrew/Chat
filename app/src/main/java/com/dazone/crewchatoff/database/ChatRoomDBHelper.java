@@ -174,7 +174,7 @@ public class ChatRoomDBHelper {
     }
 
     public static boolean updateChatRoom(long roomNo, String lastedMsg, int lastedMsgType, int lastedMsgAttachType, String lastedMsgDate,
-                                         int unreadCountTotal, int unreadCount, long lastMsgUserNo, boolean iFv) {
+                                         int unreadCountTotal, int unreadCount, long lastMsgUserNo, boolean iFv, ArrayList<Integer> userNos) {
         try {
             ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
             ContentValues conValues = new ContentValues();
@@ -186,6 +186,9 @@ public class ChatRoomDBHelper {
             conValues.put(UNREAD_TOTAL_COUNT, unreadCountTotal);
             conValues.put(UNREAD_COUNT, unreadCount);
             conValues.put(IS_FAVORITE, iFv);
+
+            String userNosStr = TextUtils.join(",", userNos);
+            conValues.put(USER_NOS, userNosStr);
             resolver.update(AppContentProvider.GET_CHAT_ROOM_CONTENT_URI, conValues, ROOM_NO + "=" + roomNo, null);
             return true;
         } catch (Exception e) {

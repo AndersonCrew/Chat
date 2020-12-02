@@ -25,6 +25,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +37,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dazone.crewchatoff.BuildConfig;
 import com.dazone.crewchatoff.R;
+import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.customs.AlertDialogView;
@@ -55,8 +58,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+
 
 public class Utils {
 
@@ -244,64 +247,22 @@ public class Utils {
     }
 
     public static void downloadEvent(final Context context, final String url, final String name) {
-        String mimeType;
-        String serviceString = Context.DOWNLOAD_SERVICE;
-        String fileType = name.substring(name.lastIndexOf(".")).toLowerCase();
-        final DownloadManager downloadmanager;
-        downloadmanager = (DownloadManager) context.getSystemService(serviceString);
-        Uri uri = Uri
-                .parse(url);
 
-        DownloadManager.Request request = new DownloadManager.Request(uri);
+        File folder = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        File file = new File(folder, name);
+        Uri uri =  FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
+        String extension = MimeTypeMap.getFileExtensionFromUrl(uri.getPath());
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setTitle(name);
+        request.setDescription("Downloading" + name + " ...");
+        request.allowScanningByMediaScanner();
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Constant.pathDownload, name);
-        int type = getTypeFile(fileType);
-        switch (type) {
-            case 1:
-                request.setMimeType(Statics.MIME_TYPE_IMAGE);
-                break;
-            case 2:
-                request.setMimeType(Statics.MIME_TYPE_VIDEO);
-                break;
-            case 3:
-                request.setMimeType(Statics.MIME_TYPE_AUDIO);
-                break;
-            default:
-                try {
-                    mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mimeType = Statics.MIME_TYPE_ALL;
-                }
-                if (TextUtils.isEmpty(mimeType)) {
-                    request.setMimeType(Statics.MIME_TYPE_ALL);
-                } else {
-                    request.setMimeType(mimeType);
-                }
-                break;
-        }
-        final Long reference = downloadmanager.enqueue(request);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name + extension);
+        DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        manager.enqueue(request);
 
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    DownloadManager.Query query = new DownloadManager.Query();
-                    query.setFilterById(reference);
-                    Cursor c = downloadmanager.query(query);
-                    if (c.moveToFirst()) {
-                        int columnIndex = c
-                                .getColumnIndex(DownloadManager.COLUMN_STATUS);
-                        if (DownloadManager.STATUS_SUCCESSFUL == c
-                                .getInt(columnIndex)) {
-                        }
-                    }
-                }
-            }
-        };
-        context.registerReceiver(receiver, new IntentFilter(
-                DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
     //1: Image

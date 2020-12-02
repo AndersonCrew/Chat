@@ -631,7 +631,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     for (ChattingDto dto : list) {
                         dto.setUnreadTotalCount(dto.getUnReadCount());
                         ChatRoomDBHelper.updateChatRoom(dto.getRoomNo(), dto.getLastedMsg(), dto.getLastedMsgType(), dto.getLastedMsgAttachType(),
-                                dto.getLastedMsgDate(), dto.getUnreadTotalCount(), dto.getUnReadCount(), dto.getMsgUserNo(), dto.isFavorite());
+                                dto.getLastedMsgDate(), dto.getUnreadTotalCount(), dto.getUnReadCount(), dto.getMsgUserNo(), dto.isFavorite(), dto.getUserNos());
                         for (ChattingDto chat : dataSet) {
                             if (chat.getRoomNo() == dto.getRoomNo()) {
                                 chat.setLastedMsg(dto.getLastedMsg());
@@ -645,6 +645,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                                 chat.setUnReadCount(dto.getUnReadCount());
                                 chat.setWriterUserNo(dto.getWriterUserNo());
                                 chat.setMsgUserNo(dto.getMsgUserNo());
+                                chat.setUserNos(dto.getUserNos());
                                 chat.setFavorite(dto.isFavorite());
                                 break;
                             }

@@ -10,4 +10,5 @@ object Constants {
     const val LIST_FILE_PATH_SHARE = "LIST_FILE_PATH_SHARE"
     const val TYPE_SHARE = "TYPE_SHARE"
     const val HAS_CALL_UNREAD_COUNT = "HAS_CALL_UNREAD_COUNT"
+    const val DOWNLOAD_FILE_CODE = 112
 }
