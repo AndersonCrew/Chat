@@ -109,6 +109,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             }
         }
     };
+
     private final int MY_PERMISSIONS_REQUEST_CODE = 1;
     private final ActivityHandler2 mActivityHandler2 = new ActivityHandler2(this);
     static boolean active = false;

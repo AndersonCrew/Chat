@@ -444,6 +444,10 @@ public class GcmIntentService extends IntentService {
     }
 
     private void sendNotification(String msg, final String title, String avatarUrl, Intent myIntent, final int unReadCount, final long roomNo) {
+        if(!isPCVersion) {
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             final long[] vibrate = new long[]{1000, 1000, 1000, 1000, 1000};
             final Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -596,6 +600,7 @@ public class GcmIntentService extends IntentService {
                 notification.tickerText = getTickerText(unReadCount);
                 mNotificationManager.notify((int) roomNo, mBuilder.build());
                 startForeground(1, notification);
+
             }
         }
 

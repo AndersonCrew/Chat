@@ -39,7 +39,6 @@ import com.dazone.crewchatoff.utils.Prefs;
 import static com.dazone.crewchatoff.utils.Utils.compareVersionNames;
 
 public class WelcomeActivity extends AppCompatActivity {
-    String TAG = "WelcomeActivity";
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
