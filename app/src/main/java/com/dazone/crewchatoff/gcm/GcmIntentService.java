@@ -138,6 +138,7 @@ public class GcmIntentService extends IntentService {
                 }
             }
         }
+
         GcmBroadcastReceiver.completeWakefulIntent(intent);
         NOTIFICATION_ID = NOTIFICATION_ID + 1;
     }

@@ -286,7 +286,7 @@
     <string name="standard_text">Standard</string>
     <string name="hight_text">High</string>
     <string name="original_text">Original</string>
-    <string name="string_update_content">This new version exists. Would you like to install?</string>
+    <string name="string_update_content">Please update the newest version!</string>
     <string name="mailActivity_message_download_apk">설치 파일을 다운로드 중입니다.\n잠시만 기다려주세요.</string>
     <string name="settings_notification_time_2">* You can receive notifications only at the times that are set.</string>
     <string name="settings_notification_time_value">Enable Notification time</string>

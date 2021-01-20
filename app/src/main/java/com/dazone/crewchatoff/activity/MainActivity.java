@@ -339,7 +339,6 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
                         new Async_DownloadApkFile(MainActivity.this, "CrewChat").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         dialog.dismiss();
                     });
-                    builder.setNegativeButton(R.string.no, (dialog, which) -> dialog.dismiss());
                     AlertDialog dialog = builder.create();
                     dialog.setCancelable(false);
                     dialog.show();

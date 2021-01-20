@@ -200,7 +200,9 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
         startActivity(intent);
     }
 
+    ProfileUserDTO mProfileUserDTO;
     private void fillData(ProfileUserDTO profileUserDTO) {
+        mProfileUserDTO = profileUserDTO;
         String url = new Prefs().getServerSite() + profileUserDTO.getAvatarUrl();
         urlAv = url;
         ImageUtils.showCycle(url, ivAvatar, R.dimen.button_height);
@@ -281,9 +283,13 @@ public class ProfileUserActivity extends AppCompatActivity implements View.OnCli
             case R.id.btn_call:
 
             case R.id.iv_phone_call:
-
+                phoneNumber = mProfileUserDTO.getCellPhone();
+                if (!TextUtils.isEmpty(phoneNumber.trim())) {
+                    Utils.CallPhone(ProfileUserActivity.this, phoneNumber);
+                }
+                break;
             case R.id.iv_ex_phone_call:
-                phoneNumber = (String) v.getTag();
+                phoneNumber = mProfileUserDTO.getCompanyPhone();
                 if (!TextUtils.isEmpty(phoneNumber.trim())) {
                     Utils.CallPhone(ProfileUserActivity.this, phoneNumber);
                 }

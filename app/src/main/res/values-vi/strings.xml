@@ -282,7 +282,7 @@
     <string name="standard_text">Standard</string>
     <string name="hight_text">High</string>
     <string name="original_text">Original</string>
-    <string name="string_update_content">Tồn tại phiên bản mới. Bạn có muốn cập nhật phiên bản mới?</string>
+    <string name="string_update_content">Vui lòng cập nhật phiên bản mới nhất!</string>
     <string name="mailActivity_message_download_apk">설치 파일을 다운로드 중입니다.\n잠시만 기다려주세요.</string>
     <string name="settings_notification_time_2">* Khi cài đặt xong chỉ nhận đươc thông báo trong khoảng thời gian này.</string>
     <string name="settings_notification_time_value">Thời gian nhận thông báo</string>

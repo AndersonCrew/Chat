@@ -32,7 +32,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 29
         versionCode 10421
-        versionName "3.8.5"
+        versionName "3.8.7"
         multiDexEnabled true
     }
 
