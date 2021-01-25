@@ -83,21 +83,18 @@ public abstract class BasePagerActivity extends BaseActivity {
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         ivSearch = findViewById(R.id.iv_search);
-        ivSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (MainActivity.CURRENT_TAB == 0) {
-                    if (CurrentChatListFragment.fragment != null) {
-                        CurrentChatListFragment.fragment.searchAction(1);
-                    }
-                } else if (MainActivity.CURRENT_TAB == 1) {
+        ivSearch.setOnClickListener(v -> {
+            if (MainActivity.CURRENT_TAB == 0) {
+                if (CurrentChatListFragment.fragment != null) {
+                    CurrentChatListFragment.fragment.searchAction(1);
+                }
+            } else if (MainActivity.CURRENT_TAB == 1) {
 
-                } else if (MainActivity.CURRENT_TAB == 2) {
-                    if (BaseFavoriteFragment.CURRENT_TAB == 0) {
-                        BaseFavoriteFragment.instance.Favorite_left();
-                    } else {
-                        BaseFavoriteFragment.instance.Favorite_Right();
-                    }
+            } else if (MainActivity.CURRENT_TAB == 2) {
+                if (BaseFavoriteFragment.CURRENT_TAB == 0) {
+                    BaseFavoriteFragment.instance.Favorite_left();
+                } else {
+                    BaseFavoriteFragment.instance.Favorite_Right();
                 }
             }
         });

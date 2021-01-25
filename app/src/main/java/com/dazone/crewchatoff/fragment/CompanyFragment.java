@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -77,7 +78,6 @@ public class CompanyFragment extends Fragment {
     String TAG = CompanyFragment.class.getName();
     @SuppressLint("StaticFieldLeak")
     public static CompanyFragment instance = null;
-    private CompanySearchAdapter adapter;
     private boolean isBuild = false;
     private Activity mContext;
     private RecyclerView listCompany;
@@ -92,12 +92,9 @@ public class CompanyFragment extends Fragment {
         mContext = context;
     }
 
-    private LinearLayout mSharePersonContent;
-    private RecyclerView rvSearch;
     private ProgressBar progressBar;
     private TextView tvNoData;
 
-    private IntentFilter intentFilterSearch;
     private List<TreeUserDTO> list = new ArrayList<>();
     private AdapterOrganizationCompanyTab mAdapter;
     private LinearLayoutManager linearLayoutManager;
@@ -109,54 +106,12 @@ public class CompanyFragment extends Fragment {
     private final int GET_USER_MOD_COMPLETE = 104;
     private final int GET_MOD_DEPARTMENT_COMPLETE = 105;
     private boolean isOnline = false;
-
-    private BroadcastReceiver receiverSearch = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try {
-                ArrayList<TreeUserDTOTemp> arrayListSearch = new ArrayList<>();
-                String textSearch = intent.getStringExtra(Constant.KEY_INTENT_TEXT_SEARCH);
-
-                if (!TextUtils.isEmpty(textSearch.trim())) {
-                    mSharePersonContent.setVisibility(View.GONE);
-                    listCompany.setVisibility(View.GONE);
-                    rvSearch.setVisibility(View.VISIBLE);
-                    ArrayList<TreeUserDTOTemp> listTemp = getUser();
-
-                    for (TreeUserDTOTemp treeUserDTOTemp : listTemp) {
-                        if (treeUserDTOTemp.getName().toUpperCase().contains(textSearch.toUpperCase())
-                                || treeUserDTOTemp.getCellPhone().toUpperCase().contains(textSearch.toUpperCase())
-                                || treeUserDTOTemp.getCellPhone().toUpperCase().replace("-", "").contains(textSearch.toUpperCase())
-                                || treeUserDTOTemp.getCompanyPhone().toUpperCase().contains(textSearch.toUpperCase())
-                                || treeUserDTOTemp.getCompanyPhone().toUpperCase().replace("-", "").contains(textSearch.toUpperCase())) {
-                            arrayListSearch.add(treeUserDTOTemp);
-                        }
-                    }
-
-                    if (arrayListSearch.size() == 0) {
-                        tvNoData.setVisibility(View.VISIBLE);
-                        rvSearch.setVisibility(View.GONE);
-                    } else {
-                        adapter.updateListData(arrayListSearch);
-                        tvNoData.setVisibility(View.GONE);
-                    }
-                } else {
-                    mSharePersonContent.setVisibility(View.VISIBLE);
-                    listCompany.setVisibility(View.VISIBLE);
-                    rvSearch.setVisibility(View.GONE);
-                    tvNoData.setVisibility(View.GONE);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
-        intentFilterSearch = new IntentFilter(Constant.INTENT_FILTER_SEARCH);
     }
 
     @Override
@@ -173,25 +128,18 @@ public class CompanyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_company, container, false);
-        mSharePersonContent = rootView.findViewById(R.id.container);
-        listCompany = rootView.findViewById(R.id.listCompany);
-        adapter = new CompanySearchAdapter(getActivity(), new ArrayList<TreeUserDTOTemp>());
-        rvSearch = rootView.findViewById(R.id.rv_search);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        rvSearch.setLayoutManager(mLayoutManager);
-        rvSearch.setItemAnimator(new DefaultItemAnimator());
-        rvSearch.setAdapter(adapter);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
+        listCompany = rootView.findViewById(R.id.listCompany);
 
         tvNoData = rootView.findViewById(R.id.tv_no_data);
         progressBar = rootView.findViewById(R.id.progressBar);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        mSharePersonContent.setVisibility(View.VISIBLE);
+
         listCompany.setVisibility(View.VISIBLE);
 
-        rvSearch.setVisibility(View.GONE);
         tvNoData.setVisibility(View.GONE);
         CompanyFragment companyFragment = this;
 
@@ -200,19 +148,21 @@ public class CompanyFragment extends Fragment {
         listCompany.setLayoutManager(linearLayoutManager);
         mAdapter = new AdapterOrganizationCompanyTab(getActivity(), list, true, companyFragment);
         listCompany.setAdapter(mAdapter);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            list = new ArrayList<>();
+            mDepartmentList = new ArrayList<>();
+            listTemp = new ArrayList<>();
+            treeUserDTOsInit = new ArrayList<>();
+            temp = new ArrayList<>();
+            mPersonList = new ArrayList<>();
+            mAdapter = new AdapterOrganizationCompanyTab(getActivity(), list, true, companyFragment);
+            mAdapter.updateIsSearch(0);
+            listCompany.setAdapter(mAdapter);
+            getListAllUser();
+        });
+
         return rootView;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        getActivity().registerReceiver(receiverSearch, intentFilterSearch);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        getActivity().unregisterReceiver(receiverSearch);
     }
 
     public void initDB() {
@@ -236,6 +186,7 @@ public class CompanyFragment extends Fragment {
         listTemp = new ArrayList<>();
 
         new Thread(() -> {
+            swipeRefreshLayout.setRefreshing(false);
             listTemp = AllUserDBHelper.getUser_v2();
             mDepartmentList = DepartmentDBHelper.getDepartments_v2();
             if (listTemp == null) listTemp = new ArrayList<>();
@@ -261,12 +212,9 @@ public class CompanyFragment extends Fragment {
                     Calendar calendar = Calendar.getInstance();
                     new Prefs().setModdate_deppartment(TimeUtils.showTimeWithoutTimeZone(calendar.getTimeInMillis(), Statics.yyyy_MM_dd_HH_mm_ss_SSS));
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            DepartmentDBHelper.addDepartment(treeUserDTOs);
-                            mHandler.obtainMessage(GET_MOD_DEPARTMENT_COMPLETE, treeUserDTOs).sendToTarget();
-                        }
+                    new Thread(() -> {
+                        DepartmentDBHelper.addDepartment(treeUserDTOs);
+                        mHandler.obtainMessage(GET_MOD_DEPARTMENT_COMPLETE, treeUserDTOs).sendToTarget();
                     }).start();
                 } else {
                     if (!isBuild) {
@@ -293,12 +241,9 @@ public class CompanyFragment extends Fragment {
                     new Prefs().setModdate_deppartment(modDate);
                     Log.d(TAG, "getListDepartment\t\tonGetListDepartSuccess");
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            DepartmentDBHelper.addDepartment(treeUserDTOs);
-                            mHandler.obtainMessage(GET_DEPARTMENT_COMPLETE, treeUserDTOs).sendToTarget();
-                        }
+                    new Thread(() -> {
+                        DepartmentDBHelper.addDepartment(treeUserDTOs);
+                        mHandler.obtainMessage(GET_DEPARTMENT_COMPLETE, treeUserDTOs).sendToTarget();
                     }).start();
                 }
             }
@@ -319,6 +264,7 @@ public class CompanyFragment extends Fragment {
             @Override
             public void onGetListSuccess(final ArrayList<TreeUserDTOTemp> treeUserDTOs) {
                 if (treeUserDTOs != null && treeUserDTOs.size() > 0) {
+                    swipeRefreshLayout.setRefreshing(false);
                     Calendar calendar = Calendar.getInstance();
                     String modDate = TimeUtils.showTimeWithoutTimeZone(calendar.getTimeInMillis(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
                     new Prefs().setModDate(modDate);
@@ -335,6 +281,7 @@ public class CompanyFragment extends Fragment {
             @Override
             public void onGetListFail(ErrorDto dto) {
                 progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -361,6 +308,7 @@ public class CompanyFragment extends Fragment {
         HttpRequest.getInstance().GetListOrganize_Mod(moddate, new IGetListOrganization() {
             @Override
             public void onGetListSuccess(final ArrayList<TreeUserDTOTemp> treeUserDTOs) {
+                swipeRefreshLayout.setRefreshing(false);
                 if (treeUserDTOs != null && treeUserDTOs.size() > 0) {
                     Log.d(TAG, "getListAllUser_Mod onGetListSuccess");
                     Calendar calendar = Calendar.getInstance();
@@ -384,6 +332,7 @@ public class CompanyFragment extends Fragment {
 
             @Override
             public void onGetListFail(ErrorDto dto) {
+                swipeRefreshLayout.setRefreshing(false);
                 Log.d(TAG, "getListAllUser_Mod ErrorDto");
             }
         });
@@ -406,6 +355,7 @@ public class CompanyFragment extends Fragment {
             HttpRequest.getInstance().GetListOrganize_Mod(moddate, new IGetListOrganization() {
                 @Override
                 public void onGetListSuccess(final ArrayList<TreeUserDTOTemp> treeUserDTOs) {
+                    swipeRefreshLayout.setRefreshing(false);
                     if (treeUserDTOs != null && treeUserDTOs.size() > 0) {
                         Log.d("treeUserDTOs", treeUserDTOs.toString());
                         Calendar calendar = Calendar.getInstance();
@@ -429,6 +379,7 @@ public class CompanyFragment extends Fragment {
 
                 @Override
                 public void onGetListFail(ErrorDto dto) {
+                    swipeRefreshLayout.setRefreshing(false);
                     Log.d(TAG, "getListAllUser_Mod ErrorDto");
                 }
             });
@@ -488,11 +439,8 @@ public class CompanyFragment extends Fragment {
                         MultilLevelListviewFragment.instanceNew.initDB();
 
                 }
-                boolean flag = new Prefs().isDataComplete();
-                if (flag) {
-                    getListAllUser_Mod();
-                }
-                new Prefs().setDataComplete(true);
+
+                getListAllUser_Mod();
                 progressBar.setVisibility(View.GONE);
             } else if (msg.what == GET_DATA_OFFLINE_COMPLETE) {
                 boolean flag = new Prefs().isDataComplete();
@@ -550,12 +498,9 @@ public class CompanyFragment extends Fragment {
     private void saveDataToLocal(final List<FavoriteGroupDto> groups) {
         // Save data to local
         // sync data and store to local database
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // just test, not run now
-                FavoriteGroupDBHelper.addGroups(groups);
-            }
+        new Thread(() -> {
+            // just test, not run now
+            FavoriteGroupDBHelper.addGroups(groups);
         }).start();
     }
 
@@ -572,75 +517,27 @@ public class CompanyFragment extends Fragment {
         builder.setTitle(mContext.getResources().getString(R.string.choose_group));
 
         builder.setMultiChoiceItems(AlertDialogItems, null,
-                new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                        if (isChecked) {
-                            selectedItems.add(groups.get(indexSelected));
-                        } else if (selectedItems.contains(indexSelected)) {
-                            selectedItems.remove(indexSelected);
-                        }
+                (dialog, indexSelected, isChecked) -> {
+                    if (isChecked) {
+                        selectedItems.add(groups.get(indexSelected));
+                    } else if (selectedItems.contains(indexSelected)) {
+                        selectedItems.remove(indexSelected);
                     }
                 });
 
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                if (selectedItems.size() == 0) {
-                    String msg = mContext.getResources().getString(R.string.msg_select_item);
-                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-                } else {
-                    insertFavoriteUser(selectedItems);
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton(R.string.yes, (dialog, id) -> {
+            if (selectedItems.size() == 0) {
+                String msg = mContext.getResources().getString(R.string.msg_select_item);
+                Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+            } else {
                 dialog.dismiss();
             }
         });
 
+        builder.setNegativeButton(R.string.no, (dialog, id) -> dialog.dismiss());
+
         popup = builder.create();
         popup.show();
-    }
-
-    private ArrayList<TreeUserDTO> selectedPersonList;
-
-    private void insertFavoriteUser(ArrayList<FavoriteGroupDto> groups) {
-        for (FavoriteGroupDto group : groups) {
-            for (TreeUserDTO user : selectedPersonList) {
-                HttpRequest.getInstance().insertFavoriteUser(group.getGroupNo(), user.getId(), new BaseHTTPCallbackWithJson() {
-                    @Override
-                    public void onHTTPSuccess(String jsonData) {
-                        Toast.makeText(CrewChatApplication.getInstance(), "Insert to favorite successfully", Toast.LENGTH_LONG).show();
-                        // Ok, if tab multi level user is visible, let's add current user to it
-                        final FavoriteUserDto user = new Gson().fromJson(jsonData, FavoriteUserDto.class);
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                FavoriteUserDBHelper.addFavoriteUser(user);
-                            }
-                        }).start();
-
-                        // Find favorite tab if it is visible
-                        MultilLevelListviewFragment instance = MultilLevelListviewFragment.instance;
-                        if (instance != null && instance.isVisible()) {
-                            instance.addNewFavorite(user);
-                        }
-                    }
-
-                    @Override
-                    public void onHTTPFail(ErrorDto errorDto) {
-                        Toast.makeText(CrewChatApplication.getInstance(), "Insert to favorite failed", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-        }
     }
 
     private ArrayList<TreeUserDTO> temp = new ArrayList<>();
@@ -661,125 +558,74 @@ public class CompanyFragment extends Fragment {
     private ArrayList<TreeUserDTO> mPersonList = new ArrayList<>();
 
     private void buildTree(final ArrayList<TreeUserDTO> treeUserDTOs, final boolean isFromServer) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (treeUserDTOs != null) {
-                    if (isFromServer) {
-                        convertData(treeUserDTOs);
-                        mDepartmentList.clear();
-                        mDepartmentList.addAll(temp);
-                        new TinyDB(CrewChatApplication.getInstance()).putListObject("depart", mDepartmentList);
-                    } else {
-                        temp.clear();
-                        temp.addAll(treeUserDTOs);
-                    }
-                    for (TreeUserDTO treeUserDTO : temp) {
-                        if (treeUserDTO.getSubordinates() != null && treeUserDTO.getSubordinates().size() > 0) {
-                            treeUserDTO.setSubordinates(null);
-                        }
-                    }
-
-                    Collections.sort(temp, new Comparator<TreeUserDTO>() {
-                        @Override
-                        public int compare(TreeUserDTO r1, TreeUserDTO r2) {
-                            if (r1.getmSortNo() > r2.getmSortNo()) {
-                                return 1;
-                            } else if (r1.getmSortNo() == r2.getmSortNo()) {
-                                return 0;
-                            } else {
-                                return -1;
-                            }
-                        }
-                    });
-
-
-                    for (TreeUserDTOTemp treeUserDTOTemp : listTemp) {
-                        if (treeUserDTOTemp.getBelongs() != null) {
-                            for (BelongDepartmentDTO belong : treeUserDTOTemp.getBelongs()) {
-                                TreeUserDTO treeUserDTO = new TreeUserDTO(
-                                        treeUserDTOTemp.getName(),
-                                        treeUserDTOTemp.getNameEN(),
-                                        treeUserDTOTemp.getCellPhone(),
-                                        treeUserDTOTemp.getAvatarUrl(),
-                                        belong.getPositionName(),
-                                        treeUserDTOTemp.getType(),
-                                        treeUserDTOTemp.getStatus(),
-                                        treeUserDTOTemp.getUserNo(),
-                                        belong.getDepartNo(),
-                                        treeUserDTOTemp.getUserStatusString(),
-                                        belong.getPositionSortNo()
-
-                                );
-
-                                treeUserDTO.DutyName = belong.getDutyName();
-                                treeUserDTO.setCompanyNumber(treeUserDTOTemp.getCompanyPhone());
-                                if (treeUserDTO.isEnabled()) {
-                                    temp.add(treeUserDTO);
-                                }
-
-                            }
-                        }
-                    }
-                    mPersonList = new ArrayList<>(temp);
-
-                    TreeUserDTO dto = null;
-                    try {
-                        dto = Org_tree.buildTree(mPersonList);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    mHandler.obtainMessage(CREATE_TREE, dto).sendToTarget();
-
+        new Thread(() -> {
+            if (treeUserDTOs != null) {
+                if (isFromServer) {
+                    convertData(treeUserDTOs);
+                    mDepartmentList.clear();
+                    mDepartmentList.addAll(temp);
+                    new TinyDB(CrewChatApplication.getInstance()).putListObject("depart", mDepartmentList);
+                } else {
+                    temp.clear();
+                    temp.addAll(treeUserDTOs);
                 }
+
+                for (TreeUserDTO treeUserDTO : temp) {
+                    if (treeUserDTO.getSubordinates() != null && treeUserDTO.getSubordinates().size() > 0) {
+                        treeUserDTO.setSubordinates(null);
+                    }
+                }
+
+                Collections.sort(temp, (r1, r2) -> {
+                    if (r1.getmSortNo() > r2.getmSortNo()) {
+                        return 1;
+                    } else if (r1.getmSortNo() == r2.getmSortNo()) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                });
+
+
+                for (TreeUserDTOTemp treeUserDTOTemp : listTemp) {
+                    if (treeUserDTOTemp.getBelongs() != null) {
+                        for (BelongDepartmentDTO belong : treeUserDTOTemp.getBelongs()) {
+                            TreeUserDTO treeUserDTO = new TreeUserDTO(
+                                    treeUserDTOTemp.getName(),
+                                    treeUserDTOTemp.getNameEN(),
+                                    treeUserDTOTemp.getCellPhone(),
+                                    treeUserDTOTemp.getAvatarUrl(),
+                                    belong.getPositionName(),
+                                    treeUserDTOTemp.getType(),
+                                    treeUserDTOTemp.getStatus(),
+                                    treeUserDTOTemp.getUserNo(),
+                                    belong.getDepartNo(),
+                                    treeUserDTOTemp.getUserStatusString(),
+                                    belong.getPositionSortNo()
+
+                            );
+
+                            treeUserDTO.DutyName = belong.getDutyName();
+                            treeUserDTO.setCompanyNumber(treeUserDTOTemp.getCompanyPhone());
+                            if (treeUserDTO.isEnabled()) {
+                                temp.add(treeUserDTO);
+                            }
+
+                        }
+                    }
+                }
+                mPersonList = new ArrayList<>(temp);
+
+                TreeUserDTO dto = null;
+                try {
+                    dto = Org_tree.buildTree(mPersonList);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                mHandler.obtainMessage(CREATE_TREE, dto).sendToTarget();
             }
         }).start();
-    }
-
-    interface onStatus {
-        void finishStatus();
-    }
-
-    class getStatus extends AsyncTask<String, String, String> {
-        onStatus callback;
-
-        public getStatus(onStatus callback) {
-            this.callback = callback;
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            getStatusPersonal();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            callback.finishStatus();
-
-        }
-    }
-
-    void getStatusPersonal() {
-        Log.d(TAG, "getStatusPersonal start");
-        ArrayList<TreeUserDTOTemp> users = getUser();
-        Log.d(TAG, "HOST_STATUS:" + new Prefs().getHOST_STATUS() + " CompanyNo:" + new Prefs().getCompanyNo());
-        StatusDto status = new GetUserStatus().getStatusOfUsers(new Prefs().getHOST_STATUS(), new Prefs().getCompanyNo());
-        if (status != null) {
-            Log.d(TAG, "status != null");
-            for (TreeUserDTOTemp u : users) {
-                for (StatusItemDto sItem : status.getItems()) {
-                    if (sItem.getUserID().equals(u.getUserID())) {
-                        AllUserDBHelper.updateStatus(u.getDBId(), sItem.getStatus());
-                        break;
-                    }
-                }
-            }
-        } else {
-            Log.d(TAG, "status == null");
-        }
     }
 
     List<TreeUserDTO> lstCurrent = new ArrayList<>();

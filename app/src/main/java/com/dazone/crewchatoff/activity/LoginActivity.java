@@ -161,8 +161,8 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
             String[] str = dm.split("[.]");
             if (str[0] != null)
                 dm = str[0];
-        } else {
         }
+
         edtServer.setText(dm);
         edtPassword.setText(prefs.getPass());
         mBtnSignUp = findViewById(R.id.login_btn_signup);

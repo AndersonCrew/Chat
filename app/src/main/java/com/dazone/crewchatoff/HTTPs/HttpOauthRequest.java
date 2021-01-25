@@ -159,7 +159,7 @@ public class HttpOauthRequest {
 
     // Login function V2
     public void loginV2(final BaseHTTPCallBack baseHTTPCallBack, final String userID, final String password, String mobileOSVersion) {
-        final String url = CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.DOMAIN, "") + OAUTHUrls.URL_GET_LOGIN_NEW_API;
+        final String url = CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.DOMAIN, "") + OAUTHUrls.URL_GET_LOGIN_V3;
         Map<String, String> params = new HashMap<>();
         params.put("companyDomain", CrewChatApplication.getInstance().getPrefs().getStringValue(Constants.COMPANY_NAME, ""));
         params.put("languageCode", Locale.getDefault().getLanguage().toUpperCase());
