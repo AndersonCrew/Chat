@@ -264,7 +264,6 @@ public class CompanyFragment extends Fragment {
             @Override
             public void onGetListSuccess(final ArrayList<TreeUserDTOTemp> treeUserDTOs) {
                 if (treeUserDTOs != null && treeUserDTOs.size() > 0) {
-                    swipeRefreshLayout.setRefreshing(false);
                     Calendar calendar = Calendar.getInstance();
                     String modDate = TimeUtils.showTimeWithoutTimeZone(calendar.getTimeInMillis(), Statics.yyyy_MM_dd_HH_mm_ss_SSS);
                     new Prefs().setModDate(modDate);
@@ -416,6 +415,7 @@ public class CompanyFragment extends Fragment {
                 updateStatus(users);
             } else if (msg.what == CODE_BUILD_TREE_OFFLINE) {
                 isOnline = false;
+                swipeRefreshLayout.setRefreshing(false);
                 buildTree(mDepartmentList, isOnline);
             } else if (msg.what == GET_USER_COMPLETE) {
                 listTemp = (ArrayList<TreeUserDTOTemp>) msg.obj;
