@@ -207,21 +207,18 @@ public class AdapterOrganizationCompanyTab extends RecyclerView.Adapter<AdapterO
                     }
                 }
             });
-            item_org_wrapper.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    Log.d(TAG, "setOnLongClickListener");
-                    if (treeUserDTO.getType() == 2) {
-                        int myId = Utils.getCurrentId();
+            item_org_wrapper.setOnLongClickListener(view -> {
+                Log.d(TAG, "setOnLongClickListener");
+                if (treeUserDTO.getType() == 2) {
+                    int myId = Utils.getCurrentId();
 
-                        if (treeUserDTO.getId() != myId) {
-                            showMenu(treeUserDTO);
-                        }
-                    } else {
-                        showMenuDepartment(treeUserDTO, index);
+                    if (treeUserDTO.getId() != myId) {
+                        showMenu(treeUserDTO);
                     }
-                    return true;
+                } else {
+                    showMenuDepartment(treeUserDTO, index);
                 }
+                return true;
             });
 
             String nameString = treeUserDTO.getName();
@@ -512,37 +509,26 @@ public class AdapterOrganizationCompanyTab extends RecyclerView.Adapter<AdapterO
         builder.setTitle(mContext.getResources().getString(R.string.choose_group));
 
         builder.setMultiChoiceItems(AlertDialogItems, null,
-                new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                        if (isChecked) {
-                            selectedItems.add(groups.get(indexSelected));
-                        } else if (selectedItems.contains(indexSelected)) {
-                            selectedItems.remove(indexSelected);
-                        }
+                (dialog, indexSelected, isChecked) -> {
+                    if (isChecked) {
+                        selectedItems.add(groups.get(indexSelected));
+                    } else if (selectedItems.contains(indexSelected)) {
+                        selectedItems.remove(indexSelected);
                     }
                 });
 
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                if (selectedItems.size() == 0) {
-                    String msg = mContext.getResources().getString(R.string.msg_select_item);
-                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-                } else {
-                    // Send user to server
-                    insertFavoriteUser(selectedItems);
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton(R.string.yes, (dialog, id) -> {
+            if (selectedItems.size() == 0) {
+                String msg = mContext.getResources().getString(R.string.msg_select_item);
+                Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+            } else {
+                // Send user to server
+                insertFavoriteUser(selectedItems);
                 dialog.dismiss();
             }
         });
+
+        builder.setNegativeButton(R.string.no, (dialog, id) -> dialog.dismiss());
 
         popup = builder.create();
         popup.show();
@@ -607,24 +593,21 @@ public class AdapterOrganizationCompanyTab extends RecyclerView.Adapter<AdapterO
 
         builderSingle.setAdapter(
                 arrayAdapter,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            // Go to chatting1
-                            selectedPersonList = new ArrayList<>();
-                            getSelectedPersonList(userInfo);
-                            createChatRoom(selectedPersonList, null);
-                        } else if (which == 1) {
-                            // Get selected person list
-                            selectedPersonList = new ArrayList<>();
-                            getSelectedPersonList(userInfo);
+                (dialog, which) -> {
+                    if (which == 0) {
+                        // Go to chatting1
+                        selectedPersonList = new ArrayList<>();
+                        getSelectedPersonList(userInfo);
+                        createChatRoom(selectedPersonList, null);
+                    } else if (which == 1) {
+                        // Get selected person list
+                        selectedPersonList = new ArrayList<>();
+                        getSelectedPersonList(userInfo);
 
-                            // Show choose group
-                            chooseGroup();
-                            // Add to favorite
-                            // Refresh tab favorite if tab visible
-                        }
+                        // Show choose group
+                        chooseGroup();
+                        // Add to favorite
+                        // Refresh tab favorite if tab visible
                     }
                 });
 

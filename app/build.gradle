@@ -30,9 +30,9 @@ android {
     defaultConfig {
         applicationId "com.crewcloud.apps.crewchat"
         minSdkVersion 18
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 10421
-        versionName "3.8.9"
+        versionName "3.9.0"
         multiDexEnabled true
     }
 

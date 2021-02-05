@@ -93,36 +93,34 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
         headerBarBack = findViewById(R.id.backArrowImageViewFromMediaChooserHeaderView);
         image_option = findViewById(R.id.image_option);
         image_option.setVisibility(View.VISIBLE);
-        image_option.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(getApplicationContext(), v);
+        //Image Options
+        image_option.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(getApplicationContext(), v);
 
-                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-                setCheckMenu(popup);
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
+            popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+            setCheckMenu(popup);
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
 
-                        switch (item.getItemId()) {
-                            case R.id.Standard:
-                                prefs.putIntValue(CHOOSE_OPTION_IMAGE, Statics.STANDARD);
-                                return true;
-                            case R.id.High:
-                                prefs.putIntValue(CHOOSE_OPTION_IMAGE, Statics.HIGH);
-                                return true;
-                            case R.id.Original:
-                                prefs.putIntValue(CHOOSE_OPTION_IMAGE, Statics.ORIGINAL);
-                                return true;
-                            default:
-                                return false;
-
-                        }
+                    switch (item.getItemId()) {
+                        case R.id.Standard:
+                            prefs.putIntValue(CHOOSE_OPTION_IMAGE, Statics.STANDARD);
+                            return true;
+                        case R.id.High:
+                            prefs.putIntValue(CHOOSE_OPTION_IMAGE, Statics.HIGH);
+                            return true;
+                        case R.id.Original:
+                            prefs.putIntValue(CHOOSE_OPTION_IMAGE, Statics.ORIGINAL);
+                            return true;
+                        default:
+                            return false;
 
                     }
 
-                });
-                popup.show();//showing popup menu
-            }
+                }
+
+            });
+            popup.show();//showing popup menu
         });
         headerBarDone = findViewById(R.id.doneTextViewViewFromMediaChooserHeaderView);
         mTabHost = findViewById(android.R.id.tabhost);
@@ -182,57 +180,53 @@ public class BucketHomeFragmentActivity extends FragmentActivity {
             textView.setTextSize(convertDipToPixels(10));
         }
 
-        mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
+        mTabHost.setOnTabChangedListener(tabId -> {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            BucketImageFragment imageFragment = (BucketImageFragment) fragmentManager.findFragmentByTag("tab1");
+            BucketVideoFragment videoFragment = (BucketVideoFragment) fragmentManager.findFragmentByTag("tab2");
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            @Override
-            public void onTabChanged(String tabId) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                BucketImageFragment imageFragment = (BucketImageFragment) fragmentManager.findFragmentByTag("tab1");
-                BucketVideoFragment videoFragment = (BucketVideoFragment) fragmentManager.findFragmentByTag("tab2");
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            if (tabId.equalsIgnoreCase("tab1")) {
 
-                if (tabId.equalsIgnoreCase("tab1")) {
+                headerBarTitle.setText(getResources().getString(R.string.image));
+                headerBarCamera.setBackgroundResource(R.drawable.selector_camera_button);
+                headerBarCamera.setTag(getResources().getString(R.string.image));
 
-                    headerBarTitle.setText(getResources().getString(R.string.image));
-                    headerBarCamera.setBackgroundResource(R.drawable.selector_camera_button);
-                    headerBarCamera.setTag(getResources().getString(R.string.image));
-
-                    if (imageFragment == null) {
-                        BucketImageFragment newImageFragment = new BucketImageFragment();
-                        fragmentTransaction.add(R.id.realTabcontent, newImageFragment, "tab1");
-                    } else {
-                        if (videoFragment != null) {
-                            fragmentTransaction.hide(videoFragment);
-                        }
-
-                        fragmentTransaction.show(imageFragment);
-
+                if (imageFragment == null) {
+                    BucketImageFragment newImageFragment = new BucketImageFragment();
+                    fragmentTransaction.add(R.id.realTabcontent, newImageFragment, "tab1");
+                } else {
+                    if (videoFragment != null) {
+                        fragmentTransaction.hide(videoFragment);
                     }
-                    ((TextView) (mTabHost.getTabWidget().getChildAt(0).findViewById(android.R.id.title))).setTextColor(getResources().getColor(R.color.headerbar_selected_tab_color));
-                    ((TextView) (mTabHost.getTabWidget().getChildAt(1).findViewById(android.R.id.title))).setTextColor(Color.WHITE);
+
+                    fragmentTransaction.show(imageFragment);
+
+                }
+                ((TextView) (mTabHost.getTabWidget().getChildAt(0).findViewById(android.R.id.title))).setTextColor(getResources().getColor(R.color.headerbar_selected_tab_color));
+                ((TextView) (mTabHost.getTabWidget().getChildAt(1).findViewById(android.R.id.title))).setTextColor(Color.WHITE);
+
+            } else {
+                headerBarTitle.setText(getResources().getString(R.string.video));
+                headerBarCamera.setBackgroundResource(R.drawable.selector_video_button);
+                headerBarCamera.setTag(getResources().getString(R.string.video));
+                if (videoFragment == null) {
+                    final BucketVideoFragment newVideoFragment = new BucketVideoFragment();
+                    fragmentTransaction.add(R.id.realTabcontent, newVideoFragment, "tab2");
 
                 } else {
-                    headerBarTitle.setText(getResources().getString(R.string.video));
-                    headerBarCamera.setBackgroundResource(R.drawable.selector_video_button);
-                    headerBarCamera.setTag(getResources().getString(R.string.video));
-                    if (videoFragment == null) {
-                        final BucketVideoFragment newVideoFragment = new BucketVideoFragment();
-                        fragmentTransaction.add(R.id.realTabcontent, newVideoFragment, "tab2");
-
-                    } else {
-                        if (imageFragment != null) {
-                            fragmentTransaction.hide(imageFragment);
-                        }
-
-                        fragmentTransaction.show(videoFragment);
+                    if (imageFragment != null) {
+                        fragmentTransaction.hide(imageFragment);
                     }
 
-                    ((TextView) (mTabHost.getTabWidget().getChildAt(0).findViewById(android.R.id.title))).setTextColor(Color.WHITE);
-                    ((TextView) (mTabHost.getTabWidget().getChildAt(1).findViewById(android.R.id.title))).setTextColor(getResources().getColor(R.color.headerbar_selected_tab_color));
+                    fragmentTransaction.show(videoFragment);
                 }
 
-                fragmentTransaction.commit();
+                ((TextView) (mTabHost.getTabWidget().getChildAt(0).findViewById(android.R.id.title))).setTextColor(Color.WHITE);
+                ((TextView) (mTabHost.getTabWidget().getChildAt(1).findViewById(android.R.id.title))).setTextColor(getResources().getColor(R.color.headerbar_selected_tab_color));
             }
+
+            fragmentTransaction.commit();
         });
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) headerBarCamera.getLayoutParams();

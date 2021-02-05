@@ -113,6 +113,7 @@ public class ImageFragment extends Fragment {
             searchParams = "bucket_display_name = \"" + bucket + "\"";
 
             final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
+
             mImageCursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, searchParams, null, orderBy + " DESC");
 
             setAdapter(mImageCursor);

@@ -2,19 +2,12 @@ package com.dazone.crewchatoff.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -22,54 +15,40 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dazone.crewchatoff.HTTPs.GetUserStatus;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
 import com.dazone.crewchatoff.TestMultiLevelListview.MultilLevelListviewFragment;
 import com.dazone.crewchatoff.Tree.Dtos.TreeUserDTO;
 import com.dazone.crewchatoff.Tree.Org_tree;
 import com.dazone.crewchatoff.adapter.AdapterOrganizationCompanyTab;
-import com.dazone.crewchatoff.adapter.CompanySearchAdapter;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
 import com.dazone.crewchatoff.database.DepartmentDBHelper;
 import com.dazone.crewchatoff.database.FavoriteGroupDBHelper;
-import com.dazone.crewchatoff.database.FavoriteUserDBHelper;
 import com.dazone.crewchatoff.database.TinyDB;
 import com.dazone.crewchatoff.dto.BelongDepartmentDTO;
 import com.dazone.crewchatoff.dto.ErrorDto;
-import com.dazone.crewchatoff.dto.StatusDto;
-import com.dazone.crewchatoff.dto.StatusItemDto;
 import com.dazone.crewchatoff.dto.StatusViewDto;
 import com.dazone.crewchatoff.dto.TreeUserDTOTemp;
 import com.dazone.crewchatoff.dto.userfavorites.FavoriteGroupDto;
-import com.dazone.crewchatoff.dto.userfavorites.FavoriteUserDto;
 import com.dazone.crewchatoff.eventbus.NotifyAdapterOgr;
-import com.dazone.crewchatoff.interfaces.BaseHTTPCallbackWithJson;
 import com.dazone.crewchatoff.interfaces.IGetListDepart;
 import com.dazone.crewchatoff.interfaces.IGetListOrganization;
-import com.dazone.crewchatoff.interfaces.OnGetStatusCallback;
-import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.Prefs;
 import com.dazone.crewchatoff.utils.TimeUtils;
 import com.dazone.crewchatoff.utils.Utils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +66,6 @@ public class CompanyFragment extends Fragment {
     public void updateListStatus(ArrayList<TreeUserDTOTemp> lst) {
         mAdapter.updateListStatus(lst);
     }
-
     public void setContext(Activity context) {
         mContext = context;
     }
@@ -139,7 +117,6 @@ public class CompanyFragment extends Fragment {
         }
 
         listCompany.setVisibility(View.VISIBLE);
-
         tvNoData.setVisibility(View.GONE);
         CompanyFragment companyFragment = this;
 

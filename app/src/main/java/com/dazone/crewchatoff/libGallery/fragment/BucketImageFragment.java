@@ -109,6 +109,7 @@ public class BucketImageFragment extends Fragment {
                     BucketEntry bucketEntry = (BucketEntry) adapter.getItemAtPosition(position);
                     Intent selectImageIntent = new Intent(getActivity(), HomeFragmentActivity.class);
                     selectImageIntent.putExtra("name", bucketEntry.bucketName);
+                    selectImageIntent.putExtra("id", bucketEntry.bucketId);
                     selectImageIntent.putExtra("image", true);
                     selectImageIntent.putExtra("isFromBucket", true);
                     getActivity().startActivityForResult(selectImageIntent, MediaChooserConstants.BUCKET_SELECT_IMAGE_CODE);
