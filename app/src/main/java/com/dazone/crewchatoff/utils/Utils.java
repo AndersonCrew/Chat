@@ -845,12 +845,11 @@ public class Utils {
             domain = domains[0] + ".crewcloud.net";
         }
 
-        if (domain.startsWith("http://")) {
-            domain = domain.replace("http://", "");
-        }
-
-        if (domain.startsWith("https://")) {
-            domain = domain.replace("https://", "");
+        if(domain.startsWith("http://") || domain.startsWith("https://")){
+            CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.DOMAIN, domain);
+            String companyName = domain.startsWith("http://") ? domain.replace("http://", ""): domain.startsWith("https://") ? domain.replace("https://", ""): domain;
+            CrewChatApplication.getInstance().getPrefs().putStringValue(Constants.COMPANY_NAME, companyName);
+            return domain;
         }
 
         String head = CrewChatApplication.getInstance().getPrefs().getBooleanValue(Constants.HAS_SSL, false) ? "https://" : "http://";
