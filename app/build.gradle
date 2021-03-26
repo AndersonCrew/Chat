@@ -8,7 +8,6 @@ repositories {
     mavenCentral()
 }
 
-
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -32,7 +31,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 10421
-        versionName "3.9.0"
+        versionName "3.9.6"
         multiDexEnabled true
     }
 
@@ -43,6 +42,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "ENABLE_DEBUG", "false"
         }
+
         debug {
             buildConfigField "boolean", "ENABLE_DEBUG", "true"
         }
@@ -53,6 +53,10 @@ android {
     productFlavors {
         serverVersion {
             applicationId "com.crewcloud.apps.crewchat"
+            applicationVariants.each { variant ->
+                def file = variant.outputFile
+                variant.outputFile = new File(file.parent, file.name.replace(".apk", "_" + defaultConfig.versionName + ".apk"))
+            }
         }
 
         storeVersion {
@@ -63,7 +67,7 @@ android {
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
-    }  //
+    }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()

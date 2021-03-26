@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -51,7 +50,6 @@ import java.util.List;
 
 public class ChatViewImageActivity extends BaseActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     private ArrayList<ChattingDto> listData = new ArrayList<>();
-    private ViewImageAdapter adapter;
     private int position = 0;
     private RelativeLayout rlHeader;
     private LinearLayout lnFooter;
@@ -59,22 +57,10 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
     private boolean get_user_name_from_db = false;
 
     String TAG = "ChatViewImageActivity";
-    /**
-     * VIEW
-     */
     private ViewPager viewPager;
-    private ImageView btnBack;
-    private ImageView btnDownload;
-    private ImageView btnShare;
-    private ImageView btnDelete;
-    private ImageView btn_infor;
     private ImageView imgAvatar;
     private TextView tvUserName;
     private TextView tvDate;
-
-    /*
-    * HIDE AND SHOW MENU
-    * */
     private boolean isHide = false;
 
     @Override
@@ -82,6 +68,7 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_view_image);
         Log.d(TAG, "onCreate");
+
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
@@ -95,7 +82,6 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
                 initView();
                 initData();
                 loadData();
-
             }
         }
     }
@@ -104,20 +90,20 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
         viewPager = findViewById(R.id.view_pager);
         viewPager.addOnPageChangeListener(this);
 
-        btnBack = findViewById(R.id.btn_back);
+        ImageView btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(this);
 
-        btnDownload = findViewById(R.id.btn_download);
+        ImageView btnDownload = findViewById(R.id.btn_download);
         btnDownload.setOnClickListener(this);
 
-        btnShare = findViewById(R.id.btn_share);
+        ImageView btnShare = findViewById(R.id.btn_share);
         btnShare.setOnClickListener(this);
 
-        btnDelete = findViewById(R.id.btn_delete);
+        ImageView btnDelete = findViewById(R.id.btn_delete);
         btnDelete.setOnClickListener(this);
 
-        btn_infor = findViewById(R.id.btn_infor);
-        btn_infor.setOnClickListener(this);
+        ImageView btnInfo = findViewById(R.id.btn_infor);
+        btnInfo.setOnClickListener(this);
 
         imgAvatar = findViewById(R.id.img_avatar);
         tvUserName = findViewById(R.id.tv_username);
@@ -159,12 +145,7 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    OnClickViewCallback mCallback = new OnClickViewCallback() {
-        @Override
-        public void onClick() {
-            toggleMenu();
-        }
-    };
+    OnClickViewCallback mCallback = () -> toggleMenu();
 
     private void toggleMenu() {
         rlHeader.setTag("Header");
@@ -211,7 +192,7 @@ public class ChatViewImageActivity extends BaseActivity implements View.OnClickL
     }
 
     private void loadData() {
-        adapter = new ViewImageAdapter(this, listData, showFull, mCallback);
+        ViewImageAdapter adapter = new ViewImageAdapter(this, listData, showFull, mCallback);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
         try {

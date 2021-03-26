@@ -153,7 +153,6 @@ public class HttpOauthRequest {
                 Log.d(TAG, "updatePassword error");
                 callback.onFail();
             }//
-            //
         });
     }
 
