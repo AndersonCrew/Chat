@@ -40,6 +40,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -137,6 +138,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         }
     };
     int getUnReadCount;
+    private boolean hasLoaded = false;
 
     @Override
     public void bindData(final ChattingDto dto) {
@@ -155,6 +157,17 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
         chatting_imv.setOnLongClickListener(v -> {
             v.showContextMenu();
             return true;
+        });
+
+        chatting_imv.setOnClickListener(v -> {
+            try {
+                if(hasLoaded) {
+                    ChattingFragment.instance.ViewImageFull(dto);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         });
 
         // Calculate ratio
@@ -183,6 +196,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
 
         switch (dto.getmType()) {
             case Statics.CHATTING_VIEW_TYPE_SELECT_IMAGE:
+                hasLoaded = false;
                 chatting_imv.setImageBitmap(null);
                 chatting_imv.destroyDrawingCache();
                 String imagePath = dto.getAttachFilePath(); // photoFile is a File type.
@@ -221,7 +235,10 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 if (!dto.isSendTemp()) {
                     dto.setSendTemp(true);
                     ChattingFragment.instance.SendTo(dto, progressBarImageLoading);
-                } else progressBarImageLoading.setVisibility(View.GONE);
+                } else {
+                    progressBarImageLoading.setVisibility(View.GONE);
+                    hasLoaded = true;
+                }
 
 
                 if (oldPath == null || !oldPath.equals(newPath)) {
@@ -231,6 +248,7 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                 break;
 
             default:
+                hasLoaded = true;
                 chatting_imv.setImageBitmap(null);
                 chatting_imv.destroyDrawingCache();
 
@@ -273,14 +291,6 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                         ImageUtils.showImage(url, chatting_imv);
                     }
 
-                    chatting_imv.setOnClickListener(v -> {
-                        try {
-                            ChattingFragment.instance.ViewImageFull(dto);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                     ImageUtils.showImage("", chatting_imv);

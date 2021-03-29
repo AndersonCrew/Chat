@@ -235,7 +235,6 @@ class ChattingViewModel : BaseViewModel() {
                             dto.attachFilePath = chattingDto.attachFilePath
                             dto.attachFileSize = chattingDto.attachFileSize
                             dto.attachFileType = chattingDto.attachFileType
-                            dto.attachInfo = chattingDto.attachInfo
                             dto.positionUploadImage = chattingDto.positionUploadImage
                             dto.attachNo = attachNo
                             dto.setmType(chattingDto.getmType())

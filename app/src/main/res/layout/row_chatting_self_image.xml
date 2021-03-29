@@ -62,6 +62,7 @@
         <LinearLayout style="@style/lnl_chat_right_style">
 
             <RelativeLayout
+                android:id="@+id/llFrame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/dimen_45_90"
