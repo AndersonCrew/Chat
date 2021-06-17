@@ -254,14 +254,20 @@ public class Utils {
         String extension = MimeTypeMap.getFileExtensionFromUrl(uri.getPath());
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setTitle(name);
-        request.setDescription("Downloading" + name + " ...");
-        request.allowScanningByMediaScanner();
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name + extension);
-        DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        manager.enqueue(request);
+        try{
+            DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            Uri downloadUri = Uri.parse(url);
+            DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                    .setAllowedOverRoaming(false)
+                    .setTitle(name)
+                    .setMimeType(mimeType) // Your file type. You can use this code to download other file types also.
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name.toLowerCase());
+            dm.enqueue(request);
+        }catch (Exception e){
+            Toast.makeText(context, "Download failed.", Toast.LENGTH_SHORT).show();
+        }
 
     }
 

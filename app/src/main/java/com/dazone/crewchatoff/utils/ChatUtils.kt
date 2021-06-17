@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
+import java.io.OutputStream
 
 fun Activity.getRootView(): View {
     return findViewById<View>(android.R.id.content)

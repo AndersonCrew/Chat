@@ -85,7 +85,7 @@
     <string name="can_not_chat">Can not chat</string>
 
     <string name="download_file_error">Currently, the file is deleted on server</string>
-    <string name="notice_download">Are you download this file?</string>
+    <string name="notice_download">Do you want to download this file?</string>
 
     <string name="image">Image</string>
     <string name="video">Video</string>

@@ -62,6 +62,7 @@ public class Constant {
     public static final String INTENT_FILTER_CHAT_DELETE_USER = "INTENT_FILTER_CHAT_DELETE_USER";
     public static final String INTENT_FILTER_UPDATE_ROOM_NAME = "INTENT_FILTER_UPDATE_ROOM_NAME";
     public static final String INTENT_GOTO_UNREAD_ACTIVITY = "INTENT_GOTO_UNREAD_ACTIVITY";
+    public static final String INTENT_RECEIVING_MESSAGE = "INTENT_RECEIVING_MESSAGE";
 
 
     public static final String INTENT_FILTER_NOTIFY_ADAPTER = "INTENT_FILTER_NOTIFY_ADAPTER";

@@ -1,0 +1,274 @@
+<resources>
+    <string name="app_name">クルーチャット</string>
+
+    <string name="unknown">Unknown</string>
+    <!-- Back Exit app -->
+    <string name = "press_again_to_exit_message"> [戻る]ボタンをもう一度押すと終了します。</string>
+
+    <string name = "permission_denied"> アクセス拒否 </string>
+
+
+    <string name = "profile_label_name">名前</string>
+    <string name = "profile_label_sex">性別</string>
+    <string name = "profile_label_entrance_date">入社日</string>
+    <string name = "profile_label_birthday">誕生日</string>
+    <string name = "profile_label_belong"> Belong To Department </string>
+
+    <string name = "aaaa"> text example </string>
+    <string name = "login_password_change">パスワードの変更</string>
+    <string name = "navigation_drawer_open">ナビケイ線展開</string>
+    <string name = "navigation_drawer_close">ナビケイ線を閉じる</string>
+
+    <string name = "action_settings">設定</string>
+    <string name = "action_search">検索</string>
+    <string name = "action_status">状態</string>
+
+    <string name = "action_working">勤務中</string>
+    <string name = "action_away">アウェイ</string>
+    <string name = "action_resting">語フライ</string>
+    <string name = "action_work_outside">外勤</string>
+    <string name = "action_in_a_call">電話の</string>
+    <string name = "action_meeting">会議中</string>
+
+    <string name = "loading_title">ロード中... </string>
+    <string name = "loading_content">しばらくお待ちください</string>
+    <string name = "string_ok"> OK </string>
+    <string name = "no_connection_error">インターネット接続できないしました。</string>
+    <string name = "no_wifi_error"> Wifiや3Gオンしてください。</string>
+    <string name = "turn_wifi_on"> Wifiオン</string>
+    <string name = "string_cancel">キャンセル</string>
+
+    <string name = "string_server_site">団体（会社）名</string>
+
+    <string name = "login_username">個人ID </string>
+    <string name = "login_password">パスワード</string>
+    <string name = "login_login">ログイン</string>
+    <string name = "copy_right_string"> CopyRight©2016 Dazone Tech。、INC。</string>
+    <string name = "no_network_error">サーバーに接続できないしました。</string>
+    <string name = "string_wrong_server_site">サーバー接続リンクよくないしました。</string>
+    <string name = "login_empty_input">空になりません</string>
+    <string name = "string_error_code_2">ユーザー名合わない</string>
+    <string name = "string_error_code_3">パスワードが一致しません</string>
+    <string name = "string_error_code_4">を使用することができないアカウントです</string>
+    <string name = "string_error_code_5">アクセス拒否</string>
+    <string name = "string_error_code_9">エラーを検出できません</string>
+    <string name = "string_error_code_default">サーバーエラー</string>
+    <string name = "section_format"> Hello World from section：％1 $ d </string>
+    <string name = "chat_hint">テキストを入力</string>
+    <string name = "send">発送</string>
+
+
+    <string name = "string_take_photo">写真</string>
+    <string name = "string_get_from_gallery">アルバムから選択</string>
+    <string name = "imv_desc">画像の説明</string>
+
+    <string name = "wating_app_download">ファイルをダウンロードしています。しばらくお待ちください。</string>
+    <string name = "string_update_content_new">新しいバージョンが存在します。インストールしますか？</string>
+
+    <string name = "today">今日</string>
+    <string name = "yesterday">昨日</string>
+
+    <string name = "please_wait">しばらくお待ちください.... </string>
+
+    <string name = "yes">確認</string>
+    <string name = "no">キャンセル</string>
+
+    <string name = "group_list">グループの連絡先</string>
+    <string name = "add_user">連絡先の追加</string>
+    <string name = "remove_user">グループ出る</string>
+    <string name = "can_not_chat">チェトチンできません。</string>
+
+    <string name = "download_file_error">現在のサーバー上のファイルが存在しません。</string>
+    <string name = "notice_download">ファイルのダウンロードをしますか？</string>
+
+    <string name = "image">画像</string>
+    <string name = "video">動画</string>
+    <string name = "camera">カメラ</string>
+    <string name = "video_record">動画撮影</string>
+    <string name = "done">確認</string>
+    <string name = "images_tab">画像</string>
+    <string name = "videos_tab">動画</string>
+    <string name = "max_limit_file">上限</string>
+    <string name = "please_wait_text">しばらくお待ちください</string>
+    <string name = "refreshing">更新</string>
+    <string name = "file_size_exeeded">ファイルサイズが最大限界を超えました。</string>
+    <string name = "mb"> MB </string>
+    <string name = "please_select_file">ファイルを選択してください。</string>
+    <string name = "file">ファイル</string>
+    <string name = "files">ファイル</string>
+    <string name = "no_media_file_available">メディアファイルがありません。</string>
+
+    <string name = "pre_file_name"> DaZone _ </string>
+    <string name = "notification_file">ファイルを受け取った.... </string>
+    <string name = "notification_add_user">グループのアカウントを追加しました。</string>
+
+    <string name = "error_server">エラーが発生しました。グループいくことはできません。</string>
+
+    <string name = "description_back_space">戻る</string>
+    <string name = "description_cell"> Cell </string>
+    <string name = "emoji_no_recent">最近使用していない顔文字</string>
+
+    <string name = "settings_notification">通知設定</string>
+    <string name = "settings_notification_time">通知時間</string>
+    <string name = "settings_notification_sound">​​音</string>
+    <string name = "settings_notification_vibrate">振動</string>
+    <string name = "settings_notification_new_mail">通知設定</string>
+    <string name = "settings_notification_method">通知</string>
+    <string name = "settings_notification_disable_when_using_pc_version"> PC版会話するときに通知</string>
+
+    <string name = "settings_general">一般的な設定</string>
+    <string name = "logout">ログアウト</string>
+    <string name = "my_profile">私の情報</string>
+
+    <string name = "personal_id">ユーザーID </string>
+    <string name = "email">メール</string>
+    <string name = "company_name">会社名</string>
+    <string name = "phone_number">携帯電話</string>
+    <string name = "send_file">ファイル転送</string>
+    <string name = "chat_setting">チャットルーム設定</string>
+    <string name = "close">閉じる</string>
+    <string name = "contact">コンタクト</string>
+    <string name = "logout_confirm">ログアウトしますか？</string>
+    <string name = "logout_confirm_title">クルーチャット</string>
+    <string name = "attach_image"> Photo </string>
+    <string name = "attach_file"> File </string>
+
+    <string name = "room_name">チャットルームの名前を変更</string>
+    <string name = "room_open">チャットルームオープン</string>
+    <string name = "room_favorite">お気に入り登録</string>
+    <string name = "alarm_on">通知をオンに</string>
+    <string name = "alarm_off">通知をオフに</string>
+    <string name = "room_left">終了</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name = "room_rename">チャットルームの名前を変更</string>
+    <string name = "warning_change_title"> Please change room title string！</string>
+    <string name = "room_rename_note"> Please input room title do you want to change。</string>
+
+    <string name = "chatting">対話する</string>
+    <string name = "favorite_add">お気に入りに追加</string>
+    <string name = "room_remove_favorite">お気に入り解除</string>
+    <string name = "favorite_remove_failed"> Remove from favorite failed </string>
+    <string name = "view_profile">ユーザー情報</string>
+
+    <string name = "organization_expand_all">よく開く</string>
+    <string name = "organization_collapse_all">部門閉じる</string>
+    <string name = "organization_group_chat">グループの会話</string>
+    <string name = "organization_add_favorite">お気に入りに追加</string>
+
+    <string name = "favorite_add_success">お気に入りに追加しました</string>
+    <string name = "room_user_info_heading">チャットルームユーザ情報</string>
+
+
+    <string name = "sign_up_suggest">団体（会社）をお持ちのまだお持ちでないですか？</string>
+    <string name = "enter_your_email">メールアドレス</string>
+    <string name = "register">新しい団体生成</string>
+    <string name = "signup_note">入力したメールアドレスにクルークラウドに団体（会社）の生成を行うことができるリンクをお送りします。</string>
+    <string name = "note_heading">メールアドレスを入力してください。</string>
+    <string name = "title_sign_up_screen">団体（会社）の生成</string>
+    <string name = "choose_group"> Choose Groups </string>
+    <string name = "room_info_participant_count">%1$s participants </string>
+
+    <string name = "confirm">確認</string>
+    <string name = "cancel">キャンセル</string>
+    <string name = "group_name">グループ名</string>
+
+    <string name = "confirm_add_favorite">保存</string>
+    <string name = "group_name_add_favorite">新しいお気に入りグループの追加</string>
+
+    <string name = "open">を展開</string>
+    <string name = "download">保存</string>
+    <string name = "share">共有</string>
+    <string name = "registered_users">相手追加</string>
+    <string name = "modifying_group">グループ名の変更</string>
+    <string name = "delete_group">グループの削除</string>
+
+    <string name = "remove_from_favorite">お気に入り解除</string>
+    <string name = "open_chat_room">対話する</string>
+    <string name = "favorite_group_delete_warning">グループを削除しますか？グループの内容が削除されます</string>
+
+    <string name = "msg_select_item"> Please、select at least a group！</string>
+    <string name = "about_crewchat">クルーチャット情報</string>
+    <string name = "crewchat_version">クルーチャットバージョン</string>
+    <string name = "user_version">ユーザーバージョン</string>
+    <string name = "lastest_version">最新版</string>
+    <string name = "invited">さんが</string>
+    <string name = "gotogroup">様を招待しました。</string>
+    <string name = "has_left">様が私でした。</string>
+    <string name = "can_not_send_this_file"> Can not send file </string>
+    <string name = "cancel_invite">さんが</string>
+    <string name = "cancel_invite_2">様招待をキャンセルしました。</string>
+    <string name = "iv_file_box">イメージファイルボックス</string>
+    <string name = "no_data">データがありません</string>
+    <string name = "attach_file_box">添付ファイルボックス</string>
+    <string name = "copy">コピー</string>
+    <string name = "relay">伝達</string>
+    <string name = "to_me">私に</string>
+    <string name = "tab_1">組織図</string>
+    <string name = "tab_2">チャット</string>
+
+
+    <string name = "roomname">部屋の名前</string>
+    <string name = "type">部屋タイプ</string>
+    <string name = "create_new_room">新しい部屋を作成</string>
+
+
+    <string name = "thank_for_install">クルーチャットを設置していただきありがとうございます</string>
+    <string name = "crew_chat_is_a"> \ "クルーチャット\"は、​​企業のチャットプログラムとして組織\ nベースの部門や対人に意思疎通、情報共有と、\ nコラボレーションを目的とする業務用ソリューションです。</string>
+    <string name = "select_a_contact">組織図を使用して連絡先（部署や個人）を\ n選択します。</string>
+    <string name = "personal_office">個人オフィス\ "退席中の状態\"情報が\ n自動的に提供されます。</string>
+    <string name = "the_same_room">同一人たちとのチャットルームは継続されます。</string>
+    <string name = "various_multimedia">各種マルチメディアデータがアップロードダウンロードされます。</string>
+    <string name = "has_document">アップロードされたファイルのドキュメント管理機能があります。</string>
+    <string name = "the_convertsation">会話の内容EXPORTされます。</string>
+    <string name = "it_is_used">リアルタイムの業務報告、業務指示や業務コラボレーション用に使われます。</string>
+    <string name = "document_management">文書管理、データ管理サーバに使われます。</string>
+    <string name = "employees_are_at">従業員の不在の状態が一目で把握されて業務に役立ちます。</string>
+    <string name = "the_crew_chat_is_the_one">クルーチャットは団体（会社）のポータルシステムである\ nクルークラウドのモジュールの一つである</string>
+    <string name = "if_you_want_to_see">したがってタンチェ（会社）名を必要とし、\ n組織員を登録させて組織の構成をする必要があります\ nまだ団体（会社）をお持ちのない方は、以下を\ nクリックして登録してください。</string>
+    <string name = "create_a_new_group">新団体（会社）の生成</string>
+    <string name = "skip">スキップ</string>
+    <string name = "welcome_to_crewchat">クルーチャットに参加して歓迎します。</string>
+    <string name = "click_to_start_chat">新しいチャットを開始しましょう。 </string>
+    <string name = "insert_fail"> Insert fail </string>
+    <string name = "tv_type"> Type </string>
+    <string name = "tv_size"> Size </string>
+    <string name = "dimensions"> Dimensions </string>
+    <string name = "change_pass"> Change </string>
+    <string name = "create_chat_room">チャットルームの作成</string>
+    <string name = "old_pass">現在のパスワード</string>
+    <string name = "new_pass">新しいパスワード</string>
+    <string name = "confirm_pass">パスワードの確認</string>
+    <string name = "change_password">パスワードの変更</string>
+    <string name = "can_not_check_permission"> Can not check permission </string>
+    <string name = "logged">既にクルークラウドサービスにログイン中なのです。\ n位のアカウントにログインしますか？</string>
+    <string name = "autoLogin">自動ログイン</string>
+    <string name = "undefined">不明</string>
+    <string name = "speak_now"> Speak Now </string>
+    <string name = "press_hold"> Press and hold to send a voice clip </string>
+    <string name = "recording"> Recording </string>
+    <string name = "touch_to_record"> Touch to record </string>
+    <string name = "read_msg">開封確認</string>
+    <string name = "unread_msg">アン既読</string>
+    <string name = "settings_crew_chat">クルーチャット設定</string>
+    <string name = "enter_auto"> Enterキーメッセージの送信</string>
+    <string name = "screen_setting">画面の向き</string>
+    <string name = "automatic">自動</string>
+    <string name = "portrait">縦固定</string>
+    <string name = "landscape">横固定</string>
+    <string name = "settings_screen_method">画面設定</string>
+    <string name = "settings_chat_method">チャット設定</string>
+    <string name = "scr_rotation">画面の向き</string>
+    <string name = "friend_tab"> Friends </string>
+    <string name = "chat_list"> Chats </string>
+    <string name = "title_activity_share"> ShareActivity </string>
+    <string name = "standard_text">一般的な</string>
+    <string name = "hight_text">高画質</string>
+    <string name = "original_text">ソース</string>
+    <string name = "settings_notification_time_2"> *設定された時間だけの通知を受け取ることができます</string>
+    <string name = "settings_notification_time_value">通知時間の使用</string>
+    <string name = "company_phone">会社の連絡先</string>
+    <string name = "mailActivity_message_download_apk">インストールファイルをダウンロード中です。\ nしばらくお待ちください。</string>
+    <string name = "string_update_content">最新バージョンが存在します。最新バージョンにアップデートハシギルください</string>
+    <string name = "enter_v_duty">職責を表示</string>
+</resources>

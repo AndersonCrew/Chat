@@ -92,64 +92,58 @@ public class ChatRoomDBHelper {
     * This function to add one of message line
     * */
     public static boolean addChatRoom(ChattingDto dto) {
-        if (CrewChatApplication.CrewChatLocalDatabase) {
-            try {
-                ContentValues values = new ContentValues();
-                values.put(ROOM_TYPE, dto.getRoomType());
-                values.put(MAKE_USER_NO, dto.getMakeUserNo());
-                values.put(MOD_DATE, dto.getModdate());
-                int isOne = 0;
-                if (dto.isOne()) {
-                    isOne = 1;
-                }
-                values.put(IS_ONE, isOne);
-                String roomTitle = dto.getRoomTitle();
-                values.put(ROOM_TITLE, roomTitle);
-                values.put(LASTED_MSG, dto.getLastedMsg());
-                values.put(LASTED_MSG_DATE, dto.getLastedMsgDate());
-                values.put(LASTED_MSG_USER_NO, dto.getMsgUserNo());
-                values.put(LASTED_MSG_TYPE, dto.getLastedMsgType());
-                values.put(LASTED_MSG_ATTACH_TYPE, dto.getLastedMsgAttachType());
-                String userNos = TextUtils.join(",", dto.getUserNos());
-                values.put(USER_NOS, userNos);
-                values.put(WRITER_USER, dto.getWriterUser());
-                values.put(WRITER_USER_NO, dto.getWriterUserNo());
-                values.put(MESSAGE_NO, dto.getMessageNo());
-                values.put(USER_NO, dto.getUserNo());
-                values.put(MESSAGE, dto.getMessage());
-                values.put(TYPE, dto.getType());
-                values.put(ATTACH_NO, dto.getAttachNo());
-                values.put(REG_DATE, dto.getRegDate());
-                values.put(STR_REG_DATE, dto.getStrRegDate());
-                values.put(UNREAD_COUNT, dto.getUnReadCount());
-                int isCheck = 0;
-                if (dto.isCheckFromServer()) {
-                    isCheck = 1;
-                }
-                values.put(IS_CHECK_FROM_SERVER, isCheck);
-                values.put(ATTACH_FILE_NAME, dto.getAttachFileName());
-                values.put(ATTACH_FILE_TYPE, dto.getAttachFileType());
-                values.put(ATTACH_FILE_PATH, dto.getAttachFilePath());
-                values.put(ATTACH_FILE_SIZE, dto.getAttachFileSize());
-                int isFavorite = dto.isFavorite() ? 1 : 0;
-                values.put(IS_FAVORITE, isFavorite);
-                int isNotification = dto.isNotification() ? 1 : 0;
-                values.put(IS_NOTIFICATION, isNotification);
-
-                values.put(UNREAD_TOTAL_COUNT, dto.getUnreadTotalCount());
-                values.put(ROOM_NO, dto.getRoomNo());
-                ContentResolver resolver = CrewChatApplication.getInstance()
-                        .getApplicationContext().getContentResolver();
-                resolver.insert(AppContentProvider.GET_CHAT_ROOM_CONTENT_URI, values);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(ROOM_TYPE, dto.getRoomType());
+            values.put(MAKE_USER_NO, dto.getMakeUserNo());
+            values.put(MOD_DATE, dto.getModdate());
+            int isOne = 0;
+            if (dto.isOne()) {
+                isOne = 1;
             }
-        } else {
-            Log.d(TAG, "not addChatRoom because CrewChatLocalDatabase is false");
+            values.put(IS_ONE, isOne);
+            String roomTitle = dto.getRoomTitle();
+            values.put(ROOM_TITLE, roomTitle);
+            values.put(LASTED_MSG, dto.getLastedMsg());
+            values.put(LASTED_MSG_DATE, dto.getLastedMsgDate());
+            values.put(LASTED_MSG_USER_NO, dto.getMsgUserNo());
+            values.put(LASTED_MSG_TYPE, dto.getLastedMsgType());
+            values.put(LASTED_MSG_ATTACH_TYPE, dto.getLastedMsgAttachType());
+            String userNos = TextUtils.join(",", dto.getUserNos());
+            values.put(USER_NOS, userNos);
+            values.put(WRITER_USER, dto.getWriterUser());
+            values.put(WRITER_USER_NO, dto.getWriterUserNo());
+            values.put(MESSAGE_NO, dto.getMessageNo());
+            values.put(USER_NO, dto.getUserNo());
+            values.put(MESSAGE, dto.getMessage());
+            values.put(TYPE, dto.getType());
+            values.put(ATTACH_NO, dto.getAttachNo());
+            values.put(REG_DATE, dto.getRegDate());
+            values.put(STR_REG_DATE, dto.getStrRegDate());
+            values.put(UNREAD_COUNT, dto.getUnReadCount());
+            int isCheck = 0;
+            if (dto.isCheckFromServer()) {
+                isCheck = 1;
+            }
+            values.put(IS_CHECK_FROM_SERVER, isCheck);
+            values.put(ATTACH_FILE_NAME, dto.getAttachFileName());
+            values.put(ATTACH_FILE_TYPE, dto.getAttachFileType());
+            values.put(ATTACH_FILE_PATH, dto.getAttachFilePath());
+            values.put(ATTACH_FILE_SIZE, dto.getAttachFileSize());
+            int isFavorite = dto.isFavorite() ? 1 : 0;
+            values.put(IS_FAVORITE, isFavorite);
+            int isNotification = dto.isNotification() ? 1 : 0;
+            values.put(IS_NOTIFICATION, isNotification);
+
+            values.put(UNREAD_TOTAL_COUNT, dto.getUnreadTotalCount());
+            values.put(ROOM_NO, dto.getRoomNo());
+            ContentResolver resolver = CrewChatApplication.getInstance()
+                    .getApplicationContext().getContentResolver();
+            resolver.insert(AppContentProvider.GET_CHAT_ROOM_CONTENT_URI, values);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
         return false;
     }
 

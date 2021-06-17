@@ -569,8 +569,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
     }
 
     public void gotoOrganizationChart() {
-        boolean flag = new Prefs().isDataComplete();
-        if (flag && CompanyFragment.instance != null
+        if (CompanyFragment.instance != null
                 && CompanyFragment.instance.getSubordinates().size() > 0
                 && CompanyFragment.instance.isLoadTreeData()) {
             Intent intent = new Intent(MainActivity.this, NewOrganizationChart.class);

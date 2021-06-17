@@ -1,287 +1,270 @@
 <resources>
-    <string name="app_name">船员聊天</string>
-    <string name="unknown">不明</string>
+    <string name="app_name">船員聊天</string>
 
-    <!-- Back Exit app -->
-    <string name="press_again_to_exit_message">向后按键将关闭</string>
+    <string name="unknown">Unknown</string>
+    <string name ="press_again_to_exit_message">再次單擊"後退"按鈕以完成操作。</string>
 
-    <string name="permission_denied">权限被拒绝</string>
+    <string name ="permission_denied">權限被拒絕</string>
 
 
-    <!-- PROFILE -->
-    <string name="profile_label_name">名称</string>
-    <string name="profile_label_sex">性爱</string>
-    <string name="profile_label_entrance_date">就业日期</string>
-    <string name="profile_label_birthday">生日y</string>
-    <string name="profile_label_belong">所属部门</string>
+    <string name ="profile_label_name">名稱</string>
+    <string name ="profile_label_sex">性別</string>
+    <string name ="profile_label_entrance_date">僱用日期</string>
+    <string name ="profile_label_birthday">生日</string>
+    <string name ="profile_label_belong">屬於部門</string>
 
-    <string name="login_password_change">密码更改</string>
-    <string name="aaaa">文字范例</string>
+    <string name ="aaaa">文本示例</string>
+    <string name ="login_password_change">更改密碼</string>
+    <string name ="navigation_drawer_open">打開導航</string>
+    <string name ="navigation_drawer_close">關閉導航</string>
 
-    <string name="navigation_drawer_open">开启导航</string>
-    <string name="navigation_drawer_close">关闭导航</string>
+    <string name ="action_settings">設置</string>
+    <string name ="action_search">搜索</string>
+    <string name ="action_status">狀態</string>
 
-    <string name="action_settings">设定</string>
-    <string name="action_search">查询</string>
-    <string name="action_status">状态</string>
+    <string name ="action_working">工作</string>
+    <string name ="action_away">離開</string>
+    <string name ="action_resting">應用</string>
+    <string name ="action_work_outside">外部</string>
+    <string name ="action_in_a_call">通話中</string>
+    <string name ="action_meeting">正在開會</string>
 
-    <string name="action_working">出勤中</string>
-    <string name="action_away">离座中</string>
-    <string name="action_resting">申请</string>
-    <string name="action_work_outside">外勤</string>
-    <string name="action_in_a_call">电话中</string>
-    <string name="action_meeting">会议中</string>
+    <string name ="loading_title">正在加載... </string>
+    <string name ="loading_content">請稍候。</string>
+    <string name ="string_ok">確定</string>
+    <string name ="no_connection_error">互聯網連接失敗。</string>
+    <string name ="no_wifi_error">請打開Wifi或3G。</string>
+    <string name ="turn_wifi_on">打開Wi-Fi </string>
+    <string name ="string_cancel">取消</string>
 
-    <string name="loading_title">加载中</string>
-    <string name="loading_content">请稍等</string>
-    <string name="string_ok">OK</string>
-    <string name="no_connection_error">未连接网络</string>
-    <string name="no_wifi_error">请开启WIFI或3G</string>
-    <string name="turn_wifi_on">开启WIFI</string>
-    <string name="string_cancel">取消</string>
+    <string name ="string_server_site">組織（公司）ID </string>
+    <string name ="login_username">個人ID </string>
+    <string name ="login_password">密碼</string>
+    <string name ="login_login">登錄</string>
+    <string name ="copy_right_string">版權©2016 Dazone Tech。，INC。</string>
+    <string name ="no_network_error">無法連接到服務器。</string>
+    <string name ="string_wrong_server_site">服務器連接鏈接錯誤。</string>
+    <string name ="login_empty_input">不要為空</string>
+    <string name ="string_error_code_2">用戶ID不正確</string>
+    <string name ="string_error_code_3">密碼錯誤</string>
+    <string name ="string_error_code_4">此帳戶不可用</string>
+    <string name ="string_error_code_5">拒絕訪問</string>
+    <string name ="string_error_code_9">無法檢測到錯誤</string>
+    <string name ="string_error_code_default">服務器錯誤</string>
+    <string name ="section_format">來自"％1 $ d </string>"部分的" Hello World"
+    <string name ="chat_hint">輸入文本</string>
+    <string name ="send">發送</string>
 
-    <string name="string_server_site">团体（公司） ID</string>
+    <string name ="string_take_photo">拍照</string>
+    <string name ="string_get_from_gallery">從相冊中選擇</string>
+    <string name ="imv_desc">圖片描述</string>
 
-    <!-- Login screen -->
-    <string name="login_username">个人ID</string>
-    <string name="login_password">密码</string>
-    <string name="login_login">登录</string>
-    <string name="copy_right_string">CopyRight © 2016 Dazone Tech., INC.</string>
-    <string name="no_network_error">未连接到服务器</string>
-    <string name="string_wrong_server_site">服务器连接错误</string>
-    <string name="login_empty_input">不可空缺</string>
-    <string name="string_error_code_2">使用者ID错误</string>
-    <string name="string_error_code_3">密码错误</string>
-    <string name="string_error_code_4">帐户不可用</string>
-    <string name="string_error_code_5">访问鹿</string>
-    <string name="string_error_code_9">无法检测到错误</string>
-    <string name="string_error_code_default">服务器错误</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="chat_hint">Enter text</string>
-    <string name="send">发送</string>
+    <string name ="wating_app_download">文件正在下載。請稍候。</string>
+    <string name ="string_update_content_new">存在一個新版本。您要安裝嗎？</string>
 
-    <string name="string_take_photo">照相</string>
-    <string name="string_get_from_gallery">相册中选择</string>
-    <string name="imv_desc">图像说明</string>
+    <string name ="today">今天</string>
+    <string name ="yesterday">昨天</string>
 
-    //register 28/12/2015 update version
-    <string name="wating_app_download">文件下载中，请稍后</string>
-    <string name="string_update_content_new">有新版本，是否需要安装</string>
+    <string name ="please_wait">請稍候...... </string>
 
-    <string name="today">今天</string>
-    <string name="yesterday">昨天</string>
+    <string name ="yes">確定</string>
+    <string name ="no">取消</string>
 
-    <string name="please_wait">请稍等</string>
-    <string name="yes">确认</string>
-    <string name="no">取消</string>
+    <string name ="group_list">群組聯繫人</string>
+    <string name ="add_user">添加聯繫人</string>
+    <string name ="remove_user">離開小組</string>
+    <string name ="can_not_chat">無法聊天。</string>
 
-    <string name="group_list">群体对话状态</string>
-    <string name="add_user">增加对话对象</string>
-    <string name="send_file">文件传送</string>
-    <string name="chat_setting">聊天房设定</string>
-    <string name="close">关闭</string>
-    <string name="remove_user">退出群体</string>
-    <string name="can_not_chat">无法聊天</string>
+    <string name ="download_file_error">文件在當前服務器上不存在。</string>
+    <string name ="notice_download">您要下載文件嗎？</string>
 
-    <string name="download_file_error">本服务器不存在此文件</string>
-    <string name="notice_download">需要下载文件吗？</string>
+    <string name ="image">圖像</string>
+    <string name ="video">視頻</string>
+    <string name ="camera">相機</string>
+    <string name ="video_record">視頻錄製</string>
+    <string name ="done">確定</string>
+    <string name ="images_tab">圖像</string>
+    <string name ="videos_tab">視頻</string>
+    <string name ="max_limit_file">最大限制</string>
+    <string name ="please_wait_text">請稍等。</string>
+    <string name ="refreshing">刷新</string>
+    <string name ="file_size_exeeded">文件大小超出了最大值。</string>
+    <string name ="mb"> MB </string>
+    <string name ="please_select_file">請選擇一個文件。</string>
+    <string name ="file">文件</string>
+    <string name ="files">文件</string>
+    <string name ="no_media_file_available">沒有媒體文件。</string>
 
-    <string name="image">图像</string>
-    <string name="video">视频</string>
-    <string name="camera">摄像</string>
-    <string name="video_record">摄影</string>
-    <string name="done">确认</string>
-    <string name="images_tab">图像</string>
-    <string name="videos_tab">视频</string>
-    <string name="max_limit_file">最大限度</string>
-    <string name="please_wait_text">请稍等</string>
-    <string name="refreshing">新修改</string>
-    <string name="file_size_exeeded">文件大小超出最大限度</string>
-    <string name="mb">MB</string>
-    <string name="please_select_file">请选择文件</string>
-    <string name="file">文件</string>
-    <string name="files">文件</string>
-    <string name="no_media_file_available">没有视频文件</string>
+    <string name ="pre_file_name"> DaZone _ </string>
+    <string name ="notification_file">已收到文件。...</string>
+    <string name ="notification_add_user">已從組中添加帳戶</string>
 
-    <string name="pre_file_name">DAZONE_</string>
-    <string name="notification_file">已接收文件</string>
-    <string name="notification_add_user">群体增加账目</string>
+    <string name ="error_server">發生錯誤。無法離開該組。</string>
 
-    <string name="error_server">发生错误，无法退出群体</string>
+    <string name ="description_back_space">返回</string>
+    <string name ="description_cell">單元格</string>
+    <string name ="emoji_no_recent">最近未使用過的表情符號</string>
 
-    <string name="description_back_space">后退</string>
-    <string name="description_cell">细胞</string>
-    <string name="emoji_no_recent">最近未使用表情符号</string>
+    <string name ="settings_notification">通知設置</string>
+    <string name ="settings_notification_time">通知時間</string>
+    <string name ="settings_notification_sound">聲音</string>
+    <string name ="settings_notification_vibrate">振動</string>
+    <string name ="settings_notification_new_mail">通知設置</string>
+    <string name ="settings_notification_method">通知</string>
+    <string name ="settings_notification_disable_when_using_pc_version">與PC版本通話時通知</string>
 
-    <!-- notification settings -->
-    <string name="settings_notification">通知设置</string>
-    <string name="settings_notification_time">通知时间</string>
-    <string name="settings_notification_sound">声音</string>
-    <string name="settings_notification_vibrate">震动</string>
-    <string name="settings_notification_new_mail">通知设置</string>
-    <string name="settings_notification_method">通知</string>
-    <string name="settings_notification_disable_when_using_pc_version">PC版本对话时提示</string>
+    <string name ="settings_general">常規設置</string>
+    <string name ="logout">註銷</string>
+    <string name ="my_profile">我的信息</string>
 
-    <string name="settings_general">一般设定</string>
-    <string name="logout">注销</string>
-    <string name="my_profile">我的简历</string>
+    <string name ="personal_id">用戶ID </string>
+    <string name ="email">電子郵件</string>
+    <string name ="company_name">公司名稱</string>
+    <string name ="phone_number">手機</string>
+    <string name ="send_file">發送文件</string>
+    <string name ="chat_setting">聊天室設置</string>
+    <string name ="close">關閉</string>
+    <string name ="contact">聯繫人</string>
+    <string name ="logout_confirm">您要註銷嗎？</string>
+    <string name ="logout_confirm_title">乘員聊天</string>
+    <string name ="attach_image">照片</string>
+    <string name ="attach_file">文件</string>
 
-    <!-- Profile page -->
-    <string name="personal_id">个人编号</string>
-    <string name="email">电子邮件</string>
-    <string name="company_name">公司名称</string>
-    <string name="phone_number">手机</string>
+    <string name ="room_name">更改聊天室名稱</string>
+    <string name ="room_open">打開聊天室</string>
+    <string name ="room_favorite">註冊為收藏</string>
+    <string name ="alarm_on">打開通知</string>
+    <string name ="alarm_off">關閉通知</string>
+    <string name ="room_left">退出</string>
 
-    <string name="contact">Contact</string>
-    <string name="logout_confirm">是否退出？</string>
-    <string name="logout_confirm_title">是否退出？</string>
-    <!-- Attach Latest MSG-->
-    <string name="attach_image">照相</string>
-    <string name="attach_file">File</string>
+    <string name ="room_rename">更改聊天室名稱</string>
+    <string name ="warning_change_title">請更改會議室標題字符串！</string>
+    <string name ="room_rename_note">請輸入要更改的房間標題。</string>
 
-    <!-- room menu context -->
-    <string name="room_name">对话房间名字变更</string>
-    <string name="room_open">开启对话房间</string>
-    <string name="room_favorite">添加到收藏夹</string>
-    <string name="room_remove_favorite">收藏夹中删除</string>
-    <string name="alarm_on">开启提示</string>
-    <string name="alarm_off">关闭提示</string>
-    <string name="room_left">退出</string>
+    <string name ="chatting">聊天</string>
+    <string name ="favorite_add">添加收藏夾</string>
+    <string name ="room_remove_favorite">不喜歡</string>
+    <string name ="favorite_remove_failed">從收藏夾中刪除失敗</string>
+    <string name ="view_profile">用戶信息</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="room_rename">房间名字变更</string>
-    <string name="warning_change_title">请更改房间标题字符串 !</string>
-    <string name="room_rename_note">请输入房间名称是否要更改.</string>
+    <string name ="organization_expand_all">擴展部門</string>
+    <string name ="organization_collapse_all">折疊部門</string>
+    <string name ="organization_group_chat">群聊</string>
+    <string name ="organization_add_favorite">添加收藏夾</string>
 
-    <!-- Menu context -->
-    <string name="chatting">对话</string>
-    <string name="favorite_add">添加到收藏夹</string>
-    <string name="view_profile">使用者信息</string>
+    <string name ="favorite_add_success">已添加到收藏夾</string>
+    <string name ="room_user_info_heading">聊天室用戶信息</string>
 
-    <!-- menu context in organization -->
-    <string name="organization_expand_all">部门展开</string>
-    <string name="organization_collapse_all">部门折合</string>
-    <string name="organization_group_chat">群体对话</string>
-    <string name="organization_add_favorite">添加到收藏夹</string>
 
-    <!-- Add room to favorites message  -->
-    <string name="favorite_add_success">已添加到收藏夹</string>
-    <string name="favorite_remove_failed">从收藏夹中删除失败</string>
-    <!-- ROOM USER INFORMATION -->
-    <string name="room_user_info_heading">对话房人机信息</string>
+    <string name ="sign_up_suggest">還沒有組織（公司）ID？</string>
+    <string name ="enter_your_email">電子郵件地址</string>
+    <string name ="register">創建一個新組</string>
+    <string name ="signup_note">我們將向您發送一個鏈接，以在乘員雲上創建一個組（公司）到您輸入的電子郵件地址。</string>
+    <string name ="note_heading">請輸入您的電子郵件地址。</string>
+    <string name ="title_sign_up_screen">創建組（公司）</string>
+    <string name ="choose_group">選擇組</string>
+    <string name ="room_info_participant_count">%1$s 位參與者</string>
 
-    <!-- Login activity -->
-    <string name="sign_up_suggest">是否没有团体（公司）ID</string>
-    <!-- Signup activity -->
+    <string name ="confirm">確認</string>
+    <string name ="cancel">取消</string>
+    <string name ="group_name">組名</string>
 
-    <string name="enter_your_email">邮箱</string>
-    <string name="register">生成新团体</string>
-    <string name="note_heading">请输入邮箱</string>
-    <string name="signup_note">CREW云盘团体（公司）生成的链接发送到输入的邮箱</string>
-    <string name="title_sign_up_screen">团体（公司）生成</string>
-    <string name="choose_group">选择组</string>
-    <string name="room_info_participant_count">%1$s participants</string>
+    <string name ="confirm_add_favorite">保存</string>
+    <string name ="group_name_add_favorite">添加新的收藏夾</string>
 
-    <string name="confirm">确认</string>
-    <string name="cancel">取消</string>
-    <string name="group_name">群体名</string>
+    <string name ="open">打開</string>
+    <string name ="download">保存</string>
+    <string name ="share">分享</string>
+    <string name ="registered_users">添加對手</string>
+    <string name ="modifying_group">更改組名</string>
+    <string name ="delete_group">刪除組</string>
 
-    <string name="confirm_add_favorite">储存</string>
-    <string name="group_name_add_favorite">新收藏夹群体增加</string>
+    <string name ="remove_from_favorite">不喜歡</string>
+    <string name ="open_chat_room">聊天</string>
+    <string name ="favorite_group_delete_warning">您確定要刪除該組嗎？該組的內容將被刪除</string>
 
-    <!-- Menu context string -->
-    <string name="open">开门</string>
-    <string name="download">资料下载</string>
-    <string name="share">分享到</string>
-    <string name="registered_users">增加对方</string>
-    <string name="modifying_group">群体名称变更</string>
-    <string name="delete_group">删除群体</string>
+    <string name ="msg_select_item">請至少選擇一個組！</string>
+    <string name ="about_crewchat">聊天信息</string>
+    <string name ="crewchat_version">密碼版本</string>
+    <string name ="user_version">用戶版本</string>
+    <string name ="lastest_version">最新版本</string>
+    <string name ="invited">作者</string>
+    <string name ="gotogroup"> </string>
+    <string name ="has_left">已離開。</string>
+    <string name ="can_not_send_this_file">無法發送文件</string>
+    <string name ="cancel_invite">作者</string>
+    <string name ="cancel_invite_2">您的邀請已被取消。</string>
+    <string name ="iv_file_box">圖片文件框</string>
+    <string name ="no_data">沒有數據</string>
+    <string name ="attach_file_box">附加文件框</string>
+    <string name ="copy">複製</string>
+    <string name ="relay">轉發</string>
+    <string name ="to_me">給我</string>
+    <string name ="tab_1">組織結構圖</string>
+    <string name ="tab_2">聊天</string>
 
-    <string name="remove_from_favorite">从收藏夹列表中删除</string>
-    <string name="open_chat_room">打开聊天室</string>
-    <!-- Favorite tab -->
-    <string name="favorite_group_delete_warning">是否闪图群体？群体内容将删除</string>
 
-    <!-- -->
-    <string name="msg_select_item">Please, select at least a group !</string>
-    <string name="about_crewchat">CrewChat 信息</string>
-    <string name="crewchat_version">crew chat 版本</string>
-    <string name="user_version">使用者版本</string>
-    <string name="lastest_version">最新版本</string>
-    <string name="invited">您</string>
-    <string name="gotogroup">邀请了您</string>
-    <string name="has_left">您已退出</string>
-    <string name="can_not_send_this_file">Can not send file</string>
-    <string name="cancel_invite">您</string>
-    <string name="cancel_invite_2">您取消了邀请</string>
-    <string name="iv_file_box">图像文件BOX</string>
-    <string name="no_data">无数据</string>
-    <string name="attach_file_box">附件文件BOX</string>
-    <string name="copy">Copy</string>
-    <string name="relay">Relay</string>
-    <string name="to_me">To me</string>
-    <string name="tab_1">组织图</string>
-    <string name="tab_2">Chatting</string>
-    <string name="roomname">房间名</string>
-    <string name="type">房间类型</string>
-    <string name="create_new_room">生成新房间</string>
+    <string name ="roomname">房間名稱</string>
+    <string name ="type">房間類型</string>
+    <string name ="create_new_room">創建新房間</string>
 
-    <string name="thank_for_install">感谢您设置了 crew chat</string>
-    <string name="crew_chat_is_a">\"크루챗\"은 기업용 채팅프로그램으로써 조직도\n기반의 부서나 개인간에 의사소통, 정보공유와\n협업을 목적으로 하는 업무용 솔류션입니다.</string>
-    <string name="select_a_contact">通过组织图选择对话对象（部门或个人）\n</string>
-    <string name="personal_office">个人别办公室 \"空缺中状态\" \n信息自动提供</string>
-    <string name="the_same_room">与同一人们的对话房间继续</string>
-    <string name="various_multimedia">各种对媒体数据上传下载</string>
-    <string name="has_document">有对上传文件的文件管理功能</string>
-    <string name="the_convertsation">对话内容 EXPORT</string>
-    <string name="it_is_used">用于实时业务报告、业务指示及业务协助用</string>
-    <string name="document_management">用于文件管理、资料管理服务器</string>
-    <string name="employees_are_at">领导的在位状态一眼可看出，对业务有帮助</string>
-    <string name="the_crew_chat_is_the_one">crew chat是团体用门户系统即\ncrew云盘模块中的一个</string>
-    <string name="if_you_want_to_see">따라서 딴체(회사) 아이디가 필요하고\n조직원들을 가입시켜 조직도 구성을 해야합니다\n아직 단체(회사)아이디가 없으시면 아래를\n클릭하여 가입하십시오.</string>
-    <string name="create_a_new_group">生成新团体（公司）</string>
-    <string name="skip">跳过</string>
-    <string name="welcome_to_crewchat">欢迎加入crew chat</string>
-    <string name="click_to_start_chat">请开始新的聊天</string>
-    <string name="insert_fail">插入失败</string>
-    <string name="tv_type">型式</string>
-    <string name="tv_size">尺码</string>
-    <string name="dimensions">Dimensions</string>
-    <string name="change_pass">Change</string>
-    <string name="create_chat_room">生成聊天房</string>
-    <string name="old_pass">现在密码</string>
-    <string name="new_pass">新密码</string>
-    <string name="confirm_pass">确认密码</string>
-    <string name="change_password">密码变更</string>
-    <string name="can_not_check_permission">无法检查权限</string>
-    <string name="logged">已登入到CREW云服务。.\n位账户进行登入吗？</string>
-    <string name="autoLogin">自动登入</string>
-    <string name="undefined">未定义</string>
-    <string name="speak_now">现在说</string>
-    <string name="press_hold">按住以发送语音剪辑</string>
-    <string name="recording">录音中</string>
-    <string name="touch_to_record">触摸即可记录</string>
-    <string name="read_msg">已读</string>
-    <string name="unread_msg">未读</string>
-    <string name="settings_crew_chat">CrewChat 设置</string>
-    <string name="automatic">自动的</string>
-    <string name="portrait">人像</string>
-    <string name="landscape">风景</string>
-    <string name="enter_auto">按Enter发送</string>
-    <string name="settings_screen_method">屏幕设定</string>
-    <string name="screen_setting">屏幕旋转</string>
-    <string name="settings_chat_method">聊天设定</string>
-    <string name="scr_rotation">屏幕旋转</string>
-    <string name="title_activity_share">分享活动</string>
-    <string name="friend_tab">友人</string>
-    <string name="chat_list">聊天室</string>
-    <string name="standard_text">标配</string>
-    <string name="hight_text">高</string>
-    <string name="original_text">原版</string>
-    <string name="settings_notification_time_2">*您只能在设定的时间收到通知。</string>
-    <string name="settings_notification_time_value">Notification time</string>
-    <string name="company_phone">公司电话</string>
-    <string name="string_update_content">此新版本存在。 您要安装吗？</string>
-    <string name="mailActivity_message_download_apk">설치 파일을 다운로드 중입니다.\\n잠시만 기다려주세요.</string>
-    <string name="enter_v_duty">查看职务标题</string>
+
+    <string name ="thank_for_install">感謝您安裝CrewChat </string>
+    <string name ="crew_chat_is_a"> \" CrewChat \"是一個公司聊天程序。它是一種商業解決方案，用於基於組織結構圖在部門和個人之間進行交流，信息共享和協作\ n。</string>
+    <string name ="select_a_contact">通過組織結構圖選擇聯繫人（部門或個人）\ n。</string>
+    <string name ="personal_office">個人辦公室\"離開狀態\"信息\自動提供。</string>
+    <string name ="the_same_room">與同一個人的聊天室仍在繼續。</string>
+    <string name ="various_multimedia">各種多媒體數據將被上傳和下載。</string>
+    <string name ="has_document">有一個用於上傳文件的文檔管理功能。</string>
+    <string name ="the_convertsation">會話內容已導出。</string>
+    <string name ="it_is_used">它用於實時工作報告，工作單和業務協作。</string>
+    <string name ="document_management">用作文檔管理和數據管理服務器。</string>
+    <string name ="employees_are_at">員工的缺勤狀態一目了然，可為工作提供幫助。</string>
+    <string name ="the_crew_chat_is_the_one"> CrewChat是\ nCrewCloud（組織（公司）的門戶系統）的模塊之一。</string>
+    <string name ="if_you_want_to_see">因此，您需要一個Danche（公司）ID。\ n您必須加入組織的成員以形成組織結構圖\ n如果您還沒有組（公司）ID，\ n請單擊下面的加入。</string>
+    <string name ="create_a_new_group">創建新的網上論壇（公司）</string>
+    <string name ="skip">跳過</string>
+    <string name ="welcome_to_crewchat">歡迎加入Crewchat </string>
+    <string name ="click_to_start_chat">開始新的聊天。 </string>
+    <string name ="insert_fail">插入失敗</string>
+    <string name ="tv_type">類型</string>
+    <string name ="tv_size">大小</string>
+    <string name ="dimensions">尺寸</string>
+    <string name ="change_pass">更改</string>
+    <string name ="create_chat_room">創建聊天室</string>
+    <string name ="old_pass">當前密碼</string>
+    <string name ="new_pass">新密碼</string>
+    <string name ="confirm_pass">確認密碼</string>
+    <string name ="change_password">更改密碼</string>
+    <string name ="can_not_check_permission">無法檢查權限</string>
+    <string name ="logged">您已經登錄到CrewCloud服務。\ n您要使用上述帳戶登錄嗎？</string>
+    <string name ="autoLogin">自動登錄</string>
+    <string name ="undefined">未確認</string>
+    <string name ="speak_now">立即講話</string>
+    <string name ="press_hold">按住以發送語音剪輯</string>
+    <string name ="recording">錄製</string>
+    <string name ="touch_to_record">觸摸以記錄</string>
+    <string name ="read_msg">閱讀確認</string>
+    <string name ="unread_msg">未讀</string>
+    <string name ="settings_crew_chat">乘員聊天設置</string>
+    <string name ="enter_auto">使用Enter鍵發送消息</string>
+    <string name ="screen_setting">屏幕方向</string>
+    <string name ="automatic">自動</string>
+    <string name ="portrait">垂直固定</string>
+    <string name ="landscape">水平</string>
+    <string name ="settings_screen_method">屏幕設置</string>
+    <string name ="settings_chat_method">聊天設置</string>
+    <string name ="scr_rotation">屏幕方向</string>
+    <string name ="friend_tab">朋友</string>
+    <string name ="chat_list">聊天</string>
+    <string name ="title_activity_share"> ShareActivity </string>
+    <string name ="standard_text">正常</string>
+    <string name ="hight_text">高質量</string>
+    <string name ="original_text">原始</string>
+    <string name ="settings_notification_time_2"> *您只能在設置的時間接收通知</string>
+    <string name ="settings_notification_time_value">使用通知時間</string>
+    <string name ="company_phone">公司聯繫人</string>
+    <string name ="mailActivity_message_download_apk">正在下載安裝文件。\ n請稍候。</string>
+    <string name ="string_update_content">存在較新的版本。請更新到最新版本</string>
+    <string name ="enter_v_duty">顯示標題</string>
 </resources>

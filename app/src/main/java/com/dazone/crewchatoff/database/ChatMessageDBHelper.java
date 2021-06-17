@@ -165,84 +165,81 @@ public class ChatMessageDBHelper {
     }
 
     public static boolean addMessage(ChattingDto dto) {
-        if (CrewChatApplication.CrewChatLocalDatabase) {
-            try {
-                if (!isExist(dto)) {
-                    ContentValues values = new ContentValues();
-                    values.put(ROOM_NO, dto.getRoomNo());
-                    values.put(MAKE_USER_NO, dto.getMakeUserNo());
-                    values.put(MOD_DATE, dto.getModdate());
+        try {
+            if (!isExist(dto)) {
+                ContentValues values = new ContentValues();
+                values.put(ROOM_NO, dto.getRoomNo());
+                values.put(MAKE_USER_NO, dto.getMakeUserNo());
+                values.put(MOD_DATE, dto.getModdate());
 
-                    int isOne = 0;
-                    if (dto.isOne()) {
-                        isOne = 1;
-                    }
-
-                    values.put(IS_ONE, isOne);
-                    values.put(ROOM_TITLE, dto.getRoomTitle());
-                    values.put(LASTED_MSG, dto.getLastedMsg());
-                    values.put(LASTED_MSG_DATE, dto.getLastedMsgDate());
-
-                    if (dto.getUserNos() != null) {
-                        String userNos = TextUtils.join(",", dto.getUserNos());
-                        values.put(USER_NOS, userNos);
-                    }
-
-                    values.put(WRITER_USER, dto.getWriterUser());
-                    values.put(WRITER_USER_NO, dto.getWriterUserNo());
-                    values.put(MESSAGE_NO, dto.getMessageNo());
-                    values.put(USER_NO, dto.getUserNo());
-                    values.put(MESSAGE, dto.getMessage());
-                    values.put(TYPE, dto.getType());
-                    values.put(REG_DATE, dto.getRegDate());
-                    values.put(STR_REG_DATE, dto.getStrRegDate());
-                    values.put(UNREAD_COUNT, dto.getUnReadCount());
-
-                    int isCheck = 0;
-                    if (dto.isCheckFromServer()) {
-                        isCheck = 1;
-                    }
-
-                    values.put(IS_CHECK_FROM_SERVER, isCheck);
-
-                    // Get attach file info and store it to database
-                    AttachDTO attachInfo = dto.getAttachInfo();
-                    if (attachInfo != null) {
-                        values.put(ATTACH_NO, attachInfo.getAttachNo());
-                        String FILE_NAME = "";
-                        if (attachInfo.getFileName() == null || attachInfo.getFileName().length() == 0) {
-                            FILE_NAME = dto.getAttachFileName();
-                        } else {
-                            FILE_NAME = attachInfo.getFileName();
-                        }
-                        values.put(ATTACH_FILE_NAME, FILE_NAME);
-                        values.put(ATTACH_FILE_TYPE, attachInfo.getType());
-                        values.put(ATTACH_FILE_PATH, attachInfo.getFullPath());
-                        values.put(ATTACH_FILE_SIZE, attachInfo.getSize());
-
-                    } else {
-                        values.put(ATTACH_NO, dto.getAttachNo());
-                        values.put(ATTACH_FILE_NAME, dto.getAttachFileName());
-                        values.put(ATTACH_FILE_TYPE, dto.getAttachFileType());
-                        values.put(ATTACH_FILE_PATH, dto.getAttachFilePath());
-                        values.put(ATTACH_FILE_SIZE, dto.getAttachFileSize());
-                    }
-
-                    values.put(UNREAD_TOTAL_COUNT, dto.getUnreadTotalCount());
-
-                    ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
-                    resolver.insert(AppContentProvider.GET_MESSAGE_CONTENT_URI, values);
-                } else {
-                    updateUnReadCount(dto);
+                int isOne = 0;
+                if (dto.isOne()) {
+                    isOne = 1;
                 }
 
-                // else maybe update data
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
+                values.put(IS_ONE, isOne);
+                values.put(ROOM_TITLE, dto.getRoomTitle());
+                values.put(LASTED_MSG, dto.getLastedMsg());
+                values.put(LASTED_MSG_DATE, dto.getLastedMsgDate());
+
+                if (dto.getUserNos() != null) {
+                    String userNos = TextUtils.join(",", dto.getUserNos());
+                    values.put(USER_NOS, userNos);
+                }
+
+                values.put(WRITER_USER, dto.getWriterUser());
+                values.put(WRITER_USER_NO, dto.getWriterUserNo());
+                values.put(MESSAGE_NO, dto.getMessageNo());
+                values.put(USER_NO, dto.getUserNo());
+                values.put(MESSAGE, dto.getMessage());
+                values.put(TYPE, dto.getType());
+                values.put(REG_DATE, dto.getRegDate());
+                values.put(STR_REG_DATE, dto.getStrRegDate());
+                values.put(UNREAD_COUNT, dto.getUnReadCount());
+
+                int isCheck = 0;
+                if (dto.isCheckFromServer()) {
+                    isCheck = 1;
+                }
+
+                values.put(IS_CHECK_FROM_SERVER, isCheck);
+
+                // Get attach file info and store it to database
+                AttachDTO attachInfo = dto.getAttachInfo();
+                if (attachInfo != null) {
+                    values.put(ATTACH_NO, attachInfo.getAttachNo());
+                    String FILE_NAME = "";
+                    if (attachInfo.getFileName() == null || attachInfo.getFileName().length() == 0) {
+                        FILE_NAME = dto.getAttachFileName();
+                    } else {
+                        FILE_NAME = attachInfo.getFileName();
+                    }
+                    values.put(ATTACH_FILE_NAME, FILE_NAME);
+                    values.put(ATTACH_FILE_TYPE, attachInfo.getType());
+                    values.put(ATTACH_FILE_PATH, attachInfo.getFullPath());
+                    values.put(ATTACH_FILE_SIZE, attachInfo.getSize());
+
+                } else {
+                    values.put(ATTACH_NO, dto.getAttachNo());
+                    values.put(ATTACH_FILE_NAME, dto.getAttachFileName());
+                    values.put(ATTACH_FILE_TYPE, dto.getAttachFileType());
+                    values.put(ATTACH_FILE_PATH, dto.getAttachFilePath());
+                    values.put(ATTACH_FILE_SIZE, dto.getAttachFileSize());
+                }
+
+                values.put(UNREAD_TOTAL_COUNT, dto.getUnreadTotalCount());
+
+                ContentResolver resolver = CrewChatApplication.getInstance().getApplicationContext().getContentResolver();
+                resolver.insert(AppContentProvider.GET_MESSAGE_CONTENT_URI, values);
+            } else {
+                updateUnReadCount(dto);
             }
-        } else {
-            Log.d(TAG, "not addMessage because CrewChatLocalDatabase is false");
+
+            // else maybe update data
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
 
         return false;

@@ -996,7 +996,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         super.onPause();
         isVisible = false;
         isActive = false;
-        unregisterGCMReceiver();
         CrewChatApplication.currentRoomNo = 0;
 
         if (!TextUtils.isEmpty(view.edt_comment.getText())) {
@@ -1073,7 +1072,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
 
     @Subscribe
     public void receiveMessage(final ReceiveMessage message) {
-        mActivity.runOnUiThread(() -> processReceivingMessage(message.getChattingDto()));
+        //mActivity.runOnUiThread(() -> processReceivingMessage(message.getChattingDto()));
     }
 
     private BroadcastReceiver mReceiverNewAssignTask = new BroadcastReceiver() {
@@ -1119,6 +1118,11 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        } else if(intent.getAction().equals(Statics.ACTION_RECEIVER_NOTIFICATION)) {
+            if (intent != null) {
+               ChattingDto dto = (ChattingDto) intent.getSerializableExtra(Statics.CHATTING_DTO);
+               processReceivingMessage(dto);
             }
         }
     }

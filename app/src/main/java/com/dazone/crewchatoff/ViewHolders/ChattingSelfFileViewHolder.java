@@ -124,7 +124,7 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
         getUnReadCount = dto.getUnReadCount();
         long regDate = new Date(TimeUtils.getTime(dto.getRegDate())).getTime();
         tvFileDate.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), regDate, 0));
-
+        attachDTOTemp = dto.getAttachInfo();
 
         if (dto.getmType() == Statics.CHATTING_VIEW_TYPE_SELECT_FILE) {
             fileName = dto.getAttachFileName();
@@ -161,7 +161,6 @@ public class ChattingSelfFileViewHolder extends BaseChattingHolder implements Vi
             });
 
             linearLayout.setOnLongClickListener(view -> {
-                attachDTOTemp = dto.getAttachInfo();
                 view.showContextMenu();
                 return true;
             });

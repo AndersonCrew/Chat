@@ -206,6 +206,12 @@ public class GcmIntentService extends IntentService {
                     chattingDto.setLastedMsgDate(bundleDto.getRegDate());
 
                     new Thread(() -> {
+                        Intent intent = new Intent(Statics.ACTION_RECEIVER_NOTIFICATION);
+                        intent.putExtra(Statics.GCM_DATA_NOTIFICATOON, new Gson().toJson(chattingDto));
+                        intent.putExtra(Statics.GCM_NOTIFY, true);
+                        intent.putExtra(Statics.CHATTING_DTO, chattingDto);
+                        sendBroadcast(intent);
+
                         ChatRoomDBHelper.updateUnreadTotalCountChatRoom(roomNo, unreadCount);
                         ChatRoomDBHelper.updateChatRoom(chattingDto.getRoomNo(), chattingDto.getLastedMsg(), chattingDto.getLastedMsgType(), chattingDto.getLastedMsgAttachType(), chattingDto.getLastedMsgDate(), chattingDto.getUnreadTotalCount(), chattingDto.getUnReadCount(), chattingDto.getWriterUserNo());
                     }).start();
@@ -246,9 +252,6 @@ public class GcmIntentService extends IntentService {
                             }
                         }
                     }
-
-                    // Just send notification
-                    sendBroadcastToActivity(chattingDto, true);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -599,7 +602,6 @@ public class GcmIntentService extends IntentService {
                 notification.tickerText = getTickerText(unReadCount);
                 mNotificationManager.notify((int) roomNo, mBuilder.build());
                 startForeground(1, notification);
-
             }
         }
 
@@ -625,9 +627,10 @@ public class GcmIntentService extends IntentService {
         Intent intent = new Intent(Statics.ACTION_RECEIVER_NOTIFICATION);
         intent.putExtra(Statics.GCM_DATA_NOTIFICATOON, new Gson().toJson(dto));
         intent.putExtra(Statics.GCM_NOTIFY, isNotify);
+        intent.putExtra(Statics.CHATTING_DTO, dto);
         sendBroadcast(intent);
         Log.d(TAG, "sendBroadcastToActivity ACTION_RECEIVER_NOTIFICATION");
-        EventBus.getDefault().post(new ReceiveMessage(dto));
+        //EventBus.getDefault().post(new ReceiveMessage(dto));
     }
 
     public Bitmap getBitmapFromURL(String strURL) {
