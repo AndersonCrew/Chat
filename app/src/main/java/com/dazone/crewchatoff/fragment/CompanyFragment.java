@@ -62,8 +62,11 @@ public class CompanyFragment extends Fragment {
     private RecyclerView listCompany;
     private ArrayList<TreeUserDTOTemp> listTemp;
     private int CODE_BUILD_TREE_OFFLINE = 5;
+    private ArrayList<TreeUserDTOTemp> currentListStatusUser = new ArrayList<>();
 
     public void updateListStatus(ArrayList<TreeUserDTOTemp> lst) {
+        currentListStatusUser.clear();
+        currentListStatusUser.addAll(lst);
         mAdapter.updateListStatus(lst);
     }
     public void setContext(Activity context) {
@@ -439,6 +442,10 @@ public class CompanyFragment extends Fragment {
 
                 getListAllUser_Mod();
                 progressBar.setVisibility(View.GONE);
+
+                if(currentListStatusUser.size() > 0) {
+                    mAdapter.updateListStatus(currentListStatusUser);
+                }
             } else if (msg.what == GET_DATA_OFFLINE_COMPLETE) {
                 boolean flag = new Prefs().isDataComplete();
                 if (listTemp != null && listTemp.size() > 0 && mDepartmentList != null && mDepartmentList.size() > 0 && flag) {

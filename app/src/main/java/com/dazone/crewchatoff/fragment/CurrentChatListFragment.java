@@ -713,6 +713,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
                     RecentFavoriteFragment.instance.updateSTT(listOfUsers);
                 }
             }
+
             if (CompanyFragment.instance != null) {
                 CompanyFragment.instance.updateListStatus(listOfUsers);
             }
