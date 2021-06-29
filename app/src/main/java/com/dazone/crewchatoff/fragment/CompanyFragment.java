@@ -90,12 +90,38 @@ public class CompanyFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
+        initDB();
+    }
+
+    private boolean hasPause = false;
+    private boolean hasInitCurrentChatListFragment = false;
+    @Override
+    public void onPause() {
+        super.onPause();
+        hasPause = true;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initDB();
+        if(hasPause) {
+            hasPause = false;
+            refreshDataUser();
+        }
+    }
+
+    private void refreshDataUser() {
+        swipeRefreshLayout.setRefreshing(true);
+        list = new ArrayList<>();
+        mDepartmentList = new ArrayList<>();
+        listTemp = new ArrayList<>();
+        treeUserDTOsInit = new ArrayList<>();
+        temp = new ArrayList<>();
+        mPersonList = new ArrayList<>();
+        mAdapter = new AdapterOrganizationCompanyTab(getActivity(), list, true, this);
+        mAdapter.updateIsSearch(0);
+        listCompany.setAdapter(mAdapter);
+        getListAllUser();
     }
 
     public void scrollToEndList(int size) {
@@ -127,16 +153,7 @@ public class CompanyFragment extends Fragment {
         listCompany.setAdapter(mAdapter);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            list = new ArrayList<>();
-            mDepartmentList = new ArrayList<>();
-            listTemp = new ArrayList<>();
-            treeUserDTOsInit = new ArrayList<>();
-            temp = new ArrayList<>();
-            mPersonList = new ArrayList<>();
-            mAdapter = new AdapterOrganizationCompanyTab(getActivity(), list, true, companyFragment);
-            mAdapter.updateIsSearch(0);
-            listCompany.setAdapter(mAdapter);
-            getListAllUser();
+           refreshDataUser();
         });
 
         return rootView;
@@ -406,8 +423,11 @@ public class CompanyFragment extends Fragment {
                     list = dto.getSubordinates();
                     mAdapter.updateList(list);
                     isLoad = true;
-                    if (CurrentChatListFragment.fragment != null)
+                    if (CurrentChatListFragment.fragment != null && !hasInitCurrentChatListFragment) {
+                        hasInitCurrentChatListFragment = true;
                         CurrentChatListFragment.fragment.init();
+                    }
+
 
                     if (RecentFavoriteFragment.instance != null)
                         RecentFavoriteFragment.instance.init();

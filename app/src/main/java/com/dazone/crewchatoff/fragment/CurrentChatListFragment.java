@@ -113,9 +113,7 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         if (listOfUsers != null && listOfUsers.size() > 0) {
             treeUserDTOTempList = listOfUsers;
             getDataFromClient(listOfUsers);
-            getUserStatus();
         }
-
     }
 
     void showLoading() {
