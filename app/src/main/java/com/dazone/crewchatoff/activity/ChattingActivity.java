@@ -135,6 +135,15 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            roomNo = bundle.getLong(Constant.KEY_INTENT_ROOM_NO, 0);
+            getChatRoomInfo();
+            fragment = new ChattingFragment().newInstance(roomNo, userNos, this);
+            Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
+        }
+
         instance = this;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -201,10 +210,6 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
             }
             setupTitleRoom(mDto.getUserNos(), roomTitle, subTitle);
         }
-
-        if (!isFinishing()) {
-            addFragment();
-        }
     }
 
     /**
@@ -234,17 +239,12 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
         }
     }
 
-    private boolean hasSendActionShare = false;
 
     public void setUpActioneSend() {
-        if (typeShare != null && mSelectedImage.size() > 0 && !hasSendActionShare) {
-            hasSendActionShare = true;
+        if (typeShare != null && mSelectedImage.size() > 0) {
             handleActionSend(typeShare, mSelectedImage);
             typeShare = null;
             mSelectedImage.clear();
-            MainActivity.imageUri = null;
-            MainActivity.type = null;
-            MainActivity.mSelectedImage.clear();
         }
     }
 
@@ -341,27 +341,11 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            roomNo = bundle.getLong(Constant.KEY_INTENT_ROOM_NO, 0);
-            getChatRoomInfo();
-            fragment = new ChattingFragment().newInstance(roomNo, userNos, this);
-            Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         instance = null;
         this.unregisterReceiver(imageBroadcastReceiver);
         ChattingFragment.instance = null;
-    }
-
-    private void addFragment() {
-        fragment = new ChattingFragment().newInstance(roomNo, userNos, this);
-        Utils.addFragmentToActivity(getSupportFragmentManager(), fragment, R.id.content_base_single_activity, false, fragment.getClass().getSimpleName());
     }
 
     @Override
@@ -593,36 +577,12 @@ public class ChattingActivity extends BaseSingleStatusActivity implements View.O
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                backToListChat();
+                onBackPressed();
                 break;
         }
         return true;
     }
 
-    @Override
-    public void onBackPressed() {
-        backToListChat();
-    }
-
-    private void backToListChat() {
-        if (ChattingFragment.instance != null) {
-            int i = ChattingFragment.instance.checkBack();
-            if (i != 0) {
-                ChattingFragment.instance.hidden(i);
-            } else {
-                if (MainActivity.active) {
-                    finish();
-                } else {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        } else {
-            finish();
-        }
-    }
 
     @Override
     public void onClick(View v) {

@@ -1,5 +1,6 @@
 package com.dazone.crewchatoff.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -53,30 +54,22 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
     private int myId;
     public boolean isFirstTime = true;
 
+    public CurrentChatListFragment() {
+
+    }
+
+
+    @SuppressLint("ValidFragment")
+    public CurrentChatListFragment(CurrentChatListFragment.OnContextMenuSelect callback) {
+        this.mOnContextMenuSelect = callback;
+    }
     private void registerReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Statics.ACTION_SHOW_SEARCH_INPUT_IN_CURRENT_CHAT);
         filter.addAction(Statics.ACTION_HIDE_SEARCH_INPUT_IN_CURRENT_CHAT);
 
-        IntentFilter filterScreen = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        getActivity().registerReceiver(mScreenReceiver, filterScreen);
-
         getActivity().registerReceiver(mReceiverShowSearchInput, filter);
     }
-
-    private boolean isScreenOff;
-    private BroadcastReceiver mScreenReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                isScreenOff = true;
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                isScreenOff = false;
-            }
-        }
-    };
 
     private BroadcastReceiver mReceiverShowSearchInput = new BroadcastReceiver() {
         @Override
@@ -99,7 +92,6 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
         super.onDestroyView();
         if (getActivity() != null) {
             getActivity().unregisterReceiver(mReceiverShowSearchInput);
-            getActivity().unregisterReceiver(mScreenReceiver);
         }
     }
 
@@ -174,73 +166,10 @@ public class CurrentChatListFragment extends ListFragment<ChattingDto> implement
 
     public interface OnContextMenuSelect {
         void onSelect(int type, Bundle bundle);
+        void onClick(long roomNo, int myId, ChattingDto dto);
     }
 
-    private OnContextMenuSelect mOnContextMenuSelect = new OnContextMenuSelect() {
-        @Override
-        public void onSelect(int type, Bundle bundle) {
-            Intent intent;
-            final long roomNo = bundle.getInt(Statics.ROOM_NO, 0);
-
-            switch (type) {
-                case Statics.ROOM_RENAME:
-                    intent = new Intent(getActivity(), RenameRoomActivity.class);
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, Statics.RENAME_ROOM);
-
-                    break;
-
-                case Statics.ROOM_OPEN:
-                    intent = new Intent(BaseActivity.Instance, ChattingActivity.class);
-                    ChattingDto dto = (ChattingDto) bundle.getSerializable(Constant.KEY_INTENT_ROOM_DTO);
-
-                    Bundle args = new Bundle();
-                    args.putLong(Constant.KEY_INTENT_ROOM_NO, roomNo);
-                    args.putSerializable(Constant.KEY_INTENT_CHATTING_DTO, dto);
-
-                    intent.putExtras(args);
-                    startActivity(intent);
-                    break;
-
-                case Statics.ROOM_ADD_TO_FAVORITE:
-
-                    break;
-
-                case Statics.ROOM_LEFT:
-                    HttpRequest.getInstance().DeleteChatRoomUser(roomNo, myId, new BaseHTTPCallBack() {
-                        @Override
-                        public void onHTTPSuccess() {
-                            try {
-                                for (int i = 0; i < dataSet.size(); i++) {
-                                    if (dataSet.get(i).getRoomNo() == roomNo) {
-                                        if (RecentFavoriteFragment.instance != null) {
-                                            if (dataSet.get(i).isFavorite()) {
-                                                RecentFavoriteFragment.instance.removeFavorite(roomNo);
-                                            }
-                                        }
-
-                                        dataSet.remove(i);
-
-                                        new Thread(() -> ChatRoomDBHelper.deleteChatRoom(roomNo)).start();
-
-                                        adapterList.notifyDataSetChanged();
-                                        break;
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onHTTPFail(ErrorDto errorDto) {
-                        }
-                    });
-
-                    break;
-            }
-        }
-    };
+    private OnContextMenuSelect mOnContextMenuSelect;
 
     @Override
     protected void initAdapter() {

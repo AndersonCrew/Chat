@@ -35,13 +35,16 @@ import com.dazone.crewchatoff.BuildConfig;
 import com.dazone.crewchatoff.HTTPs.GetUserStatus;
 import com.dazone.crewchatoff.HTTPs.HttpRequest;
 import com.dazone.crewchatoff.R;
+import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.activity.base.BasePagerActivity;
 import com.dazone.crewchatoff.activity.chatroom.ChattingViewModel;
 import com.dazone.crewchatoff.adapter.TabPagerAdapter;
 import com.dazone.crewchatoff.constant.Constants;
 import com.dazone.crewchatoff.constant.Statics;
 import com.dazone.crewchatoff.database.AllUserDBHelper;
+import com.dazone.crewchatoff.database.ChatRoomDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
+import com.dazone.crewchatoff.dto.ChattingDto;
 import com.dazone.crewchatoff.dto.CheckUpdateDto;
 import com.dazone.crewchatoff.dto.ErrorDto;
 import com.dazone.crewchatoff.dto.StatusDto;
@@ -53,6 +56,8 @@ import com.dazone.crewchatoff.eventbus.ReloadActivity;
 import com.dazone.crewchatoff.fragment.BaseFavoriteFragment;
 import com.dazone.crewchatoff.fragment.CompanyFragment;
 import com.dazone.crewchatoff.fragment.CurrentChatListFragment;
+import com.dazone.crewchatoff.fragment.RecentFavoriteFragment;
+import com.dazone.crewchatoff.interfaces.BaseHTTPCallBack;
 import com.dazone.crewchatoff.interfaces.BaseHTTPCallBackWithString;
 import com.dazone.crewchatoff.interfaces.OnClickCallback;
 import com.dazone.crewchatoff.interfaces.OnGetStatusCallback;
@@ -61,6 +66,7 @@ import com.dazone.crewchatoff.services.SyncStatusService;
 import com.dazone.crewchatoff.utils.Constant;
 import com.dazone.crewchatoff.utils.CrewChatApplication;
 import com.dazone.crewchatoff.utils.Prefs;
+import com.dazone.crewchatoff.utils.RealPathUtil;
 import com.dazone.crewchatoff.utils.Utils;
 import com.google.gson.Gson;
 
@@ -81,7 +87,7 @@ import java.util.List;
 
 import static com.dazone.crewchatoff.utils.Utils.compareVersionNames;
 
-public class MainActivity extends BasePagerActivity implements ViewPager.OnPageChangeListener, ServiceConnection {
+public class MainActivity extends BasePagerActivity implements ViewPager.OnPageChangeListener, ServiceConnection , CurrentChatListFragment.OnContextMenuSelect{
     String TAG = MainActivity.class.getName();
     private boolean doubleBackToExitPressedOnce = false;
     public static MainActivity instance = null;
@@ -174,14 +180,14 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             type = intent.getType();
             if (type != null) {
                 setPermissionsReadExternalStorage();
-                tabAdapter = new TabPagerAdapter(getSupportFragmentManager(), 2, this);
+                tabAdapter = new TabPagerAdapter(getSupportFragmentManager(), 2, this, this);
                 mViewPager.setAdapter(tabAdapter);
                 mViewPager.setOffscreenPageLimit(1);
                 tabLayout.setupWithViewPager(mViewPager);
                 setupTabTwo();
 
             } else {
-                tabAdapter = new TabPagerAdapter(getSupportFragmentManager(), 4, this);
+                tabAdapter = new TabPagerAdapter(getSupportFragmentManager(), 4, this, this);
                 mViewPager.setAdapter(tabAdapter);
                 mViewPager.setOffscreenPageLimit(3);
                 tabLayout.setupWithViewPager(mViewPager);
@@ -191,23 +197,9 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
             setupViewPager();
             mHandler.postDelayed(() -> {
                 if (Intent.ACTION_SEND.equals(action) && type != null) {
-                    if ("text/plain".equals(type)) {
-                        // handleSendText(intent);
-                    } else if (type.startsWith("video/")) {
-                        handleSendVideo(intent);
-                    } else if (type.startsWith("audio/")) {
-                        handleSendAudio(intent);
-                    } else if (type.startsWith("text/")) {
-                        handleSendContact(intent);
-                    } else if (type.startsWith("image/")) {
-                        handlSendImage(intent);
-                    } else {
-                        handleSendFile(intent);
-                    }
+                    handleSendMedia(intent);
                 } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
                     handleSendMultipleFile(intent);
-                } else {
-                    // Handle other intents, such as being started from the home screen
                 }
             }, 1500);
         } else {
@@ -227,41 +219,11 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         tabLayout.getTabAt(1).setIcon(R.drawable.tabbar_group_ic);
     }
 
-    void handleSendContact(Intent intent) {
-        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
-
-
-        }
-    }
-
-    void handleSendVideo(Intent intent) {
-        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
-            mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
-        }
-    }
-
-    void handleSendAudio(Intent intent) {
-        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
-            //fab.performClick();
-        }
-    }
-
-    void handleSendFile(Intent intent) {
+    void handleSendMedia(Intent intent) {
         imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         mSelectedImage.clear();
         if (imageUri != null) {
-            mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
-        }
-    }
-
-    void handlSendImage(Intent intent) {
-        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        mSelectedImage.clear();
-        if (imageUri != null) {
-            mSelectedImage.add(Utils.getPathFromURI(imageUri, getApplicationContext()));
+            mSelectedImage.add(imageUri.toString());
         }
     }
 
@@ -271,7 +233,7 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         if (imageUris != null) {
             for (Uri path : imageUris) {
                 if (mSelectedImage != null) {
-                    mSelectedImage.add(Utils.getPathFromURI(path, getApplicationContext()));
+                    mSelectedImage.add(path.toString());
                 }
 
             }
@@ -297,6 +259,77 @@ public class MainActivity extends BasePagerActivity implements ViewPager.OnPageC
         });
 
 
+    }
+
+    @Override
+    public void onSelect(int type, Bundle bundle) {
+        Intent intent;
+        final long roomNo = bundle.getInt(Statics.ROOM_NO, 0);
+
+        switch (type) {
+            case Statics.ROOM_RENAME:
+                intent = new Intent(this, RenameRoomActivity.class);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, Statics.RENAME_ROOM);
+
+                break;
+
+            case Statics.ROOM_OPEN:
+                intent = new Intent(this, ChattingActivity.class);
+                ChattingDto dto = (ChattingDto) bundle.getSerializable(Constant.KEY_INTENT_ROOM_DTO);
+
+                Bundle args = new Bundle();
+                args.putLong(Constant.KEY_INTENT_ROOM_NO, roomNo);
+                args.putSerializable(Constant.KEY_INTENT_CHATTING_DTO, dto);
+
+                intent.putExtras(args);
+                startActivity(intent);
+                break;
+
+            case Statics.ROOM_ADD_TO_FAVORITE:
+
+                break;
+
+            case Statics.ROOM_LEFT:
+//                HttpRequest.getInstance().DeleteChatRoomUser(roomNo, CurrentChatListFragment.instance.myId, new BaseHTTPCallBack() {
+//                    @Override
+//                    public void onHTTPSuccess() {
+//                        try {
+//                            for (int i = 0; i < CurrentChatListFragment.instance.dataSet.size(); i++) {
+//                                if (CurrentChatListFragment.instance.dataSet.get(i).getRoomNo() == roomNo) {
+//                                    if (RecentFavoriteFragment.instance != null) {
+//                                        if (CurrentChatListFragment.instance.dataSet.get(i).isFavorite()) {
+//                                            RecentFavoriteFragment.instance.removeFavorite(roomNo);
+//                                        }
+//                                    }
+//
+//                                    dataSet.remove(i);
+//
+//                                    new Thread(() -> ChatRoomDBHelper.deleteChatRoom(roomNo)).start();
+//
+//                                    adapterList.notifyDataSetChanged();
+//                                    break;
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onHTTPFail(ErrorDto errorDto) {
+//                    }
+//                });
+
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(long roomNo, int myId, ChattingDto dto) {
+        ChattingActivity.toActivity(BaseActivity.Instance, roomNo, myId, dto, type, mSelectedImage);
+        type = null;
+        mSelectedImage.clear();
     }
 
     private class UpdateRunnable implements Runnable {

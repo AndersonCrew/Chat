@@ -185,7 +185,6 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
         });
     }
 
-    private boolean hasActionSend = false;
 
     private void initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ChattingViewModel.class);
@@ -323,8 +322,7 @@ public class ChattingFragment extends ListFragment<ChattingDto> implements View.
     }
 
     public ChattingFragment newInstance(long roomNo, ArrayList<Integer> userNos, Activity activity) {
-        if (instance == null)
-            instance = new ChattingFragment();
+        instance = new ChattingFragment();
         instance.setActivity(activity);
         Bundle args = new Bundle();
         args.putLong(Constant.KEY_INTENT_ROOM_NO, roomNo);

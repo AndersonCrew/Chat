@@ -80,7 +80,6 @@ class ChattingViewModel : BaseViewModel() {
         disposables.add(dispo)
     }
 
-
     fun getChatList(regDate: String, roomNo: Long, type: Int, userID: Int, strRegDate: String?) {
         val params = JsonObject()
         params.addProperty("command", Urls.URL_GET_CHAT_MSG_SECTION_TIME)

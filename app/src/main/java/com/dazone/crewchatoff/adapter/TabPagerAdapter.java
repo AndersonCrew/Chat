@@ -14,11 +14,13 @@ import com.dazone.crewchatoff.fragment.SettingFragment;
 public class TabPagerAdapter extends FragmentPagerAdapter {
     private int count = 4;
     private Activity mContext;
+    private CurrentChatListFragment.OnContextMenuSelect callBack;
 
-    public TabPagerAdapter(FragmentManager fm, int count, Activity context) {
+    public TabPagerAdapter(FragmentManager fm, int count, Activity context, CurrentChatListFragment.OnContextMenuSelect callback ) {
         super(fm);
         this.count = count;
         mContext = context;
+        this.callBack = callback;
     }
 
     public TabPagerAdapter(FragmentManager fm) {
@@ -42,7 +44,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
                 return new SettingFragment();
             case 0: // 채팅 리스트 탭
             default: // 기본(채팅리스트)
-                return new CurrentChatListFragment();
+                return new CurrentChatListFragment(callBack);
         }
     }
 

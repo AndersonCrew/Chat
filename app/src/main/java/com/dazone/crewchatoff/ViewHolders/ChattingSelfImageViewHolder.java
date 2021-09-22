@@ -212,9 +212,9 @@ public class ChattingSelfImageViewHolder extends BaseChattingHolder implements V
                         reqWidth = (int) (180 * ratio);
                     } else reqWidth = (int) (60 * ratio);
 
-                    reqHeight = (reqWidth * height) /width;
 
                     try {
+                        reqHeight = (reqWidth * height) /width;
                         destBitmap = createScaledBitmap(tempBitmap, reqWidth / 2, reqHeight / 2, true);
                     } catch (Exception ex) {
                         ex.printStackTrace();
