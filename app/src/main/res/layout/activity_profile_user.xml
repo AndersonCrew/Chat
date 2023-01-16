@@ -75,12 +75,6 @@
                 android:background="@drawable/bg_underline"
                 android:paddingBottom="@dimen/dimen_10_20">
                 <!-- AVATAR -->
-                <!-- <com.dazone.crewchatoff.customs.RoundLayoutGroup
-                     android:id="@+id/lnAvatar"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_centerHorizontal="true">
- -->
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_avatar"
                     android:layout_width="@dimen/profile_avatar"
@@ -89,15 +83,6 @@
                     android:layout_marginBottom="@dimen/profile_avatar_margin_bottom"
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/avatar_l"/>
-                <!-- </com.dazone.crewchatoff.customs.RoundLayoutGroup>-->
-                <!--<ImageView-->
-                <!--android:id="@+id/iv_avatar"-->
-                <!--android:layout_width="@dimen/profile_avatar"-->
-                <!--android:layout_height="@dimen/profile_avatar"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:layout_marginBottom="@dimen/profile_avatar_margin_bottom"-->
-                <!--android:layout_marginTop="@dimen/profile_avatar_margin_top"-->
-                <!--android:src="@drawable/avatar_l" />-->
                 <!-- FULL NAME -->
                 <TextView
                     android:id="@+id/tv_full_name"
@@ -116,8 +101,9 @@
                     android:textSize="@dimen/profile_text_size_company" />
 
 
-                <com.dazone.crewchatoff.customs.RoundLayoutGroup
+                <android.support.v7.widget.CardView
                     android:id="@+id/btnChat"
+                    app:cardCornerRadius="20dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_below="@+id/tv_position_name"
@@ -131,7 +117,7 @@
                         android:layout_centerInParent="true"
                         android:adjustViewBounds="true"
                         android:src="@drawable/nav_chat_ic" />
-                </com.dazone.crewchatoff.customs.RoundLayoutGroup>
+                </android.support.v7.widget.CardView>
 
                 <!-- PHONE AND MAIL -->
                 <RelativeLayout

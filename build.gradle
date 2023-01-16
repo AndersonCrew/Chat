@@ -1,7 +1,7 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.3.72'
+        kotlin_version = '1.6.20'
         okhttp3 = '4.4.0'
         retrofit2 = '2.7.2'
         coroutines_core_version = '1.3.2'
@@ -30,7 +30,8 @@ buildscript {
      */
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:7.4.0'
+        classpath 'com.google.gms:google-services:4.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }

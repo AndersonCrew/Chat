@@ -12,7 +12,7 @@
     <!-- COMMON -->
     <dimen name="common_icon">48dp</dimen>
     <dimen name="common_progress_bar">6dp</dimen>
-    <dimen name="common_avatar">47dp</dimen>
+    <dimen name="common_avatar">48dp</dimen>
     <dimen name="common_avatar_group">24dp</dimen>
     <dimen name="common_badge">24dp</dimen>
     <dimen name="common_header_layout">48dp</dimen>

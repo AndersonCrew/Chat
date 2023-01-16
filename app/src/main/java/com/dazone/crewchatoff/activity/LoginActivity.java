@@ -63,6 +63,7 @@ import com.dazone.crewchatoff.utils.Utils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -678,6 +679,10 @@ public class LoginActivity extends BaseActivity implements BaseHTTPCallBack, OnC
         @Override
         protected Void doInBackground(String... params) {
             try {
+
+                InstanceID instanceID = InstanceID.getInstance(LoginActivity.this);
+                String token = instanceID.getToken(Statics.GOOGLE_SENDER_ID,
+                        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                 if (gcm == null) {
                     gcm = GoogleCloudMessaging.getInstance(context);
                 }

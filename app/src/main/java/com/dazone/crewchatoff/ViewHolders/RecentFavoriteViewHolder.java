@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -21,7 +22,6 @@ import com.dazone.crewchatoff.activity.ProfileUserActivity;
 import com.dazone.crewchatoff.activity.RoomUserInformationActivity;
 import com.dazone.crewchatoff.activity.base.BaseActivity;
 import com.dazone.crewchatoff.constant.Statics;
-import com.dazone.crewchatoff.customs.RoundLayoutGroup;
 import com.dazone.crewchatoff.database.ChatRoomDBHelper;
 import com.dazone.crewchatoff.database.UserDBHelper;
 import com.dazone.crewchatoff.dto.ChattingDto;
@@ -46,7 +46,7 @@ import java.util.Locale;
  * Created by david on 7/17/15.
  */
 public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-    private RecentFavoriteFragment.OnContextMenuSelect mOnContextMenuSelect;
+    private final RecentFavoriteFragment.OnContextMenuSelect mOnContextMenuSelect;
     String TAG = "RecentFavoriteViewHolder";
 
     public RecentFavoriteViewHolder(View itemView, RecentFavoriteFragment.OnContextMenuSelect callback) {
@@ -68,7 +68,7 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
     /**
      * Group Avatar
      */
-    private RoundLayoutGroup layoutGroupAvatar;
+    private CardView layoutGroupAvatar;
     private ImageView imgGroupAvatar1;
     private ImageView imgGroupAvatar2;
     private ImageView imgGroupAvatar3;
@@ -82,25 +82,25 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
     @Override
     protected void setup(View v) {
         view = v;
-        tvUserName = (TextView) v.findViewById(R.id.user_name_tv);
-        tvDate = (TextView) v.findViewById(R.id.date_tv);
-        tvContent = (TextView) v.findViewById(R.id.content_tv);
-        imgAvatar = (ImageView) v.findViewById(R.id.avatar_imv);
-        status_imv_null = (ImageView) v.findViewById(R.id.status_imv_null);
-        layoutAvatar = (RelativeLayout) v.findViewById(R.id.layoutAvatar);
-        ivStatus = (ImageView) v.findViewById(R.id.status_imv);
+        tvUserName = v.findViewById(R.id.user_name_tv);
+        tvDate = v.findViewById(R.id.date_tv);
+        tvContent = v.findViewById(R.id.content_tv);
+        imgAvatar = v.findViewById(R.id.avatar_imv);
+        status_imv_null = v.findViewById(R.id.status_imv_null);
+        layoutAvatar = v.findViewById(R.id.layoutAvatar);
+        ivStatus = v.findViewById(R.id.status_imv);
 
-        imgBadge = (ImageView) v.findViewById(R.id.image_badge);
-        ivLastedAttach = (ImageView) v.findViewById(R.id.iv_lasted_attach);
-        tvTotalUser = (TextView) v.findViewById(R.id.tv_user_total);
+        imgBadge = v.findViewById(R.id.image_badge);
+        ivLastedAttach = v.findViewById(R.id.iv_lasted_attach);
+        tvTotalUser = v.findViewById(R.id.tv_user_total);
 
-        layoutGroupAvatar = (RoundLayoutGroup) v.findViewById(R.id.avatar_group);
-        imgGroupAvatar1 = (ImageView) v.findViewById(R.id.avatar_group_1);
-        imgGroupAvatar2 = (ImageView) v.findViewById(R.id.avatar_group_2);
-        imgGroupAvatar3 = (ImageView) v.findViewById(R.id.avatar_group_3);
-        imgGroupAvatar4 = (ImageView) v.findViewById(R.id.avatar_group_4);
-        tvGroupAvatar = (TextView) v.findViewById(R.id.avatar_group_number);
-        ivNotification = (ImageView) v.findViewById(R.id.iv_notification);
+        layoutGroupAvatar = v.findViewById(R.id.avatar_group);
+        imgGroupAvatar1 = v.findViewById(R.id.avatar_group_1);
+        imgGroupAvatar2 = v.findViewById(R.id.avatar_group_2);
+        imgGroupAvatar3 = v.findViewById(R.id.avatar_group_3);
+        imgGroupAvatar4 = v.findViewById(R.id.avatar_group_4);
+        tvGroupAvatar = v.findViewById(R.id.avatar_group_number);
+        ivNotification = v.findViewById(R.id.iv_notification);
 
         view.setOnCreateContextMenuListener(this);
     }
@@ -290,7 +290,7 @@ public class RecentFavoriteViewHolder extends ItemViewHolder<ChattingDto> implem
         if (!TextUtils.isEmpty(tempTimeString)) {
             long time = TimeUtils.getTime(tempTimeString);
 
-            if (Locale.getDefault().getLanguage().toUpperCase().equalsIgnoreCase("KO")) {
+            if (Locale.getDefault().getLanguage().equalsIgnoreCase("KO")) {
                 tvDate.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), time, 1));
             } else {
                 tvDate.setText(TimeUtils.displayTimeWithoutOffset(CrewChatApplication.getInstance().getApplicationContext(), time, 0));
